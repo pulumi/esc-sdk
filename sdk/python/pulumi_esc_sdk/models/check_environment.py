@@ -19,18 +19,25 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, List, Optional
-from esc.models.environment_diagnostic import EnvironmentDiagnostic
+from pulumi_esc_sdk.models.environment_diagnostic import EnvironmentDiagnostic
+from pulumi_esc_sdk.models.evaluated_execution_context import EvaluatedExecutionContext
+from pulumi_esc_sdk.models.expr import Expr
+from pulumi_esc_sdk.models.value import Value
 from typing import Optional, Set
 from typing_extensions import Self
 
-class EnvironmentDiagnostics(BaseModel):
+class CheckEnvironment(BaseModel):
     """
-    EnvironmentDiagnostics
+    CheckEnvironment
     """ # noqa: E501
+    exprs: Optional[Dict[str, Expr]] = None
+    properties: Optional[Dict[str, Value]] = None
+    var_schema: Optional[Any] = Field(default=None, alias="schema")
+    execution_context: Optional[EvaluatedExecutionContext] = Field(default=None, alias="executionContext")
     diagnostics: Optional[List[EnvironmentDiagnostic]] = None
-    __properties: ClassVar[List[str]] = ["diagnostics"]
+    __properties: ClassVar[List[str]] = ["exprs", "properties", "schema", "executionContext", "diagnostics"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -50,7 +57,7 @@ class EnvironmentDiagnostics(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of EnvironmentDiagnostics from a JSON string"""
+        """Create an instance of CheckEnvironment from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -71,6 +78,23 @@ class EnvironmentDiagnostics(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each value in exprs (dict)
+        _field_dict = {}
+        if self.exprs:
+            for _key in self.exprs:
+                if self.exprs[_key]:
+                    _field_dict[_key] = self.exprs[_key].to_dict()
+            _dict['exprs'] = _field_dict
+        # override the default output from pydantic by calling `to_dict()` of each value in properties (dict)
+        _field_dict = {}
+        if self.properties:
+            for _key in self.properties:
+                if self.properties[_key]:
+                    _field_dict[_key] = self.properties[_key].to_dict()
+            _dict['properties'] = _field_dict
+        # override the default output from pydantic by calling `to_dict()` of execution_context
+        if self.execution_context:
+            _dict['executionContext'] = self.execution_context.to_dict()
         # override the default output from pydantic by calling `to_dict()` of each item in diagnostics (list)
         _items = []
         if self.diagnostics:
@@ -78,11 +102,16 @@ class EnvironmentDiagnostics(BaseModel):
                 if _item:
                     _items.append(_item.to_dict())
             _dict['diagnostics'] = _items
+        # set to None if var_schema (nullable) is None
+        # and model_fields_set contains the field
+        if self.var_schema is None and "var_schema" in self.model_fields_set:
+            _dict['schema'] = None
+
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of EnvironmentDiagnostics from a dict"""
+        """Create an instance of CheckEnvironment from a dict"""
         if obj is None:
             return None
 
@@ -90,6 +119,20 @@ class EnvironmentDiagnostics(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "exprs": dict(
+                (_k, Expr.from_dict(_v))
+                for _k, _v in obj["exprs"].items()
+            )
+            if obj.get("exprs") is not None
+            else None,
+            "properties": dict(
+                (_k, Value.from_dict(_v))
+                for _k, _v in obj["properties"].items()
+            )
+            if obj.get("properties") is not None
+            else None,
+            "schema": obj.get("schema"),
+            "executionContext": EvaluatedExecutionContext.from_dict(obj["executionContext"]) if obj.get("executionContext") is not None else None,
             "diagnostics": [EnvironmentDiagnostic.from_dict(_item) for _item in obj["diagnostics"]] if obj.get("diagnostics") is not None else None
         })
         return _obj

@@ -21,18 +21,18 @@ from typing_extensions import Annotated
 from pydantic import Field, StrictStr, field_validator
 from typing import Optional
 from typing_extensions import Annotated
-from esc.models.check_environment import CheckEnvironment
-from esc.models.environment import Environment
-from esc.models.environment_definition import EnvironmentDefinition
-from esc.models.environment_diagnostics import EnvironmentDiagnostics
-from esc.models.error import Error
-from esc.models.open_environment import OpenEnvironment
-from esc.models.org_environments import OrgEnvironments
-from esc.models.value import Value
+from pulumi_esc_sdk.models.check_environment import CheckEnvironment
+from pulumi_esc_sdk.models.environment import Environment
+from pulumi_esc_sdk.models.environment_definition import EnvironmentDefinition
+from pulumi_esc_sdk.models.environment_diagnostics import EnvironmentDiagnostics
+from pulumi_esc_sdk.models.error import Error
+from pulumi_esc_sdk.models.open_environment import OpenEnvironment
+from pulumi_esc_sdk.models.org_environments import OrgEnvironments
+from pulumi_esc_sdk.models.value import Value
 
-from esc.api_client import ApiClient, RequestSerialized
-from esc.api_response import ApiResponse
-from esc.rest import RESTResponseType
+from pulumi_esc_sdk.api_client import ApiClient, RequestSerialized
+from pulumi_esc_sdk.api_response import ApiResponse
+from pulumi_esc_sdk.rest import RESTResponseType
 
 
 class EscApi:

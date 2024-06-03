@@ -19,19 +19,19 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, List, Optional
-from esc.models.property_accessor import PropertyAccessor
+from pulumi_esc_sdk.models.value import Value
 from typing import Optional, Set
 from typing_extensions import Self
 
-class Interpolation(BaseModel):
+class EvaluatedExecutionContext(BaseModel):
     """
-    Interpolation
+    EvaluatedExecutionContext
     """ # noqa: E501
-    text: StrictStr
-    value: Optional[List[PropertyAccessor]] = None
-    __properties: ClassVar[List[str]] = ["text", "value"]
+    properties: Optional[Dict[str, Value]] = None
+    var_schema: Optional[Any] = Field(default=None, alias="schema")
+    __properties: ClassVar[List[str]] = ["properties", "schema"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +51,7 @@ class Interpolation(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of Interpolation from a JSON string"""
+        """Create an instance of EvaluatedExecutionContext from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,18 +72,23 @@ class Interpolation(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each item in value (list)
-        _items = []
-        if self.value:
-            for _item in self.value:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict['value'] = _items
+        # override the default output from pydantic by calling `to_dict()` of each value in properties (dict)
+        _field_dict = {}
+        if self.properties:
+            for _key in self.properties:
+                if self.properties[_key]:
+                    _field_dict[_key] = self.properties[_key].to_dict()
+            _dict['properties'] = _field_dict
+        # set to None if var_schema (nullable) is None
+        # and model_fields_set contains the field
+        if self.var_schema is None and "var_schema" in self.model_fields_set:
+            _dict['schema'] = None
+
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of Interpolation from a dict"""
+        """Create an instance of EvaluatedExecutionContext from a dict"""
         if obj is None:
             return None
 
@@ -91,8 +96,13 @@ class Interpolation(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "text": obj.get("text"),
-            "value": [PropertyAccessor.from_dict(_item) for _item in obj["value"]] if obj.get("value") is not None else None
+            "properties": dict(
+                (_k, Value.from_dict(_v))
+                for _k, _v in obj["properties"].items()
+            )
+            if obj.get("properties") is not None
+            else None,
+            "schema": obj.get("schema")
         })
         return _obj
 

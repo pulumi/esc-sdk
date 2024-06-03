@@ -26,6 +26,7 @@
 .travis.yml
 git_push.sh
 README.md
+pyproject.toml
 test/*
 docs/*
 .github/workflows/*

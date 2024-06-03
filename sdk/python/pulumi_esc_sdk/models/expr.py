@@ -21,10 +21,10 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, List, Optional
-from esc.models.access import Access
-from esc.models.interpolation import Interpolation
-from esc.models.property_accessor import PropertyAccessor
-from esc.models.range import Range
+from pulumi_esc_sdk.models.access import Access
+from pulumi_esc_sdk.models.interpolation import Interpolation
+from pulumi_esc_sdk.models.property_accessor import PropertyAccessor
+from pulumi_esc_sdk.models.range import Range
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -181,7 +181,7 @@ class Expr(BaseModel):
         })
         return _obj
 
-from esc.models.expr_builtin import ExprBuiltin
+from pulumi_esc_sdk.models.expr_builtin import ExprBuiltin
 # TODO: Rewrite to not use raise_errors
 Expr.model_rebuild(raise_errors=False)
 

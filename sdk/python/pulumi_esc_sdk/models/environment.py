@@ -21,23 +21,21 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, List, Optional
-from esc.models.environment_diagnostic import EnvironmentDiagnostic
-from esc.models.evaluated_execution_context import EvaluatedExecutionContext
-from esc.models.expr import Expr
-from esc.models.value import Value
+from pulumi_esc_sdk.models.evaluated_execution_context import EvaluatedExecutionContext
+from pulumi_esc_sdk.models.expr import Expr
+from pulumi_esc_sdk.models.value import Value
 from typing import Optional, Set
 from typing_extensions import Self
 
-class CheckEnvironment(BaseModel):
+class Environment(BaseModel):
     """
-    CheckEnvironment
+    Environment
     """ # noqa: E501
     exprs: Optional[Dict[str, Expr]] = None
     properties: Optional[Dict[str, Value]] = None
     var_schema: Optional[Any] = Field(default=None, alias="schema")
     execution_context: Optional[EvaluatedExecutionContext] = Field(default=None, alias="executionContext")
-    diagnostics: Optional[List[EnvironmentDiagnostic]] = None
-    __properties: ClassVar[List[str]] = ["exprs", "properties", "schema", "executionContext", "diagnostics"]
+    __properties: ClassVar[List[str]] = ["exprs", "properties", "schema", "executionContext"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -57,7 +55,7 @@ class CheckEnvironment(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of CheckEnvironment from a JSON string"""
+        """Create an instance of Environment from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -95,13 +93,6 @@ class CheckEnvironment(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of execution_context
         if self.execution_context:
             _dict['executionContext'] = self.execution_context.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of each item in diagnostics (list)
-        _items = []
-        if self.diagnostics:
-            for _item in self.diagnostics:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict['diagnostics'] = _items
         # set to None if var_schema (nullable) is None
         # and model_fields_set contains the field
         if self.var_schema is None and "var_schema" in self.model_fields_set:
@@ -111,7 +102,7 @@ class CheckEnvironment(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of CheckEnvironment from a dict"""
+        """Create an instance of Environment from a dict"""
         if obj is None:
             return None
 
@@ -132,8 +123,7 @@ class CheckEnvironment(BaseModel):
             if obj.get("properties") is not None
             else None,
             "schema": obj.get("schema"),
-            "executionContext": EvaluatedExecutionContext.from_dict(obj["executionContext"]) if obj.get("executionContext") is not None else None,
-            "diagnostics": [EnvironmentDiagnostic.from_dict(_item) for _item in obj["diagnostics"]] if obj.get("diagnostics") is not None else None
+            "executionContext": EvaluatedExecutionContext.from_dict(obj["executionContext"]) if obj.get("executionContext") is not None else None
         })
         return _obj
 

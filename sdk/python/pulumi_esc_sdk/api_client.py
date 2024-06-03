@@ -27,11 +27,11 @@ import yaml
 from urllib.parse import quote
 from typing import Tuple, Optional, List, Dict
 
-from esc.configuration import Configuration
-from esc.api_response import ApiResponse, T as ApiResponseT
-import esc.models
-from esc import rest
-from esc.exceptions import (
+from pulumi_esc_sdk.configuration import Configuration
+from pulumi_esc_sdk.api_response import ApiResponse, T as ApiResponseT
+import pulumi_esc_sdk.models
+from pulumi_esc_sdk import rest
+from pulumi_esc_sdk.exceptions import (
     ApiValueError,
     ApiException,
     BadRequestException,
@@ -427,7 +427,7 @@ class ApiClient:
             if klass in self.NATIVE_TYPES_MAPPING:
                 klass = self.NATIVE_TYPES_MAPPING[klass]
             else:
-                klass = getattr(esc.models, klass)
+                klass = getattr(pulumi_esc_sdk.models, klass)
 
         if klass in self.PRIMITIVE_TYPES:
             return self.__deserialize_primitive(data, klass)

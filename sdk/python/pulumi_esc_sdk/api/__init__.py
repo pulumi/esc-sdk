@@ -3,5 +3,5 @@
 # Copyright 2024, Pulumi Corporation.  All rights reserved.
 
 # import apis into api package
-from esc.api.esc_api import EscApi
+from pulumi_esc_sdk.api.esc_api import EscApi
 

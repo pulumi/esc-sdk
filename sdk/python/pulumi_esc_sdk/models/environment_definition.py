@@ -19,19 +19,19 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from esc.models.environment_diagnostics import EnvironmentDiagnostics
+from pulumi_esc_sdk.models.environment_definition_values import EnvironmentDefinitionValues
 from typing import Optional, Set
 from typing_extensions import Self
 
-class OpenEnvironment(BaseModel):
+class EnvironmentDefinition(BaseModel):
     """
-    OpenEnvironment
+    EnvironmentDefinition
     """ # noqa: E501
-    id: StrictStr = Field(description="Open environment session identifier")
-    diagnostics: Optional[EnvironmentDiagnostics] = None
-    __properties: ClassVar[List[str]] = ["id", "diagnostics"]
+    imports: Optional[List[StrictStr]] = None
+    values: Optional[EnvironmentDefinitionValues] = None
+    __properties: ClassVar[List[str]] = ["imports", "values"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +51,7 @@ class OpenEnvironment(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of OpenEnvironment from a JSON string"""
+        """Create an instance of EnvironmentDefinition from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,14 +72,14 @@ class OpenEnvironment(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of diagnostics
-        if self.diagnostics:
-            _dict['diagnostics'] = self.diagnostics.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of values
+        if self.values:
+            _dict['values'] = self.values.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of OpenEnvironment from a dict"""
+        """Create an instance of EnvironmentDefinition from a dict"""
         if obj is None:
             return None
 
@@ -87,8 +87,8 @@ class OpenEnvironment(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "id": obj.get("id"),
-            "diagnostics": EnvironmentDiagnostics.from_dict(obj["diagnostics"]) if obj.get("diagnostics") is not None else None
+            "imports": obj.get("imports"),
+            "values": EnvironmentDefinitionValues.from_dict(obj["values"]) if obj.get("values") is not None else None
         })
         return _obj
 

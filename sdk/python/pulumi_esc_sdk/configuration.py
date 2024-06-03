@@ -70,7 +70,7 @@ class Configuration:
 
     You can programmatically set the cookie:
 
-conf = esc.Configuration(
+conf = pulumi_esc_sdk.Configuration(
     api_key={'cookieAuth': 'abc123'}
     api_key_prefix={'cookieAuth': 'JSESSIONID'}
 )
@@ -131,7 +131,7 @@ conf = esc.Configuration(
         self.logger = {}
         """Logging Settings
         """
-        self.logger["package_logger"] = logging.getLogger("esc")
+        self.logger["package_logger"] = logging.getLogger("pulumi_esc_sdk")
         self.logger["urllib3_logger"] = logging.getLogger("urllib3")
         self.logger_format = '%(asctime)s %(levelname)s %(message)s'
         """Log format

@@ -22,7 +22,7 @@ from setuptools import setup, find_packages  # noqa: H301
 #
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
-NAME = "esc"
+NAME = "pulumi-esc-sdk"
 VERSION = "0.1.1-dev.0"
 PYTHON_REQUIRES = ">=3.7"
 REQUIRES = [
@@ -48,5 +48,5 @@ setup(
     long_description="""\
     Pulumi ESC allows you to compose and manage hierarchical collections of configuration and secrets and consume them in various ways.
     """,  # noqa: E501
-    package_data={"esc": ["py.typed"]},
+    package_data={"pulumi_esc_sdk": ["py.typed"]},
 )

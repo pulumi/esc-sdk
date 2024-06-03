@@ -19,19 +19,21 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from esc.models.range import Range
+from pulumi_esc_sdk.models.range import Range
 from typing import Optional, Set
 from typing_extensions import Self
 
-class Trace(BaseModel):
+class PropertyAccessor(BaseModel):
     """
-    Trace
+    PropertyAccessor
     """ # noqa: E501
-    var_def: Optional[Range] = Field(default=None, alias="def")
-    base: Optional[Value] = None
-    __properties: ClassVar[List[str]] = ["def", "base"]
+    index: Optional[StrictInt] = None
+    key: StrictStr
+    range: Range
+    value: Optional[Range] = None
+    __properties: ClassVar[List[str]] = ["index", "key", "range", "value"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +53,7 @@ class Trace(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of Trace from a JSON string"""
+        """Create an instance of PropertyAccessor from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,17 +74,17 @@ class Trace(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of var_def
-        if self.var_def:
-            _dict['def'] = self.var_def.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of base
-        if self.base:
-            _dict['base'] = self.base.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of range
+        if self.range:
+            _dict['range'] = self.range.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of value
+        if self.value:
+            _dict['value'] = self.value.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of Trace from a dict"""
+        """Create an instance of PropertyAccessor from a dict"""
         if obj is None:
             return None
 
@@ -90,12 +92,11 @@ class Trace(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "def": Range.from_dict(obj["def"]) if obj.get("def") is not None else None,
-            "base": Value.from_dict(obj["base"]) if obj.get("base") is not None else None
+            "index": obj.get("index"),
+            "key": obj.get("key"),
+            "range": Range.from_dict(obj["range"]) if obj.get("range") is not None else None,
+            "value": Range.from_dict(obj["value"]) if obj.get("value") is not None else None
         })
         return _obj
 
-from esc.models.value import Value
-# TODO: Rewrite to not use raise_errors
-Trace.model_rebuild(raise_errors=False)
 

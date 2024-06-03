@@ -100,7 +100,7 @@ class Value(BaseModel):
         })
         return _obj
 
-from esc.models.trace import Trace
+from pulumi_esc_sdk.models.trace import Trace
 # TODO: Rewrite to not use raise_errors
 Value.model_rebuild(raise_errors=False)
 

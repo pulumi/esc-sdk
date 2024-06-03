@@ -19,20 +19,19 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from esc.models.accessor import Accessor
-from esc.models.range import Range
+from pulumi_esc_sdk.models.property_accessor import PropertyAccessor
 from typing import Optional, Set
 from typing_extensions import Self
 
-class Access(BaseModel):
+class Interpolation(BaseModel):
     """
-    Access
+    Interpolation
     """ # noqa: E501
-    receiver: Optional[Range] = None
-    accessors: Optional[List[Accessor]] = None
-    __properties: ClassVar[List[str]] = ["receiver", "accessors"]
+    text: StrictStr
+    value: Optional[List[PropertyAccessor]] = None
+    __properties: ClassVar[List[str]] = ["text", "value"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -52,7 +51,7 @@ class Access(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of Access from a JSON string"""
+        """Create an instance of Interpolation from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -73,21 +72,18 @@ class Access(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of receiver
-        if self.receiver:
-            _dict['receiver'] = self.receiver.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of each item in accessors (list)
+        # override the default output from pydantic by calling `to_dict()` of each item in value (list)
         _items = []
-        if self.accessors:
-            for _item in self.accessors:
+        if self.value:
+            for _item in self.value:
                 if _item:
                     _items.append(_item.to_dict())
-            _dict['accessors'] = _items
+            _dict['value'] = _items
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of Access from a dict"""
+        """Create an instance of Interpolation from a dict"""
         if obj is None:
             return None
 
@@ -95,8 +91,8 @@ class Access(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "receiver": Range.from_dict(obj["receiver"]) if obj.get("receiver") is not None else None,
-            "accessors": [Accessor.from_dict(_item) for _item in obj["accessors"]] if obj.get("accessors") is not None else None
+            "text": obj.get("text"),
+            "value": [PropertyAccessor.from_dict(_item) for _item in obj["value"]] if obj.get("value") is not None else None
         })
         return _obj
 

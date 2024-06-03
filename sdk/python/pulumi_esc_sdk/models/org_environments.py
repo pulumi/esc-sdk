@@ -19,19 +19,19 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from esc.models.environment_definition_values import EnvironmentDefinitionValues
+from pulumi_esc_sdk.models.org_environment import OrgEnvironment
 from typing import Optional, Set
 from typing_extensions import Self
 
-class EnvironmentDefinition(BaseModel):
+class OrgEnvironments(BaseModel):
     """
-    EnvironmentDefinition
+    OrgEnvironments
     """ # noqa: E501
-    imports: Optional[List[StrictStr]] = None
-    values: Optional[EnvironmentDefinitionValues] = None
-    __properties: ClassVar[List[str]] = ["imports", "values"]
+    environments: Optional[List[OrgEnvironment]] = None
+    next_token: Optional[StrictStr] = Field(default=None, alias="nextToken")
+    __properties: ClassVar[List[str]] = ["environments", "nextToken"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +51,7 @@ class EnvironmentDefinition(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of EnvironmentDefinition from a JSON string"""
+        """Create an instance of OrgEnvironments from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,14 +72,18 @@ class EnvironmentDefinition(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of values
-        if self.values:
-            _dict['values'] = self.values.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in environments (list)
+        _items = []
+        if self.environments:
+            for _item in self.environments:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict['environments'] = _items
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of EnvironmentDefinition from a dict"""
+        """Create an instance of OrgEnvironments from a dict"""
         if obj is None:
             return None
 
@@ -87,8 +91,8 @@ class EnvironmentDefinition(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "imports": obj.get("imports"),
-            "values": EnvironmentDefinitionValues.from_dict(obj["values"]) if obj.get("values") is not None else None
+            "environments": [OrgEnvironment.from_dict(_item) for _item in obj["environments"]] if obj.get("environments") is not None else None,
+            "nextToken": obj.get("nextToken")
         })
         return _obj
 

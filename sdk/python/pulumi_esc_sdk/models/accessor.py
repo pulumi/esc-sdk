@@ -19,20 +19,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictStr
-from typing import Any, ClassVar, Dict, List
-from esc.models.pos import Pos
+from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from pulumi_esc_sdk.models.range import Range
 from typing import Optional, Set
 from typing_extensions import Self
 
-class Range(BaseModel):
+class Accessor(BaseModel):
     """
-    Range
+    Accessor
     """ # noqa: E501
-    environment: StrictStr
-    begin: Pos
-    end: Pos
-    __properties: ClassVar[List[str]] = ["environment", "begin", "end"]
+    index: Optional[StrictInt] = None
+    key: StrictStr
+    range: Range
+    __properties: ClassVar[List[str]] = ["index", "key", "range"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -52,7 +52,7 @@ class Range(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of Range from a JSON string"""
+        """Create an instance of Accessor from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -73,17 +73,14 @@ class Range(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of begin
-        if self.begin:
-            _dict['begin'] = self.begin.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of end
-        if self.end:
-            _dict['end'] = self.end.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of range
+        if self.range:
+            _dict['range'] = self.range.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of Range from a dict"""
+        """Create an instance of Accessor from a dict"""
         if obj is None:
             return None
 
@@ -91,9 +88,9 @@ class Range(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "environment": obj.get("environment"),
-            "begin": Pos.from_dict(obj["begin"]) if obj.get("begin") is not None else None,
-            "end": Pos.from_dict(obj["end"]) if obj.get("end") is not None else None
+            "index": obj.get("index"),
+            "key": obj.get("key"),
+            "range": Range.from_dict(obj["range"]) if obj.get("range") is not None else None
         })
         return _obj
 

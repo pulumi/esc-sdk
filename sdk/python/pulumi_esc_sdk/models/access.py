@@ -19,21 +19,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict
 from typing import Any, ClassVar, Dict, List, Optional
-from esc.models.range import Range
+from pulumi_esc_sdk.models.accessor import Accessor
+from pulumi_esc_sdk.models.range import Range
 from typing import Optional, Set
 from typing_extensions import Self
 
-class PropertyAccessor(BaseModel):
+class Access(BaseModel):
     """
-    PropertyAccessor
+    Access
     """ # noqa: E501
-    index: Optional[StrictInt] = None
-    key: StrictStr
-    range: Range
-    value: Optional[Range] = None
-    __properties: ClassVar[List[str]] = ["index", "key", "range", "value"]
+    receiver: Optional[Range] = None
+    accessors: Optional[List[Accessor]] = None
+    __properties: ClassVar[List[str]] = ["receiver", "accessors"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -53,7 +52,7 @@ class PropertyAccessor(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of PropertyAccessor from a JSON string"""
+        """Create an instance of Access from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -74,17 +73,21 @@ class PropertyAccessor(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of range
-        if self.range:
-            _dict['range'] = self.range.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of value
-        if self.value:
-            _dict['value'] = self.value.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of receiver
+        if self.receiver:
+            _dict['receiver'] = self.receiver.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in accessors (list)
+        _items = []
+        if self.accessors:
+            for _item in self.accessors:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict['accessors'] = _items
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of PropertyAccessor from a dict"""
+        """Create an instance of Access from a dict"""
         if obj is None:
             return None
 
@@ -92,10 +95,8 @@ class PropertyAccessor(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "index": obj.get("index"),
-            "key": obj.get("key"),
-            "range": Range.from_dict(obj["range"]) if obj.get("range") is not None else None,
-            "value": Range.from_dict(obj["value"]) if obj.get("value") is not None else None
+            "receiver": Range.from_dict(obj["receiver"]) if obj.get("receiver") is not None else None,
+            "accessors": [Accessor.from_dict(_item) for _item in obj["accessors"]] if obj.get("accessors") is not None else None
         })
         return _obj
 

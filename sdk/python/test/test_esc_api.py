@@ -6,7 +6,7 @@ import unittest
 import os
 from datetime import datetime
 
-import esc
+import pulumi_esc_sdk as esc
 
 ENV_PREFIX = "sdk-python-test-"
 

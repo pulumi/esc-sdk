@@ -1,9 +1,9 @@
 
 # Copyright 2024, Pulumi Corporation.  All rights reserved.
 
-from esc.exceptions import ApiException
-import esc.models as models
-import esc.api as api
+from pulumi_esc_sdk.exceptions import ApiException
+import pulumi_esc_sdk.models as models
+import pulumi_esc_sdk.api as api
 from pydantic import StrictBytes
 from typing import Mapping, Any
 import inspect

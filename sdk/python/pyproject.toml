@@ -1,13 +1,12 @@
 [tool.poetry]
-name = "esc"
+name = "pulumi_esc_sdk"
 version = "0.1.1-dev.0"
 description = "ESC (Environments, Secrets, Config) API"
-authors = ["OpenAPI Generator Community <team@openapitools.org>"]
 license = "Apache 2.0"
 readme = "README.md"
-repository = "https://github.com/pulumi/esc"
-keywords = ["OpenAPI", "OpenAPI-Generator", "ESC (Environments, Secrets, Config) API"]
-include = ["esc/py.typed"]
+repository = "https://github.com/pulumi/esc-sdk"
+keywords = ["pulumi esc", "sdk"]
+include = ["pulumi_esc_sdk/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -16,6 +15,7 @@ urllib3 = ">= 1.25.3"
 python-dateutil = ">=2.8.2"
 pydantic = ">=2"
 typing-extensions = ">=4.7.1"
+pyyaml = ">= 6.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=7.2.1"
@@ -34,7 +34,7 @@ extension-pkg-whitelist = "pydantic"
 
 [tool.mypy]
 files = [
-  "esc",
+  "pulumi_esc_sdk",
   #"test",  # auto-generated tests
   "tests", # hand-written tests
 ]

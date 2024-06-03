@@ -1,0 +1,28 @@
+name: Publish Snapshot
+
+on:
+  push:
+    branches: ['main', 'feature/**', 'feature-**']
+    paths-ignore:
+      - 'CHANGELOG.md'
+      - 'CHANGELOG_PENDING.md'
+      - 'README.md'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PULUMI_BOT_TOKEN }}
+
+jobs:
+  lint:
+    uses: ./.github/workflows/stage-lint.yml
+  test:
+    uses: ./.github/workflows/stage-test.yml
+    with:
+      enable-coverage: true
+    secrets: inherit
+  publish-sdks:
+    # needs: [test, lint]
+    uses: ./.github/workflows/stage-publish-sdk.yml
+    with:
+      version: ${{ github.ref_name }}
+      prerelease: true
+    secrets: inherit

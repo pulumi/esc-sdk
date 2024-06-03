@@ -1,0 +1,127 @@
+name: Publish-SDK
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: Version to be used to publish the SDKs
+      prerelease:
+        required: true
+        type: boolean
+        description: Indicates if we're doing a pre- or proper release.
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PULUMI_BOT_TOKEN }}
+  PULUMI_LOCAL_NUGET: ${{ github.workspace }}/nuget
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  NUGET_PUBLISH_KEY: ${{ secrets.NUGET_PUBLISH_KEY }}
+  PYPI_USERNAME: __token__
+  PYPI_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+
+jobs:
+
+  publish-nodejs-sdk:
+    runs-on: ubuntu-latest
+    name: publish-nodejs-sdk
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Generate SDKs
+        uses: ./.github/actions/generate_sdk
+        env:
+          VERSION: ${{ inputs.version }}
+
+      - name: Calculate tag
+        id: tag
+        run: echo "tag=$(./.github/scripts/calculate-npm-tag.sh "${{ inputs.version }}")" >> "$GITHUB_OUTPUT"
+
+      - name: Build Node.JS SDK
+        working-directory: sdk/typescript
+        run: |-
+          npm i
+          npm run build
+          cp ../../README.md ../../LICENSE package.json package-lock.json bin/
+          sed -i.bak -e "s/\${VERSION}/$VERSION/g" ./bin/package.json
+          rm -rf ./bin/tests/*
+        env:
+            VERSION: ${{ inputs.version }}
+      
+      - name: Publish Node.JS SDK
+        working-directory: sdk/typescript/bin
+        run: npm publish --tag "${{ steps.tag.outputs.tag }}"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-go-sdk:
+    runs-on: ubuntu-latest
+    name: publish-go-sdk
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Generate SDKs
+        uses: ./.github/actions/generate_sdk
+        env:
+          VERSION: ${{ inputs.version }}
+
+      - name: Checkout Go SDK repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PULUMI_BOT_TOKEN }}
+          repository: pulumi/esc-sdk
+          path: sdk/esc-sdk
+          fetch-depth: 0
+
+      - name: Checkout prerelease branch
+        if: inputs.prerelease == true
+        working-directory: sdk/esc-sdk
+        run: git checkout -b ${{ inputs.version }}
+
+      - name: Checkout main branch
+        if: inputs.prerelease == false
+        working-directory: sdk/esc-sdk
+        run: git checkout main
+
+      - name: Copy files
+        uses: pulumi/glob-action@v1
+        with:
+          operation: copy
+          source:  sdk/go
+          destination: sdk/esc-sdk
+          files: |
+            **
+
+      - name: Commit and tag
+        working-directory: sdk/esc-sdk
+        run: |
+          git config user.name "Pulumi Bot"
+          git config user.email "bot@pulumi.com"
+          git add .
+          git commit -m "v${{ inputs.version }}"
+          git tag "${{ inputs.version }}"
+
+      - name: Publish to prerelease branch
+        if: inputs.prerelease == true
+        working-directory: sdk/esc-sdk
+        run: git push -u origin ${{ inputs.version }} --tags
+
+      - name: Publish to master branch
+        if: inputs.prerelease == false
+        working-directory: sdk/esc-sdk
+        run: git push -u origin main --tags

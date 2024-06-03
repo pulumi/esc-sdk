@@ -25,9 +25,9 @@ const ENV_PREFIX = "sdk-go-test-"
 
 func Test_EscClient(t *testing.T) {
 	accessToken := os.Getenv("PULUMI_ACCESS_TOKEN")
-	require.NotEmpty(t, accessToken)
+	require.NotEmpty(t, accessToken, "PULUMI_ACCESS_TOKEN must be set")
 	orgName := os.Getenv("PULUMI_ORG")
-	require.NotEmpty(t, orgName)
+	require.NotEmpty(t, orgName, "PULUMI_ORG must be set")
 	configuration := NewConfiguration()
 	apiClient := NewClient(configuration)
 	auth := context.WithValue(

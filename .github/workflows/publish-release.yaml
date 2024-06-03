@@ -20,7 +20,7 @@ jobs:
     secrets: inherit
 
   publish-sdks:
-    # needs: [test, lint]
+    needs: [test, lint]
     uses: ./.github/workflows/stage-publish-sdk.yml
     with:
       version: ${{ github.ref_name }}

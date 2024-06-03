@@ -49,3 +49,6 @@ generate_go_client_sdk:
 .PHONY: generate_ts_client_sdk
 generate_ts_client_sdk:
 	TS_POST_PROCESS_FILE="/usr/local/bin/prettier --write" openapi-generator-cli generate -i ./sdk/swagger.yaml -p npmName=@pulumi/esc-sdk,userAgent=esc-sdk/ts/${VERSION} -t ./sdk/templates/typescript --enable-post-process-file -g typescript-axios -o ./sdk/typescript/esc/raw  --git-repo-id esc --git-user-id pulumi
+
+.phony: generate_sdks
+generate_sdks:: generate_go_client_sdk generate_ts_client_sdk

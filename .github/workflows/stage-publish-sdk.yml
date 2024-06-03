@@ -30,17 +30,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org
-
-      - name: Generate SDKs
-        uses: ./.github/actions/generate_sdk
-        env:
-          VERSION: ${{ inputs.version }}
-
       - name: Calculate tag
         id: tag
         run: echo "tag=$(./.github/scripts/calculate-npm-tag.sh "${{ inputs.version }}")" >> "$GITHUB_OUTPUT"
@@ -69,7 +58,16 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Tag release
-        run: |
-          git tag "sdk/${{ inputs.version }}"
-          git push -u origin $(git rev-parse --abbrev-ref HEAD) --tags
+      - name: Publish Go SDK
+        uses: pulumi/publish-go-sdk-action@v1
+        with:
+          repository: ${{ github.repository }}
+          base-ref: ${{ github.sha }}
+          source: sdk
+          path: sdk
+          version: ${{ inputs.version }}
+          additive: false
+          files: |-
+            go.*
+            go/**
+            !*.tar.gz

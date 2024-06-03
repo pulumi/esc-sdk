@@ -37,6 +37,7 @@ jobs:
         uses: ./.github/actions/generate_sdk
         env:
           VERSION: ${{ inputs.version }}
+          PULUMI_VERSION: ${{ inputs.version }}
       - name: Build Node.JS SDK
         working-directory: sdk/typescript
         run: |-
@@ -47,6 +48,7 @@ jobs:
           rm -rf ./bin/tests/*
         env:
             VERSION: ${{ inputs.version }}
+            PULUMI_VERSION: ${{ inputs.version }}
       
       - name: Publish Node.JS SDK
         working-directory: sdk/typescript/bin
@@ -68,6 +70,7 @@ jobs:
         uses: ./.github/actions/generate_sdk
         env:
           VERSION: ${{ inputs.version }}
+          PULUMI_VERSION: ${{ inputs.version }}
       - name: Publish Go SDK
         uses: pulumi/publish-go-sdk-action@v1
         with:
@@ -95,12 +98,14 @@ jobs:
         uses: ./.github/actions/generate_sdk
         env:
           VERSION: ${{ inputs.version }}
+          PULUMI_VERSION: ${{ inputs.version }}
       - name: Install Twine
         run: python -m pip install pip twine
       - name: Build Python SDK
         run: make build_python
         env:
           VERSION: ${{ inputs.version }}
+          PULUMI_VERSION: ${{ inputs.version }}
       - name: Publish PyPi Package
         run: >
           twine upload

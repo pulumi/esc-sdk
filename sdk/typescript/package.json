@@ -11,14 +11,14 @@
     "main": "esc/src",
     "repository": {
         "type": "git",
-        "url": "https://github.com/pulumi/esc.git",
+        "url": "https://github.com/pulumi/esc-sdk.git",
         "directory": "sdk/typescript"
     },
     "license": "Apache-2.0",
     "bugs": {
-        "url": "https://github.com/pulumi/esc/issues"
+        "url": "https://github.com/pulumi/esc-sdk/issues"
     },
-    "homepage": "https://github.com/pulumi/esc#readme",
+    "homepage": "https://github.com/pulumi/esc-sdk#readme",
     "devDependencies": {
         "@types/js-yaml": "^4.0.9",
         "@types/node": "^20.10.5",

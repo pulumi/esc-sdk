@@ -22,7 +22,7 @@ var _ MappedNullable = &CheckEnvironment{}
 type CheckEnvironment struct {
 	Exprs *map[string]Expr `json:"exprs,omitempty"`
 	Properties *map[string]Value `json:"properties,omitempty"`
-	Schema map[string]interface{} `json:"schema,omitempty"`
+	Schema interface{} `json:"schema,omitempty"`
 	ExecutionContext *EvaluatedExecutionContext `json:"executionContext,omitempty"`
 	Diagnostics []EnvironmentDiagnostic `json:"diagnostics,omitempty"`
 }
@@ -108,10 +108,10 @@ func (o *CheckEnvironment) SetProperties(v map[string]Value) {
 	o.Properties = &v
 }
 
-// GetSchema returns the Schema field value if set, zero value otherwise.
-func (o *CheckEnvironment) GetSchema() map[string]interface{} {
-	if o == nil || IsNil(o.Schema) {
-		var ret map[string]interface{}
+// GetSchema returns the Schema field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CheckEnvironment) GetSchema() interface{} {
+	if o == nil {
+		var ret interface{}
 		return ret
 	}
 	return o.Schema
@@ -119,24 +119,25 @@ func (o *CheckEnvironment) GetSchema() map[string]interface{} {
 
 // GetSchemaOk returns a tuple with the Schema field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CheckEnvironment) GetSchemaOk() (map[string]interface{}, bool) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CheckEnvironment) GetSchemaOk() (*interface{}, bool) {
 	if o == nil || IsNil(o.Schema) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
-	return o.Schema, true
+	return &o.Schema, true
 }
 
 // HasSchema returns a boolean if a field has been set.
 func (o *CheckEnvironment) HasSchema() bool {
-	if o != nil && !IsNil(o.Schema) {
+	if o != nil && IsNil(o.Schema) {
 		return true
 	}
 
 	return false
 }
 
-// SetSchema gets a reference to the given map[string]interface{} and assigns it to the Schema field.
-func (o *CheckEnvironment) SetSchema(v map[string]interface{}) {
+// SetSchema gets a reference to the given interface{} and assigns it to the Schema field.
+func (o *CheckEnvironment) SetSchema(v interface{}) {
 	o.Schema = v
 }
 
@@ -220,7 +221,7 @@ func (o CheckEnvironment) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Properties) {
 		toSerialize["properties"] = o.Properties
 	}
-	if !IsNil(o.Schema) {
+	if o.Schema != nil {
 		toSerialize["schema"] = o.Schema
 	}
 	if !IsNil(o.ExecutionContext) {

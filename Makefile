@@ -1,4 +1,4 @@
-VERSION := $(if ${PULUMI_VERSION},${PULUMI_VERSION},$(shell ./scripts/get-version.sh))
+VERSION := $(if ${PULUMI_VERSION},${PULUMI_VERSION},$(shell ./scripts/pulumi-version.sh))
 
 CONCURRENCY := 10
 SHELL := sh

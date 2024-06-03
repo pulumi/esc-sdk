@@ -2,6 +2,8 @@
 
 # flake8: noqa
 
+# Copyright 2024, Pulumi Corporation.  All rights reserved.
+
 """
     ESC (Environments, Secrets, Config) API
 

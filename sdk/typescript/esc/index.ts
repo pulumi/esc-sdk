@@ -236,7 +236,7 @@ function convertPropertyToValue(property: any): any {
     }
 
     let value = property;
-    if ("value" in property) {
+    if (typeof property === "object" && "value" in property) {
         value = convertPropertyToValue(property.value);
     }
 

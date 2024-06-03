@@ -113,7 +113,7 @@ describe("ESC", async () => {
 
         const diags = await client.checkEnvironment(PULUMI_ORG, envDef);
         assert.notEqual(diags, undefined);
-        assert.equal(diags?.diagnostics?.length, 0);
+        assert.equal(diags?.diagnostics?.length, undefined);
     });
 
     it("check environment invalid", async () => {

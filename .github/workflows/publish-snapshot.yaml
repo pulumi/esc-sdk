@@ -19,10 +19,3 @@ jobs:
     with:
       enable-coverage: true
     secrets: inherit
-  publish-sdks:
-    # needs: [test, lint]
-    uses: ./.github/workflows/stage-publish-sdk.yml
-    with:
-      version: ${{ github.ref_name }}
-      prerelease: true
-    secrets: inherit

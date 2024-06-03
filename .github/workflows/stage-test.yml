@@ -33,8 +33,6 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
           stable: ${{ matrix.go-stable }}
-      - name: Install Pulumi CLI
-        uses: pulumi/action-install-pulumi-cli@v2
       - name: Test w/coverage
         if: ${{ inputs.enable-coverage }}
         run: make test_cover

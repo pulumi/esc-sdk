@@ -69,59 +69,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org
-
-      - name: Generate SDKs
-        uses: ./.github/actions/generate_sdk
-        env:
-          VERSION: ${{ inputs.version }}
-
-      - name: Checkout Go SDK repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PULUMI_BOT_TOKEN }}
-          repository: pulumi/esc-sdk
-          path: sdk/esc-sdk
-          fetch-depth: 0
-
-      - name: Checkout prerelease branch
-        if: inputs.prerelease == true
-        working-directory: sdk/esc-sdk
-        run: git checkout -b ${{ inputs.version }}
-
-      - name: Checkout main branch
-        if: inputs.prerelease == false
-        working-directory: sdk/esc-sdk
-        run: git checkout main
-
-      - name: Copy files
-        uses: pulumi/glob-action@v1
-        with:
-          operation: copy
-          source:  sdk/go
-          destination: sdk/esc-sdk
-          files: |
-            **
-
-      - name: Commit and tag
-        working-directory: sdk/esc-sdk
+      - name: Tag release
         run: |
-          git config user.name "Pulumi Bot"
-          git config user.email "bot@pulumi.com"
-          git add .
-          git commit -m "v${{ inputs.version }}"
-          git tag "${{ inputs.version }}"
-
-      - name: Publish to prerelease branch
-        if: inputs.prerelease == true
-        working-directory: sdk/esc-sdk
-        run: git push -u origin ${{ inputs.version }} --tags
-
-      - name: Publish to master branch
-        if: inputs.prerelease == false
-        working-directory: sdk/esc-sdk
-        run: git push -u origin main --tags
+          git tag sdk/"${{ inputs.version }}"
+          git push -u origin $(git rev-parse --abbrev-ref HEAD) --tags

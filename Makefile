@@ -17,7 +17,7 @@ clean::
 	rm -f ./bin/*
 
 ensure::
-	${GO} mod download
+	cd sdk && ${GO} mod download
 
 .phony: lint
 lint:: lint-copyright lint-golang
@@ -31,16 +31,16 @@ format:
 	find . -iname "*.go" -print0 | xargs -r0 gofmt -s -w
 
 build:: ensure
-	${GO} build -ldflags "-X github.com/pulumi/esc/cmd/internal/version.Version=${VERSION}" ...
+	cd sdk && ${GO} build -ldflags "-X github.com/pulumi/esc/cmd/internal/version.Version=${VERSION}" ./...
 
 build_debug:: ensure
-	${GO} build -gcflags="all=-N -l" -ldflags "-X github.com/pulumi/esc/cmd/internal/version.Version=${VERSION}" ./sdk/go
+	cd sdk && ${GO} build -gcflags="all=-N -l" -ldflags "-X github.com/pulumi/esc/cmd/internal/version.Version=${VERSION}" ./...
 
 test:: build
-	${GO} test --timeout 30m -short -count 1 -parallel ${CONCURRENCY} ./sdk/go/...
+	cd sdk && ${GO} test --timeout 30m -short -count 1 -parallel ${CONCURRENCY} ./...
 
 test_cover:: build
-	${GO} test --timeout 30m -count 1 -coverpkg=github.com/pulumi/esc/... -race -coverprofile=coverage.out -parallel ${CONCURRENCY} ./sdk/go/...
+	cd sdk && ${GO} test --timeout 30m -count 1 -coverpkg=github.com/pulumi/esc-sdk/... -race -coverprofile=coverage.out -parallel ${CONCURRENCY} ./...
 
 .PHONY: generate_go_client_sdk
 generate_go_client_sdk:

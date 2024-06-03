@@ -1,4 +1,6 @@
 
+# Copyright 2024, Pulumi Corporation.  All rights reserved.
+
 from esc.exceptions import ApiException
 import esc.models as models
 import esc.api as api

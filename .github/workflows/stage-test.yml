@@ -15,10 +15,6 @@ on:
         required: false
         type: boolean
 
-env:
-  PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-  PULUMI_ORG: moolumi
-
 jobs:
   test_go:
     name: Test Go

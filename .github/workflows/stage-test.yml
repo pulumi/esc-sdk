@@ -63,6 +63,7 @@ jobs:
       - name: Run tests
         run: make test_typescript
   test_python:
+    name: Test Python
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -79,4 +80,4 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f test-requirements.txt ]; then pip install -r test-requirements.txt; fi
       - name: Test with pytest
-        run: make test-python
+        run: make test_python

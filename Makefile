@@ -53,7 +53,7 @@ test_typescript::
 	cd sdk/typescript && npm i && npm run test
 
 test_python:: 
-	cd sdk/python && pytest
+	cd sdk/python && rm -rf ./bin/ && pytest
 
 .PHONY: generate_go_client_sdk
 generate_go_client_sdk:

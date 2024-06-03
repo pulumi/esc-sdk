@@ -22,7 +22,7 @@ ensure::
 .phony: lint
 lint:: lint-copyright lint-golang
 lint-golang:
-	golangci-lint run
+	cd sdk && golangci-lint run
 lint-copyright:
 	pulumictl copyright
 

@@ -31,7 +31,7 @@ format:
 	find . -iname "*.go" -print0 | xargs -r0 gofmt -s -w
 
 build:: ensure
-	${GO} build -ldflags "-X github.com/pulumi/esc/cmd/internal/version.Version=${VERSION}" ./sdk/go
+	${GO} build -ldflags "-X github.com/pulumi/esc/cmd/internal/version.Version=${VERSION}" ...
 
 build_debug:: ensure
 	${GO} build -gcflags="all=-N -l" -ldflags "-X github.com/pulumi/esc/cmd/internal/version.Version=${VERSION}" ./sdk/go

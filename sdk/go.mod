@@ -1,4 +1,4 @@
-module github.com/pulumi/esc/sdk
+module github.com/pulumi/esc-sdk/sdk
 
 go 1.18
 

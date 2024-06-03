@@ -8,7 +8,7 @@ GO := go
 .phony: .EXPORT_ALL_VARIABLES
 .EXPORT_ALL_VARIABLES:
 
-default: ensure build
+default: ensure build_go
 
 install::
 	${GO} install ./cmd/...
@@ -16,7 +16,7 @@ install::
 clean::
 	rm -f ./bin/*
 
-ensure::
+ensure_go::
 	cd sdk && ${GO} mod download
 
 .phony: lint
@@ -34,16 +34,19 @@ lint-copyright:
 format:
 	find . -iname "*.go" -print0 | xargs -r0 gofmt -s -w
 
-build:: ensure
+build_go:: ensure_go
 	cd sdk && ${GO} build -ldflags "-X github.com/pulumi/esc/cmd/internal/version.Version=${VERSION}" ./...
 
-build_debug:: ensure
+build_debug:: ensure_go
 	cd sdk && ${GO} build -gcflags="all=-N -l" -ldflags "-X github.com/pulumi/esc/cmd/internal/version.Version=${VERSION}" ./...
 
-test_go:: build
+build_python::
+	PYPI_VERSION=$(VERSION) ./scripts/build_python_sdk.sh
+
+test_go:: build_go
 	cd sdk && ${GO} test --timeout 30m -short -count 1 -parallel ${CONCURRENCY} ./...
 
-test_go_cover:: build
+test_go_cover:: build_go
 	cd sdk && ${GO} test --timeout 30m -count 1 -coverpkg=github.com/pulumi/esc-sdk/... -race -coverprofile=coverage.out -parallel ${CONCURRENCY} ./...
 
 test_typescript:: 
@@ -62,7 +65,7 @@ generate_ts_client_sdk:
 
 .PHONY: generate_python_client_sdk
 generate_python_client_sdk:
-	PYTHON_POST_PROCESS_FILE="/usr/local/bin/yapf -i" openapi-generator-cli generate -i ./sdk/swagger.yaml -p packageName=esc,httpUserAgent=esc-sdk/python/${VERSION} -t ./sdk/templates/python -g python -o ./sdk/python --git-repo-id esc --git-user-id pulumi
+	PYTHON_POST_PROCESS_FILE="/usr/local/bin/yapf -i" openapi-generator-cli generate -i ./sdk/swagger.yaml -p packageName=esc,httpUserAgent=esc-sdk/python/${VERSION},packageVersion=${VERSION} -t ./sdk/templates/python -g python -o ./sdk/python --git-repo-id esc --git-user-id pulumi
 
 .phony: generate_sdks
 generate_sdks:: generate_go_client_sdk generate_ts_client_sdk generate_python_client_sdk

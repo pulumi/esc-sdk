@@ -14,7 +14,7 @@
 """  # noqa: E501
 
 
-__version__ = "1.0.0"
+__version__ = "0.1.1-dev.0"
 
 # import extensions
 from esc.esc_client import EscClient

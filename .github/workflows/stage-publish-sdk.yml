@@ -71,5 +71,5 @@ jobs:
 
       - name: Tag release
         run: |
-          git tag sdk/"${{ inputs.version }}"
+          git tag "sdk/${{ inputs.version }}"
           git push -u origin $(git rev-parse --abbrev-ref HEAD) --tags

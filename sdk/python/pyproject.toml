@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pulumi_esc_sdk"
-version = "0.1.1-dev.0"
+version = ""
 description = "ESC (Environments, Secrets, Config) API"
 license = "Apache 2.0"
 readme = "README.md"

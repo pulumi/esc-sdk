@@ -42,21 +42,14 @@ export const assertParamExists = function (functionName: string, paramName: stri
  * @export
  */
 export const setApiKeyToObject = async function (object: any, keyParamName: string, configuration?: Configuration) {
-    if (configuration && configuration.apiKey) {
-        const localVarApiKeyValue = typeof configuration.apiKey === 'function'
-            ? await configuration.apiKey(keyParamName)
-            : await configuration.apiKey;
+    if (configuration && configuration.accessToken) { // override to access token because that is more correct for Pulumi auth
+        let localVarApiKeyValue = typeof configuration.accessToken === 'function'
+            ? await configuration.accessToken(keyParamName)
+            : await configuration.accessToken;
+        if (!localVarApiKeyValue.startsWith(configuration.tokenPrefix)) {
+            localVarApiKeyValue = configuration.tokenPrefix + ' ' + localVarApiKeyValue;
+        }
         object[keyParamName] = localVarApiKeyValue;
-    }
-}
-
-/**
- *
- * @export
- */
-export const setBasicAuthToObject = function (object: any, configuration?: Configuration) {
-    if (configuration && (configuration.username || configuration.password)) {
-        object["auth"] = { username: configuration.username, password: configuration.password };
     }
 }
 

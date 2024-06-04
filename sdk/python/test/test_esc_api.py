@@ -21,10 +21,8 @@ class TestEscApi(unittest.TestCase):
         self.orgName = os.getenv("PULUMI_ORG")
         self.assertIsNotNone(self.orgName, "PULUMI_ORG must be set")
 
-        configuration = esc.Configuration()
-        configuration.api_key['Authorization'] = "token " + self.accessToken
-        self.apiClient = esc.ApiClient(configuration)
-        self.client = esc.EscClient(esc.EscApi(self.apiClient))
+        configuration = esc.Configuration(access_token=self.accessToken)
+        self.client = esc.EscClient(configuration)
 
         self.remove_all_python_test_envs()
 

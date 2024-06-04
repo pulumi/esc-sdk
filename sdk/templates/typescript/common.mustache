@@ -27,6 +27,34 @@ export const assertParamExists = function (functionName: string, paramName: stri
     }
 }
 
+/**
+ *
+ * @export
+ */
+export const setApiKeyToObject = async function (object: any, keyParamName: string, configuration?: Configuration) {
+    if (configuration && configuration.accessToken) { // override to access token because that is more correct for Pulumi auth
+        let localVarApiKeyValue = typeof configuration.accessToken === 'function'
+            ? await configuration.accessToken(keyParamName)
+            : await configuration.accessToken;
+        if (!localVarApiKeyValue.startsWith('token')) {
+            localVarApiKeyValue = 'token ' + localVarApiKeyValue;
+        }
+        object[keyParamName] = localVarApiKeyValue;
+    }
+}
+
+/**
+ *
+ * @export
+ */
+export const setBearerAuthToObject = async function (object: any, configuration?: Configuration) {
+    if (configuration && configuration.accessToken) {
+        const accessToken = typeof configuration.accessToken === 'function'
+            ? await configuration.accessToken()
+            : await configuration.accessToken;
+        object["Authorization"] = "Bearer " + accessToken;
+    }
+}
 
 /**
  *
@@ -37,7 +65,7 @@ export const setOAuthToObject = async function (object: any, name: string, scope
         const localVarAccessTokenValue = typeof configuration.accessToken === 'function'
             ? await configuration.accessToken(name, scopes)
             : await configuration.accessToken;
-        object["Authorization"] = configuration.tokenPrefix + localVarAccessTokenValue;
+        object["Authorization"] = "Bearer " + localVarAccessTokenValue;
     }
 }
 

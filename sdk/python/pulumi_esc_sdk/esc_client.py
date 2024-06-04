@@ -4,6 +4,8 @@
 from pulumi_esc_sdk.exceptions import ApiException
 import pulumi_esc_sdk.models as models
 import pulumi_esc_sdk.api as api
+import pulumi_esc_sdk.configuration as configuration
+import pulumi_esc_sdk.api_client as api_client
 from pydantic import StrictBytes, StrictInt
 from typing import Mapping, Any, List
 import inspect
@@ -16,8 +18,8 @@ class EscClient:
 
     :param esc_api: EscApi (required)
     """
-    def __init__(self, esc_api: api.EscApi) -> None:
-        self.esc_api = esc_api
+    def __init__(self, configuration: configuration.Configuration) -> None:
+        self.esc_api = api.EscApi(api_client.ApiClient(configuration))
 
     def list_environments(self, org_name: str, continuation_token: str = None) -> models.OrgEnvironments:
         return self.esc_api.list_environments(org_name, continuation_token)

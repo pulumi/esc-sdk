@@ -30,13 +30,7 @@ func Test_EscClient(t *testing.T) {
 	require.NotEmpty(t, orgName, "PULUMI_ORG must be set")
 	configuration := NewConfiguration()
 	apiClient := NewClient(configuration)
-	auth := context.WithValue(
-		context.Background(),
-		ContextAPIKeys,
-		map[string]APIKey{
-			"Authorization": {Key: accessToken, Prefix: "token"},
-		},
-	)
+	auth := NewAuthContext(accessToken)
 
 	removeAllGoTestEnvs(t, apiClient, auth, orgName)
 

@@ -15,6 +15,16 @@ type EscClient struct {
 	EscAPI    *EscAPIService
 }
 
+func NewAuthContext(apiKey string) context.Context {
+	return context.WithValue(
+		context.Background(),
+		ContextAPIKeys,
+		map[string]APIKey{
+			"Authorization": {Key: apiKey, Prefix: "token"},
+		},
+	)
+}
+
 func NewClient(cfg *Configuration) *EscClient {
 	client := &EscClient{rawClient: NewRawAPIClient(cfg)}
 	client.EscAPI = client.rawClient.EscAPI

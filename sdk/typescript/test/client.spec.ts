@@ -26,7 +26,7 @@ describe("ESC", async () => {
     if (!PULUMI_ORG) {
         throw new Error("PULUMI_ORG not set");
     }
-    let config = new esc.Configuration({ accessToken: PULUMI_ACCESS_TOKEN });
+    const config = new esc.Configuration({ accessToken: PULUMI_ACCESS_TOKEN });
     const client = new esc.EscApi(config);
     const baseEnvName = `${ENV_PREFIX}-base-${Date.now()}`;
 

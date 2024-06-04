@@ -31,7 +31,15 @@ export class Configuration {
      * @memberof Configuration
      */
     accessToken?: string | Promise<string> | ((name?: string, scopes?: string[]) => string) | ((name?: string, scopes?: string[]) => Promise<string>);
+
+    /**
+     * token prefix, hard coded to 'token'
+     *
+     * @type {string}
+     * @memberof Configuration
+     */
     tokenPrefix: string;
+
     /**
      * override base path
      *

@@ -36,8 +36,8 @@ export const setApiKeyToObject = async function (object: any, keyParamName: stri
         let localVarApiKeyValue = typeof configuration.accessToken === 'function'
             ? await configuration.accessToken(keyParamName)
             : await configuration.accessToken;
-        if (!localVarApiKeyValue.startsWith('token')) {
-            localVarApiKeyValue = 'token ' + localVarApiKeyValue;
+        if (!localVarApiKeyValue.startsWith(configuration.tokenPrefix)) {
+            localVarApiKeyValue = configuration.tokenPrefix + ' ' + localVarApiKeyValue;
         }
         object[keyParamName] = localVarApiKeyValue;
     }

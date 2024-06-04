@@ -128,6 +128,55 @@ values:
 		require.Nil(t, err)
 		require.Equal(t, "bar", v.Value)
 		require.Equal(t, "bar", value)
+
+		env, _, err = apiClient.GetEnvironmentAtVersion(auth, orgName, envName, "2")
+		require.Nil(t, err)
+
+		env.Values.AdditionalProperties["versioned"] = "true"
+
+		_, err = apiClient.UpdateEnvironment(auth, orgName, envName, env)
+		require.Nil(t, err)
+
+		revisions, err := apiClient.ListEnvironmentRevisions(auth, orgName, envName)
+		require.Nil(t, err)
+		require.NotNil(t, revisions)
+		require.Len(t, revisions, 3)
+
+		err = apiClient.CreateEnvironmentRevisionTag(auth, orgName, envName, "testTag", 2)
+		require.Nil(t, err)
+
+		_, values, err = apiClient.OpenAndReadEnvironmentAtVersion(auth, orgName, envName, "testTag")
+		require.Nil(t, err)
+		_, ok = values["versioned"]
+		require.Equal(t, ok, false)
+
+		tags, err := apiClient.ListEnvironmentRevisionTags(auth, orgName, envName)
+		require.Nil(t, err)
+		require.NotNil(t, tags)
+		require.Len(t, tags.Tags, 2)
+		require.Equal(t, "latest", tags.Tags[0].Name)
+		require.Equal(t, "testTag", tags.Tags[1].Name)
+
+		err = apiClient.UpdateEnvironmentRevisionTag(auth, orgName, envName, "testTag", 3)
+		require.Nil(t, err)
+
+		_, values, err = apiClient.OpenAndReadEnvironmentAtVersion(auth, orgName, envName, "testTag")
+		require.Nil(t, err)
+		require.Equal(t, "true", values["versioned"])
+
+		testTag, err := apiClient.GetEnvironmentRevisionTag(auth, orgName, envName, "testTag")
+		require.Nil(t, err)
+		require.NotNil(t, testTag)
+		require.Equal(t, int32(3), testTag.Revision)
+
+		err = apiClient.DeleteEnvironmentRevisionTag(auth, orgName, envName, "testTag")
+		require.Nil(t, err)
+
+		tags, err = apiClient.ListEnvironmentRevisionTags(auth, orgName, envName)
+		require.Nil(t, err)
+		require.NotNil(t, tags)
+		require.Len(t, tags.Tags, 1)
+
 	})
 
 	t.Run("check environment definition valid", func(t *testing.T) {

@@ -15,6 +15,9 @@ import {
     Pos,
     Range,
     Trace,
+    EnvironmentRevision,
+    EnvironmentRevisionTag,
+    EnvironmentRevisionTags,
 } from "./raw/index";
 import * as yaml from "js-yaml";
 import { AxiosError } from "axios";
@@ -34,6 +37,9 @@ export {
     Pos,
     Range,
     Trace,
+    EnvironmentRevision,
+    EnvironmentRevisionTag,
+    EnvironmentRevisionTags,
 };
 
 export interface EnvironmentDefinitionResponse {
@@ -65,6 +71,7 @@ export class EscApi {
         this.config = config;
         this.rawApi = new EscRawApi(config);
     }
+
     async listEnvironments(org: string, continuationToken?: string | undefined): Promise<OrgEnvironments | undefined> {
         const resp = await this.rawApi.listEnvironments(org, continuationToken);
         if (resp.status === 200) {
@@ -73,6 +80,7 @@ export class EscApi {
 
         throw new Error(`Failed to list environments: ${resp.statusText}`);
     }
+
     async getEnvironment(org: string, name: string): Promise<EnvironmentDefinitionResponse | undefined> {
         const resp = await this.rawApi.getEnvironment(org, name);
         if (resp.status === 200) {
@@ -86,8 +94,34 @@ export class EscApi {
         throw new Error(`Failed to get environment: ${resp.statusText}`);
     }
 
+    async getEnvironmentAtVersion(
+        org: string,
+        name: string,
+        version: string,
+    ): Promise<EnvironmentDefinitionResponse | undefined> {
+        const resp = await this.rawApi.getEnvironmentAtVersion(org, name, version);
+        if (resp.status === 200) {
+            const doc = yaml.load(resp.data as string);
+            return {
+                definition: doc as EnvironmentDefinition,
+                yaml: resp.data as string,
+            };
+        }
+
+        throw new Error(`Failed to get environment: ${resp.statusText}`);
+    }
+
     async openEnvironment(org: string, name: string): Promise<OpenEnvironment | undefined> {
         const resp = await this.rawApi.openEnvironment(org, name);
+        if (resp.status === 200) {
+            return resp.data;
+        }
+
+        throw new Error(`Failed to open environment: ${resp.statusText}`);
+    }
+
+    async openEnvironmentAtVersion(org: string, name: string, version: string): Promise<OpenEnvironment | undefined> {
+        const resp = await this.rawApi.openEnvironmentAtVersion(org, name, version);
         if (resp.status === 200) {
             return resp.data;
         }
@@ -113,6 +147,19 @@ export class EscApi {
 
     async openAndReadEnvironment(org: string, name: string): Promise<EnvironmentResponse | undefined> {
         const open = await this.openEnvironment(org, name);
+        if (open?.id) {
+            return await this.readOpenEnvironment(org, name, open.id);
+        }
+
+        throw new Error(`Failed to open and read environment: ${open}`);
+    }
+
+    async openAndReadEnvironmentAtVersion(
+        org: string,
+        name: string,
+        version: string,
+    ): Promise<EnvironmentResponse | undefined> {
+        const open = await this.openEnvironmentAtVersion(org, name, version);
         if (open?.id) {
             return await this.readOpenEnvironment(org, name, open.id);
         }
@@ -212,6 +259,80 @@ export class EscApi {
         }
 
         throw new Error(`Failed to decrypt environment: ${resp.statusText}`);
+    }
+
+    async listEnvironmentRevisions(
+        org: string,
+        name: string,
+        before?: number,
+        count?: number,
+    ): Promise<Array<EnvironmentRevision> | undefined> {
+        const resp = await this.rawApi.listEnvironmentRevisions(org, name, before, count);
+        if (resp.status === 200) {
+            return resp.data;
+        }
+
+        throw new Error(`Failed to list environment revisions: ${resp.statusText}`);
+    }
+
+    async listEnvironmentRevisionTags(
+        org: string,
+        name: string,
+        after?: string,
+        count?: number,
+    ): Promise<EnvironmentRevisionTags | undefined> {
+        const resp = await this.rawApi.listEnvironmentRevisionTags(org, name, after, count);
+        if (resp.status === 200) {
+            return resp.data;
+        }
+
+        throw new Error(`Failed to list environment revision tags: ${resp.statusText}`);
+    }
+
+    async getEnvironmentRevisionTag(
+        org: string,
+        name: string,
+        tag: string,
+    ): Promise<EnvironmentRevisionTag | undefined> {
+        const resp = await this.rawApi.getEnvironmentRevisionTag(org, name, tag);
+        if (resp.status === 200) {
+            return resp.data;
+        }
+
+        throw new Error(`Failed to get environment revision tag: ${resp.statusText}`);
+    }
+
+    async createEnvironmentRevisionTag(org: string, name: string, tag: string, revision: number): Promise<void> {
+        const updateTag = {
+            revision: revision,
+        };
+        const resp = await this.rawApi.createEnvironmentRevisionTag(org, name, tag, updateTag);
+        if (resp.status === 204) {
+            return;
+        }
+
+        throw new Error(`Failed to create environment revision tag: ${resp.statusText}`);
+    }
+
+    async updateEnvironmentRevisionTag(org: string, name: string, tag: string, revision: number): Promise<void> {
+        const updateTag = {
+            revision: revision,
+        };
+        const resp = await this.rawApi.updateEnvironmentRevisionTag(org, name, tag, updateTag);
+        if (resp.status === 204) {
+            return;
+        }
+
+        throw new Error(`Failed to update environment revision tag: ${resp.statusText}`);
+    }
+
+    async deleteEnvironmentRevisionTag(org: string, name: string, tag: string): Promise<void> {
+        const resp = await this.rawApi.deleteEnvironmentRevisionTag(org, name, tag);
+        if (resp.status === 204) {
+            return;
+        }
+
+        throw new Error(`Failed to delete environment revision tag: ${resp.statusText}`);
     }
 }
 

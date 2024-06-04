@@ -24,6 +24,9 @@ from pulumi_esc_sdk.models.environment_definition import EnvironmentDefinition
 from pulumi_esc_sdk.models.environment_definition_values import EnvironmentDefinitionValues
 from pulumi_esc_sdk.models.environment_diagnostic import EnvironmentDiagnostic
 from pulumi_esc_sdk.models.environment_diagnostics import EnvironmentDiagnostics
+from pulumi_esc_sdk.models.environment_revision import EnvironmentRevision
+from pulumi_esc_sdk.models.environment_revision_tag import EnvironmentRevisionTag
+from pulumi_esc_sdk.models.environment_revision_tags import EnvironmentRevisionTags
 from pulumi_esc_sdk.models.error import Error
 from pulumi_esc_sdk.models.evaluated_execution_context import EvaluatedExecutionContext
 from pulumi_esc_sdk.models.expr import Expr
@@ -37,4 +40,5 @@ from pulumi_esc_sdk.models.property_accessor import PropertyAccessor
 from pulumi_esc_sdk.models.range import Range
 from pulumi_esc_sdk.models.reference import Reference
 from pulumi_esc_sdk.models.trace import Trace
+from pulumi_esc_sdk.models.update_environment_revision_tag import UpdateEnvironmentRevisionTag
 from pulumi_esc_sdk.models.value import Value

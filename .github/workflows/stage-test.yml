@@ -16,7 +16,7 @@ on:
         type: boolean
 
 env:
-  PULUMI_ORG: moolumi
+  PULUMI_ORG: pulumi
   PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN_PRODUCTION }}
 
 jobs:

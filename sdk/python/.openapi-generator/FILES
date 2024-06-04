@@ -15,6 +15,9 @@ pulumi_esc_sdk/models/environment_definition.py
 pulumi_esc_sdk/models/environment_definition_values.py
 pulumi_esc_sdk/models/environment_diagnostic.py
 pulumi_esc_sdk/models/environment_diagnostics.py
+pulumi_esc_sdk/models/environment_revision.py
+pulumi_esc_sdk/models/environment_revision_tag.py
+pulumi_esc_sdk/models/environment_revision_tags.py
 pulumi_esc_sdk/models/error.py
 pulumi_esc_sdk/models/evaluated_execution_context.py
 pulumi_esc_sdk/models/expr.py
@@ -28,6 +31,7 @@ pulumi_esc_sdk/models/property_accessor.py
 pulumi_esc_sdk/models/range.py
 pulumi_esc_sdk/models/reference.py
 pulumi_esc_sdk/models/trace.py
+pulumi_esc_sdk/models/update_environment_revision_tag.py
 pulumi_esc_sdk/models/value.py
 pulumi_esc_sdk/py.typed
 pulumi_esc_sdk/rest.py

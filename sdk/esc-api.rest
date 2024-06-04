@@ -52,11 +52,6 @@ Authorization: token {{token}}
 
 ### 
 
-GET https://api.pulumi.com/api/preview/environments/{{organization}}/sdk-test/versions HTTP/1.1
-Authorization: token {{token}}
-
-### 
-
 GET https://api.pulumi.com/api/preview/environments/{{organization}}/sdk-test/versions/tags HTTP/1.1
 Authorization: token {{token}}
 

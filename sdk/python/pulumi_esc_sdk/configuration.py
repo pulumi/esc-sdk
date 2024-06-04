@@ -82,8 +82,6 @@ conf = pulumi_esc_sdk.Configuration(
     _default = None
 
     def __init__(self, host=None,
-                 api_key=None, api_key_prefix=None,
-                 username=None, password=None,
                  access_token=None,
                  server_index=None, server_variables=None,
                  server_operation_index=None, server_operation_variables=None,
@@ -107,26 +105,13 @@ conf = pulumi_esc_sdk.Configuration(
         """
         # Authentication Settings
         self.api_key = {}
-        if api_key:
-            self.api_key = api_key
+        if access_token:
+            self.api_key['Authorization'] = access_token
         """dict to store API key(s)
         """
-        self.api_key_prefix = {}
-        if api_key_prefix:
-            self.api_key_prefix = api_key_prefix
-        """dict to store API prefix (e.g. Bearer)
-        """
+        self.api_key_prefix = { 'Authorization': 'token' }
         self.refresh_api_key_hook = None
         """function hook to refresh API key if expired
-        """
-        self.username = username
-        """Username for HTTP basic authentication
-        """
-        self.password = password
-        """Password for HTTP basic authentication
-        """
-        self.access_token = access_token
-        """Access token
         """
         self.logger = {}
         """Logging Settings

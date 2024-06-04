@@ -45,8 +45,27 @@ func (c *EscClient) GetEnvironment(ctx context.Context, org, envName string) (*E
 	return env, string(body), nil
 }
 
+func (c *EscClient) GetEnvironmentAtVersion(ctx context.Context, org, envName, version string) (*EnvironmentDefinition, string, error) {
+	env, resp, err := c.EscAPI.GetEnvironmentAtVersion(ctx, org, envName, version).Execute()
+	if err != nil {
+		return nil, "", err
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, "", err
+	}
+
+	return env, string(body), nil
+}
+
 func (c *EscClient) OpenEnvironment(ctx context.Context, org, envName string) (*OpenEnvironment, error) {
 	openInfo, _, err := c.EscAPI.OpenEnvironment(ctx, org, envName).Execute()
+	return openInfo, err
+}
+
+func (c *EscClient) OpenEnvironmentAtVersion(ctx context.Context, org, envName, version string) (*OpenEnvironment, error) {
+	openInfo, _, err := c.EscAPI.OpenEnvironmentAtVersion(ctx, org, envName, version).Execute()
 	return openInfo, err
 }
 
@@ -73,6 +92,15 @@ func (c *EscClient) ReadOpenEnvironment(ctx context.Context, org, envName, openE
 
 func (c *EscClient) OpenAndReadEnvironment(ctx context.Context, org, envName string) (*Environment, map[string]any, error) {
 	openInfo, err := c.OpenEnvironment(ctx, org, envName)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return c.ReadOpenEnvironment(ctx, org, envName, openInfo.Id)
+}
+
+func (c *EscClient) OpenAndReadEnvironmentAtVersion(ctx context.Context, org, envName, version string) (*Environment, map[string]any, error) {
+	openInfo, err := c.OpenEnvironmentAtVersion(ctx, org, envName, version)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -140,6 +168,64 @@ func (c *EscClient) DecryptEnvironment(ctx context.Context, org, envName string)
 	}
 
 	return env, string(body), err
+}
+
+func (c *EscClient) ListEnvironmentRevisions(ctx context.Context, org, envName string) ([]EnvironmentRevision, error) {
+	request := c.EscAPI.ListEnvironmentRevisions(ctx, org, envName)
+
+	revs, _, err := request.Execute()
+	return revs, err
+}
+
+func (c *EscClient) ListEnvironmentRevisionsPaginated(ctx context.Context, org, envName string, before, count int32) ([]EnvironmentRevision, error) {
+	request := c.EscAPI.ListEnvironmentRevisions(ctx, org, envName).Before(before).Count(count)
+
+	revs, _, err := request.Execute()
+	return revs, err
+}
+
+func (c *EscClient) ListEnvironmentRevisionTags(ctx context.Context, org, envName string) (*EnvironmentRevisionTags, error) {
+	request := c.EscAPI.client.EscAPI.ListEnvironmentRevisionTags(ctx, org, envName)
+
+	revs, _, err := request.Execute()
+	return revs, err
+}
+
+func (c *EscClient) ListEnvironmentRevisionTagsPaginated(ctx context.Context, org, envName string, after string, count int32) (*EnvironmentRevisionTags, error) {
+	request := c.EscAPI.ListEnvironmentRevisionTags(ctx, org, envName).After(after).Count(count)
+
+	tags, _, err := request.Execute()
+	return tags, err
+}
+
+func (c *EscClient) GetEnvironmentRevisionTag(ctx context.Context, org, envName, tagName string) (*EnvironmentRevisionTag, error) {
+	request := c.EscAPI.client.EscAPI.GetEnvironmentRevisionTag(ctx, org, envName, tagName)
+
+	revision, _, err := request.Execute()
+	return revision, err
+}
+
+func (c *EscClient) CreateEnvironmentRevisionTag(ctx context.Context, org, envName, tagName string, revision int32) error {
+	update := NewUpdateEnvironmentRevisionTag(revision)
+	request := c.EscAPI.client.EscAPI.CreateEnvironmentRevisionTag(ctx, org, envName, tagName).UpdateEnvironmentRevisionTag(*update)
+
+	_, err := request.Execute()
+	return err
+}
+
+func (c *EscClient) UpdateEnvironmentRevisionTag(ctx context.Context, org, envName, tagName string, revision int32) error {
+	update := NewUpdateEnvironmentRevisionTag(revision)
+	request := c.EscAPI.client.EscAPI.UpdateEnvironmentRevisionTag(ctx, org, envName, tagName).UpdateEnvironmentRevisionTag(*update)
+
+	_, err := request.Execute()
+	return err
+}
+
+func (c *EscClient) DeleteEnvironmentRevisionTag(ctx context.Context, org, envName, tagName string) error {
+	request := c.EscAPI.client.EscAPI.DeleteEnvironmentRevisionTag(ctx, org, envName, tagName)
+
+	_, err := request.Execute()
+	return err
 }
 
 func MarshalEnvironmentDefinition(env *EnvironmentDefinition) (string, error) {

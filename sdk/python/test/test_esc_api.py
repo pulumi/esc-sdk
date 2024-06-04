@@ -92,6 +92,42 @@ values:
         self.assertEqual(v.value, "bar")
         self.assertEqual(value, "bar")
 
+        env, _ = self.client.get_environment_at_version(self.orgName, self.envName, "2")
+
+        env.values.additional_properties["versioned"] = "true"
+        self.client.update_environment(self.orgName, self.envName, env)
+
+        revisions = self.client.list_environment_revisions(self.orgName, self.envName)
+        self.assertIsNotNone(revisions)
+        self.assertEqual(len(revisions), 3)
+
+        self.client.create_environment_revision_tag(self.orgName, self.envName, "testTag", 2)
+
+        _, values, _ = self.client.open_and_read_environment_at_version(self.orgName, self.envName, "testTag")
+        self.assertIsNotNone(values)
+        self.assertFalse("versioned" in values)
+
+        tags = self.client.list_environment_revision_tags(self.orgName, self.envName)
+        self.assertIsNotNone(tags)
+        self.assertEqual(len(tags.tags), 2)
+        self.assertEqual(tags.tags[0].name, "latest")
+        self.assertEqual(tags.tags[1].name, "testTag")
+
+        self.client.update_environment_revision_tag(self.orgName, self.envName, "testTag", 3)
+
+        _, values, _ = self.client.open_and_read_environment_at_version(self.orgName, self.envName, "testTag")
+        self.assertIsNotNone(values)
+        self.assertEqual(values["versioned"], "true")
+
+        testTag = self.client.get_environment_revision_tag(self.orgName, self.envName, "testTag")
+        self.assertIsNotNone(testTag)
+        self.assertEqual(testTag.revision, 3)
+
+        self.client.delete_environment_revision_tag(self.orgName, self.envName, "testTag")
+        tags = self.client.list_environment_revision_tags(self.orgName, self.envName)
+        self.assertIsNotNone(tags)
+        self.assertEqual(len(tags.tags), 1)
+
     def test_check_environment_valid(self):
         envDef = esc.EnvironmentDefinition(values=esc.EnvironmentDefinitionValues(additional_properties={"foo": "bar"}))
 

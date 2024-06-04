@@ -290,6 +290,57 @@ components:
             $ref:  "#/components/schemas/OrgEnvironment"
         nextToken: 
           type: string
+    EnvironmentRevision:
+      type: object
+      properties:
+        number:
+          type: integer
+        creatorLogin:
+          type: string
+        created:
+          type: string
+        creatorName:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+        - number
+    EnvironmentRevisionTag:
+      type: object
+      properties:
+        revision:
+          type: integer
+        name:
+          type: string
+        created:
+          type: string
+        modified:
+          type: string
+        editorLogin:
+          type: string
+        editorName:
+          type: string
+      required:
+        - revision
+        - name
+    EnvironmentRevisionTags:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/EnvironmentRevisionTag"
+        nextToken:
+          type: string
+    UpdateEnvironmentRevisionTag:
+      type: object
+      properties:
+        revision:
+          type: integer
+      required:
+        - revision
   parameters:
     orgName:
       name: orgName
@@ -313,7 +364,23 @@ components:
         pattern: ^(?!(\.|\.\.|open|yaml))[a-zA-Z0-9-_.]+$
       required: true
       allowEmptyValue: false
-  
+    version:
+      name: version
+      in: path
+      required: true
+      description:  Revision or tag
+      schema: 
+        type: string
+    duration:
+      name: duration
+      in: query
+      required: false
+      description:  open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+      schema: 
+        type: string
+        pattern: ^(\d*\.\d+|\d+)(ns|us|µs|ms|s|m|h)?(\d*\.\d+|\d+)?(ns|us|µs|ms|s|m|h)?$
+        default: 1h
+
   responses:
     ListOrgEnvironments:
       description: List of environments
@@ -436,6 +503,20 @@ components:
           example:
             message: Not Found
             code: 404
+    ListEnvironmentRevisions:
+      description: List of environment revisions
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/EnvironmentRevision"
+    ListEnvironmentRevisionTags:
+      description: List of environment revision tags
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EnvironmentRevisionTags"              
 security:
   - Authorization: []
 paths:
@@ -635,14 +716,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/envName"
-      - name: duration
-        in: query
-        required: false
-        description:  open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
-        schema: 
-          type: string
-          pattern: ^(\d*\.\d+|\d+)(ns|us|µs|ms|s|m|h)?(\d*\.\d+|\d+)?(ns|us|µs|ms|s|m|h)?$
-          default: 1h
+      - $ref: "#/components/parameters/duration"
     post:
       tags:
       - esc
@@ -722,3 +796,228 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
+  /environments/{orgName}/{envName}/versions:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/envName"
+      - name: before
+        in: query
+        required: false
+        description: before revision number for pagination
+        schema: 
+          type: integer
+      - name: count
+        in: query
+        required: false
+        description: limit of revisions to return
+        schema: 
+          type: integer
+    get:
+      tags:
+      - esc
+      operationId: ListEnvironmentRevisions
+      summary: List environment revisions
+      description:  List environment revisions
+      responses:
+        "200":
+          $ref: "#/components/responses/ListEnvironmentRevisions"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+            $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  /environments/{orgName}/{envName}/versions/{version}:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/envName"
+      - name: version
+        in: path
+        required: true
+        description:  Revision or tag
+        schema: 
+          type: string
+    get:
+      tags:
+      - esc
+      operationId: GetEnvironmentAtVersion
+      summary: Read an environment at a specific version
+      description: Read an environmentat a specific revision or tag
+      responses:
+        "200":
+          description: Success
+          content:
+            application/x-yaml:
+              schema:
+                $ref: "#/components/schemas/EnvironmentDefinition"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  /environments/{orgName}/{envName}/versions/{version}/open:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/envName"
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/duration"
+    post:
+      tags:
+      - esc
+      operationId: OpenEnvironmentAtVersion
+      summary: Open an environment session at a specific version
+      description: Opens a session the given environment at a specific version for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
+      responses:
+        "200":
+          $ref: "#/components/responses/OpenEnvironmentSuccess"
+        "400":
+          $ref: "#/components/responses/BadRequestWithDiagnostics"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  /environments/{orgName}/{envName}/versions/tags:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/envName"
+      - name: after
+        in: query
+        required: false
+        description: after tag for pagination
+        schema: 
+          type: string
+      - name: count
+        in: query
+        required: false
+        description: limit of tags to return
+        schema: 
+          type: integer
+    get:
+      tags:
+      - esc
+      operationId: ListEnvironmentRevisionTags
+      summary: List environment revisions
+      description:  List environment revisions
+      responses:
+        "200":
+          $ref: "#/components/responses/ListEnvironmentRevisionTags"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+            $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  /environments/{orgName}/{envName}/versions/tags/{tagName}:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/envName"
+      - name: tagName
+        in: path
+        required: true
+        description:  Tag name
+        schema: 
+          type: string
+    post:
+      tags:
+      - esc
+      operationId: CreateEnvironmentRevisionTag
+      summary: Create environment revision tag
+      description:  Create environment revision tag
+      requestBody: 
+        description: Update environment revision tag
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEnvironmentRevisionTag"
+      responses:
+        "204":
+          description: The revision tag was created successfully.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    patch:
+      tags:
+      - esc
+      operationId: UpdateEnvironmentRevisionTag
+      summary: Update environment revision tag
+      description:  Update environment revision tag
+      requestBody: 
+        description: Update environment revision tag
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEnvironmentRevisionTag"
+      responses:
+        "204":
+          description: The revision tag was updated successfully.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+            $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+      - esc
+      operationId: DeleteEnvironmentRevisionTag
+      summary: Delete environment revision tag
+      description:  Delete environment revision tag
+      responses:
+        "204":
+          description: The revision tag was deleted successfully.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      tags:
+      - esc
+      operationId: GetEnvironmentRevisionTag
+      summary: Read environment revision tag
+      description:  Read environment revision tag
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvironmentRevisionTag"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+            $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  

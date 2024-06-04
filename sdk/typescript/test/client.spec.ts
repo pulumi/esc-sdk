@@ -73,7 +73,7 @@ describe("ESC", async () => {
         assert.notEqual(diags, undefined);
         assert.equal(diags?.diagnostics, undefined);
 
-        const env = await client.getEnvironment(PULUMI_ORG, name);
+        let env = await client.getEnvironment(PULUMI_ORG, name);
 
         assert.notEqual(env, undefined);
         assertEnvDef(env!, baseEnvName);
@@ -85,7 +85,7 @@ describe("ESC", async () => {
         assertEnvDef(decryptEnv!, baseEnvName);
         assert.equal(decryptEnv?.definition?.values?.my_secret["fn::secret"], "shh! don't tell anyone");
 
-        const openEnv = await client.openAndReadEnvironment(PULUMI_ORG, name);
+        let openEnv = await client.openAndReadEnvironment(PULUMI_ORG, name);
 
         assert.equal(openEnv?.values?.base, baseEnvName);
         assert.equal(openEnv?.values?.foo, "bar");
@@ -93,13 +93,50 @@ describe("ESC", async () => {
         assert.deepEqual(openEnv?.values?.my_secret, "shh! don't tell anyone");
         assert.equal(openEnv?.values?.pulumiConfig?.foo, "bar");
         assert.equal(openEnv?.values?.environmentVariables?.FOO, "bar");
-        console.log("test");
 
         const openInfo = await client.openEnvironment(PULUMI_ORG, name);
         assert.notEqual(openInfo, undefined);
 
         const value = await client.readOpenEnvironmentProperty(PULUMI_ORG, name, openInfo?.id!, "pulumiConfig.foo");
         assert.equal(value?.value, "bar");
+
+        env = await client.getEnvironmentAtVersion(PULUMI_ORG, name, "2");
+
+        let values = env?.definition?.values!;
+        values.versioned = "true";
+
+        await client.updateEnvironment(PULUMI_ORG, name, env?.definition!);
+
+        const revisions = await client.listEnvironmentRevisions(PULUMI_ORG, name);
+        assert.notEqual(revisions, undefined);
+        assert.equal(revisions?.length, 3);
+
+        await client.createEnvironmentRevisionTag(PULUMI_ORG, name, "testTag", 2);
+
+        openEnv = await client.openAndReadEnvironmentAtVersion(PULUMI_ORG, name, "testTag");
+        values = openEnv?.values!;
+        assert.equal("versioned" in values, false);
+
+        const tags = await client.listEnvironmentRevisionTags(PULUMI_ORG, name);
+        assert.notEqual(tags, undefined);
+        assert.equal(tags?.tags?.length, 2);
+        assert.equal(tags?.tags?.[0].name, "latest");
+        assert.equal(tags?.tags?.[1].name, "testTag");
+
+        await client.updateEnvironmentRevisionTag(PULUMI_ORG, name, "testTag", 3);
+
+        openEnv = await client.openAndReadEnvironmentAtVersion(PULUMI_ORG, name, "testTag");
+        assert.equal(openEnv?.values?.versioned, "true");
+
+        const testTag = await client.getEnvironmentRevisionTag(PULUMI_ORG, name, "testTag");
+        assert.notEqual(testTag, undefined);
+        assert.equal(testTag?.revision, 3);
+
+        await client.deleteEnvironmentRevisionTag(PULUMI_ORG, name, "testTag");
+
+        const tagsAfterDelete = await client.listEnvironmentRevisionTags(PULUMI_ORG, name);
+        assert.notEqual(tagsAfterDelete, undefined);
+        assert.equal(tagsAfterDelete?.tags?.length, 1);
 
         await client.deleteEnvironment(PULUMI_ORG, name);
     });

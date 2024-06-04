@@ -24,8 +24,7 @@ lint:: lint-copyright lint-golang lint-python
 lint-golang:
 	cd sdk && golangci-lint run
 lint-python:
-	flake8 ./sdk/python/ --count --select=E9,F63,F7,F82 --show-source --statistics
-	flake8 ./sdk/python/esc/esc_client.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+	flake8 ./sdk/python/pulumi_esc_sdk/esc_client.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 	flake8 ./sdk/python/test/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 lint-copyright:
 	pulumictl copyright
@@ -65,7 +64,7 @@ generate_ts_client_sdk:
 
 .PHONY: generate_python_client_sdk
 generate_python_client_sdk:
-	PYTHON_POST_PROCESS_FILE="/usr/local/bin/yapf -i" openapi-generator-cli generate -i ./sdk/swagger.yaml -p packageName=pulumi_esc_sdk,httpUserAgent=esc-sdk/python/${VERSION},packageVersion=${VERSION},packageVersion=${VERSION} -t ./sdk/templates/python -g python -o ./sdk/python --git-repo-id esc --git-user-id pulumi
+	PYTHON_POST_PROCESS_FILE="/usr/local/bin/yapf -i" openapi-generator-cli generate -i ./sdk/swagger.yaml -p packageName=pulumi_esc_sdk,httpUserAgent=esc-sdk/python/${VERSION},packageVersion=${VERSION} -t ./sdk/templates/python -g python -o ./sdk/python --git-repo-id esc --git-user-id pulumi
 
 .phony: generate_sdks
 generate_sdks:: generate_go_client_sdk generate_ts_client_sdk generate_python_client_sdk

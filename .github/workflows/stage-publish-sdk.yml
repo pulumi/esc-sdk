@@ -99,6 +99,9 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.11
+      - id: version
+        name: Set SDK Version
+        uses: pulumi/provider-version-action@v1
       - name: Generate SDKs
         uses: ./.github/actions/generate_sdk
         env:
@@ -109,8 +112,8 @@ jobs:
       - name: Build Python SDK
         run: make build_python
         env:
-          VERSION: ${{ inputs.version }}
-          PULUMI_VERSION: ${{ inputs.version }}
+          VERSION: ${{ steps.version.outputs.version }}
+          PULUMI_VERSION: ${{ steps.version.outputs.version }}
       - name: Publish PyPi Package
         run: >
           twine upload

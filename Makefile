@@ -41,7 +41,7 @@ build_debug:: ensure_go
 	cd sdk && ${GO} build -gcflags="all=-N -l" -ldflags "-X github.com/pulumi/esc/cmd/internal/version.Version=${VERSION}" ./...
 
 build_python::
-	PYPI_VERSION=$(VERSION) ./scripts/build_python_sdk.sh
+	PYPI_VERSION=$(PYTHON_SDK_VERSION) ./scripts/build_python_sdk.sh
 
 test_go:: build_go
 	cd sdk && ${GO} test --timeout 30m -short -count 1 -parallel ${CONCURRENCY} ./...

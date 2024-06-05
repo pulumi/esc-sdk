@@ -1,4 +1,5 @@
 VERSION := $(if ${PULUMI_VERSION},${PULUMI_VERSION},$(shell ./scripts/pulumi-version.sh))
+PYTHON_SDK_VERSION := $(shell echo "$(VERSION)" | sed 's/-/./g')
 
 CONCURRENCY := 10
 SHELL := sh
@@ -40,7 +41,7 @@ build_debug:: ensure_go
 	cd sdk && ${GO} build -gcflags="all=-N -l" -ldflags "-X github.com/pulumi/esc/cmd/internal/version.Version=${VERSION}" ./...
 
 build_python::
-	PYPI_VERSION=$(VERSION) ./scripts/build_python_sdk.sh
+	PYPI_VERSION=$(PYTHON_SDK_VERSION) ./scripts/build_python_sdk.sh
 
 test_go:: build_go
 	cd sdk && ${GO} test --timeout 30m -short -count 1 -parallel ${CONCURRENCY} ./...
@@ -64,7 +65,7 @@ generate_ts_client_sdk:
 
 .PHONY: generate_python_client_sdk
 generate_python_client_sdk:
-	PYTHON_POST_PROCESS_FILE="/usr/local/bin/yapf -i" openapi-generator-cli generate -i ./sdk/swagger.yaml -p packageName=pulumi_esc_sdk,httpUserAgent=esc-sdk/python/${VERSION},packageVersion=${VERSION} -t ./sdk/templates/python -g python -o ./sdk/python --git-repo-id esc --git-user-id pulumi
+	PYTHON_POST_PROCESS_FILE="/usr/local/bin/yapf -i" openapi-generator-cli generate -i ./sdk/swagger.yaml -p packageName=pulumi_esc_sdk,httpUserAgent=esc-sdk/python/${VERSION},packageVersion=${PYTHON_SDK_VERSION} -t ./sdk/templates/python -g python -o ./sdk/python --git-repo-id esc --git-user-id pulumi
 
 .phony: generate_sdks
 generate_sdks:: generate_go_client_sdk generate_ts_client_sdk generate_python_client_sdk

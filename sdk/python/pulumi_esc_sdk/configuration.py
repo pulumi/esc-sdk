@@ -385,7 +385,7 @@ conf = pulumi_esc_sdk.Configuration(
         return "Python SDK Debug Report:\n"\
                "OS: {env}\n"\
                "Python Version: {pyversion}\n"\
-               "SDK Package Version: 0.9.0-dev.0".\
+               "SDK Package Version: 0.9.1.dev.0".\
                format(env=sys.platform, pyversion=sys.version)
 
     def get_host_settings(self):

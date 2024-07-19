@@ -13,7 +13,6 @@ package esc_sdk
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -26,6 +25,7 @@ type OrgEnvironment struct {
 	Name string `json:"name"`
 	Created string `json:"created"`
 	Modified string `json:"modified"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _OrgEnvironment OrgEnvironment
@@ -170,6 +170,11 @@ func (o OrgEnvironment) ToMap() (map[string]interface{}, error) {
 	toSerialize["name"] = o.Name
 	toSerialize["created"] = o.Created
 	toSerialize["modified"] = o.Modified
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -199,15 +204,23 @@ func (o *OrgEnvironment) UnmarshalJSON(data []byte) (err error) {
 
 	varOrgEnvironment := _OrgEnvironment{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varOrgEnvironment)
+	err = json.Unmarshal(data, &varOrgEnvironment)
 
 	if err != nil {
 		return err
 	}
 
 	*o = OrgEnvironment(varOrgEnvironment)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "organization")
+		delete(additionalProperties, "name")
+		delete(additionalProperties, "created")
+		delete(additionalProperties, "modified")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

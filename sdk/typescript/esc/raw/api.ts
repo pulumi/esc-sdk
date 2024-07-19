@@ -510,6 +510,8 @@ export interface OpenEnvironment {
  * @interface OrgEnvironment
  */
 export interface OrgEnvironment {
+    [key: string]: object | any;
+
     /**
      * 
      * @type {string}

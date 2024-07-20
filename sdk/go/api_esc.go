@@ -20,7 +20,7 @@ import (
 	"strings"
 )
 
-const userAgent = "esc-sdk/go/0.9.2-dev.0"
+const userAgent = "esc-sdk/go/v0.9.2"
 
 
 // EscAPIService EscAPI service

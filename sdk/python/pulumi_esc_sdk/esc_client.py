@@ -6,7 +6,7 @@ import pulumi_esc_sdk.models as models
 import pulumi_esc_sdk.api as api
 import pulumi_esc_sdk.configuration as configuration
 import pulumi_esc_sdk.api_client as api_client
-from pydantic import StrictBytes, StrictInt
+from pydantic import StrictBytes, StrictInt, StrictStr
 from typing import Mapping, Any, List
 import inspect
 import yaml
@@ -34,128 +34,141 @@ class EscClient:
         """
         return self.esc_api.list_environments(org_name, continuation_token)
 
-    def get_environment(self, org_name: str, env_name: str) -> tuple[models.EnvironmentDefinition, StrictBytes]:
+    def get_environment(self, org_name: str, project_name: str, env_name: str) -> tuple[models.EnvironmentDefinition, StrictBytes]:
         """Get an environment by name.
 
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :return: The environment definition and the raw data.
         """
-        response = self.esc_api.get_environment_with_http_info(org_name, env_name)
+        response = self.esc_api.get_environment_with_http_info(org_name, project_name, env_name)
         return response.data, response.raw_data
 
     def get_environment_at_version(
-            self, org_name: str, env_name: str, version: str) -> tuple[models.EnvironmentDefinition, StrictBytes]:
+            self, org_name: str, project_name: str, env_name: str, version: str) -> tuple[models.EnvironmentDefinition, StrictBytes]:
         """Get an environment by name and version.
 
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param version: The version of the environment.
         :return: The environment definition and the raw data.
         """
-        response = self.esc_api.get_environment_at_version_with_http_info(org_name, env_name, version)
+        response = self.esc_api.get_environment_at_version_with_http_info(org_name, project_name, env_name, version)
         return response.data, response.raw_data
 
-    def open_environment(self, org_name: str, env_name: str) -> models.OpenEnvironment:
+    def open_environment(self, org_name: str, project_name: str, env_name: str) -> models.OpenEnvironment:
         """Open an environment for reading.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :return: The opened environment.
         """
-        return self.esc_api.open_environment(org_name, env_name)
+        return self.esc_api.open_environment(org_name, project_name, env_name)
 
-    def open_environment_at_version(self, org_name: str, env_name: str, version: str) -> models.OpenEnvironment:
+    def open_environment_at_version(self, org_name: str, project_name: str, env_name: str, version: str) -> models.OpenEnvironment:
         """Open an environment for reading at a specific version.
 
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param version: The version of the environment.
         :return: The opened environment."""
-        return self.esc_api.open_environment_at_version(org_name, env_name, version)
+        return self.esc_api.open_environment_at_version(org_name, project_name, env_name, version)
 
     def read_open_environment(
-            self, org_name: str, env_name: str, open_session_id: str) -> tuple[models.Environment, Mapping[str, Any], str]:
+            self, org_name: str, project_name: str, env_name: str, open_session_id: str) -> tuple[models.Environment, Mapping[str, Any], str]:
         """Read an open environment and resolves config and data.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param open_session_id: The open session identifier.
         :return: The environment, the values, and the raw data."""
-        response = self.esc_api.read_open_environment_with_http_info(org_name, env_name, open_session_id)
+        response = self.esc_api.read_open_environment_with_http_info(org_name, project_name, env_name, open_session_id)
         values = convertEnvPropertiesToValues(response.data.properties)
         return response.data, values, response.raw_data.decode('utf-8')
 
-    def open_and_read_environment(self, org_name: str, env_name: str) -> tuple[models.Environment, Mapping[str, any], str]:
+    def open_and_read_environment(self, org_name: str, project_name: str, env_name: str) -> tuple[models.Environment, Mapping[str, any], str]:
         """Open and read an environment and resolves config and data.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :return: The environment, the values, and the raw data.
         """
-        openEnv = self.open_environment(org_name, env_name)
-        return self.read_open_environment(org_name, env_name, openEnv.id)
+        openEnv = self.open_environment(org_name, project_name, env_name)
+        return self.read_open_environment(org_name, project_name, env_name, openEnv.id)
 
     def open_and_read_environment_at_version(
-            self, org_name: str, env_name: str, version: str) -> tuple[models.Environment, Mapping[str, any], str]:
+            self, org_name: str, project_name: str, env_name: str, version: str) -> tuple[models.Environment, Mapping[str, any], str]:
         """Open and read an environment at a specific version and resolves config and data.
 
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param version: The version of the environment.
         :return: The environment, the values, and the raw data.
         """
-        openEnv = self.open_environment_at_version(org_name, env_name, version)
-        return self.read_open_environment(org_name, env_name, openEnv.id)
+        openEnv = self.open_environment_at_version(org_name, project_name, env_name, version)
+        return self.read_open_environment(org_name, project_name, env_name, openEnv.id)
 
     def read_open_environment_property(
-            self, org_name: str, env_name: str, open_session_id: str, property_name: str) -> tuple[models.Value, Any]:
+            self, org_name: str, project_name: str, env_name: str, open_session_id: str, property_name: str) -> tuple[models.Value, Any]:
         """Read a property from an open environment and resolves the value.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param open_session_id: The open session identifier.
         :param property_name: The property name.
         :return: The property value and the resolved value.
         """
-        v = self.esc_api.read_open_environment_property(org_name, env_name, open_session_id, property_name)
+        v = self.esc_api.read_open_environment_property(org_name, project_name, env_name, open_session_id, property_name)
         return v, convertPropertyToValue(v.value)
 
-    def create_environment(self, org_name: str, env_name: str) -> models.Environment:
+    def create_environment(self, org_name: str, project_name: str, env_name: str) -> models.Environment:
         """Create an environment.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :return: The created environment."""
-        return self.esc_api.create_environment(org_name, env_name)
+        createEnv = models.CreateEnvironment(project=project_name, name=env_name)
+        return self.esc_api.create_environment(org_name, createEnv)
 
-    def update_environment_yaml(self, org_name: str, env_name: str, yaml_body: str) -> models.EnvironmentDiagnostics:
+    def update_environment_yaml(self, org_name: str, project_name: str, env_name: str, yaml_body: str) -> models.EnvironmentDiagnostics:
         """Update an environment using the YAML body.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param yaml_body: The YAML text.
         :return: The environment diagnostics."""
-        return self.esc_api.update_environment_yaml(org_name, env_name, yaml_body)
+        return self.esc_api.update_environment_yaml(org_name, project_name, env_name, yaml_body)
 
-    def update_environment(self, org_name: str, env_name: str, env: models.EnvironmentDefinition) -> models.Environment:
+    def update_environment(self, org_name: str, project_name: str, env_name: str, env: models.EnvironmentDefinition) -> models.Environment:
         """Update an environment using the environment definition.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param env: The environment definition.
         :return: The updated environment."""
         envData = env.to_dict()
         yaml_body = yaml.dump(envData)
-        return self.update_environment_yaml(org_name, env_name, yaml_body)
+        return self.update_environment_yaml(org_name, project_name, env_name, yaml_body)
 
-    def delete_environment(self, org_name: str, env_name: str) -> None:
+    def delete_environment(self, org_name: str, project_name: str, env_name: str) -> None:
         """Delete an environment.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         """
-        self.esc_api.delete_environment(org_name, env_name)
+        self.esc_api.delete_environment(org_name, project_name, env_name)
 
     def check_environment_yaml(self, org_name: str, yaml_body: str) -> models.CheckEnvironment:
         """Check an environment using the YAML body.
@@ -178,18 +191,20 @@ class EscClient:
         yaml_body = yaml.safe_dump(env.to_dict())
         return self.check_environment_yaml(org_name, yaml_body)
 
-    def decrypt_environment(self, org_name: str, env_name: str) -> tuple[models.EnvironmentDefinition, str]:
+    def decrypt_environment(self, org_name: str, project_name: str, env_name: str) -> tuple[models.EnvironmentDefinition, str]:
         """Decrypt an environment.
 
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :return: The decrypted environment and the raw data."""
-        response = self.esc_api.decrypt_environment_with_http_info(org_name, env_name)
+        response = self.esc_api.decrypt_environment_with_http_info(org_name, project_name, env_name)
         return response.data, response.raw_data.decode('utf-8')
 
     def list_environment_revisions(
             self,
             org_name: str,
+            project_name: str,
             env_name: str,
             before: StrictInt | None = None,
             count: StrictInt | None = None
@@ -197,14 +212,16 @@ class EscClient:
         """List environment revisions, from newest to oldest.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param before: The revision before which to list.
         :param count: The number of revisions to list."""
-        return self.esc_api.list_environment_revisions(org_name, env_name, before, count)
+        return self.esc_api.list_environment_revisions(org_name, project_name, env_name, before, count)
 
     def list_environment_revision_tags(
             self,
             org_name: str,
+            project_name: str,
             env_name: str,
             after: str | None = None,
             count: StrictInt | None = None
@@ -212,52 +229,57 @@ class EscClient:
         """List environment revision tags.
 
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param after: The tag after which to list.
         :param count: The number of tags to list."""
-        return self.esc_api.list_environment_revision_tags(org_name, env_name, after, count)
+        return self.esc_api.list_environment_revision_tags(org_name, project_name, env_name, after, count)
 
     def create_environment_revision_tag(
-            self, org_name: str, env_name: str, tag_name: str, revision: StrictInt) -> None:
+            self, org_name: str, project_name: str, env_name: str, tag_name: str, revision: StrictInt) -> None:
         """Create an environment revision tag.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.   
         :param tag_name: The name of the tag.
         :param revision: The revision to tag.
         """
-        update_tag = models.UpdateEnvironmentRevisionTag(revision=revision)
-        return self.esc_api.create_environment_revision_tag(org_name, env_name, tag_name, update_tag)
+        create_tag = models.CreateEnvironmentRevisionTag(name=tag_name, revision=revision)
+        return self.esc_api.create_environment_revision_tag(org_name, project_name, env_name, create_tag)
 
     def update_environment_revision_tag(
-            self, org_name: str, env_name: str, tag_name: str, revision: StrictInt) -> None:
+            self, org_name: str, project_name: str, env_name: str, tag_name: str, revision: StrictInt) -> None:
         """Update an environment revision tag.
 
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param tag_name: The name of the tag.
         :param revision: The revision to tag.
         """
         update_tag = models.UpdateEnvironmentRevisionTag(revision=revision)
-        return self.esc_api.update_environment_revision_tag(org_name, env_name, tag_name, update_tag)
+        return self.esc_api.update_environment_revision_tag(org_name, project_name, env_name, tag_name, update_tag)
 
-    def get_environment_revision_tag(self, org_name: str, env_name: str, tag_name: str) -> models.EnvironmentRevisionTag:
+    def get_environment_revision_tag(self, org_name: str, project_name: str, env_name: str, tag_name: str) -> models.EnvironmentRevisionTag:
         """Get an environment revision tag.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param tag_name: The name of the tag.
         :return: The environment revision tag."""
-        return self.esc_api.get_environment_revision_tag(org_name, env_name, tag_name)
+        return self.esc_api.get_environment_revision_tag(org_name, project_name, env_name, tag_name)
 
-    def delete_environment_revision_tag(self, org_name: str, env_name: str, tag_name: str) -> None:
+    def delete_environment_revision_tag(self, org_name: str, project_name: str, env_name: str, tag_name: str) -> None:
         """Delete an environment revision tag.
         
         :param org_name: The name of the organization.
+        :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param tag_name: The name of the tag.
         """
-        self.esc_api.delete_environment_revision_tag(org_name, env_name, tag_name)
+        self.esc_api.delete_environment_revision_tag(org_name, project_name, env_name, tag_name)
 
 
 def convertEnvPropertiesToValues(env: Mapping[str, models.Value]) -> Any:

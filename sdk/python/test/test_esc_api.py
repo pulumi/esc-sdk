@@ -8,7 +8,8 @@ from datetime import datetime
 
 import pulumi_esc_sdk as esc
 
-ENV_PREFIX = "sdk-python-test-"
+PROJECT_NAME = "sdk-python-test"
+ENV_PREFIX = "env-"
 
 
 class TestEscApi(unittest.TestCase):
@@ -27,18 +28,18 @@ class TestEscApi(unittest.TestCase):
         self.remove_all_python_test_envs()
 
         self.baseEnvName = ENV_PREFIX + "base-" + datetime.now().strftime("%Y%m%d%H%M%S")
-        self.client.create_environment(self.orgName, self.baseEnvName)
+        self.client.create_environment(self.orgName, PROJECT_NAME, self.baseEnvName)
         self.envName = None
 
     def tearDown(self) -> None:
         if self.baseEnvName is not None:
-            self.client.delete_environment(self.orgName, self.baseEnvName)
+            self.client.delete_environment(self.orgName, PROJECT_NAME, self.baseEnvName)
         if self.envName is not None:
-            self.client.delete_environment(self.orgName, self.envName)
+            self.client.delete_environment(self.orgName, PROJECT_NAME, self.envName)
 
     def test_environment_end_to_end(self) -> None:
         self.envName = ENV_PREFIX + "end-to-end-" + datetime.now().strftime("%Y%m%d%H%M%S")
-        self.client.create_environment(self.orgName, self.envName)
+        self.client.create_environment(self.orgName, PROJECT_NAME, self.envName)
 
         envs = self.client.list_environments(self.orgName)
         self.assertFindEnv(envs)
@@ -46,7 +47,7 @@ class TestEscApi(unittest.TestCase):
         fooReference = "${foo}"
         yaml = f"""
 imports:
-  - {self.baseEnvName}
+  - {PROJECT_NAME}/{self.baseEnvName}
 values:
   foo: bar
   my_secret:
@@ -57,21 +58,21 @@ values:
   environmentVariables:
     FOO: {fooReference}
 """
-        self.client.update_environment_yaml(self.orgName, self.envName, yaml)
+        self.client.update_environment_yaml(self.orgName, PROJECT_NAME, self.envName, yaml)
 
-        env, new_yaml = self.client.get_environment(self.orgName, self.envName)
+        env, new_yaml = self.client.get_environment(self.orgName, PROJECT_NAME, self.envName)
         self.assertIsNotNone(env)
         self.assertIsNotNone(new_yaml)
 
         self.assertEnvDef(env)
         self.assertIsNotNone(env.values.additional_properties["my_secret"])
 
-        decrypted_env, _ = self.client.decrypt_environment(self.orgName, self.envName)
+        decrypted_env, _ = self.client.decrypt_environment(self.orgName, PROJECT_NAME, self.envName)
         self.assertIsNotNone(decrypted_env)
         self.assertEnvDef(decrypted_env)
         self.assertIsNotNone(decrypted_env.values.additional_properties["my_secret"])
 
-        _, values, yaml = self.client.open_and_read_environment(self.orgName, self.envName)
+        _, values, yaml = self.client.open_and_read_environment(self.orgName, PROJECT_NAME, self.envName)
         self.assertIsNotNone(yaml)
 
         self.assertEqual(values["foo"], "bar")
@@ -82,47 +83,47 @@ values:
         self.assertIsNotNone(values["environmentVariables"])
         self.assertEqual(values["environmentVariables"]["FOO"], "bar")
 
-        openInfo = self.client.open_environment(self.orgName, self.envName)
+        openInfo = self.client.open_environment(self.orgName, PROJECT_NAME, self.envName)
         self.assertIsNotNone(openInfo)
 
-        v, value = self.client.read_open_environment_property(self.orgName, self.envName, openInfo.id, "foo")
+        v, value = self.client.read_open_environment_property(self.orgName, PROJECT_NAME, self.envName, openInfo.id, "foo")
         self.assertIsNotNone(v)
         self.assertEqual(v.value, "bar")
         self.assertEqual(value, "bar")
 
-        env, _ = self.client.get_environment_at_version(self.orgName, self.envName, "2")
+        env, _ = self.client.get_environment_at_version(self.orgName, PROJECT_NAME, self.envName, "2")
 
         env.values.additional_properties["versioned"] = "true"
-        self.client.update_environment(self.orgName, self.envName, env)
+        self.client.update_environment(self.orgName, PROJECT_NAME, self.envName, env)
 
-        revisions = self.client.list_environment_revisions(self.orgName, self.envName)
+        revisions = self.client.list_environment_revisions(self.orgName, PROJECT_NAME, self.envName)
         self.assertIsNotNone(revisions)
         self.assertEqual(len(revisions), 3)
 
-        self.client.create_environment_revision_tag(self.orgName, self.envName, "testTag", 2)
+        self.client.create_environment_revision_tag(self.orgName, PROJECT_NAME, self.envName, "testTag", 2)
 
-        _, values, _ = self.client.open_and_read_environment_at_version(self.orgName, self.envName, "testTag")
+        _, values, _ = self.client.open_and_read_environment_at_version(self.orgName, PROJECT_NAME, self.envName, "testTag")
         self.assertIsNotNone(values)
         self.assertFalse("versioned" in values)
 
-        tags = self.client.list_environment_revision_tags(self.orgName, self.envName)
+        tags = self.client.list_environment_revision_tags(self.orgName, PROJECT_NAME, self.envName)
         self.assertIsNotNone(tags)
         self.assertEqual(len(tags.tags), 2)
         self.assertEqual(tags.tags[0].name, "latest")
         self.assertEqual(tags.tags[1].name, "testTag")
 
-        self.client.update_environment_revision_tag(self.orgName, self.envName, "testTag", 3)
+        self.client.update_environment_revision_tag(self.orgName, PROJECT_NAME, self.envName, "testTag", 3)
 
-        _, values, _ = self.client.open_and_read_environment_at_version(self.orgName, self.envName, "testTag")
+        _, values, _ = self.client.open_and_read_environment_at_version(self.orgName, PROJECT_NAME, self.envName, "testTag")
         self.assertIsNotNone(values)
         self.assertEqual(values["versioned"], "true")
 
-        testTag = self.client.get_environment_revision_tag(self.orgName, self.envName, "testTag")
+        testTag = self.client.get_environment_revision_tag(self.orgName, PROJECT_NAME, self.envName, "testTag")
         self.assertIsNotNone(testTag)
         self.assertEqual(testTag.revision, 3)
 
-        self.client.delete_environment_revision_tag(self.orgName, self.envName, "testTag")
-        tags = self.client.list_environment_revision_tags(self.orgName, self.envName)
+        self.client.delete_environment_revision_tag(self.orgName, PROJECT_NAME, self.envName, "testTag")
+        tags = self.client.list_environment_revision_tags(self.orgName, PROJECT_NAME, self.envName)
         self.assertIsNotNone(tags)
         self.assertEqual(len(tags.tags), 1)
 
@@ -144,7 +145,7 @@ values:
         self.assertEqual(diags.diagnostics[0].summary, "unknown property \"bad_ref\"")
 
     def assertEnvDef(self, env):
-        self.assertListEqual(env.imports, [self.baseEnvName])
+        self.assertListEqual(env.imports, [f'{PROJECT_NAME}/{self.baseEnvName}'])
         self.assertEqual(env.values.additional_properties["foo"], "bar")
         self.assertEqual(env.values.additional_properties["my_array"], [1, 2, 3])
         self.assertIsNotNone(env.values.pulumi_config)
@@ -166,8 +167,8 @@ values:
         while True:
             envs = self.client.list_environments(self.orgName, continuationToken)
             for env in envs.environments:
-                if env.name.startswith(ENV_PREFIX):
-                    self.client.delete_environment(self.orgName, env.name)
+                if env.project == PROJECT_NAME and env.name.startswith(ENV_PREFIX):
+                    self.client.delete_environment(self.orgName, PROJECT_NAME, env.name)
 
             continuationToken = envs.next_token
             if continuationToken is None or continuationToken == "":

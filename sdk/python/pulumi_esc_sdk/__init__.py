@@ -39,6 +39,8 @@ from pulumi_esc_sdk.exceptions import ApiException
 from pulumi_esc_sdk.models.access import Access
 from pulumi_esc_sdk.models.accessor import Accessor
 from pulumi_esc_sdk.models.check_environment import CheckEnvironment
+from pulumi_esc_sdk.models.create_environment import CreateEnvironment
+from pulumi_esc_sdk.models.create_environment_revision_tag import CreateEnvironmentRevisionTag
 from pulumi_esc_sdk.models.environment import Environment
 from pulumi_esc_sdk.models.environment_definition import EnvironmentDefinition
 from pulumi_esc_sdk.models.environment_definition_values import EnvironmentDefinitionValues

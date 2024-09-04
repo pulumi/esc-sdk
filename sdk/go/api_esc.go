@@ -219,7 +219,13 @@ type ApiCreateEnvironmentRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
-	envName string
+	createEnvironment *CreateEnvironment
+}
+
+// Create Environment
+func (r ApiCreateEnvironmentRequest) CreateEnvironment(createEnvironment CreateEnvironment) ApiCreateEnvironmentRequest {
+	r.createEnvironment = &createEnvironment
+	return r
 }
 
 func (r ApiCreateEnvironmentRequest) Execute() (*Error, *http.Response, error) {
@@ -233,15 +239,13 @@ Creates an environment in the given org with the given name.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
- @param envName Environment name
  @return ApiCreateEnvironmentRequest
 */
-func (a *EscAPIService) CreateEnvironment(ctx context.Context, orgName string, envName string) ApiCreateEnvironmentRequest {
+func (a *EscAPIService) CreateEnvironment(ctx context.Context, orgName string) ApiCreateEnvironmentRequest {
 	return ApiCreateEnvironmentRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
-		envName: envName,
 	}
 }
 
@@ -260,9 +264,8 @@ func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) 
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}"
+	localVarPath := localBasePath + "/environments/{orgName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -273,15 +276,12 @@ func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) 
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
 	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
+	if r.createEnvironment == nil {
+		return localVarReturnValue, nil, reportError("createEnvironment is required and must be specified")
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -299,6 +299,8 @@ func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) 
 	}
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.createEnvironment
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -417,14 +419,14 @@ type ApiCreateEnvironmentRevisionTagRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
-	tagName string
-	updateEnvironmentRevisionTag *UpdateEnvironmentRevisionTag
+	createEnvironmentRevisionTag *CreateEnvironmentRevisionTag
 }
 
-// Update environment revision tag
-func (r ApiCreateEnvironmentRevisionTagRequest) UpdateEnvironmentRevisionTag(updateEnvironmentRevisionTag UpdateEnvironmentRevisionTag) ApiCreateEnvironmentRevisionTagRequest {
-	r.updateEnvironmentRevisionTag = &updateEnvironmentRevisionTag
+// Create environment revision tag
+func (r ApiCreateEnvironmentRevisionTagRequest) CreateEnvironmentRevisionTag(createEnvironmentRevisionTag CreateEnvironmentRevisionTag) ApiCreateEnvironmentRevisionTagRequest {
+	r.createEnvironmentRevisionTag = &createEnvironmentRevisionTag
 	return r
 }
 
@@ -439,17 +441,17 @@ Create environment revision tag
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
- @param tagName Tag name
  @return ApiCreateEnvironmentRevisionTagRequest
 */
-func (a *EscAPIService) CreateEnvironmentRevisionTag(ctx context.Context, orgName string, envName string, tagName string) ApiCreateEnvironmentRevisionTagRequest {
+func (a *EscAPIService) CreateEnvironmentRevisionTag(ctx context.Context, orgName string, projectName string, envName string) ApiCreateEnvironmentRevisionTagRequest {
 	return ApiCreateEnvironmentRevisionTagRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
-		tagName: tagName,
 	}
 }
 
@@ -466,10 +468,10 @@ func (a *EscAPIService) CreateEnvironmentRevisionTagExecute(r ApiCreateEnvironme
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/versions/tags/{tagName}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/tags"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"tagName"+"}", url.PathEscape(parameterValueToString(r.tagName, "tagName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -480,14 +482,20 @@ func (a *EscAPIService) CreateEnvironmentRevisionTagExecute(r ApiCreateEnvironme
 	if strlen(r.orgName) > 40 {
 		return nil, reportError("orgName must have less than 40 elements")
 	}
+	if strlen(r.projectName) < 1 {
+		return nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return nil, reportError("projectName must have less than 100 elements")
+	}
 	if strlen(r.envName) < 1 {
 		return nil, reportError("envName must have at least 1 elements")
 	}
 	if strlen(r.envName) > 100 {
 		return nil, reportError("envName must have less than 100 elements")
 	}
-	if r.updateEnvironmentRevisionTag == nil {
-		return nil, reportError("updateEnvironmentRevisionTag is required and must be specified")
+	if r.createEnvironmentRevisionTag == nil {
+		return nil, reportError("createEnvironmentRevisionTag is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -510,7 +518,7 @@ func (a *EscAPIService) CreateEnvironmentRevisionTagExecute(r ApiCreateEnvironme
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
 	// body params
-	localVarPostBody = r.updateEnvironmentRevisionTag
+	localVarPostBody = r.createEnvironmentRevisionTag
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -609,6 +617,7 @@ type ApiDecryptEnvironmentRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 }
 
@@ -623,14 +632,16 @@ Reads the definition for the given environment with static secrets in plaintext
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @return ApiDecryptEnvironmentRequest
 */
-func (a *EscAPIService) DecryptEnvironment(ctx context.Context, orgName string, envName string) ApiDecryptEnvironmentRequest {
+func (a *EscAPIService) DecryptEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiDecryptEnvironmentRequest {
 	return ApiDecryptEnvironmentRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 	}
 }
@@ -650,8 +661,9 @@ func (a *EscAPIService) DecryptEnvironmentExecute(r ApiDecryptEnvironmentRequest
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/decrypt"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/decrypt"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -662,6 +674,12 @@ func (a *EscAPIService) DecryptEnvironmentExecute(r ApiDecryptEnvironmentRequest
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
@@ -796,6 +814,7 @@ type ApiDeleteEnvironmentRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 }
 
@@ -810,14 +829,16 @@ Delete an environment
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @return ApiDeleteEnvironmentRequest
 */
-func (a *EscAPIService) DeleteEnvironment(ctx context.Context, orgName string, envName string) ApiDeleteEnvironmentRequest {
+func (a *EscAPIService) DeleteEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiDeleteEnvironmentRequest {
 	return ApiDeleteEnvironmentRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 	}
 }
@@ -837,8 +858,9 @@ func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) 
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -849,6 +871,12 @@ func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) 
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
@@ -983,6 +1011,7 @@ type ApiDeleteEnvironmentRevisionTagRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 	tagName string
 }
@@ -998,15 +1027,17 @@ Delete environment revision tag
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @param tagName Tag name
  @return ApiDeleteEnvironmentRevisionTagRequest
 */
-func (a *EscAPIService) DeleteEnvironmentRevisionTag(ctx context.Context, orgName string, envName string, tagName string) ApiDeleteEnvironmentRevisionTagRequest {
+func (a *EscAPIService) DeleteEnvironmentRevisionTag(ctx context.Context, orgName string, projectName string, envName string, tagName string) ApiDeleteEnvironmentRevisionTagRequest {
 	return ApiDeleteEnvironmentRevisionTagRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 		tagName: tagName,
 	}
@@ -1025,8 +1056,9 @@ func (a *EscAPIService) DeleteEnvironmentRevisionTagExecute(r ApiDeleteEnvironme
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/versions/tags/{tagName}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"tagName"+"}", url.PathEscape(parameterValueToString(r.tagName, "tagName")), -1)
 
@@ -1038,6 +1070,12 @@ func (a *EscAPIService) DeleteEnvironmentRevisionTagExecute(r ApiDeleteEnvironme
 	}
 	if strlen(r.orgName) > 40 {
 		return nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return nil, reportError("envName must have at least 1 elements")
@@ -1152,6 +1190,7 @@ type ApiGetEnvironmentRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 }
 
@@ -1166,14 +1205,16 @@ Read an environment
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @return ApiGetEnvironmentRequest
 */
-func (a *EscAPIService) GetEnvironment(ctx context.Context, orgName string, envName string) ApiGetEnvironmentRequest {
+func (a *EscAPIService) GetEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiGetEnvironmentRequest {
 	return ApiGetEnvironmentRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 	}
 }
@@ -1193,8 +1234,9 @@ func (a *EscAPIService) GetEnvironmentExecute(r ApiGetEnvironmentRequest) (*Envi
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -1205,6 +1247,12 @@ func (a *EscAPIService) GetEnvironmentExecute(r ApiGetEnvironmentRequest) (*Envi
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
@@ -1339,6 +1387,7 @@ type ApiGetEnvironmentAtVersionRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 	version string
 }
@@ -1354,15 +1403,17 @@ Read an environmentat a specific revision or tag
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @param version Revision or tag
  @return ApiGetEnvironmentAtVersionRequest
 */
-func (a *EscAPIService) GetEnvironmentAtVersion(ctx context.Context, orgName string, envName string, version string) ApiGetEnvironmentAtVersionRequest {
+func (a *EscAPIService) GetEnvironmentAtVersion(ctx context.Context, orgName string, projectName string, envName string, version string) ApiGetEnvironmentAtVersionRequest {
 	return ApiGetEnvironmentAtVersionRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 		version: version,
 	}
@@ -1383,8 +1434,9 @@ func (a *EscAPIService) GetEnvironmentAtVersionExecute(r ApiGetEnvironmentAtVers
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/versions/{version}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/{version}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"version"+"}", url.PathEscape(parameterValueToString(r.version, "version")), -1)
 
@@ -1396,6 +1448,12 @@ func (a *EscAPIService) GetEnvironmentAtVersionExecute(r ApiGetEnvironmentAtVers
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
@@ -1530,6 +1588,7 @@ type ApiGetEnvironmentETagRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 }
 
@@ -1544,14 +1603,16 @@ Returns the ETag for the given environment if it exists.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @return ApiGetEnvironmentETagRequest
 */
-func (a *EscAPIService) GetEnvironmentETag(ctx context.Context, orgName string, envName string) ApiGetEnvironmentETagRequest {
+func (a *EscAPIService) GetEnvironmentETag(ctx context.Context, orgName string, projectName string, envName string) ApiGetEnvironmentETagRequest {
 	return ApiGetEnvironmentETagRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 	}
 }
@@ -1569,8 +1630,9 @@ func (a *EscAPIService) GetEnvironmentETagExecute(r ApiGetEnvironmentETagRequest
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -1581,6 +1643,12 @@ func (a *EscAPIService) GetEnvironmentETagExecute(r ApiGetEnvironmentETagRequest
 	}
 	if strlen(r.orgName) > 40 {
 		return nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return nil, reportError("envName must have at least 1 elements")
@@ -1695,6 +1763,7 @@ type ApiGetEnvironmentRevisionTagRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 	tagName string
 }
@@ -1710,15 +1779,17 @@ Read environment revision tag
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @param tagName Tag name
  @return ApiGetEnvironmentRevisionTagRequest
 */
-func (a *EscAPIService) GetEnvironmentRevisionTag(ctx context.Context, orgName string, envName string, tagName string) ApiGetEnvironmentRevisionTagRequest {
+func (a *EscAPIService) GetEnvironmentRevisionTag(ctx context.Context, orgName string, projectName string, envName string, tagName string) ApiGetEnvironmentRevisionTagRequest {
 	return ApiGetEnvironmentRevisionTagRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 		tagName: tagName,
 	}
@@ -1739,8 +1810,9 @@ func (a *EscAPIService) GetEnvironmentRevisionTagExecute(r ApiGetEnvironmentRevi
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/versions/tags/{tagName}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"tagName"+"}", url.PathEscape(parameterValueToString(r.tagName, "tagName")), -1)
 
@@ -1752,6 +1824,12 @@ func (a *EscAPIService) GetEnvironmentRevisionTagExecute(r ApiGetEnvironmentRevi
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
@@ -1875,6 +1953,7 @@ type ApiListEnvironmentRevisionTagsRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 	after *string
 	count *int32
@@ -1903,14 +1982,16 @@ List environment revisions
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @return ApiListEnvironmentRevisionTagsRequest
 */
-func (a *EscAPIService) ListEnvironmentRevisionTags(ctx context.Context, orgName string, envName string) ApiListEnvironmentRevisionTagsRequest {
+func (a *EscAPIService) ListEnvironmentRevisionTags(ctx context.Context, orgName string, projectName string, envName string) ApiListEnvironmentRevisionTagsRequest {
 	return ApiListEnvironmentRevisionTagsRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 	}
 }
@@ -1930,8 +2011,9 @@ func (a *EscAPIService) ListEnvironmentRevisionTagsExecute(r ApiListEnvironmentR
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/versions/tags"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/tags"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -1942,6 +2024,12 @@ func (a *EscAPIService) ListEnvironmentRevisionTagsExecute(r ApiListEnvironmentR
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
@@ -2071,6 +2159,7 @@ type ApiListEnvironmentRevisionsRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 	before *int32
 	count *int32
@@ -2099,14 +2188,16 @@ List environment revisions
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @return ApiListEnvironmentRevisionsRequest
 */
-func (a *EscAPIService) ListEnvironmentRevisions(ctx context.Context, orgName string, envName string) ApiListEnvironmentRevisionsRequest {
+func (a *EscAPIService) ListEnvironmentRevisions(ctx context.Context, orgName string, projectName string, envName string) ApiListEnvironmentRevisionsRequest {
 	return ApiListEnvironmentRevisionsRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 	}
 }
@@ -2126,8 +2217,9 @@ func (a *EscAPIService) ListEnvironmentRevisionsExecute(r ApiListEnvironmentRevi
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/versions"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -2138,6 +2230,12 @@ func (a *EscAPIService) ListEnvironmentRevisionsExecute(r ApiListEnvironmentRevi
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
@@ -2443,6 +2541,7 @@ type ApiOpenEnvironmentRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 	duration *string
 }
@@ -2464,14 +2563,16 @@ Opens a session the given environment for the indicated duration. This returns a
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @return ApiOpenEnvironmentRequest
 */
-func (a *EscAPIService) OpenEnvironment(ctx context.Context, orgName string, envName string) ApiOpenEnvironmentRequest {
+func (a *EscAPIService) OpenEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiOpenEnvironmentRequest {
 	return ApiOpenEnvironmentRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 	}
 }
@@ -2491,8 +2592,9 @@ func (a *EscAPIService) OpenEnvironmentExecute(r ApiOpenEnvironmentRequest) (*Op
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/open"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/open"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -2503,6 +2605,12 @@ func (a *EscAPIService) OpenEnvironmentExecute(r ApiOpenEnvironmentRequest) (*Op
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
@@ -2643,6 +2751,7 @@ type ApiOpenEnvironmentAtVersionRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 	version string
 	duration *string
@@ -2665,15 +2774,17 @@ Opens a session the given environment at a specific version for the indicated du
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @param version Revision or tag
  @return ApiOpenEnvironmentAtVersionRequest
 */
-func (a *EscAPIService) OpenEnvironmentAtVersion(ctx context.Context, orgName string, envName string, version string) ApiOpenEnvironmentAtVersionRequest {
+func (a *EscAPIService) OpenEnvironmentAtVersion(ctx context.Context, orgName string, projectName string, envName string, version string) ApiOpenEnvironmentAtVersionRequest {
 	return ApiOpenEnvironmentAtVersionRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 		version: version,
 	}
@@ -2694,8 +2805,9 @@ func (a *EscAPIService) OpenEnvironmentAtVersionExecute(r ApiOpenEnvironmentAtVe
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/versions/{version}/open"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/{version}/open"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"version"+"}", url.PathEscape(parameterValueToString(r.version, "version")), -1)
 
@@ -2707,6 +2819,12 @@ func (a *EscAPIService) OpenEnvironmentAtVersionExecute(r ApiOpenEnvironmentAtVe
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
@@ -2847,6 +2965,7 @@ type ApiReadOpenEnvironmentRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 	openSessionID string
 }
@@ -2862,15 +2981,17 @@ Reads and decrypts secrets including retrieving dynamic secrets from providers.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @param openSessionID Open session ID returned from environment open
  @return ApiReadOpenEnvironmentRequest
 */
-func (a *EscAPIService) ReadOpenEnvironment(ctx context.Context, orgName string, envName string, openSessionID string) ApiReadOpenEnvironmentRequest {
+func (a *EscAPIService) ReadOpenEnvironment(ctx context.Context, orgName string, projectName string, envName string, openSessionID string) ApiReadOpenEnvironmentRequest {
 	return ApiReadOpenEnvironmentRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 		openSessionID: openSessionID,
 	}
@@ -2891,8 +3012,9 @@ func (a *EscAPIService) ReadOpenEnvironmentExecute(r ApiReadOpenEnvironmentReque
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/open/{openSessionID}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/open/{openSessionID}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"openSessionID"+"}", url.PathEscape(parameterValueToString(r.openSessionID, "openSessionID")), -1)
 
@@ -2904,6 +3026,12 @@ func (a *EscAPIService) ReadOpenEnvironmentExecute(r ApiReadOpenEnvironmentReque
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
@@ -3027,6 +3155,7 @@ type ApiReadOpenEnvironmentPropertyRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 	openSessionID string
 	property *string
@@ -3049,15 +3178,17 @@ Reads and decrypts secrets including retrieving dynamic secrets from providers.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @param openSessionID Open session ID returned from environment open
  @return ApiReadOpenEnvironmentPropertyRequest
 */
-func (a *EscAPIService) ReadOpenEnvironmentProperty(ctx context.Context, orgName string, envName string, openSessionID string) ApiReadOpenEnvironmentPropertyRequest {
+func (a *EscAPIService) ReadOpenEnvironmentProperty(ctx context.Context, orgName string, projectName string, envName string, openSessionID string) ApiReadOpenEnvironmentPropertyRequest {
 	return ApiReadOpenEnvironmentPropertyRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 		openSessionID: openSessionID,
 	}
@@ -3078,8 +3209,9 @@ func (a *EscAPIService) ReadOpenEnvironmentPropertyExecute(r ApiReadOpenEnvironm
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/open//{openSessionID}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/open//{openSessionID}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"openSessionID"+"}", url.PathEscape(parameterValueToString(r.openSessionID, "openSessionID")), -1)
 
@@ -3091,6 +3223,12 @@ func (a *EscAPIService) ReadOpenEnvironmentPropertyExecute(r ApiReadOpenEnvironm
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
@@ -3218,6 +3356,7 @@ type ApiUpdateEnvironmentRevisionTagRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 	tagName string
 	updateEnvironmentRevisionTag *UpdateEnvironmentRevisionTag
@@ -3240,15 +3379,17 @@ Update environment revision tag
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @param tagName Tag name
  @return ApiUpdateEnvironmentRevisionTagRequest
 */
-func (a *EscAPIService) UpdateEnvironmentRevisionTag(ctx context.Context, orgName string, envName string, tagName string) ApiUpdateEnvironmentRevisionTagRequest {
+func (a *EscAPIService) UpdateEnvironmentRevisionTag(ctx context.Context, orgName string, projectName string, envName string, tagName string) ApiUpdateEnvironmentRevisionTagRequest {
 	return ApiUpdateEnvironmentRevisionTagRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 		tagName: tagName,
 	}
@@ -3267,8 +3408,9 @@ func (a *EscAPIService) UpdateEnvironmentRevisionTagExecute(r ApiUpdateEnvironme
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}/versions/tags/{tagName}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"tagName"+"}", url.PathEscape(parameterValueToString(r.tagName, "tagName")), -1)
 
@@ -3280,6 +3422,12 @@ func (a *EscAPIService) UpdateEnvironmentRevisionTagExecute(r ApiUpdateEnvironme
 	}
 	if strlen(r.orgName) > 40 {
 		return nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return nil, reportError("envName must have at least 1 elements")
@@ -3410,6 +3558,7 @@ type ApiUpdateEnvironmentYamlRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
+	projectName string
 	envName string
 	body *string
 }
@@ -3431,14 +3580,16 @@ Validates and updates the given environment's definition.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param orgName Organization name
+ @param projectName Project name
  @param envName Environment name
  @return ApiUpdateEnvironmentYamlRequest
 */
-func (a *EscAPIService) UpdateEnvironmentYaml(ctx context.Context, orgName string, envName string) ApiUpdateEnvironmentYamlRequest {
+func (a *EscAPIService) UpdateEnvironmentYaml(ctx context.Context, orgName string, projectName string, envName string) ApiUpdateEnvironmentYamlRequest {
 	return ApiUpdateEnvironmentYamlRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
+		projectName: projectName,
 		envName: envName,
 	}
 }
@@ -3458,8 +3609,9 @@ func (a *EscAPIService) UpdateEnvironmentYamlExecute(r ApiUpdateEnvironmentYamlR
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{envName}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -3470,6 +3622,12 @@ func (a *EscAPIService) UpdateEnvironmentYamlExecute(r ApiUpdateEnvironmentYamlR
 	}
 	if strlen(r.orgName) > 40 {
 		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+	}
+	if strlen(r.projectName) < 1 {
+		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+	}
+	if strlen(r.projectName) > 100 {
+		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
 		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")

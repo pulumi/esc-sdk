@@ -22,6 +22,7 @@ var _ MappedNullable = &OrgEnvironment{}
 // OrgEnvironment struct for OrgEnvironment
 type OrgEnvironment struct {
 	Organization *string `json:"organization,omitempty"`
+	Project string `json:"project"`
 	Name string `json:"name"`
 	Created string `json:"created"`
 	Modified string `json:"modified"`
@@ -34,8 +35,9 @@ type _OrgEnvironment OrgEnvironment
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewOrgEnvironment(name string, created string, modified string) *OrgEnvironment {
+func NewOrgEnvironment(project string, name string, created string, modified string) *OrgEnvironment {
 	this := OrgEnvironment{}
+	this.Project = project
 	this.Name = name
 	this.Created = created
 	this.Modified = modified
@@ -80,6 +82,30 @@ func (o *OrgEnvironment) HasOrganization() bool {
 // SetOrganization gets a reference to the given string and assigns it to the Organization field.
 func (o *OrgEnvironment) SetOrganization(v string) {
 	o.Organization = &v
+}
+
+// GetProject returns the Project field value
+func (o *OrgEnvironment) GetProject() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Project
+}
+
+// GetProjectOk returns a tuple with the Project field value
+// and a boolean to check if the value has been set.
+func (o *OrgEnvironment) GetProjectOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Project, true
+}
+
+// SetProject sets field value
+func (o *OrgEnvironment) SetProject(v string) {
+	o.Project = v
 }
 
 // GetName returns the Name field value
@@ -167,6 +193,7 @@ func (o OrgEnvironment) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Organization) {
 		toSerialize["organization"] = o.Organization
 	}
+	toSerialize["project"] = o.Project
 	toSerialize["name"] = o.Name
 	toSerialize["created"] = o.Created
 	toSerialize["modified"] = o.Modified
@@ -183,6 +210,7 @@ func (o *OrgEnvironment) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"project",
 		"name",
 		"created",
 		"modified",
@@ -216,6 +244,7 @@ func (o *OrgEnvironment) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "organization")
+		delete(additionalProperties, "project")
 		delete(additionalProperties, "name")
 		delete(additionalProperties, "created")
 		delete(additionalProperties, "modified")

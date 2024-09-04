@@ -94,7 +94,7 @@ func NewConfiguration() *Configuration {
 		Debug:            false,
 		Servers:          ServerConfigurations{
 			{
-				URL: "https://api.pulumi.com/api/preview",
+				URL: "https://api.pulumi.com/api/esc",
 				Description: "Pulumi Cloud Production Preview API",
 			},
 		},

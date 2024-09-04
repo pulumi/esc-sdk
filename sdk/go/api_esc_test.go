@@ -21,7 +21,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const ENV_PREFIX = "sdk-go-test-"
+const PROJECT_NAME = "sdk-go-test"
+const ENV_PREFIX = "env-"
 
 func Test_EscClient(t *testing.T) {
 	accessToken := os.Getenv("PULUMI_ACCESS_TOKEN")
@@ -34,11 +35,11 @@ func Test_EscClient(t *testing.T) {
 
 	removeAllGoTestEnvs(t, apiClient, auth, orgName)
 
-	baseEnvName := ENV_PREFIX + "base-" + time.Now().Format("20060102150405")
-	err := apiClient.CreateEnvironment(auth, orgName, baseEnvName)
+	baseEnvName := "base-" + time.Now().Format("20060102150405")
+	err := apiClient.CreateEnvironment(auth, orgName, PROJECT_NAME, baseEnvName)
 	require.Nil(t, err)
 	t.Cleanup(func() {
-		err := apiClient.DeleteEnvironment(auth, orgName, baseEnvName)
+		err := apiClient.DeleteEnvironment(auth, orgName, PROJECT_NAME, baseEnvName)
 		require.Nil(t, err)
 	})
 
@@ -50,15 +51,15 @@ func Test_EscClient(t *testing.T) {
 		},
 	}
 
-	_, err = apiClient.UpdateEnvironment(auth, orgName, baseEnvName, baseEnv)
+	_, err = apiClient.UpdateEnvironment(auth, orgName, PROJECT_NAME, baseEnvName, baseEnv)
 	require.Nil(t, err)
 
 	t.Run("should create, list, update, get, decrypt, open and delete an environment", func(t *testing.T) {
 		envName := ENV_PREFIX + time.Now().Format("20060102150405")
-		err := apiClient.CreateEnvironment(auth, orgName, envName)
+		err := apiClient.CreateEnvironment(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 		t.Cleanup(func() {
-			err := apiClient.DeleteEnvironment(auth, orgName, envName)
+			err := apiClient.DeleteEnvironment(auth, orgName, PROJECT_NAME, envName)
 			require.Nil(t, err)
 		})
 
@@ -67,7 +68,7 @@ func Test_EscClient(t *testing.T) {
 
 		requireFindEnvironment(t, envs, envName)
 
-		yaml := "imports:\n  - " + baseEnvName + "\n" + `
+		yaml := "imports:\n  - " + PROJECT_NAME + "/" + baseEnvName + "\n" + `
 values:
   foo: bar
   my_secret:
@@ -79,12 +80,12 @@ values:
     FOO: ${foo}
 `
 
-		diags, err := apiClient.UpdateEnvironmentYaml(auth, orgName, envName, yaml)
+		diags, err := apiClient.UpdateEnvironmentYaml(auth, orgName, PROJECT_NAME, envName, yaml)
 		require.Nil(t, err)
 		require.NotNil(t, diags)
 		require.Len(t, diags.Diagnostics, 0)
 
-		env, newYaml, err := apiClient.GetEnvironment(auth, orgName, envName)
+		env, newYaml, err := apiClient.GetEnvironment(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 		require.NotNil(t, newYaml)
 
@@ -92,7 +93,7 @@ values:
 
 		require.NotNil(t, env.Values.AdditionalProperties["my_secret"].(map[string]any))
 
-		decryptEnv, _, err := apiClient.DecryptEnvironment(auth, orgName, envName)
+		decryptEnv, _, err := apiClient.DecryptEnvironment(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 
 		assertEnvDef(t, decryptEnv, baseEnvName)
@@ -101,7 +102,7 @@ values:
 		require.True(t, ok)
 		require.Equal(t, "shh! don't tell anyone", mySecret["fn::secret"])
 
-		_, values, err := apiClient.OpenAndReadEnvironment(auth, orgName, envName)
+		_, values, err := apiClient.OpenAndReadEnvironment(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 
 		require.Equal(t, baseEnvName, values["base"])
@@ -115,58 +116,58 @@ values:
 		require.True(t, ok)
 		require.Equal(t, "bar", environmentVariables["FOO"])
 
-		openInfo, err := apiClient.OpenEnvironment(auth, orgName, envName)
+		openInfo, err := apiClient.OpenEnvironment(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 
-		v, value, err := apiClient.ReadEnvironmentProperty(auth, orgName, envName, openInfo.Id, "pulumiConfig.foo")
+		v, value, err := apiClient.ReadEnvironmentProperty(auth, orgName, PROJECT_NAME, envName, openInfo.Id, "pulumiConfig.foo")
 		require.Nil(t, err)
 		require.Equal(t, "bar", v.Value)
 		require.Equal(t, "bar", value)
 
-		env, _, err = apiClient.GetEnvironmentAtVersion(auth, orgName, envName, "2")
+		env, _, err = apiClient.GetEnvironmentAtVersion(auth, orgName, PROJECT_NAME, envName, "2")
 		require.Nil(t, err)
 
 		env.Values.AdditionalProperties["versioned"] = "true"
 
-		_, err = apiClient.UpdateEnvironment(auth, orgName, envName, env)
+		_, err = apiClient.UpdateEnvironment(auth, orgName, PROJECT_NAME, envName, env)
 		require.Nil(t, err)
 
-		revisions, err := apiClient.ListEnvironmentRevisions(auth, orgName, envName)
+		revisions, err := apiClient.ListEnvironmentRevisions(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 		require.NotNil(t, revisions)
 		require.Len(t, revisions, 3)
 
-		err = apiClient.CreateEnvironmentRevisionTag(auth, orgName, envName, "testTag", 2)
+		err = apiClient.CreateEnvironmentRevisionTag(auth, orgName, PROJECT_NAME, envName, "testTag", 2)
 		require.Nil(t, err)
 
-		_, values, err = apiClient.OpenAndReadEnvironmentAtVersion(auth, orgName, envName, "testTag")
+		_, values, err = apiClient.OpenAndReadEnvironmentAtVersion(auth, orgName, PROJECT_NAME, envName, "testTag")
 		require.Nil(t, err)
 		_, ok = values["versioned"]
 		require.Equal(t, ok, false)
 
-		tags, err := apiClient.ListEnvironmentRevisionTags(auth, orgName, envName)
+		tags, err := apiClient.ListEnvironmentRevisionTags(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 		require.NotNil(t, tags)
 		require.Len(t, tags.Tags, 2)
 		require.Equal(t, "latest", tags.Tags[0].Name)
 		require.Equal(t, "testTag", tags.Tags[1].Name)
 
-		err = apiClient.UpdateEnvironmentRevisionTag(auth, orgName, envName, "testTag", 3)
+		err = apiClient.UpdateEnvironmentRevisionTag(auth, orgName, PROJECT_NAME, envName, "testTag", 3)
 		require.Nil(t, err)
 
-		_, values, err = apiClient.OpenAndReadEnvironmentAtVersion(auth, orgName, envName, "testTag")
+		_, values, err = apiClient.OpenAndReadEnvironmentAtVersion(auth, orgName, PROJECT_NAME, envName, "testTag")
 		require.Nil(t, err)
 		require.Equal(t, "true", values["versioned"])
 
-		testTag, err := apiClient.GetEnvironmentRevisionTag(auth, orgName, envName, "testTag")
+		testTag, err := apiClient.GetEnvironmentRevisionTag(auth, orgName, PROJECT_NAME, envName, "testTag")
 		require.Nil(t, err)
 		require.NotNil(t, testTag)
 		require.Equal(t, int32(3), testTag.Revision)
 
-		err = apiClient.DeleteEnvironmentRevisionTag(auth, orgName, envName, "testTag")
+		err = apiClient.DeleteEnvironmentRevisionTag(auth, orgName, PROJECT_NAME, envName, "testTag")
 		require.Nil(t, err)
 
-		tags, err = apiClient.ListEnvironmentRevisionTags(auth, orgName, envName)
+		tags, err = apiClient.ListEnvironmentRevisionTags(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 		require.NotNil(t, tags)
 		require.Len(t, tags.Tags, 1)
@@ -206,7 +207,7 @@ values:
 
 func assertEnvDef(t *testing.T, env *EnvironmentDefinition, baseEnvName string) {
 	require.Len(t, env.Imports, 1)
-	require.Equal(t, baseEnvName, env.Imports[0])
+	require.Equal(t, PROJECT_NAME+"/"+baseEnvName, env.Imports[0])
 	require.Equal(t, "bar", env.Values.AdditionalProperties["foo"])
 	require.Equal(t, []any{1.0, 2.0, 3.0}, env.Values.AdditionalProperties["my_array"])
 
@@ -237,8 +238,8 @@ func removeAllGoTestEnvs(t *testing.T, apiClient *EscClient, auth context.Contex
 			break
 		}
 		for _, env := range envs.Environments {
-			if strings.HasPrefix(env.Name, ENV_PREFIX) {
-				err := apiClient.DeleteEnvironment(auth, orgName, env.Name)
+			if env.Project == PROJECT_NAME && strings.HasPrefix(env.Name, ENV_PREFIX) {
+				err := apiClient.DeleteEnvironment(auth, orgName, PROJECT_NAME, env.Name)
 				require.Nil(t, err)
 			}
 		}

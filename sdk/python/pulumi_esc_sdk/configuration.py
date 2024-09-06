@@ -80,7 +80,7 @@ conf = pulumi_esc_sdk.Configuration(
                  ) -> None:
         """Constructor
         """
-        self._base_path = "https://api.pulumi.com/api/preview" if host is None else host
+        self._base_path = "https://api.pulumi.com/api/esc" if host is None else host
         """Default Base url
         """
         self.server_index = 0 if server_index is None and host is None else server_index
@@ -386,7 +386,7 @@ conf = pulumi_esc_sdk.Configuration(
         """
         return [
             {
-                'url': "https://api.pulumi.com/api/preview",
+                'url': "https://api.pulumi.com/api/esc",
                 'description': "Pulumi Cloud Production Preview API",
             }
         ]

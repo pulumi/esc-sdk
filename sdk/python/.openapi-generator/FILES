@@ -10,6 +10,8 @@ pulumi_esc_sdk/models/__init__.py
 pulumi_esc_sdk/models/access.py
 pulumi_esc_sdk/models/accessor.py
 pulumi_esc_sdk/models/check_environment.py
+pulumi_esc_sdk/models/create_environment.py
+pulumi_esc_sdk/models/create_environment_revision_tag.py
 pulumi_esc_sdk/models/environment.py
 pulumi_esc_sdk/models/environment_definition.py
 pulumi_esc_sdk/models/environment_definition_values.py

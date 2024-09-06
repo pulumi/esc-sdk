@@ -9,7 +9,7 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: https://api.pulumi.com/api/preview
+  - url: https://api.pulumi.com/api/esc
     description: Pulumi Cloud Production Preview API
 components:
   securitySchemes:
@@ -28,6 +28,16 @@ components:
       required:
         - message
         - code
+    ProjectName:
+      type: string
+      minLength: 1
+      maxLength: 100
+      pattern: ^(?!(\.|\.\.|default))[a-zA-Z0-9-_.]+$
+    EnvName:
+      type: string
+      minLength: 1
+      maxLength: 100
+      pattern: ^(?!(\.|\.\.|open|yaml))[a-zA-Z0-9-_.]+$
     Range:
       type: object
       properties:
@@ -88,6 +98,16 @@ components:
             $ref: "#/components/schemas/PropertyAccessor"
       required:
       - text
+    CreateEnvironment:
+      type: object
+      properties:
+        project:
+          $ref: "#/components/schemas/ProjectName"
+        name:
+          $ref: "#/components/schemas/EnvName"
+      required:
+        - project
+        - name
     ExprBuiltin:
       type: object
       properties:
@@ -258,6 +278,8 @@ components:
       properties:
         organization:
           type: string
+        project:
+          type: string
         name:
           type: string
         created:
@@ -267,6 +289,7 @@ components:
       additionalProperties:
           type: object
       required: 
+      - project
       - name
       - created
       - modified
@@ -336,6 +359,16 @@ components:
             $ref: "#/components/schemas/EnvironmentRevisionTag"
         nextToken:
           type: string
+    CreateEnvironmentRevisionTag:
+      type: object
+      properties:
+        name:
+          type: string
+        revision:
+          type: integer
+      required:
+        - name
+        - revision
     UpdateEnvironmentRevisionTag:
       type: object
       properties:
@@ -355,15 +388,19 @@ components:
         pattern: ^[a-zA-Z0-9][a-zA-Z0-9-_]{1,38}[a-zA-Z0-9]$
       required: true
       allowEmptyValue: false
+    projectName:
+      name: projectName
+      in: path
+      description: Project name
+      required: true
+      schema:
+        $ref: "#/components/schemas/ProjectName"
     envName:
       name: envName
       in: path
       description: Environment name
       schema:
-        type: string
-        minLength: 1
-        maxLength: 100
-        pattern: ^(?!(\.|\.\.|open|yaml))[a-zA-Z0-9-_.]+$
+        $ref: "#/components/schemas/EnvName"
       required: true
       allowEmptyValue: false
     version:
@@ -525,13 +562,14 @@ paths:
   /environments/{orgName}:
     parameters:
       - $ref: "#/components/parameters/orgName"
-      - name: continuationToken
-        in: query
-        required: false
-        description: continuation Token from previous query to fetch next page of results
-        schema: 
-          type: string
     get:
+      parameters:
+        - name: continuationToken
+          in: query
+          required: false
+          description: continuation Token from previous query to fetch next page of results
+          schema: 
+            type: string
       tags:
       - esc
       operationId: ListEnvironments
@@ -548,15 +586,18 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{envName}:
-    parameters:
-      - $ref: "#/components/parameters/orgName"
-      - $ref: "#/components/parameters/envName"
     post:
       tags:
       - esc
       operationId: CreateEnvironment
       summary: Create a new environment
+      requestBody: 
+        description: Create Environment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEnvironment"
       description: Creates an environment in the given org with the given name.
       responses:
         "200":
@@ -573,6 +614,11 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
+  /environments/{orgName}/{projectName}/{envName}:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
+      - $ref: "#/components/parameters/envName"
     patch:
       tags:
       - esc
@@ -691,9 +737,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{envName}/decrypt:
+  /environments/{orgName}/{projectName}/{envName}/decrypt:
     parameters:
       - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
       - $ref: "#/components/parameters/envName"
     get:
       tags:
@@ -703,7 +750,7 @@ paths:
       description: Reads the definition for the given environment with static secrets in plaintext
       responses:
         "200":
-           $ref: "#/components/responses/DecryptSuccess"
+          $ref: "#/components/responses/DecryptSuccess"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -714,9 +761,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{envName}/open:
+  /environments/{orgName}/{projectName}/{envName}/open:
     parameters:
       - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
       - $ref: "#/components/parameters/envName"
       - $ref: "#/components/parameters/duration"
     post:
@@ -738,9 +786,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{envName}/open/{openSessionID}:
+  /environments/{orgName}/{projectName}/{envName}/open/{openSessionID}:
     parameters:
       - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
       - $ref: "#/components/parameters/envName"
       - name: openSessionID
         in: path
@@ -765,9 +814,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{envName}/open//{openSessionID}:
+  /environments/{orgName}/{projectName}/{envName}/open//{openSessionID}:
     parameters:
       - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
       - $ref: "#/components/parameters/envName"
       - name: openSessionID
         in: path
@@ -798,9 +848,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{envName}/versions:
+  /environments/{orgName}/{projectName}/{envName}/versions:
     parameters:
       - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
       - $ref: "#/components/parameters/envName"
       - name: before
         in: query
@@ -831,9 +882,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{envName}/versions/{version}:
+  /environments/{orgName}/{projectName}/{envName}/versions/{version}:
     parameters:
       - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
       - $ref: "#/components/parameters/envName"
       - name: version
         in: path
@@ -864,9 +916,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{envName}/versions/{version}/open:
+  /environments/{orgName}/{projectName}/{envName}/versions/{version}/open:
     parameters:
       - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
       - $ref: "#/components/parameters/envName"
       - $ref: "#/components/parameters/version"
       - $ref: "#/components/parameters/duration"
@@ -889,10 +942,15 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{envName}/versions/tags:
+  /environments/{orgName}/{projectName}/{envName}/versions/tags:
     parameters:
       - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
       - $ref: "#/components/parameters/envName"
+    get:
+      tags:
+      - esc
+      parameters:
       - name: after
         in: query
         required: false
@@ -905,9 +963,6 @@ paths:
         description: limit of tags to return
         schema: 
           type: integer
-    get:
-      tags:
-      - esc
       operationId: ListEnvironmentRevisionTags
       summary: List environment revisions
       description:  List environment revisions
@@ -917,21 +972,11 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
-            $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{envName}/versions/tags/{tagName}:
-    parameters:
-      - $ref: "#/components/parameters/orgName"
-      - $ref: "#/components/parameters/envName"
-      - name: tagName
-        in: path
-        required: true
-        description:  Tag name
-        schema: 
-          type: string
     post:
       tags:
       - esc
@@ -939,12 +984,12 @@ paths:
       summary: Create environment revision tag
       description:  Create environment revision tag
       requestBody: 
-        description: Update environment revision tag
+        description: Create environment revision tag
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateEnvironmentRevisionTag"
+              $ref: "#/components/schemas/CreateEnvironmentRevisionTag"
       responses:
         "204":
           description: The revision tag was created successfully.
@@ -958,6 +1003,17 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
+  /environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
+      - $ref: "#/components/parameters/envName"
+      - name: tagName
+        in: path
+        required: true
+        description:  Tag name
+        schema: 
+          type: string
     patch:
       tags:
       - esc

@@ -94,11 +94,16 @@ export class EscApi {
      * getEnvironment gets the definition of an environment.
      * @summary Get environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @returns {Promise<EnvironmentDefinitionResponse | undefined>} The environment definition and the YAML representation
      */
-    async getEnvironment(orgName: string, envName: string): Promise<EnvironmentDefinitionResponse | undefined> {
-        const resp = await this.rawApi.getEnvironment(orgName, envName);
+    async getEnvironment(
+        orgName: string,
+        projectName: string,
+        envName: string,
+    ): Promise<EnvironmentDefinitionResponse | undefined> {
+        const resp = await this.rawApi.getEnvironment(orgName, projectName, envName);
         if (resp.status === 200) {
             const doc = yaml.load(resp.data as string);
             return {
@@ -114,16 +119,18 @@ export class EscApi {
      * getEnvironmentAtVersion gets the definition of an environment at a specific version.
      * @summary Get environment at version
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} version Version of the environment
      * @returns {Promise<EnvironmentDefinitionResponse | undefined>} The environment definition and the YAML representation
      */
     async getEnvironmentAtVersion(
         orgName: string,
+        projectName: string,
         envName: string,
         version: string,
     ): Promise<EnvironmentDefinitionResponse | undefined> {
-        const resp = await this.rawApi.getEnvironmentAtVersion(orgName, envName, version);
+        const resp = await this.rawApi.getEnvironmentAtVersion(orgName, projectName, envName, version);
         if (resp.status === 200) {
             const doc = yaml.load(resp.data as string);
             return {
@@ -139,11 +146,12 @@ export class EscApi {
      * openEnvironment opens an environment session
      * @summary Open environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @returns {Promise<OpenEnvironment | undefined>} The open environment session information
      */
-    async openEnvironment(orgName: string, envName: string): Promise<OpenEnvironment | undefined> {
-        const resp = await this.rawApi.openEnvironment(orgName, envName);
+    async openEnvironment(orgName: string, projectName: string, envName: string): Promise<OpenEnvironment | undefined> {
+        const resp = await this.rawApi.openEnvironment(orgName, projectName, envName);
         if (resp.status === 200) {
             return resp.data;
         }
@@ -155,16 +163,18 @@ export class EscApi {
      * openEnvironmentAtVersion opens an environment session at a specific version
      * @summary Open environment at version
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} version Version of the environment
      * @returns {Promise<OpenEnvironment | undefined>} The open environment session information
      */
     async openEnvironmentAtVersion(
         orgName: string,
+        projectName: string,
         envName: string,
         version: string,
     ): Promise<OpenEnvironment | undefined> {
-        const resp = await this.rawApi.openEnvironmentAtVersion(orgName, envName, version);
+        const resp = await this.rawApi.openEnvironmentAtVersion(orgName, projectName, envName, version);
         if (resp.status === 200) {
             return resp.data;
         }
@@ -177,16 +187,18 @@ export class EscApi {
      * resolving configuration variables and secrets.
      * @summary Read environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} openSessionID Open session ID
      * @returns {Promise<EnvironmentResponse | undefined>} The environment and its values
      */
     async readOpenEnvironment(
         orgName: string,
+        projectName: string,
         envName: string,
         openSessionID: string,
     ): Promise<EnvironmentResponse | undefined> {
-        const resp = await this.rawApi.readOpenEnvironment(orgName, envName, openSessionID);
+        const resp = await this.rawApi.readOpenEnvironment(orgName, projectName, envName, openSessionID);
         if (resp.status === 200) {
             return {
                 environment: resp.data,
@@ -202,13 +214,18 @@ export class EscApi {
      * resolving configuration variables and secrets.
      * @summary Open and read environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @returns {Promise<EnvironmentResponse | undefined>} The environment and its values
      */
-    async openAndReadEnvironment(orgName: string, envName: string): Promise<EnvironmentResponse | undefined> {
-        const open = await this.openEnvironment(orgName, envName);
+    async openAndReadEnvironment(
+        orgName: string,
+        projectName: string,
+        envName: string,
+    ): Promise<EnvironmentResponse | undefined> {
+        const open = await this.openEnvironment(orgName, projectName, envName);
         if (open?.id) {
-            return await this.readOpenEnvironment(orgName, envName, open.id);
+            return await this.readOpenEnvironment(orgName, projectName, envName, open.id);
         }
 
         throw new Error(`Failed to open and read environment: ${open}`);
@@ -219,18 +236,20 @@ export class EscApi {
      * resolving configuration variables and secrets.
      * @summary Open and read environment at version
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} version Version of the environment
      * @returns {Promise<EnvironmentResponse | undefined>} The environment and its values
      */
     async openAndReadEnvironmentAtVersion(
         orgName: string,
+        projectName: string,
         envName: string,
         version: string,
     ): Promise<EnvironmentResponse | undefined> {
-        const open = await this.openEnvironmentAtVersion(orgName, envName, version);
+        const open = await this.openEnvironmentAtVersion(orgName, projectName, envName, version);
         if (open?.id) {
-            return await this.readOpenEnvironment(orgName, envName, open.id);
+            return await this.readOpenEnvironment(orgName, projectName, envName, open.id);
         }
 
         throw new Error(`Failed to open and read environment: ${open}`);
@@ -241,6 +260,7 @@ export class EscApi {
      * resolving configuration variables and secrets.
      * @summary Read environment property
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} openSessionID Open session ID
      * @param {string} property Property name
@@ -248,11 +268,18 @@ export class EscApi {
      */
     async readOpenEnvironmentProperty(
         orgName: string,
+        projectName: string,
         envName: string,
         openSessionID: string,
         property: string,
     ): Promise<EnvironmentPropertyResponse | undefined> {
-        const resp = await this.rawApi.readOpenEnvironmentProperty(orgName, envName, openSessionID, property);
+        const resp = await this.rawApi.readOpenEnvironmentProperty(
+            orgName,
+            projectName,
+            envName,
+            openSessionID,
+            property,
+        );
         if (resp.status === 200) {
             return {
                 property: resp.data,
@@ -267,11 +294,17 @@ export class EscApi {
      * createEnvironment creates a new environment.
      * @summary Create environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @returns {Promise<void>} A promise that resolves when the environment is created
      */
-    async createEnvironment(orgName: string, envName: string): Promise<void> {
-        const resp = await this.rawApi.createEnvironment(orgName, envName);
+    async createEnvironment(orgName: string, projectName: string, envName: string): Promise<void> {
+        const body = {
+            project: projectName,
+            name: envName,
+        };
+
+        const resp = await this.rawApi.createEnvironment(orgName, body);
         if (resp.status === 200) {
             return;
         }
@@ -283,16 +316,18 @@ export class EscApi {
      * updateEnvironmentYaml updates the environment definition from a YAML string.
      * @summary Update environment YAML
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} yaml YAML representation of the environment
      * @returns {Promise<EnvironmentDiagnostics | undefined>} The environment diagnostics
      */
     async updateEnvironmentYaml(
         orgName: string,
+        projectName: string,
         envName: string,
         yaml: string,
     ): Promise<EnvironmentDiagnostics | undefined> {
-        const resp = await this.rawApi.updateEnvironmentYaml(orgName, envName, yaml);
+        const resp = await this.rawApi.updateEnvironmentYaml(orgName, projectName, envName, yaml);
         if (resp.status === 200) {
             return resp.data;
         }
@@ -304,17 +339,19 @@ export class EscApi {
      * updateEnvironment updates the environment definition.
      * @summary Update environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {EnvironmentDefinition} values The environment definition
      * @returns {Promise<EnvironmentDiagnostics | undefined>} The environment diagnostics
      */
     async updateEnvironment(
         orgName: string,
+        projectName: string,
         envName: string,
         values: EnvironmentDefinition,
     ): Promise<EnvironmentDiagnostics | undefined> {
         const body = yaml.dump(values);
-        const resp = await this.rawApi.updateEnvironmentYaml(orgName, envName, body);
+        const resp = await this.rawApi.updateEnvironmentYaml(orgName, projectName, envName, body);
         if (resp.status === 200) {
             return resp.data;
         }
@@ -326,11 +363,12 @@ export class EscApi {
      * deleteEnvironment deletes an environment.
      * @summary Delete environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @returns {Promise<void>} A promise that resolves when the environment is deleted
      */
-    async deleteEnvironment(orgName: string, envName: string): Promise<void> {
-        const resp = await this.rawApi.deleteEnvironment(orgName, envName);
+    async deleteEnvironment(orgName: string, projectName: string, envName: string): Promise<void> {
+        const resp = await this.rawApi.deleteEnvironment(orgName, projectName, envName);
         if (resp.status === 200) {
             return;
         }
@@ -379,11 +417,16 @@ export class EscApi {
      * decryptEnvironment decrypts the environment definition.
      * @summary Decrypt environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @returns {Promise<EnvironmentDefinitionResponse | undefined>} The decrypted environment definition and the YAML representation
      */
-    async decryptEnvironment(orgName: string, envName: string): Promise<EnvironmentDefinitionResponse | undefined> {
-        const resp = await this.rawApi.decryptEnvironment(orgName, envName);
+    async decryptEnvironment(
+        orgName: string,
+        projectName: string,
+        envName: string,
+    ): Promise<EnvironmentDefinitionResponse | undefined> {
+        const resp = await this.rawApi.decryptEnvironment(orgName, projectName, envName);
         if (resp.status === 200) {
             const doc = yaml.load(resp.data as string);
             return {
@@ -399,6 +442,7 @@ export class EscApi {
      * listEnvironmentRevisions lists the environment revisions, from oldest to newest.
      * @summary List environment revisions
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {number} before The revision number to start listing from
      * @param {number} count The number of revisions to list
@@ -406,11 +450,12 @@ export class EscApi {
      */
     async listEnvironmentRevisions(
         orgName: string,
+        projectName: string,
         envName: string,
         before?: number,
         count?: number,
     ): Promise<Array<EnvironmentRevision> | undefined> {
-        const resp = await this.rawApi.listEnvironmentRevisions(orgName, envName, before, count);
+        const resp = await this.rawApi.listEnvironmentRevisions(orgName, projectName, envName, before, count);
         if (resp.status === 200) {
             return resp.data;
         }
@@ -422,6 +467,7 @@ export class EscApi {
      * listEnvironmentRevisionTags lists the environment revision tags.
      * @summary List environment revision tags
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} after The tag to start listing from
      * @param {number} count The number of tags to list
@@ -429,11 +475,12 @@ export class EscApi {
      */
     async listEnvironmentRevisionTags(
         orgName: string,
+        projectName: string,
         envName: string,
         after?: string,
         count?: number,
     ): Promise<EnvironmentRevisionTags | undefined> {
-        const resp = await this.rawApi.listEnvironmentRevisionTags(orgName, envName, after, count);
+        const resp = await this.rawApi.listEnvironmentRevisionTags(orgName, projectName, envName, after, count);
         if (resp.status === 200) {
             return resp.data;
         }
@@ -445,16 +492,18 @@ export class EscApi {
      * getEnvironmentRevisionTag gets the environment revision tag.
      * @summary Get environment revision tag
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} tag The tag name
      * @returns {Promise<EnvironmentRevisionTag | undefined>} The environment revision tag
      */
     async getEnvironmentRevisionTag(
         orgName: string,
+        projectName: string,
         envName: string,
         tag: string,
     ): Promise<EnvironmentRevisionTag | undefined> {
-        const resp = await this.rawApi.getEnvironmentRevisionTag(orgName, envName, tag);
+        const resp = await this.rawApi.getEnvironmentRevisionTag(orgName, projectName, envName, tag);
         if (resp.status === 200) {
             return resp.data;
         }
@@ -466,16 +515,25 @@ export class EscApi {
      * createEnvironmentRevisionTag creates a new environment revision tag.
      * @summary Create environment revision tag
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} tag The tag name
      * @param {number} revision The revision number
      * @returns {Promise<void>} A promise that resolves when the tag is created
      */
-    async createEnvironmentRevisionTag(orgName: string, envName: string, tag: string, revision: number): Promise<void> {
-        const updateTag = {
+    async createEnvironmentRevisionTag(
+        orgName: string,
+        projectName: string,
+        envName: string,
+        tag: string,
+        revision: number,
+    ): Promise<void> {
+        const createTag = {
+            name: tag,
             revision: revision,
         };
-        const resp = await this.rawApi.createEnvironmentRevisionTag(orgName, envName, tag, updateTag);
+
+        const resp = await this.rawApi.createEnvironmentRevisionTag(orgName, projectName, envName, createTag);
         if (resp.status === 204) {
             return;
         }
@@ -487,16 +545,23 @@ export class EscApi {
      * updateEnvironmentRevisionTag updates the environment revision tag.
      * @summary Update environment revision tag
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} tag The tag name
      * @param {number} revision The revision number
      * @returns {Promise<void>} A promise that resolves when the tag is updated
      */
-    async updateEnvironmentRevisionTag(orgName: string, envName: string, tag: string, revision: number): Promise<void> {
+    async updateEnvironmentRevisionTag(
+        orgName: string,
+        projectName: string,
+        envName: string,
+        tag: string,
+        revision: number,
+    ): Promise<void> {
         const updateTag = {
             revision: revision,
         };
-        const resp = await this.rawApi.updateEnvironmentRevisionTag(orgName, envName, tag, updateTag);
+        const resp = await this.rawApi.updateEnvironmentRevisionTag(orgName, projectName, envName, tag, updateTag);
         if (resp.status === 204) {
             return;
         }
@@ -508,12 +573,18 @@ export class EscApi {
      * deleteEnvironmentRevisionTag deletes the environment revision tag.
      * @summary Delete environment revision tag
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} tag The tag name
      * @returns {Promise<void>} A promise that resolves when the tag is deleted
      */
-    async deleteEnvironmentRevisionTag(orgName: string, envName: string, tag: string): Promise<void> {
-        const resp = await this.rawApi.deleteEnvironmentRevisionTag(orgName, envName, tag);
+    async deleteEnvironmentRevisionTag(
+        orgName: string,
+        projectName: string,
+        envName: string,
+        tag: string,
+    ): Promise<void> {
+        const resp = await this.rawApi.deleteEnvironmentRevisionTag(orgName, projectName, envName, tag);
         if (resp.status === 204) {
             return;
         }

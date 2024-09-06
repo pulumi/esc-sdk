@@ -22,6 +22,8 @@ from pydantic import Field, StrictInt, StrictStr, field_validator
 from typing import List, Optional
 from typing_extensions import Annotated
 from pulumi_esc_sdk.models.check_environment import CheckEnvironment
+from pulumi_esc_sdk.models.create_environment import CreateEnvironment
+from pulumi_esc_sdk.models.create_environment_revision_tag import CreateEnvironmentRevisionTag
 from pulumi_esc_sdk.models.environment import Environment
 from pulumi_esc_sdk.models.environment_definition import EnvironmentDefinition
 from pulumi_esc_sdk.models.environment_diagnostics import EnvironmentDiagnostics
@@ -354,7 +356,7 @@ class EscApi:
     def create_environment(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
-        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        create_environment: Annotated[CreateEnvironment, Field(description="Create Environment")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -374,8 +376,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
-        :param env_name: Environment name (required)
-        :type env_name: str
+        :param create_environment: Create Environment (required)
+        :type create_environment: CreateEnvironment
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -400,7 +402,7 @@ class EscApi:
 
         _param = self._create_environment_serialize(
             org_name=org_name,
-            env_name=env_name,
+            create_environment=create_environment,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -430,7 +432,7 @@ class EscApi:
     def create_environment_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
-        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        create_environment: Annotated[CreateEnvironment, Field(description="Create Environment")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -450,8 +452,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
-        :param env_name: Environment name (required)
-        :type env_name: str
+        :param create_environment: Create Environment (required)
+        :type create_environment: CreateEnvironment
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -476,7 +478,7 @@ class EscApi:
 
         _param = self._create_environment_serialize(
             org_name=org_name,
-            env_name=env_name,
+            create_environment=create_environment,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -506,7 +508,7 @@ class EscApi:
     def create_environment_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
-        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        create_environment: Annotated[CreateEnvironment, Field(description="Create Environment")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -526,8 +528,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
-        :param env_name: Environment name (required)
-        :type env_name: str
+        :param create_environment: Create Environment (required)
+        :type create_environment: CreateEnvironment
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -552,7 +554,7 @@ class EscApi:
 
         _param = self._create_environment_serialize(
             org_name=org_name,
-            env_name=env_name,
+            create_environment=create_environment,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -577,7 +579,7 @@ class EscApi:
     def _create_environment_serialize(
         self,
         org_name,
-        env_name,
+        create_environment,
         _request_auth,
         _content_type,
         _headers,
@@ -599,327 +601,12 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
-        if env_name is not None:
-            _path_params['envName'] = env_name
         # process the query parameters
         # process the header parameters
         # process the form parameters
         # process the body parameter
-
-
-        # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
-
-
-        # authentication setting
-        _auth_settings: List[str] = [
-            'Authorization'
-        ]
-
-        return self.api_client.param_serialize(
-            method='POST',
-            resource_path='/environments/{orgName}/{envName}',
-            path_params=_path_params,
-            query_params=_query_params,
-            header_params=_header_params,
-            body=_body_params,
-            post_params=_form_params,
-            files=_files,
-            auth_settings=_auth_settings,
-            collection_formats=_collection_formats,
-            _host=_host,
-            _request_auth=_request_auth
-        )
-
-
-
-
-    @validate_call
-    def create_environment_revision_tag(
-        self,
-        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
-        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
-        tag_name: Annotated[StrictStr, Field(description="Tag name")],
-        update_environment_revision_tag: Annotated[UpdateEnvironmentRevisionTag, Field(description="Update environment revision tag")],
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
-        """Create environment revision tag
-
-        Create environment revision tag
-
-        :param org_name: Organization name (required)
-        :type org_name: str
-        :param env_name: Environment name (required)
-        :type env_name: str
-        :param tag_name: Tag name (required)
-        :type tag_name: str
-        :param update_environment_revision_tag: Update environment revision tag (required)
-        :type update_environment_revision_tag: UpdateEnvironmentRevisionTag
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._create_environment_revision_tag_serialize(
-            org_name=org_name,
-            env_name=env_name,
-            tag_name=tag_name,
-            update_environment_revision_tag=update_environment_revision_tag,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '204': None,
-            '400': "Error",
-            '401': "Error",
-            '409': "Error",
-            '500': "Error",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        ).data
-
-
-    @validate_call
-    def create_environment_revision_tag_with_http_info(
-        self,
-        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
-        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
-        tag_name: Annotated[StrictStr, Field(description="Tag name")],
-        update_environment_revision_tag: Annotated[UpdateEnvironmentRevisionTag, Field(description="Update environment revision tag")],
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
-        """Create environment revision tag
-
-        Create environment revision tag
-
-        :param org_name: Organization name (required)
-        :type org_name: str
-        :param env_name: Environment name (required)
-        :type env_name: str
-        :param tag_name: Tag name (required)
-        :type tag_name: str
-        :param update_environment_revision_tag: Update environment revision tag (required)
-        :type update_environment_revision_tag: UpdateEnvironmentRevisionTag
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._create_environment_revision_tag_serialize(
-            org_name=org_name,
-            env_name=env_name,
-            tag_name=tag_name,
-            update_environment_revision_tag=update_environment_revision_tag,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '204': None,
-            '400': "Error",
-            '401': "Error",
-            '409': "Error",
-            '500': "Error",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        )
-
-
-    @validate_call
-    def create_environment_revision_tag_without_preload_content(
-        self,
-        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
-        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
-        tag_name: Annotated[StrictStr, Field(description="Tag name")],
-        update_environment_revision_tag: Annotated[UpdateEnvironmentRevisionTag, Field(description="Update environment revision tag")],
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> RESTResponseType:
-        """Create environment revision tag
-
-        Create environment revision tag
-
-        :param org_name: Organization name (required)
-        :type org_name: str
-        :param env_name: Environment name (required)
-        :type env_name: str
-        :param tag_name: Tag name (required)
-        :type tag_name: str
-        :param update_environment_revision_tag: Update environment revision tag (required)
-        :type update_environment_revision_tag: UpdateEnvironmentRevisionTag
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._create_environment_revision_tag_serialize(
-            org_name=org_name,
-            env_name=env_name,
-            tag_name=tag_name,
-            update_environment_revision_tag=update_environment_revision_tag,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '204': None,
-            '400': "Error",
-            '401': "Error",
-            '409': "Error",
-            '500': "Error",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        return response_data.response
-
-
-    def _create_environment_revision_tag_serialize(
-        self,
-        org_name,
-        env_name,
-        tag_name,
-        update_environment_revision_tag,
-        _request_auth,
-        _content_type,
-        _headers,
-        _host_index,
-    ) -> RequestSerialized:
-
-        _host = None
-
-        _collection_formats: Dict[str, str] = {
-        }
-
-        _path_params: Dict[str, str] = {}
-        _query_params: List[Tuple[str, str]] = []
-        _header_params: Dict[str, Optional[str]] = _headers or {}
-        _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
-        _body_params: Optional[bytes] = None
-
-        # process the path parameters
-        if org_name is not None:
-            _path_params['orgName'] = org_name
-        if env_name is not None:
-            _path_params['envName'] = env_name
-        if tag_name is not None:
-            _path_params['tagName'] = tag_name
-        # process the query parameters
-        # process the header parameters
-        # process the form parameters
-        # process the body parameter
-        if update_environment_revision_tag is not None:
-            _body_params = update_environment_revision_tag
+        if create_environment is not None:
+            _body_params = create_environment
 
 
         # set the HTTP header `Accept`
@@ -950,7 +637,335 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/environments/{orgName}/{envName}/versions/tags/{tagName}',
+            resource_path='/environments/{orgName}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def create_environment_revision_tag(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        create_environment_revision_tag: Annotated[CreateEnvironmentRevisionTag, Field(description="Create environment revision tag")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> None:
+        """Create environment revision tag
+
+        Create environment revision tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param create_environment_revision_tag: Create environment revision tag (required)
+        :type create_environment_revision_tag: CreateEnvironmentRevisionTag
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_environment_revision_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            create_environment_revision_tag=create_environment_revision_tag,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '204': None,
+            '400': "Error",
+            '401': "Error",
+            '409': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def create_environment_revision_tag_with_http_info(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        create_environment_revision_tag: Annotated[CreateEnvironmentRevisionTag, Field(description="Create environment revision tag")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[None]:
+        """Create environment revision tag
+
+        Create environment revision tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param create_environment_revision_tag: Create environment revision tag (required)
+        :type create_environment_revision_tag: CreateEnvironmentRevisionTag
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_environment_revision_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            create_environment_revision_tag=create_environment_revision_tag,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '204': None,
+            '400': "Error",
+            '401': "Error",
+            '409': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def create_environment_revision_tag_without_preload_content(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        create_environment_revision_tag: Annotated[CreateEnvironmentRevisionTag, Field(description="Create environment revision tag")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Create environment revision tag
+
+        Create environment revision tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param create_environment_revision_tag: Create environment revision tag (required)
+        :type create_environment_revision_tag: CreateEnvironmentRevisionTag
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_environment_revision_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            create_environment_revision_tag=create_environment_revision_tag,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '204': None,
+            '400': "Error",
+            '401': "Error",
+            '409': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _create_environment_revision_tag_serialize(
+        self,
+        org_name,
+        project_name,
+        env_name,
+        create_environment_revision_tag,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if org_name is not None:
+            _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
+        if env_name is not None:
+            _path_params['envName'] = env_name
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if create_environment_revision_tag is not None:
+            _body_params = create_environment_revision_tag
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'Authorization'
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/versions/tags',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -970,6 +985,7 @@ class EscApi:
     def decrypt_environment(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -990,6 +1006,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -1016,6 +1034,7 @@ class EscApi:
 
         _param = self._decrypt_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -1045,6 +1064,7 @@ class EscApi:
     def decrypt_environment_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -1065,6 +1085,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -1091,6 +1113,7 @@ class EscApi:
 
         _param = self._decrypt_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -1120,6 +1143,7 @@ class EscApi:
     def decrypt_environment_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -1140,6 +1164,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -1166,6 +1192,7 @@ class EscApi:
 
         _param = self._decrypt_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -1190,6 +1217,7 @@ class EscApi:
     def _decrypt_environment_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         _request_auth,
         _content_type,
@@ -1212,6 +1240,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         # process the query parameters
@@ -1236,7 +1266,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/environments/{orgName}/{envName}/decrypt',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/decrypt',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -1256,6 +1286,7 @@ class EscApi:
     def delete_environment(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -1276,6 +1307,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -1302,6 +1335,7 @@ class EscApi:
 
         _param = self._delete_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -1331,6 +1365,7 @@ class EscApi:
     def delete_environment_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -1351,6 +1386,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -1377,6 +1414,7 @@ class EscApi:
 
         _param = self._delete_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -1406,6 +1444,7 @@ class EscApi:
     def delete_environment_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -1426,6 +1465,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -1452,6 +1493,7 @@ class EscApi:
 
         _param = self._delete_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -1476,6 +1518,7 @@ class EscApi:
     def _delete_environment_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         _request_auth,
         _content_type,
@@ -1498,6 +1541,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         # process the query parameters
@@ -1521,7 +1566,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='DELETE',
-            resource_path='/environments/{orgName}/{envName}',
+            resource_path='/environments/{orgName}/{projectName}/{envName}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -1541,6 +1586,7 @@ class EscApi:
     def delete_environment_revision_tag(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         tag_name: Annotated[StrictStr, Field(description="Tag name")],
         _request_timeout: Union[
@@ -1562,6 +1608,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param tag_name: Tag name (required)
@@ -1590,6 +1638,7 @@ class EscApi:
 
         _param = self._delete_environment_revision_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             tag_name=tag_name,
             _request_auth=_request_auth,
@@ -1619,6 +1668,7 @@ class EscApi:
     def delete_environment_revision_tag_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         tag_name: Annotated[StrictStr, Field(description="Tag name")],
         _request_timeout: Union[
@@ -1640,6 +1690,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param tag_name: Tag name (required)
@@ -1668,6 +1720,7 @@ class EscApi:
 
         _param = self._delete_environment_revision_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             tag_name=tag_name,
             _request_auth=_request_auth,
@@ -1697,6 +1750,7 @@ class EscApi:
     def delete_environment_revision_tag_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         tag_name: Annotated[StrictStr, Field(description="Tag name")],
         _request_timeout: Union[
@@ -1718,6 +1772,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param tag_name: Tag name (required)
@@ -1746,6 +1802,7 @@ class EscApi:
 
         _param = self._delete_environment_revision_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             tag_name=tag_name,
             _request_auth=_request_auth,
@@ -1770,6 +1827,7 @@ class EscApi:
     def _delete_environment_revision_tag_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         tag_name,
         _request_auth,
@@ -1793,6 +1851,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         if tag_name is not None:
@@ -1818,7 +1878,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='DELETE',
-            resource_path='/environments/{orgName}/{envName}/versions/tags/{tagName}',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -1838,6 +1898,7 @@ class EscApi:
     def get_environment(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -1858,6 +1919,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -1884,6 +1947,7 @@ class EscApi:
 
         _param = self._get_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -1913,6 +1977,7 @@ class EscApi:
     def get_environment_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -1933,6 +1998,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -1959,6 +2026,7 @@ class EscApi:
 
         _param = self._get_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -1988,6 +2056,7 @@ class EscApi:
     def get_environment_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -2008,6 +2077,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -2034,6 +2105,7 @@ class EscApi:
 
         _param = self._get_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -2058,6 +2130,7 @@ class EscApi:
     def _get_environment_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         _request_auth,
         _content_type,
@@ -2080,6 +2153,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         # process the query parameters
@@ -2104,7 +2179,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/environments/{orgName}/{envName}',
+            resource_path='/environments/{orgName}/{projectName}/{envName}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -2124,6 +2199,7 @@ class EscApi:
     def get_environment_at_version(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         version: Annotated[StrictStr, Field(description="Revision or tag")],
         _request_timeout: Union[
@@ -2145,6 +2221,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param version: Revision or tag (required)
@@ -2173,6 +2251,7 @@ class EscApi:
 
         _param = self._get_environment_at_version_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             version=version,
             _request_auth=_request_auth,
@@ -2203,6 +2282,7 @@ class EscApi:
     def get_environment_at_version_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         version: Annotated[StrictStr, Field(description="Revision or tag")],
         _request_timeout: Union[
@@ -2224,6 +2304,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param version: Revision or tag (required)
@@ -2252,6 +2334,7 @@ class EscApi:
 
         _param = self._get_environment_at_version_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             version=version,
             _request_auth=_request_auth,
@@ -2282,6 +2365,7 @@ class EscApi:
     def get_environment_at_version_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         version: Annotated[StrictStr, Field(description="Revision or tag")],
         _request_timeout: Union[
@@ -2303,6 +2387,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param version: Revision or tag (required)
@@ -2331,6 +2417,7 @@ class EscApi:
 
         _param = self._get_environment_at_version_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             version=version,
             _request_auth=_request_auth,
@@ -2356,6 +2443,7 @@ class EscApi:
     def _get_environment_at_version_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         version,
         _request_auth,
@@ -2379,6 +2467,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         if version is not None:
@@ -2405,7 +2495,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/environments/{orgName}/{envName}/versions/{version}',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/versions/{version}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -2425,6 +2515,7 @@ class EscApi:
     def get_environment_e_tag(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -2445,6 +2536,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -2471,6 +2564,7 @@ class EscApi:
 
         _param = self._get_environment_e_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -2500,6 +2594,7 @@ class EscApi:
     def get_environment_e_tag_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -2520,6 +2615,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -2546,6 +2643,7 @@ class EscApi:
 
         _param = self._get_environment_e_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -2575,6 +2673,7 @@ class EscApi:
     def get_environment_e_tag_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         _request_timeout: Union[
             None,
@@ -2595,6 +2694,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param _request_timeout: timeout setting for this request. If one
@@ -2621,6 +2722,7 @@ class EscApi:
 
         _param = self._get_environment_e_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -2645,6 +2747,7 @@ class EscApi:
     def _get_environment_e_tag_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         _request_auth,
         _content_type,
@@ -2667,6 +2770,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         # process the query parameters
@@ -2690,7 +2795,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='HEAD',
-            resource_path='/environments/{orgName}/{envName}',
+            resource_path='/environments/{orgName}/{projectName}/{envName}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -2710,6 +2815,7 @@ class EscApi:
     def get_environment_revision_tag(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         tag_name: Annotated[StrictStr, Field(description="Tag name")],
         _request_timeout: Union[
@@ -2731,6 +2837,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param tag_name: Tag name (required)
@@ -2759,6 +2867,7 @@ class EscApi:
 
         _param = self._get_environment_revision_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             tag_name=tag_name,
             _request_auth=_request_auth,
@@ -2788,6 +2897,7 @@ class EscApi:
     def get_environment_revision_tag_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         tag_name: Annotated[StrictStr, Field(description="Tag name")],
         _request_timeout: Union[
@@ -2809,6 +2919,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param tag_name: Tag name (required)
@@ -2837,6 +2949,7 @@ class EscApi:
 
         _param = self._get_environment_revision_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             tag_name=tag_name,
             _request_auth=_request_auth,
@@ -2866,6 +2979,7 @@ class EscApi:
     def get_environment_revision_tag_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         tag_name: Annotated[StrictStr, Field(description="Tag name")],
         _request_timeout: Union[
@@ -2887,6 +3001,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param tag_name: Tag name (required)
@@ -2915,6 +3031,7 @@ class EscApi:
 
         _param = self._get_environment_revision_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             tag_name=tag_name,
             _request_auth=_request_auth,
@@ -2939,6 +3056,7 @@ class EscApi:
     def _get_environment_revision_tag_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         tag_name,
         _request_auth,
@@ -2962,6 +3080,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         if tag_name is not None:
@@ -2987,7 +3107,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/environments/{orgName}/{envName}/versions/tags/{tagName}',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -3007,6 +3127,7 @@ class EscApi:
     def list_environment_revision_tags(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         after: Annotated[Optional[StrictStr], Field(description="after tag for pagination")] = None,
         count: Annotated[Optional[StrictInt], Field(description="limit of tags to return")] = None,
@@ -3029,6 +3150,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param after: after tag for pagination
@@ -3059,6 +3182,7 @@ class EscApi:
 
         _param = self._list_environment_revision_tags_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             after=after,
             count=count,
@@ -3089,6 +3213,7 @@ class EscApi:
     def list_environment_revision_tags_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         after: Annotated[Optional[StrictStr], Field(description="after tag for pagination")] = None,
         count: Annotated[Optional[StrictInt], Field(description="limit of tags to return")] = None,
@@ -3111,6 +3236,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param after: after tag for pagination
@@ -3141,6 +3268,7 @@ class EscApi:
 
         _param = self._list_environment_revision_tags_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             after=after,
             count=count,
@@ -3171,6 +3299,7 @@ class EscApi:
     def list_environment_revision_tags_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         after: Annotated[Optional[StrictStr], Field(description="after tag for pagination")] = None,
         count: Annotated[Optional[StrictInt], Field(description="limit of tags to return")] = None,
@@ -3193,6 +3322,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param after: after tag for pagination
@@ -3223,6 +3354,7 @@ class EscApi:
 
         _param = self._list_environment_revision_tags_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             after=after,
             count=count,
@@ -3248,6 +3380,7 @@ class EscApi:
     def _list_environment_revision_tags_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         after,
         count,
@@ -3272,6 +3405,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         # process the query parameters
@@ -3303,7 +3438,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/environments/{orgName}/{envName}/versions/tags',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/versions/tags',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -3323,6 +3458,7 @@ class EscApi:
     def list_environment_revisions(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         before: Annotated[Optional[StrictInt], Field(description="before revision number for pagination")] = None,
         count: Annotated[Optional[StrictInt], Field(description="limit of revisions to return")] = None,
@@ -3345,6 +3481,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param before: before revision number for pagination
@@ -3375,6 +3513,7 @@ class EscApi:
 
         _param = self._list_environment_revisions_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             before=before,
             count=count,
@@ -3405,6 +3544,7 @@ class EscApi:
     def list_environment_revisions_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         before: Annotated[Optional[StrictInt], Field(description="before revision number for pagination")] = None,
         count: Annotated[Optional[StrictInt], Field(description="limit of revisions to return")] = None,
@@ -3427,6 +3567,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param before: before revision number for pagination
@@ -3457,6 +3599,7 @@ class EscApi:
 
         _param = self._list_environment_revisions_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             before=before,
             count=count,
@@ -3487,6 +3630,7 @@ class EscApi:
     def list_environment_revisions_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         before: Annotated[Optional[StrictInt], Field(description="before revision number for pagination")] = None,
         count: Annotated[Optional[StrictInt], Field(description="limit of revisions to return")] = None,
@@ -3509,6 +3653,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param before: before revision number for pagination
@@ -3539,6 +3685,7 @@ class EscApi:
 
         _param = self._list_environment_revisions_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             before=before,
             count=count,
@@ -3564,6 +3711,7 @@ class EscApi:
     def _list_environment_revisions_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         before,
         count,
@@ -3588,6 +3736,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         # process the query parameters
@@ -3619,7 +3769,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/environments/{orgName}/{envName}/versions',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/versions',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -3923,6 +4073,7 @@ class EscApi:
     def open_environment(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         duration: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.")] = None,
         _request_timeout: Union[
@@ -3944,6 +4095,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param duration: open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
@@ -3972,6 +4125,7 @@ class EscApi:
 
         _param = self._open_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             duration=duration,
             _request_auth=_request_auth,
@@ -4002,6 +4156,7 @@ class EscApi:
     def open_environment_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         duration: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.")] = None,
         _request_timeout: Union[
@@ -4023,6 +4178,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param duration: open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
@@ -4051,6 +4208,7 @@ class EscApi:
 
         _param = self._open_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             duration=duration,
             _request_auth=_request_auth,
@@ -4081,6 +4239,7 @@ class EscApi:
     def open_environment_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         duration: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.")] = None,
         _request_timeout: Union[
@@ -4102,6 +4261,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param duration: open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
@@ -4130,6 +4291,7 @@ class EscApi:
 
         _param = self._open_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             duration=duration,
             _request_auth=_request_auth,
@@ -4155,6 +4317,7 @@ class EscApi:
     def _open_environment_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         duration,
         _request_auth,
@@ -4178,6 +4341,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         # process the query parameters
@@ -4205,7 +4370,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/environments/{orgName}/{envName}/open',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/open',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -4225,6 +4390,7 @@ class EscApi:
     def open_environment_at_version(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         version: Annotated[StrictStr, Field(description="Revision or tag")],
         duration: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.")] = None,
@@ -4247,6 +4413,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param version: Revision or tag (required)
@@ -4277,6 +4445,7 @@ class EscApi:
 
         _param = self._open_environment_at_version_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             version=version,
             duration=duration,
@@ -4308,6 +4477,7 @@ class EscApi:
     def open_environment_at_version_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         version: Annotated[StrictStr, Field(description="Revision or tag")],
         duration: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.")] = None,
@@ -4330,6 +4500,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param version: Revision or tag (required)
@@ -4360,6 +4532,7 @@ class EscApi:
 
         _param = self._open_environment_at_version_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             version=version,
             duration=duration,
@@ -4391,6 +4564,7 @@ class EscApi:
     def open_environment_at_version_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         version: Annotated[StrictStr, Field(description="Revision or tag")],
         duration: Annotated[Optional[Annotated[str, Field(strict=True)]], Field(description="open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.")] = None,
@@ -4413,6 +4587,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param version: Revision or tag (required)
@@ -4443,6 +4619,7 @@ class EscApi:
 
         _param = self._open_environment_at_version_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             version=version,
             duration=duration,
@@ -4469,6 +4646,7 @@ class EscApi:
     def _open_environment_at_version_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         version,
         duration,
@@ -4493,6 +4671,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         if version is not None:
@@ -4522,7 +4702,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/environments/{orgName}/{envName}/versions/{version}/open',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/versions/{version}/open',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -4542,6 +4722,7 @@ class EscApi:
     def read_open_environment(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         open_session_id: Annotated[StrictStr, Field(description="Open session ID returned from environment open")],
         _request_timeout: Union[
@@ -4563,6 +4744,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param open_session_id: Open session ID returned from environment open (required)
@@ -4591,6 +4774,7 @@ class EscApi:
 
         _param = self._read_open_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             open_session_id=open_session_id,
             _request_auth=_request_auth,
@@ -4620,6 +4804,7 @@ class EscApi:
     def read_open_environment_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         open_session_id: Annotated[StrictStr, Field(description="Open session ID returned from environment open")],
         _request_timeout: Union[
@@ -4641,6 +4826,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param open_session_id: Open session ID returned from environment open (required)
@@ -4669,6 +4856,7 @@ class EscApi:
 
         _param = self._read_open_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             open_session_id=open_session_id,
             _request_auth=_request_auth,
@@ -4698,6 +4886,7 @@ class EscApi:
     def read_open_environment_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         open_session_id: Annotated[StrictStr, Field(description="Open session ID returned from environment open")],
         _request_timeout: Union[
@@ -4719,6 +4908,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param open_session_id: Open session ID returned from environment open (required)
@@ -4747,6 +4938,7 @@ class EscApi:
 
         _param = self._read_open_environment_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             open_session_id=open_session_id,
             _request_auth=_request_auth,
@@ -4771,6 +4963,7 @@ class EscApi:
     def _read_open_environment_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         open_session_id,
         _request_auth,
@@ -4794,6 +4987,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         if open_session_id is not None:
@@ -4819,7 +5014,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/environments/{orgName}/{envName}/open/{openSessionID}',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/open/{openSessionID}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -4839,6 +5034,7 @@ class EscApi:
     def read_open_environment_property(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         open_session_id: Annotated[StrictStr, Field(description="Open session ID returned from environment open")],
         var_property: Annotated[StrictStr, Field(description="Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration")],
@@ -4861,6 +5057,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param open_session_id: Open session ID returned from environment open (required)
@@ -4891,6 +5089,7 @@ class EscApi:
 
         _param = self._read_open_environment_property_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             open_session_id=open_session_id,
             var_property=var_property,
@@ -4921,6 +5120,7 @@ class EscApi:
     def read_open_environment_property_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         open_session_id: Annotated[StrictStr, Field(description="Open session ID returned from environment open")],
         var_property: Annotated[StrictStr, Field(description="Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration")],
@@ -4943,6 +5143,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param open_session_id: Open session ID returned from environment open (required)
@@ -4973,6 +5175,7 @@ class EscApi:
 
         _param = self._read_open_environment_property_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             open_session_id=open_session_id,
             var_property=var_property,
@@ -5003,6 +5206,7 @@ class EscApi:
     def read_open_environment_property_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         open_session_id: Annotated[StrictStr, Field(description="Open session ID returned from environment open")],
         var_property: Annotated[StrictStr, Field(description="Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration")],
@@ -5025,6 +5229,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param open_session_id: Open session ID returned from environment open (required)
@@ -5055,6 +5261,7 @@ class EscApi:
 
         _param = self._read_open_environment_property_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             open_session_id=open_session_id,
             var_property=var_property,
@@ -5080,6 +5287,7 @@ class EscApi:
     def _read_open_environment_property_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         open_session_id,
         var_property,
@@ -5104,6 +5312,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         if open_session_id is not None:
@@ -5133,7 +5343,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/environments/{orgName}/{envName}/open//{openSessionID}',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/open//{openSessionID}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -5153,6 +5363,7 @@ class EscApi:
     def update_environment_revision_tag(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         tag_name: Annotated[StrictStr, Field(description="Tag name")],
         update_environment_revision_tag: Annotated[UpdateEnvironmentRevisionTag, Field(description="Update environment revision tag")],
@@ -5175,6 +5386,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param tag_name: Tag name (required)
@@ -5205,6 +5418,7 @@ class EscApi:
 
         _param = self._update_environment_revision_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             tag_name=tag_name,
             update_environment_revision_tag=update_environment_revision_tag,
@@ -5236,6 +5450,7 @@ class EscApi:
     def update_environment_revision_tag_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         tag_name: Annotated[StrictStr, Field(description="Tag name")],
         update_environment_revision_tag: Annotated[UpdateEnvironmentRevisionTag, Field(description="Update environment revision tag")],
@@ -5258,6 +5473,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param tag_name: Tag name (required)
@@ -5288,6 +5505,7 @@ class EscApi:
 
         _param = self._update_environment_revision_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             tag_name=tag_name,
             update_environment_revision_tag=update_environment_revision_tag,
@@ -5319,6 +5537,7 @@ class EscApi:
     def update_environment_revision_tag_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         tag_name: Annotated[StrictStr, Field(description="Tag name")],
         update_environment_revision_tag: Annotated[UpdateEnvironmentRevisionTag, Field(description="Update environment revision tag")],
@@ -5341,6 +5560,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param tag_name: Tag name (required)
@@ -5371,6 +5592,7 @@ class EscApi:
 
         _param = self._update_environment_revision_tag_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             tag_name=tag_name,
             update_environment_revision_tag=update_environment_revision_tag,
@@ -5397,6 +5619,7 @@ class EscApi:
     def _update_environment_revision_tag_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         tag_name,
         update_environment_revision_tag,
@@ -5421,6 +5644,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         if tag_name is not None:
@@ -5461,7 +5686,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='PATCH',
-            resource_path='/environments/{orgName}/{envName}/versions/tags/{tagName}',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -5481,6 +5706,7 @@ class EscApi:
     def update_environment_yaml(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         body: Annotated[StrictStr, Field(description="Environment Yaml content")],
         _request_timeout: Union[
@@ -5502,6 +5728,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param body: Environment Yaml content (required)
@@ -5530,6 +5758,7 @@ class EscApi:
 
         _param = self._update_environment_yaml_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             body=body,
             _request_auth=_request_auth,
@@ -5561,6 +5790,7 @@ class EscApi:
     def update_environment_yaml_with_http_info(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         body: Annotated[StrictStr, Field(description="Environment Yaml content")],
         _request_timeout: Union[
@@ -5582,6 +5812,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param body: Environment Yaml content (required)
@@ -5610,6 +5842,7 @@ class EscApi:
 
         _param = self._update_environment_yaml_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             body=body,
             _request_auth=_request_auth,
@@ -5641,6 +5874,7 @@ class EscApi:
     def update_environment_yaml_without_preload_content(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
         env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
         body: Annotated[StrictStr, Field(description="Environment Yaml content")],
         _request_timeout: Union[
@@ -5662,6 +5896,8 @@ class EscApi:
 
         :param org_name: Organization name (required)
         :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
         :param env_name: Environment name (required)
         :type env_name: str
         :param body: Environment Yaml content (required)
@@ -5690,6 +5926,7 @@ class EscApi:
 
         _param = self._update_environment_yaml_serialize(
             org_name=org_name,
+            project_name=project_name,
             env_name=env_name,
             body=body,
             _request_auth=_request_auth,
@@ -5716,6 +5953,7 @@ class EscApi:
     def _update_environment_yaml_serialize(
         self,
         org_name,
+        project_name,
         env_name,
         body,
         _request_auth,
@@ -5739,6 +5977,8 @@ class EscApi:
         # process the path parameters
         if org_name is not None:
             _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
         if env_name is not None:
             _path_params['envName'] = env_name
         # process the query parameters
@@ -5777,7 +6017,7 @@ class EscApi:
 
         return self.api_client.param_serialize(
             method='PATCH',
-            resource_path='/environments/{orgName}/{envName}',
+            resource_path='/environments/{orgName}/{projectName}/{envName}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

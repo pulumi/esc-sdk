@@ -24,16 +24,20 @@ from typing_extensions import Annotated
 from pulumi_esc_sdk.models.check_environment import CheckEnvironment
 from pulumi_esc_sdk.models.create_environment import CreateEnvironment
 from pulumi_esc_sdk.models.create_environment_revision_tag import CreateEnvironmentRevisionTag
+from pulumi_esc_sdk.models.create_environment_tag import CreateEnvironmentTag
 from pulumi_esc_sdk.models.environment import Environment
 from pulumi_esc_sdk.models.environment_definition import EnvironmentDefinition
 from pulumi_esc_sdk.models.environment_diagnostics import EnvironmentDiagnostics
 from pulumi_esc_sdk.models.environment_revision import EnvironmentRevision
 from pulumi_esc_sdk.models.environment_revision_tag import EnvironmentRevisionTag
 from pulumi_esc_sdk.models.environment_revision_tags import EnvironmentRevisionTags
+from pulumi_esc_sdk.models.environment_tag import EnvironmentTag
 from pulumi_esc_sdk.models.error import Error
+from pulumi_esc_sdk.models.list_environment_tags import ListEnvironmentTags
 from pulumi_esc_sdk.models.open_environment import OpenEnvironment
 from pulumi_esc_sdk.models.org_environments import OrgEnvironments
 from pulumi_esc_sdk.models.update_environment_revision_tag import UpdateEnvironmentRevisionTag
+from pulumi_esc_sdk.models.update_environment_tag import UpdateEnvironmentTag
 from pulumi_esc_sdk.models.value import Value
 
 from pulumi_esc_sdk.api_client import ApiClient, RequestSerialized
@@ -982,6 +986,334 @@ class EscApi:
 
 
     @validate_call
+    def create_environment_tag(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        create_environment_tag: Annotated[CreateEnvironmentTag, Field(description="Create environment tag")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> EnvironmentTag:
+        """Create environment tag
+
+        Create environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param create_environment_tag: Create environment tag (required)
+        :type create_environment_tag: CreateEnvironmentTag
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            create_environment_tag=create_environment_tag,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentTag",
+            '400': "Error",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def create_environment_tag_with_http_info(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        create_environment_tag: Annotated[CreateEnvironmentTag, Field(description="Create environment tag")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[EnvironmentTag]:
+        """Create environment tag
+
+        Create environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param create_environment_tag: Create environment tag (required)
+        :type create_environment_tag: CreateEnvironmentTag
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            create_environment_tag=create_environment_tag,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentTag",
+            '400': "Error",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def create_environment_tag_without_preload_content(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        create_environment_tag: Annotated[CreateEnvironmentTag, Field(description="Create environment tag")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Create environment tag
+
+        Create environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param create_environment_tag: Create environment tag (required)
+        :type create_environment_tag: CreateEnvironmentTag
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            create_environment_tag=create_environment_tag,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentTag",
+            '400': "Error",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _create_environment_tag_serialize(
+        self,
+        org_name,
+        project_name,
+        env_name,
+        create_environment_tag,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if org_name is not None:
+            _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
+        if env_name is not None:
+            _path_params['envName'] = env_name
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if create_environment_tag is not None:
+            _body_params = create_environment_tag
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'Authorization'
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/tags',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
     def decrypt_environment(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
@@ -1879,6 +2211,318 @@ class EscApi:
         return self.api_client.param_serialize(
             method='DELETE',
             resource_path='/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def delete_environment_tag(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        tag_name: Annotated[StrictStr, Field(description="Tag name")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> None:
+        """Delete environment tag
+
+        Delete environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param tag_name: Tag name (required)
+        :type tag_name: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._delete_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            tag_name=tag_name,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '204': None,
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def delete_environment_tag_with_http_info(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        tag_name: Annotated[StrictStr, Field(description="Tag name")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[None]:
+        """Delete environment tag
+
+        Delete environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param tag_name: Tag name (required)
+        :type tag_name: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._delete_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            tag_name=tag_name,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '204': None,
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def delete_environment_tag_without_preload_content(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        tag_name: Annotated[StrictStr, Field(description="Tag name")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Delete environment tag
+
+        Delete environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param tag_name: Tag name (required)
+        :type tag_name: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._delete_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            tag_name=tag_name,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '204': None,
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _delete_environment_tag_serialize(
+        self,
+        org_name,
+        project_name,
+        env_name,
+        tag_name,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if org_name is not None:
+            _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
+        if env_name is not None:
+            _path_params['envName'] = env_name
+        if tag_name is not None:
+            _path_params['tagName'] = tag_name
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'Authorization'
+        ]
+
+        return self.api_client.param_serialize(
+            method='DELETE',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/tags/{tagName}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -3124,6 +3768,318 @@ class EscApi:
 
 
     @validate_call
+    def get_environment_tag(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        tag_name: Annotated[StrictStr, Field(description="Tag name")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> EnvironmentTag:
+        """Read an environment tag
+
+        Read an environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param tag_name: Tag name (required)
+        :type tag_name: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            tag_name=tag_name,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentTag",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def get_environment_tag_with_http_info(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        tag_name: Annotated[StrictStr, Field(description="Tag name")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[EnvironmentTag]:
+        """Read an environment tag
+
+        Read an environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param tag_name: Tag name (required)
+        :type tag_name: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            tag_name=tag_name,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentTag",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def get_environment_tag_without_preload_content(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        tag_name: Annotated[StrictStr, Field(description="Tag name")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Read an environment tag
+
+        Read an environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param tag_name: Tag name (required)
+        :type tag_name: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            tag_name=tag_name,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentTag",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _get_environment_tag_serialize(
+        self,
+        org_name,
+        project_name,
+        env_name,
+        tag_name,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if org_name is not None:
+            _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
+        if env_name is not None:
+            _path_params['envName'] = env_name
+        if tag_name is not None:
+            _path_params['tagName'] = tag_name
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'Authorization'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/tags/{tagName}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
     def list_environment_revision_tags(
         self,
         org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
@@ -3770,6 +4726,337 @@ class EscApi:
         return self.api_client.param_serialize(
             method='GET',
             resource_path='/environments/{orgName}/{projectName}/{envName}/versions',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def list_environment_tags(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        after: Annotated[Optional[StrictStr], Field(description="after tag for pagination")] = None,
+        count: Annotated[Optional[StrictInt], Field(description="limit of tags to return")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ListEnvironmentTags:
+        """List environment tags
+
+        List environment tags
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param after: after tag for pagination
+        :type after: str
+        :param count: limit of tags to return
+        :type count: int
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_environment_tags_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            after=after,
+            count=count,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "ListEnvironmentTags",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def list_environment_tags_with_http_info(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        after: Annotated[Optional[StrictStr], Field(description="after tag for pagination")] = None,
+        count: Annotated[Optional[StrictInt], Field(description="limit of tags to return")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[ListEnvironmentTags]:
+        """List environment tags
+
+        List environment tags
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param after: after tag for pagination
+        :type after: str
+        :param count: limit of tags to return
+        :type count: int
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_environment_tags_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            after=after,
+            count=count,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "ListEnvironmentTags",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def list_environment_tags_without_preload_content(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        after: Annotated[Optional[StrictStr], Field(description="after tag for pagination")] = None,
+        count: Annotated[Optional[StrictInt], Field(description="limit of tags to return")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """List environment tags
+
+        List environment tags
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param after: after tag for pagination
+        :type after: str
+        :param count: limit of tags to return
+        :type count: int
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_environment_tags_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            after=after,
+            count=count,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "ListEnvironmentTags",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _list_environment_tags_serialize(
+        self,
+        org_name,
+        project_name,
+        env_name,
+        after,
+        count,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if org_name is not None:
+            _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
+        if env_name is not None:
+            _path_params['envName'] = env_name
+        # process the query parameters
+        if after is not None:
+            
+            _query_params.append(('after', after))
+            
+        if count is not None:
+            
+            _query_params.append(('count', count))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'Authorization'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/tags',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -5687,6 +6974,349 @@ class EscApi:
         return self.api_client.param_serialize(
             method='PATCH',
             resource_path='/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def update_environment_tag(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        tag_name: Annotated[StrictStr, Field(description="Tag name")],
+        update_environment_tag: Annotated[UpdateEnvironmentTag, Field(description="Update environment tag")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> EnvironmentTag:
+        """Update an environment tag
+
+        Update an environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param tag_name: Tag name (required)
+        :type tag_name: str
+        :param update_environment_tag: Update environment tag (required)
+        :type update_environment_tag: UpdateEnvironmentTag
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._update_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            tag_name=tag_name,
+            update_environment_tag=update_environment_tag,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentTag",
+            '400': "Error",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def update_environment_tag_with_http_info(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        tag_name: Annotated[StrictStr, Field(description="Tag name")],
+        update_environment_tag: Annotated[UpdateEnvironmentTag, Field(description="Update environment tag")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[EnvironmentTag]:
+        """Update an environment tag
+
+        Update an environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param tag_name: Tag name (required)
+        :type tag_name: str
+        :param update_environment_tag: Update environment tag (required)
+        :type update_environment_tag: UpdateEnvironmentTag
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._update_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            tag_name=tag_name,
+            update_environment_tag=update_environment_tag,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentTag",
+            '400': "Error",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def update_environment_tag_without_preload_content(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        tag_name: Annotated[StrictStr, Field(description="Tag name")],
+        update_environment_tag: Annotated[UpdateEnvironmentTag, Field(description="Update environment tag")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Update an environment tag
+
+        Update an environment tag
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param tag_name: Tag name (required)
+        :type tag_name: str
+        :param update_environment_tag: Update environment tag (required)
+        :type update_environment_tag: UpdateEnvironmentTag
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._update_environment_tag_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            tag_name=tag_name,
+            update_environment_tag=update_environment_tag,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentTag",
+            '400': "Error",
+            '401': "Error",
+            '404': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _update_environment_tag_serialize(
+        self,
+        org_name,
+        project_name,
+        env_name,
+        tag_name,
+        update_environment_tag,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if org_name is not None:
+            _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
+        if env_name is not None:
+            _path_params['envName'] = env_name
+        if tag_name is not None:
+            _path_params['tagName'] = tag_name
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if update_environment_tag is not None:
+            _body_params = update_environment_tag
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'Authorization'
+        ]
+
+        return self.api_client.param_serialize(
+            method='PATCH',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/tags/{tagName}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

@@ -177,6 +177,74 @@ components:
         schema: {}
         executionContext:
           $ref: "#/components/schemas/EvaluatedExecutionContext"
+    EnvironmentTag:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        value:
+          type: string
+        created:
+          type: string
+        modified:
+          type: string
+        editorLogin:
+          type: string
+        editorName:
+          type: string
+      required:
+        - name
+        - created
+        - modified
+        - editorLogin
+        - editorName
+    ListEnvironmentTags:
+      type: object
+      properties:
+        tags:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/EnvironmentTag"
+        nextToken:
+          type: string
+      required:
+        - tags
+        - nextToken
+    CreateEnvironmentTag:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+      required:
+        - name
+        - value
+    UpdateEnvironmentTag:
+      type: object
+      properties:
+        currentTag:
+          type: object
+          properties:
+            value:
+              type: string
+          required:
+            - value
+        newTag:
+          type: object
+          properties:
+            name:
+              type: string
+            value:
+              type: string
+          required:
+            - name
+            - value
+      required:
+        - currentTag
+        - newTag
     CheckEnvironment:
       type: object
       allOf:     
@@ -427,6 +495,30 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/OrgEnvironments"
+    ListEnvironmentTags:
+      description: List of environment tags
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ListEnvironmentTags"
+    CreateEnvironmentTag:
+      description: Create environment tag
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CreateEnvironmentTag"
+    UpdateEnvrionmentTag:
+      description: Update environment tag
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UpdateEnvironmentTag"
+    EnvironmentTag:
+      description: Create environment tag
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EnvironmentTag"
     SuccessWithMessage:
       description: Success with message
       content:
@@ -848,6 +940,138 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
+  /environments/{orgName}/{projectName}/{envName}/tags:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
+      - $ref: "#/components/parameters/envName"
+    get:
+      tags:
+      - esc
+      operationId: ListEnvironmentTags
+      summary: List environment tags
+      description:  List environment tags
+      parameters:
+        - name: after
+          in: query
+          required: false
+          description: after tag for pagination
+          schema: 
+            type: string
+        - name: count
+          in: query
+          required: false
+          description: limit of tags to return
+          schema: 
+            type: integer
+      responses:
+        "200":
+          $ref: "#/components/responses/ListEnvironmentTags"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+      - esc
+      operationId: CreateEnvironmentTag
+      summary: Create environment tag
+      description:  Create environment tag
+      requestBody: 
+        description: Create environment tag
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEnvironmentTag"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvironmentTag"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  /environments/{orgName}/{projectName}/{envName}/tags/{tagName}:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
+      - $ref: "#/components/parameters/envName"
+      - name: tagName
+        in: path
+        required: true
+        description:  Tag name
+        schema: 
+          type: string
+    get:
+      tags:
+      - esc
+      operationId: GetEnvironmentTag
+      summary: Read an environment tag
+      description: Read an environment tag
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvironmentTag"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    patch:
+      tags:
+      - esc
+      operationId: UpdateEnvironmentTag
+      summary: Update an environment tag
+      description: Update an environment tag
+      requestBody: 
+        description: Update environment tag
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEnvironmentTag"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvironmentTag"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+      - esc
+      operationId: DeleteEnvironmentTag
+      summary: Delete environment tag
+      description:  Delete environment tag
+      responses:
+        "204":
+          description: The environment tag was deleted successfully.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"  
   /environments/{orgName}/{projectName}/{envName}/versions:
     parameters:
       - $ref: "#/components/parameters/orgName"

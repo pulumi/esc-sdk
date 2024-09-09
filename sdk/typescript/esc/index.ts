@@ -18,6 +18,8 @@ import {
     EnvironmentRevision,
     EnvironmentRevisionTag,
     EnvironmentRevisionTags,
+    EnvironmentTag,
+    ListEnvironmentTags,
 } from "./raw/index";
 import * as yaml from "js-yaml";
 import { AxiosError } from "axios";
@@ -590,6 +592,140 @@ export class EscApi {
         }
 
         throw new Error(`Failed to delete environment revision tag: ${resp.statusText}`);
+    }
+
+    /**
+     * listEnvironmentTags lists the environment tags.
+     * @summary List environment tags
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} after The tag to start listing from
+     * @param {number} count The number of tags to list
+     * @returns {Promise<ListEnvironmentTags | undefined>} A list of environment tags
+     */
+    async listEnvironmentTags(
+        orgName: string,
+        projectName: string,
+        envName: string,
+        after?: string,
+        count?: number,
+    ): Promise<ListEnvironmentTags | undefined> {
+        const resp = await this.rawApi.listEnvironmentTags(orgName, projectName, envName, after, count);
+        if (resp.status === 200) {
+            return resp.data;
+        }
+
+        throw new Error(`Failed to list environment tags: ${resp.statusText}`);
+    }
+
+    /**
+     * getEnvironmentTag gets the environment tag.
+     * @summary Get environment tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} tag The tag name
+     * @returns {Promise<EnvironmentTag | undefined>} The environment tag
+     */
+    async getEnvironmentTag(
+        orgName: string,
+        projectName: string,
+        envName: string,
+        tag: string,
+    ): Promise<EnvironmentTag | undefined> {
+        const resp = await this.rawApi.getEnvironmentTag(orgName, projectName, envName, tag);
+        if (resp.status === 200) {
+            return resp.data;
+        }
+
+        throw new Error(`Failed to get environment tag: ${resp.statusText}`);
+    }
+
+    /**
+     * createEnvironmentTag creates a new environment tag.
+     * @summary Create environment tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} tag The tag name
+     * @param {string} value The tag value
+     * @returns {Promise<EnvironmentTag>} A promise that resolves when the tag is created
+     */
+    async createEnvironmentTag(
+        orgName: string,
+        projectName: string,
+        envName: string,
+        tag: string,
+        value: string,
+    ): Promise<void> {
+        const createTag = {
+            name: tag,
+            value: value,
+        };
+
+        const resp = await this.rawApi.createEnvironmentTag(orgName, projectName, envName, createTag);
+        if (resp.status === 200) {
+            return;
+        }
+
+        throw new Error(`Failed to create environment tag: ${resp.statusText}`);
+    }
+
+    /**
+     * updateEnvironmentTag updates the environment tag.
+     * @summary Update environment tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} tag The tag name
+     * @param {string} current_value The tag value
+     * @param {string} new_tag The new tag name
+     * @param {string} new_value The new tag value
+     * @returns {Promise<EnvironmentTag>} A promise that resolves when the tag is updated
+     */
+    async updateEnvironmentTag(
+        orgName: string,
+        projectName: string,
+        envName: string,
+        tag: string,
+        current_value: string,
+        new_tag: string,
+        new_value: string,
+    ): Promise<void> {
+        const updateTag = {
+            currentTag: {
+                value: current_value,
+            },
+            newTag: {
+                name: new_tag,
+                value: new_value,
+            },
+        };
+        const resp = await this.rawApi.updateEnvironmentTag(orgName, projectName, envName, tag, updateTag);
+        if (resp.status === 200) {
+            return;
+        }
+
+        throw new Error(`Failed to update environment tag: ${resp.statusText}`);
+    }
+
+    /**
+     * deleteEnvironmentTag deletes the environment tag.
+     * @summary Delete environment tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} tag The tag name
+     * @returns {Promise<void>} A promise that resolves when the tag is deleted
+     */
+    async deleteEnvironmentTag(orgName: string, projectName: string, envName: string, tag: string): Promise<void> {
+        const resp = await this.rawApi.deleteEnvironmentTag(orgName, projectName, envName, tag);
+        if (resp.status === 204) {
+            return;
+        }
+
+        throw new Error(`Failed to delete environment tag: ${resp.statusText}`);
     }
 }
 

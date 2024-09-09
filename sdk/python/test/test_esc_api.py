@@ -127,6 +127,25 @@ values:
         self.assertIsNotNone(tags)
         self.assertEqual(len(tags.tags), 1)
 
+        self.client.create_environment_tag(self.orgName, PROJECT_NAME, self.envName, "owner", "esc-sdk-test")
+
+        tags = self.client.list_environment_tags(self.orgName, PROJECT_NAME, self.envName)
+        self.assertIsNotNone(tags)
+        self.assertEqual(len(tags.tags), 1)
+        self.assertEqual(tags.tags["owner"].name, "owner")
+        self.assertEqual(tags.tags["owner"].value, "esc-sdk-test")
+
+        self.client.update_environment_tag(self.orgName, PROJECT_NAME, self.envName, "owner", "esc-sdk-test", "new-owner", "esc-sdk-test-updated")
+
+        tag = self.client.get_environment_tag(self.orgName, PROJECT_NAME, self.envName, "new-owner")
+        self.assertEqual(tag.name, "new-owner")
+        self.assertEqual(tag.value, "esc-sdk-test-updated")
+
+        self.client.delete_environment_tag(self.orgName, PROJECT_NAME, self.envName, "new-owner")
+        tags = self.client.list_environment_tags(self.orgName, PROJECT_NAME, self.envName)
+        self.assertIsNotNone(tags)
+        self.assertEqual(len(tags.tags), 0)
+
     def test_check_environment_valid(self):
         envDef = esc.EnvironmentDefinition(values=esc.EnvironmentDefinitionValues(additional_properties={"foo": "bar"}))
 

@@ -281,6 +281,71 @@ class EscClient:
         """
         self.esc_api.delete_environment_revision_tag(org_name, project_name, env_name, tag_name)
 
+    def list_environment_tags(
+            self,
+            org_name: str,
+            project_name: str,
+            env_name: str,
+            after: str | None = None,
+            count: StrictInt | None = None) -> models.ListEnvironmentTags:
+        """List environment tags.
+
+        :param org_name: The name of the organization.
+        :param project_name: The name of the project.
+        :param env_name: The name of the environment.
+        :param after: The tag after which to list.
+        :param count: The number of tags to list.
+        :return: The environment tags."""
+        return self.esc_api.list_environment_tags(org_name, project_name, env_name, after, count)
+    
+    def get_environment_tag(self, org_name: str, project_name: str, env_name: str, tag_name: str) -> models.EnvironmentTag:
+        """Get an environment tag.
+
+        :param org_name: The name of the organization.
+        :param project_name: The name of the project.
+        :param env_name: The name of the environment.
+        :param tag_name: The name of the tag.
+        :return: The environment tag."""
+        return self.esc_api.get_environment_tag(org_name, project_name, env_name, tag_name)
+
+    def create_environment_tag(self, org_name: str, project_name: str, env_name: str, tag_name: str, tag_value: str) -> models.EnvironmentTag:
+        """Create an environment tag.
+
+        :param org_name: The name of the organization.
+        :param project_name: The name of the project.
+        :param env_name: The name of the environment.
+        :param tag_name: The name of the tag.
+        :param tag_value: The value of the tag.
+        :return: The created environment tag."""
+        create_tag = models.CreateEnvironmentTag(name=tag_name, value=tag_value)
+        return self.esc_api.create_environment_tag(org_name, project_name, env_name, create_tag)
+    
+    def update_environment_tag(self, org_name: str, project_name: str, env_name: str, tag_name: str, current_tag_value: str, new_tag_name: str, new_tag_value: str) -> models.EnvironmentTag:
+        """Update an environment tag.
+
+        :param org_name: The name of the organization.
+        :param project_name: The name of the project.
+        :param env_name: The name of the environment.
+        :param tag_name: The name of the tag.
+        :param current_tag_value: The current value of the tag.
+        :param new_tag_name: The new name of the tag.
+        :param new_tag_value: The new value of the tag.
+        :return: The updated environment tag."""
+        update_tag = models.UpdateEnvironmentTag(
+            currentTag=models.UpdateEnvironmentTagCurrentTag(value=current_tag_value),
+            newTag=models.UpdateEnvironmentTagNewTag(name=new_tag_name, value=new_tag_value)
+        )
+        return self.esc_api.update_environment_tag(org_name, project_name, env_name, tag_name, update_tag)
+    
+    def delete_environment_tag(self, org_name: str, project_name: str, env_name: str, tag_name: str) -> None:
+        """Delete an environment tag.
+
+        :param org_name: The name of the organization.
+        :param project_name: The name of the project.
+        :param env_name: The name of the environment.
+        :param tag_name: The name of the tag.
+        """
+        self.esc_api.delete_environment_tag(org_name, project_name, env_name, tag_name)
 
 def convertEnvPropertiesToValues(env: Mapping[str, models.Value]) -> Any:
     if env is None:

@@ -276,6 +276,61 @@ func (c *EscClient) DeleteEnvironmentRevisionTag(ctx context.Context, org, proje
 	return err
 }
 
+// ListEnvironmentTags lists all tags of the environment with the given name in the given organization.
+func (c *EscClient) ListEnvironmentTags(ctx context.Context, org, projectName, envName string) (*ListEnvironmentTags, error) {
+	request := c.EscAPI.client.EscAPI.ListEnvironmentTags(ctx, org, projectName, envName)
+
+	tags, _, err := request.Execute()
+	return tags, err
+}
+
+// ListEnvironmentTagsPaginated lists all tags of the environment with the given name in the given organization, with pagination support.
+func (c *EscClient) ListEnvironmentTagsPaginated(ctx context.Context, org, projectName, envName string, after string, count int32) (*ListEnvironmentTags, error) {
+	request := c.EscAPI.ListEnvironmentTags(ctx, org, projectName, envName).After(after).Count(count)
+
+	tags, _, err := request.Execute()
+	return tags, err
+}
+
+// GetEnvironmentTag retrieves the tag with the given name of the environment with the given name in the given organization.
+func (c *EscClient) GetEnvironmentTag(ctx context.Context, org, projectName, envName, tagName string) (*EnvironmentTag, error) {
+	request := c.EscAPI.client.EscAPI.GetEnvironmentTag(ctx, org, projectName, envName, tagName)
+
+	tag, _, err := request.Execute()
+	return tag, err
+}
+
+// CreateEnvironmentTag creates a new tag with the given name for the environment with the given name in the given organization.
+func (c *EscClient) CreateEnvironmentTag(ctx context.Context, org, projectName, envName, tagName, tagValue string) (*EnvironmentTag, error) {
+	createTag := NewCreateEnvironmentTag(tagName, tagValue)
+	request := c.EscAPI.client.EscAPI.CreateEnvironmentTag(ctx, org, projectName, envName).CreateEnvironmentTag(*createTag)
+
+	tag, _, err := request.Execute()
+	return tag, err
+}
+
+// UpdateEnvironmentTag updates the tag's value with the given name for the environment with the given name in the given organization.
+func (c *EscClient) UpdateEnvironmentTag(ctx context.Context, org, projectName, envName, tagName, currentTagValue, newTagName, newTagValue string) (*EnvironmentTag, error) {
+	update := NewUpdateEnvironmentTag(
+		UpdateEnvironmentTagCurrentTag{currentTagValue},
+		UpdateEnvironmentTagNewTag{
+			Name:  newTagName,
+			Value: newTagValue,
+		})
+	request := c.EscAPI.client.EscAPI.UpdateEnvironmentTag(ctx, org, projectName, envName, tagName).UpdateEnvironmentTag(*update)
+
+	tag, _, err := request.Execute()
+	return tag, err
+}
+
+// DeleteEnvironmentTag deletes the tag with the given name for the environment with the given name in the given organization.
+func (c *EscClient) DeleteEnvironmentTag(ctx context.Context, org, projectName, envName, tagName string) error {
+	request := c.EscAPI.client.EscAPI.DeleteEnvironmentTag(ctx, org, projectName, envName, tagName)
+
+	_, err := request.Execute()
+	return err
+}
+
 func MarshalEnvironmentDefinition(env *EnvironmentDefinition) (string, error) {
 	var bs []byte
 	bs, err := yaml.Marshal(env)

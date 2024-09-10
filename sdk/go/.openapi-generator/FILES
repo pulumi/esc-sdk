@@ -6,6 +6,7 @@ model_accessor.go
 model_check_environment.go
 model_create_environment.go
 model_create_environment_revision_tag.go
+model_create_environment_tag.go
 model_environment.go
 model_environment_definition.go
 model_environment_definition_values.go
@@ -14,11 +15,13 @@ model_environment_diagnostics.go
 model_environment_revision.go
 model_environment_revision_tag.go
 model_environment_revision_tags.go
+model_environment_tag.go
 model_error.go
 model_evaluated_execution_context.go
 model_expr.go
 model_expr_builtin.go
 model_interpolation.go
+model_list_environment_tags.go
 model_open_environment.go
 model_org_environment.go
 model_org_environments.go
@@ -28,6 +31,9 @@ model_range.go
 model_reference.go
 model_trace.go
 model_update_environment_revision_tag.go
+model_update_environment_tag.go
+model_update_environment_tag_current_tag.go
+model_update_environment_tag_new_tag.go
 model_value.go
 response.go
 utils.go

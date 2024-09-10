@@ -144,6 +144,34 @@ describe("ESC", async () => {
         assert.notEqual(tagsAfterDelete, undefined);
         assert.equal(tagsAfterDelete?.tags?.length, 1);
 
+        await client.createEnvironmentTag(PULUMI_ORG, PROJECT_NAME, name, "owner", "esc-sdk-test");
+
+        let envTags = await client.listEnvironmentTags(PULUMI_ORG, PROJECT_NAME, name);
+        assert.notEqual(envTags, undefined);
+        assert.equal(envTags?.tags["owner"].name, "owner");
+        assert.equal(envTags?.tags["owner"].value, "esc-sdk-test");
+
+        await client.updateEnvironmentTag(
+            PULUMI_ORG,
+            PROJECT_NAME,
+            name,
+            "owner",
+            "esc-sdk-test",
+            "new-owner",
+            "esc-sdk-test-updated",
+        );
+
+        const envTag = await client.getEnvironmentTag(PULUMI_ORG, PROJECT_NAME, name, "new-owner");
+        assert.notEqual(envTag, undefined);
+        assert.equal(envTag?.name, "new-owner");
+        assert.equal(envTag?.value, "esc-sdk-test-updated");
+
+        await client.deleteEnvironmentTag(PULUMI_ORG, PROJECT_NAME, name, "new-owner");
+
+        envTags = await client.listEnvironmentTags(PULUMI_ORG, PROJECT_NAME, name);
+        assert.notEqual(envTags, undefined);
+        assert.equal(Object.keys(envTags!.tags).length, 0);
+
         await client.deleteEnvironment(PULUMI_ORG, PROJECT_NAME, name);
     });
 

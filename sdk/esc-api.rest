@@ -88,3 +88,44 @@ Authorization: token {{token}}
 {
     "revision": 2
 }
+
+
+###
+
+POST https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/tags HTTP/1.1
+Authorization: token {{token}}
+
+{
+    "name": "owner",
+    "value": "pulumi"
+}
+
+###
+
+GET https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/tags HTTP/1.1
+Authorization: token {{token}}
+
+###
+
+GET https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/tags/owner HTTP/1.1
+Authorization: token {{token}}
+
+###
+
+PATCH https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/tags/owner HTTP/1.1
+Authorization: token {{token}}
+
+{
+    "currentTag": {
+        "value": "pulumi"
+    },
+    "newTag": {
+        "name": "new-owner",
+        "value": "pulumi-test"
+    }
+}
+
+###
+
+DELETE https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/tags/new-owner HTTP/1.1
+Authorization: token {{token}}

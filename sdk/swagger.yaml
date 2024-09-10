@@ -180,8 +180,6 @@ components:
     EnvironmentTag:
       type: object
       properties:
-        id:
-          type: string
         name:
           type: string
         value:
@@ -507,14 +505,14 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/CreateEnvironmentTag"
-    UpdateEnvrionmentTag:
+    UpdateEnvironmentTag:
       description: Update environment tag
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/UpdateEnvironmentTag"
     EnvironmentTag:
-      description: Create environment tag
+      description: Create environment tag response
       content:
         application/json:
           schema:

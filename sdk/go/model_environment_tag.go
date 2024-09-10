@@ -22,7 +22,6 @@ var _ MappedNullable = &EnvironmentTag{}
 
 // EnvironmentTag struct for EnvironmentTag
 type EnvironmentTag struct {
-	Id *string `json:"id,omitempty"`
 	Name string `json:"name"`
 	Value *string `json:"value,omitempty"`
 	Created string `json:"created"`
@@ -53,38 +52,6 @@ func NewEnvironmentTag(name string, created string, modified string, editorLogin
 func NewEnvironmentTagWithDefaults() *EnvironmentTag {
 	this := EnvironmentTag{}
 	return &this
-}
-
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *EnvironmentTag) GetId() string {
-	if o == nil || IsNil(o.Id) {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EnvironmentTag) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
-		return nil, false
-	}
-	return o.Id, true
-}
-
-// HasId returns a boolean if a field has been set.
-func (o *EnvironmentTag) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *EnvironmentTag) SetId(v string) {
-	o.Id = &v
 }
 
 // GetName returns the Name field value
@@ -249,9 +216,6 @@ func (o EnvironmentTag) MarshalJSON() ([]byte, error) {
 
 func (o EnvironmentTag) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
 	toSerialize["name"] = o.Name
 	if !IsNil(o.Value) {
 		toSerialize["value"] = o.Value

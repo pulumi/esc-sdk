@@ -392,12 +392,6 @@ export interface EnvironmentTag {
      * @type {string}
      * @memberof EnvironmentTag
      */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof EnvironmentTag
-     */
     'name': string;
     /**
      * 

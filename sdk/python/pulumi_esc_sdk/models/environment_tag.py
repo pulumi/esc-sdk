@@ -28,14 +28,13 @@ class EnvironmentTag(BaseModel):
     """
     EnvironmentTag
     """ # noqa: E501
-    id: Optional[StrictStr] = None
     name: StrictStr
     value: Optional[StrictStr] = None
     created: StrictStr
     modified: StrictStr
     editor_login: StrictStr = Field(alias="editorLogin")
     editor_name: StrictStr = Field(alias="editorName")
-    __properties: ClassVar[List[str]] = ["id", "name", "value", "created", "modified", "editorLogin", "editorName"]
+    __properties: ClassVar[List[str]] = ["name", "value", "created", "modified", "editorLogin", "editorName"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -88,7 +87,6 @@ class EnvironmentTag(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "id": obj.get("id"),
             "name": obj.get("name"),
             "value": obj.get("value"),
             "created": obj.get("created"),

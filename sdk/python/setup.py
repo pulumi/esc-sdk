@@ -48,5 +48,5 @@ setup(
     long_description="""\
     Pulumi ESC allows you to compose and manage hierarchical collections of configuration and secrets and consume them in various ways.
     """,  # noqa: E501
-    package_data={"pulumi_esc_sdk": ["py.typed"]},
+    package_data={"pulumi_esc_sdk": ["py.typed", "pulumi-plugin.json"]},
 )

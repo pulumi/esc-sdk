@@ -9,7 +9,7 @@ GO := go
 .phony: .EXPORT_ALL_VARIABLES
 .EXPORT_ALL_VARIABLES:
 
-default: ensure build_go
+default: ensure_go build_go
 
 install::
 	${GO} install ./cmd/...

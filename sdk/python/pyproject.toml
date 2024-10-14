@@ -6,7 +6,7 @@ license = "Apache 2.0"
 readme = "README.md"
 repository = "https://github.com/pulumi/esc-sdk"
 keywords = ["pulumi esc", "sdk"]
-include = ["pulumi_esc_sdk/py.typed"]
+include = ["pulumi_esc_sdk/py.typed", "pulumi_esc_sdk/pulumi-plugin.json"]
 
 [tool.poetry.dependencies]
 python = "^3.7"

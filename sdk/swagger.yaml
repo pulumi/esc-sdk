@@ -96,8 +96,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PropertyAccessor"
-      required:
-      - text
     CreateEnvironment:
       type: object
       properties:

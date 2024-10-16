@@ -29,7 +29,7 @@ class Interpolation(BaseModel):
     """
     Interpolation
     """ # noqa: E501
-    text: StrictStr
+    text: Optional[StrictStr] = None
     value: Optional[List[PropertyAccessor]] = None
     __properties: ClassVar[List[str]] = ["text", "value"]
 

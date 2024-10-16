@@ -558,7 +558,7 @@ export interface Interpolation {
      * @type {string}
      * @memberof Interpolation
      */
-    'text': string;
+    'text'?: string;
     /**
      * 
      * @type {Array<PropertyAccessor>}

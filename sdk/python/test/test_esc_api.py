@@ -9,7 +9,7 @@ from datetime import datetime
 import pulumi_esc_sdk as esc
 
 PROJECT_NAME = "sdk-python-test"
-ENV_PREFIX = "env-"
+ENV_PREFIX = "env"
 
 
 class TestEscApi(unittest.TestCase):
@@ -27,7 +27,7 @@ class TestEscApi(unittest.TestCase):
 
         self.remove_all_python_test_envs()
 
-        self.baseEnvName = ENV_PREFIX + "base-" + datetime.now().strftime("%Y%m%d%H%M%S")
+        self.baseEnvName = f"{ENV_PREFIX}-base-{datetime.now().timestamp()}"
         self.client.create_environment(self.orgName, PROJECT_NAME, self.baseEnvName)
         self.envName = None
 
@@ -38,7 +38,7 @@ class TestEscApi(unittest.TestCase):
             self.client.delete_environment(self.orgName, PROJECT_NAME, self.envName)
 
     def test_environment_end_to_end(self) -> None:
-        self.envName = ENV_PREFIX + "end-to-end-" + datetime.now().strftime("%Y%m%d%H%M%S")
+        self.envName = f"{ENV_PREFIX}-end-to-end-{datetime.now().timestamp()}"
         self.client.create_environment(self.orgName, PROJECT_NAME, self.envName)
 
         envs = self.client.list_environments(self.orgName)

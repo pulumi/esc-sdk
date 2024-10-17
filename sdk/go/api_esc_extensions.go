@@ -153,6 +153,29 @@ func (c *EscClient) CreateEnvironment(ctx context.Context, org, projectName, env
 	return err
 }
 
+type CloneEnvironmentOptions struct {
+	Version                 int32
+	PreserveHistory         bool
+	PreserveAccess          bool
+	PreserveEnvironmentTags bool
+	PreserveRevisionTags    bool
+}
+
+// CloneEnvironment clones an existing environment into a new environment.
+func (c *EscClient) CloneEnvironment(ctx context.Context, org, srcProjectName, srcEnvName, destProjectName, destEnvName string, cloneEnvironmentOptions *CloneEnvironmentOptions) error {
+	cloneEnvironment := NewCloneEnvironment(destProjectName, destEnvName)
+	if cloneEnvironmentOptions.Version != 0 {
+		cloneEnvironment.Version = &cloneEnvironmentOptions.Version
+	}
+	cloneEnvironment.PreserveHistory = &cloneEnvironmentOptions.PreserveHistory
+	cloneEnvironment.PreserveAccess = &cloneEnvironmentOptions.PreserveAccess
+	cloneEnvironment.PreserveEnvironmentTags = &cloneEnvironmentOptions.PreserveEnvironmentTags
+	cloneEnvironment.PreserveRevisionTags = &cloneEnvironmentOptions.PreserveRevisionTags
+
+	_, err := c.EscAPI.CloneEnvironment(ctx, org, srcProjectName, srcEnvName).CloneEnvironment(*cloneEnvironment).Execute()
+	return err
+}
+
 // UpdateEnvironmentYaml updates the environment with the given name in the given organization with the given YAML definition.
 func (c *EscClient) UpdateEnvironmentYaml(ctx context.Context, org, projectName, envName, yaml string) (*EnvironmentDiagnostics, error) {
 	diags, _, err := c.EscAPI.UpdateEnvironmentYaml(ctx, org, projectName, envName).Body(yaml).Execute()

@@ -139,6 +139,24 @@ class EscClient:
         createEnv = models.CreateEnvironment(project=project_name, name=env_name)
         return self.esc_api.create_environment(org_name, createEnv)
 
+    def clone_environment(self, org_name: str, src_project_name: str, src_env_name: str, dest_project_name: str, dest_env_name: str, clone_options: dict = {}) -> models.Environment:
+        """Clone an environment.
+        
+        :param org_name: The name of the organization.
+        :param src_project_name: The name of the source project.
+        :param src_env_name: The name of the source environment.
+        :param dest_project_name: The name of the destination project.
+        :param dest_env_name: The name of the destination environment.
+        :param clone_options: A dictionary containing clone options.
+        :key bool preserve_access: Whether to preserve team access.
+        :key bool preserve_environment_tags: Whether to preserve tags.
+        :key bool preserve_history: Whether to preserve history.
+        :key bool preserve_revision_tags: Whether to preserve version tags.
+        :return: The created environment."""
+
+        cloneEnv = models.CloneEnvironment(project=dest_project_name, name=dest_env_name, **clone_options)
+        return self.esc_api.clone_environment(org_name, src_project_name, src_env_name, cloneEnv)
+
     def update_environment_yaml(self, org_name: str, project_name: str, env_name: str, yaml_body: str) -> models.EnvironmentDiagnostics:
         """Update an environment using the YAML body.
         

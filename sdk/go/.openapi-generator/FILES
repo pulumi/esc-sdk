@@ -4,6 +4,7 @@ configuration.go
 model_access.go
 model_accessor.go
 model_check_environment.go
+model_clone_environment.go
 model_create_environment.go
 model_create_environment_revision_tag.go
 model_create_environment_tag.go

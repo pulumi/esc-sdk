@@ -111,6 +111,49 @@ export interface CheckEnvironment {
 /**
  * 
  * @export
+ * @interface CloneEnvironment
+ */
+export interface CloneEnvironment {
+    /**
+     * 
+     * @type {string}
+     * @memberof CloneEnvironment
+     */
+    'project': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CloneEnvironment
+     */
+    'name': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CloneEnvironment
+     */
+    'preserveAccess'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CloneEnvironment
+     */
+    'preserveEnvironmentTags'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CloneEnvironment
+     */
+    'preserveHistory'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CloneEnvironment
+     */
+    'preserveRevisionTags'?: boolean;
+}
+/**
+ * 
+ * @export
  * @interface CreateEnvironment
  */
 export interface CreateEnvironment {
@@ -935,6 +978,59 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Clones an environment
+         * @summary Clones an environment
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {CloneEnvironment} cloneEnvironment Clone environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        cloneEnvironment: async (orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('cloneEnvironment', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('cloneEnvironment', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('cloneEnvironment', 'envName', envName)
+            // verify required parameter 'cloneEnvironment' is not null or undefined
+            assertParamExists('cloneEnvironment', 'cloneEnvironment', cloneEnvironment)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/clone`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(cloneEnvironment, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2159,6 +2255,22 @@ export const EscApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Clones an environment
+         * @summary Clones an environment
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {CloneEnvironment} cloneEnvironment Clone environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cloneEnvironment(orgName, projectName, envName, cloneEnvironment, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.cloneEnvironment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Creates an environment in the given org with the given name.
          * @summary Create a new environment
          * @param {string} orgName Organization name
@@ -2547,6 +2659,19 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
             return localVarFp.checkEnvironmentYaml(orgName, body, options).then((request) => request(axios, basePath));
         },
         /**
+         * Clones an environment
+         * @summary Clones an environment
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {CloneEnvironment} cloneEnvironment Clone environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options?: any): AxiosPromise<void> {
+            return localVarFp.cloneEnvironment(orgName, projectName, envName, cloneEnvironment, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Creates an environment in the given org with the given name.
          * @summary Create a new environment
          * @param {string} orgName Organization name
@@ -2865,6 +2990,21 @@ export class EscApi extends BaseAPI {
      */
     public checkEnvironmentYaml(orgName: string, body: string, options?: RawAxiosRequestConfig) {
         return EscApiFp(this.configuration).checkEnvironmentYaml(orgName, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Clones an environment
+     * @summary Clones an environment
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {CloneEnvironment} cloneEnvironment Clone environment
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).cloneEnvironment(orgName, projectName, envName, cloneEnvironment, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

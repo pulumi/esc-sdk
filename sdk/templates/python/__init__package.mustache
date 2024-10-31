@@ -32,6 +32,27 @@ from {{packageName}}.signing import HttpSigningConfiguration
 from {{modelPackage}}.{{classFilename}} import {{classname}}
 {{/model}}
 {{/models}}
+
+__all__ = [
+    "EscClient",
+    "ApiResponse",
+    "ApiClient",
+    "Configuration",
+    "OpenApiException",
+    "ApiTypeError",
+    "ApiValueError",
+    "ApiKeyError",
+    "ApiAttributeError",
+    "ApiException",
+{{#hasHttpSignatureMethods}}
+    "HttpSigningConfiguration",
+{{/hasHttpSignatureMethods}}
+{{#models}}
+{{#model}}
+    "{{classname}}",
+{{/model}}
+{{/models}}
+]
 {{#recursionLimit}}
 
 __import__('sys').setrecursionlimit({{{.}}})

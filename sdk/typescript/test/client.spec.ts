@@ -53,6 +53,10 @@ describe("ESC", async () => {
         assert.notEqual(orgs, undefined);
         assert(orgs?.environments?.some((e) => e.name === name));
 
+        let openEmptyEnv = await client.openAndReadEnvironment(PULUMI_ORG, PROJECT_NAME, name);
+        assert.deepEqual(openEmptyEnv?.environment, {})
+        assert.deepEqual(openEmptyEnv?.values, {})
+
         const envDef: esc.EnvironmentDefinition = {
             imports: [fullyQualifiedName(baseEnvName)],
             values: {

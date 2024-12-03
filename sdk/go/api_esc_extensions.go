@@ -101,6 +101,10 @@ func (c *EscClient) ReadOpenEnvironment(ctx context.Context, org, projectName, e
 		return nil, nil, err
 	}
 
+	if env == nil || env.Properties == nil {
+		return nil, nil, nil
+	}
+
 	propertyMap := *env.Properties
 	for k, v := range propertyMap {
 		v.Value = mapValues(v.Value)

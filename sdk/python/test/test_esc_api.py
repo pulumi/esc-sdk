@@ -44,6 +44,9 @@ class TestEscApi(unittest.TestCase):
         envs = self.client.list_environments(self.orgName)
         self.assertFindEnv(envs)
 
+        _, _, yaml = self.client.open_and_read_environment(self.orgName, PROJECT_NAME, self.envName)
+        self.assertEqual(yaml, "{}\n")
+
         fooReference = "${foo}"
         yaml = f"""
 imports:

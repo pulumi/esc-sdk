@@ -66,6 +66,11 @@ func Test_EscClient(t *testing.T) {
 		envs, err := apiClient.ListEnvironments(auth, orgName, nil)
 		require.Nil(t, err)
 
+		_, values, err := apiClient.OpenAndReadEnvironment(auth, orgName, PROJECT_NAME, envName)
+		require.Nil(t, err)
+		var nilValues map[string]any = nil
+		require.Equal(t, values, nilValues)
+
 		requireFindEnvironment(t, envs, envName)
 
 		yaml := "imports:\n  - " + PROJECT_NAME + "/" + baseEnvName + "\n" + `
@@ -102,7 +107,7 @@ values:
 		require.True(t, ok)
 		require.Equal(t, "shh! don't tell anyone", mySecret["fn::secret"])
 
-		_, values, err := apiClient.OpenAndReadEnvironment(auth, orgName, PROJECT_NAME, envName)
+		_, values, err = apiClient.OpenAndReadEnvironment(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 
 		require.Equal(t, baseEnvName, values["base"])

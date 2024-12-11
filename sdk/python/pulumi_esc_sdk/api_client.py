@@ -90,7 +90,7 @@ class ApiClient:
             self.default_headers[header_name] = header_value
         self.cookie = cookie
         # Set default User-Agent.
-        self.user_agent = 'esc-sdk/python/0.10.3-dev.0'
+        self.user_agent = 'esc-sdk/python/0.10.5-dev.0'
         self.default_headers['X-Pulumi-Source'] = 'esc-sdk'
         self.client_side_validation = configuration.client_side_validation
 

@@ -106,6 +106,24 @@ components:
       required:
         - project
         - name
+    CloneEnvironment:
+      type: object
+      properties:
+        project:
+          $ref: "#/components/schemas/ProjectName"
+        name:
+          $ref: "#/components/schemas/EnvName"
+        preserveAccess:
+          type: boolean
+        preserveEnvironmentTags:
+          type: boolean
+        preserveHistory:
+          type: boolean
+        preserveRevisionTags:
+          type: boolean
+      required:
+        - project
+        - name
     ExprBuiltin:
       type: object
       properties:
@@ -796,6 +814,38 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
+  /environments/{orgName}/{projectName}/{envName}/clone:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
+      - $ref: "#/components/parameters/envName"
+    post:
+      tags:
+      - esc
+      operationId: CloneEnvironment
+      summary: Clones an environment
+      description: Clones an environment
+      requestBody:
+        description: Clone environment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CloneEnvironment"
+      responses:
+        "204":
+          description: The environment was cloned successfully.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+
   /environments/{orgName}/yaml/check:
     parameters:
       - $ref: "#/components/parameters/orgName"
@@ -1298,4 +1348,3 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  

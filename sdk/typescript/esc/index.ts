@@ -59,6 +59,13 @@ export interface EnvironmentPropertyResponse {
     value: any;
 }
 
+export interface CloneEnvironmentOptions {
+    preserveHistory?: boolean;
+    preserveAccess?: boolean;
+    preserveEnvironmentTags?: boolean;
+    preserveRevisionTags?: boolean;
+}
+
 type KeyValueMap = { [key: string]: string };
 
 /**
@@ -312,6 +319,39 @@ export class EscApi {
         }
 
         throw new Error(`Failed to create environment: ${resp.statusText}`);
+    }
+
+    /**
+     * cloneEnvironment clones an environment
+     * @summary Clone environment
+     * @param {string} orgName Organization name
+     * @param {string} cloneProjectName Clone project name
+     * @param {string} cloneEnvName Clone environment name
+     * @param {string} destProjectName Destination project name
+     * @param {string} destEnvName Destionation environment name
+     * @param {CloneEnvironmentOptions} cloneOptions Clone options
+     * @returns {Promise<void>} A promise that resolves when the environment is created
+     */
+    async cloneEnvironment(
+        orgName: string,
+        srcProjectName: string,
+        srcEnvName: string,
+        destProjectName: string,
+        destEnvName: string,
+        cloneOptions?: CloneEnvironmentOptions,
+    ): Promise<void> {
+        const body = {
+            project: destProjectName,
+            name: destEnvName,
+            ...cloneOptions,
+        };
+
+        const resp = await this.rawApi.cloneEnvironment(orgName, srcProjectName, srcEnvName, body);
+        if (resp.status === 204) {
+            return;
+        }
+
+        throw new Error(`Failed to clone environment: ${resp.statusText}`);
     }
 
     /**

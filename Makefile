@@ -43,6 +43,13 @@ build_debug:: ensure_go
 build_python::
 	PYPI_VERSION=$(PYTHON_SDK_VERSION) ./scripts/build_python_sdk.sh
 
+build_typescript::
+	cd sdk/typescript && \
+		npm i && npm run build && \
+		cp ../../README.md ../../LICENSE package.json package-lock.json ./bin/ && \
+		sed -i.bak -e "s/\$${VERSION}/$(VERSION)/g" ./bin/package.json && \
+		rm -rf ./bin/tests/*
+
 test_go:: build_go
 	cd sdk && ${GO} test --timeout 30m -short -count 1 -parallel ${CONCURRENCY} ./...
 

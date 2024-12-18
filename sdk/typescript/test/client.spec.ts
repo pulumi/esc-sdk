@@ -46,16 +46,22 @@ describe("ESC", async () => {
         await client.deleteEnvironment(PULUMI_ORG, PROJECT_NAME, baseEnvName);
     });
 
-    it("should create, list, update, get, decrypt, open and delete an environment", async () => {
+    it("should create, clone, list, update, get, decrypt, open and delete an environment", async () => {
         const name = `${ENV_PREFIX}-${Date.now()}`;
         await assert.doesNotReject(client.createEnvironment(PULUMI_ORG, PROJECT_NAME, name));
-        const orgs = await client.listEnvironments(PULUMI_ORG);
-        assert.notEqual(orgs, undefined);
-        assert(orgs?.environments?.some((e) => e.name === name));
+
+        const cloneProject = `${PROJECT_NAME}-clone`;
+        const cloneName = `${name}-clone`;
+        await assert.doesNotReject(client.cloneEnvironment(PULUMI_ORG, PROJECT_NAME, name, cloneProject, cloneName));
+
+        const resp = await client.listEnvironments(PULUMI_ORG);
+        assert.notEqual(resp, undefined);
+        assert(resp!.environments!.some((e) => e.project == PROJECT_NAME && e.name === name));
+        assert(resp!.environments!.some((e) => e.project == cloneProject && e.name === cloneName));
 
         let openEmptyEnv = await client.openAndReadEnvironment(PULUMI_ORG, PROJECT_NAME, name);
-        assert.deepEqual(openEmptyEnv?.environment, {})
-        assert.deepEqual(openEmptyEnv?.values, {})
+        assert.deepEqual(openEmptyEnv?.environment, {});
+        assert.deepEqual(openEmptyEnv?.values, {});
 
         const envDef: esc.EnvironmentDefinition = {
             imports: [fullyQualifiedName(baseEnvName)],

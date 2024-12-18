@@ -41,8 +41,13 @@ class TestEscApi(unittest.TestCase):
         self.envName = f"{ENV_PREFIX}-end-to-end-{datetime.now().timestamp()}"
         self.client.create_environment(self.orgName, PROJECT_NAME, self.envName)
 
+        cloneProject = f"{PROJECT_NAME}-clone"
+        cloneName = f"{self.envName}-clone"
+        self.client.clone_environment(self.orgName, PROJECT_NAME, self.envName, cloneProject, cloneName)
+
         envs = self.client.list_environments(self.orgName)
-        self.assertFindEnv(envs)
+        self.assertFindEnv(envs, PROJECT_NAME, self.envName)
+        self.assertFindEnv(envs, cloneProject, cloneName)
 
         _, _, yaml = self.client.open_and_read_environment(self.orgName, PROJECT_NAME, self.envName)
         self.assertEqual(yaml, "{}\n")
@@ -175,14 +180,14 @@ values:
         self.assertIsNotNone(env.values.environment_variables)
         self.assertEqual(env.values.environment_variables["FOO"], "${foo}")
 
-    def assertFindEnv(self, envs):
+    def assertFindEnv(self, envs, findProject, findName):
         self.assertIsNotNone(envs)
         self.assertGreater(len(envs.environments), 0)
         for env in envs.environments:
-            if env.name == self.envName:
+            if env.project == findProject and env.name == findName:
                 return
 
-        self.fail("Environment {envName} not found".format(envName=self.envName))
+        self.fail(f"Environment {findProject}/{findName} not found")
 
     def remove_all_python_test_envs(self) -> None:
         continuationToken = None

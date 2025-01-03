@@ -146,6 +146,10 @@ func (c *EscClient) OpenAndReadEnvironmentAtVersion(ctx context.Context, org, pr
 // The property is returned along with the resolved value.
 func (c *EscClient) ReadEnvironmentProperty(ctx context.Context, org, projectName, envName, openEnvID, propPath string) (*Value, any, error) {
 	prop, _, err := c.EscAPI.ReadOpenEnvironmentProperty(ctx, org, projectName, envName, openEnvID).Property(propPath).Execute()
+	if prop == nil {
+		return nil, nil, err
+	}
+
 	v := mapValuesPrimitive(prop.Value)
 	return prop, v, err
 }

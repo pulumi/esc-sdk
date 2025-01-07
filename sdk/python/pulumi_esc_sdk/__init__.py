@@ -16,7 +16,7 @@
 """  # noqa: E501
 
 
-__version__ = "0.10.5.dev.0"
+__version__ = "0.11.0.dev.0"
 
 # import extensions
 from pulumi_esc_sdk.esc_client import EscClient

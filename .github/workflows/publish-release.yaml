@@ -27,3 +27,25 @@ jobs:
       prerelease: false
     secrets: inherit
 
+  github-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Extract Tag Name
+        id: extract_tag
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "::set-output name=tag_name::$TAG_NAME"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: ${{ steps.extract_tag.outputs.tag_name }}
+          body_path: CHANGELOG_PENDING.md

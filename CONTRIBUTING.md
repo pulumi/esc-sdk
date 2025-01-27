@@ -5,6 +5,7 @@
 ### Prerequisites
 
 * [OpenAPI Generator](https://openapi-generator.tech/docs/installation/)
+* Java
 
 ### Building
 

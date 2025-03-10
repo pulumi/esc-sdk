@@ -25,6 +25,26 @@ make build_python
 make build_go
 ```
 
+### Running tests
+
+First, make sure to set the following environment variables:
+
+```shell
+PULUMI_ACCESS_TOKEN=<token>
+PULUMI_ORG=<org>
+
+# Optional - defaults to https://api.pulumi.com/api/esc.
+PULUMI_BACKEND_URL=<base_url>
+```
+
+Now you can run the tests for the different sdks:
+
+```shell
+make test_typescript
+make test_python
+make test_go
+```
+
 ## Submitting a Pull Request
 
 For contributors we use the [standard fork based workflow](https://gist.github.com/Chaser324/ce0505fbed06b947d962): Fork this repository, create a topic branch, and when ready, open a pull request from your fork.

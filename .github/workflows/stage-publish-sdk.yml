@@ -44,13 +44,7 @@ jobs:
           VERSION: ${{ inputs.version }}
           PULUMI_VERSION: ${{ inputs.version }}
       - name: Build Node.JS SDK
-        working-directory: sdk/typescript
-        run: |-
-          npm i
-          npm run build
-          cp ../../README.md ../../LICENSE package.json package-lock.json bin/
-          sed -i.bak -e "s/\${VERSION}/$VERSION/g" ./bin/package.json
-          rm -rf ./bin/tests/*
+        run: make build_typescript
         env:
             VERSION: ${{ inputs.version }}
             PULUMI_VERSION: ${{ inputs.version }}

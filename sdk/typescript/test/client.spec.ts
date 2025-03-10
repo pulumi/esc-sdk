@@ -21,7 +21,7 @@ const ENV_PREFIX = "env";
 describe("ESC", async () => {
     const PULUMI_ACCESS_TOKEN = process.env.PULUMI_ACCESS_TOKEN;
     const PULUMI_ORG = process.env.PULUMI_ORG;
-    const PULUMI_BASE_PATH = process.env.PULUMI_API_BASE_URL;
+    const PULUMI_BASE_PATH = process.env.PULUMI_BACKEND_URL;
     if (!PULUMI_ACCESS_TOKEN) {
         throw new Error("PULUMI_ACCESS_TOKEN not set");
     }

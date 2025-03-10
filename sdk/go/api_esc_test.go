@@ -31,7 +31,7 @@ func Test_EscClient(t *testing.T) {
 	orgName := os.Getenv("PULUMI_ORG")
 	require.NotEmpty(t, orgName, "PULUMI_ORG must be set")
 
-	basePath := os.Getenv("PULUMI_API_BASE_URL")
+	basePath := os.Getenv("PULUMI_BACKEND_URL")
 	if basePath != "" {
 		configuration.Servers[0].URL = basePath
 	}

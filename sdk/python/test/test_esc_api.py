@@ -22,7 +22,7 @@ class TestEscApi(unittest.TestCase):
         self.orgName = os.getenv("PULUMI_ORG")
         self.assertIsNotNone(self.orgName, "PULUMI_ORG must be set")
 
-        self.host = os.getenv("PULUMI_API_BASE_URL")
+        self.host = os.getenv("PULUMI_BACKEND_URL")
 
         configuration = esc.Configuration(access_token=self.accessToken, host=self.host)
         self.client = esc.EscClient(configuration)

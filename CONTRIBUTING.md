@@ -34,7 +34,7 @@ PULUMI_ACCESS_TOKEN=<token>
 PULUMI_ORG=<org>
 
 # Optional - defaults to https://api.pulumi.com/api/esc.
-PULUMI_API_BASE_URL=<base_url>
+PULUMI_BACKEND_URL=<base_url>
 ```
 
 Now you can run the tests for the different sdks:

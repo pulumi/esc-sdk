@@ -24,25 +24,15 @@ const PROJECT_NAME = "sdk-go-test"
 const ENV_PREFIX = "env-"
 
 func Test_EscClient(t *testing.T) {
-	configuration := NewConfiguration()
-
-	accessToken := os.Getenv("PULUMI_ACCESS_TOKEN")
-	require.NotEmpty(t, accessToken, "PULUMI_ACCESS_TOKEN must be set")
 	orgName := os.Getenv("PULUMI_ORG")
 	require.NotEmpty(t, orgName, "PULUMI_ORG must be set")
-
-	basePath := os.Getenv("PULUMI_BACKEND_URL")
-	if basePath != "" {
-		configuration.Servers[0].URL = basePath
-	}
-
-	apiClient := NewClient(configuration)
-	auth := NewAuthContext(accessToken)
+	apiClient, auth, err := DefaultLogin()
+	require.NoError(t, err)
 
 	removeAllGoTestEnvs(t, apiClient, auth, orgName)
 
 	baseEnvName := "base-" + time.Now().Format("20060102150405")
-	err := apiClient.CreateEnvironment(auth, orgName, PROJECT_NAME, baseEnvName)
+	err = apiClient.CreateEnvironment(auth, orgName, PROJECT_NAME, baseEnvName)
 	require.Nil(t, err)
 	t.Cleanup(func() {
 		err := apiClient.DeleteEnvironment(auth, orgName, PROJECT_NAME, baseEnvName)

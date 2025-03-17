@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/url"
 	"os"
+	"strings"
 
 	esc_workspace "github.com/pulumi/esc/cmd/esc/cli/workspace"
 	"gopkg.in/ghodss/yaml.v1"
@@ -67,14 +68,17 @@ func NewClient(cfg *Configuration) *EscClient {
 // NewCustomBackendConfiguration creates a new Configuration object,
 // but replaces default API endpoint with a given custom backend URL
 func NewCustomBackendConfiguration(customBackendURL url.URL) *Configuration {
-	appendedURL := customBackendURL.JoinPath("api", "esc")
+	if !strings.HasSuffix(customBackendURL.String(), "/api/esc") {
+		appendedURL := customBackendURL.JoinPath("api", "esc")
+		customBackendURL = *appendedURL
+	}
 	cfg := &Configuration{
 		DefaultHeader: make(map[string]string),
 		UserAgent:     "esc-sdk",
 		Debug:         false,
 		Servers: ServerConfigurations{
 			{
-				URL:         appendedURL.String(),
+				URL:         customBackendURL.String(),
 				Description: "Pulumi Cloud Custom Backend API",
 			},
 		},
@@ -87,32 +91,22 @@ func NewCustomBackendConfiguration(customBackendURL url.URL) *Configuration {
 // Backend URL is automatically detected from either PULUMI_BACKEND_URL environment variable
 // or currently logged in account in Pulumi CLI or ESC CLI
 func NewDefaultClient() (*EscClient, error) {
-	customBackendURL := os.Getenv("PULUMI_BACKEND_URL")
-	if customBackendURL == "" {
-		workspace := esc_workspace.New(esc_workspace.DefaultFS(), esc_workspace.DefaultPulumiWorkspace())
-		account, _, err := workspace.GetCurrentAccount(false)
-		if err != nil {
-			return nil, fmt.Errorf("Error grabbing current account: %w", err)
-		}
-		if account != nil {
-			customBackendURL = account.BackendURL
-		}
+	workspace := esc_workspace.New(esc_workspace.DefaultFS(), esc_workspace.DefaultPulumiWorkspace())
+	account, _, err := workspace.GetCurrentAccount(false)
+	if err != nil {
+		return nil, fmt.Errorf("Error grabbing current account: %w", err)
 	}
-
-	if customBackendURL != "" {
-		parsedUrl, err := url.Parse(customBackendURL)
-		if err != nil {
-			return nil, fmt.Errorf("Error parsing custom backend url: %w", err)
-		}
-		return NewClient(NewCustomBackendConfiguration(*parsedUrl)), nil
+	customBackendURL := workspace.GetCurrentCloudURL(account)
+	parsedUrl, err := url.Parse(customBackendURL)
+	if err != nil {
+		return nil, fmt.Errorf("Error parsing custom backend url: %w", err)
 	}
-
-	return NewClient(NewConfiguration()), nil
+	return NewClient(NewCustomBackendConfiguration(*parsedUrl)), nil
 }
 
 // This is the easiest way to use ESC SDK. DefaultLogin grabs default client
 // and default authorization context, so you can start using SDK right away
-func DefaultLogin() (*EscClient, context.Context, error) {
+func DefaultLogin() (context.Context, *EscClient, error) {
 	client, err := NewDefaultClient()
 	if err != nil {
 		return nil, nil, err
@@ -121,7 +115,7 @@ func DefaultLogin() (*EscClient, context.Context, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	return client, context, nil
+	return context, client, nil
 }
 
 // ListEnvironments lists all environments in the given organization.

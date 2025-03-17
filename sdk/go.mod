@@ -3,7 +3,7 @@ module github.com/pulumi/esc-sdk/sdk
 go 1.21
 
 require (
-	github.com/pulumi/esc v0.13.0
+	github.com/pulumi/esc v0.13.1-0.20250314190530-79238870da74
 	github.com/stretchr/testify v1.10.0
 	gopkg.in/ghodss/yaml.v1 v1.0.0
 )

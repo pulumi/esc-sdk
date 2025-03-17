@@ -26,7 +26,7 @@ const ENV_PREFIX = "env-"
 func Test_EscClient(t *testing.T) {
 	orgName := os.Getenv("PULUMI_ORG")
 	require.NotEmpty(t, orgName, "PULUMI_ORG must be set")
-	apiClient, auth, err := DefaultLogin()
+	auth, apiClient, err := DefaultLogin()
 	require.NoError(t, err)
 
 	removeAllGoTestEnvs(t, apiClient, auth, orgName)

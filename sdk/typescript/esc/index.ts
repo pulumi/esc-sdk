@@ -80,14 +80,24 @@ export class EscApi {
     config: Configuration;
     constructor(config?: Configuration) {
         if (!config) {
+            config = new Configuration()
+        }
+
+        if (!config.accessToken) {
             const PULUMI_ACCESS_TOKEN = process.env.PULUMI_ACCESS_TOKEN;
-            const PULUMI_BASE_PATH = process.env.PULUMI_BACKEND_URL;
             if (!PULUMI_ACCESS_TOKEN) {
                 throw new Error("PULUMI_ACCESS_TOKEN not set");
             }
-            const basePathConfig = PULUMI_BASE_PATH ? { basePath: PULUMI_BASE_PATH } : {};
-            config = new Configuration({ accessToken: PULUMI_ACCESS_TOKEN, ...basePathConfig });
+            config.accessToken = PULUMI_ACCESS_TOKEN
         }
+
+        if (!config.basePath) {
+            const PULUMI_BASE_PATH = process.env.PULUMI_BACKEND_URL;
+            if (PULUMI_BASE_PATH) {
+                config.basePath = PULUMI_BASE_PATH
+            }
+        }
+
         this.config = config;
         this.rawApi = new EscRawApi(config);
     }

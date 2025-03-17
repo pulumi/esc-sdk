@@ -24,13 +24,15 @@ class EscClient:
     def __init__(self, config: configuration.Configuration=None) -> None:
         """Constructor
         """
-        if config is None:
+        if config is None or 'Authorization' not in config.api_key:
             self.accessToken = os.getenv("PULUMI_ACCESS_TOKEN")
             if not self.accessToken:
                 raise ValueError(
                     "PULUMI_ACCESS_TOKEN is neither set in environment nor passed in as configuration") 
+            config = configuration.Configuration(access_token=self.accessToken)
+        if config.host is None:
             self.host = os.getenv("PULUMI_BACKEND_URL")
-            config = configuration.Configuration(access_token=self.accessToken, host=self.host)
+            config.host = self.host
         self.esc_api = api.EscApi(api_client.ApiClient(config))
 
     def list_environments(self, org_name: str, continuation_token: str = None) -> models.OrgEnvironments:

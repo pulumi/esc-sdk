@@ -11,6 +11,7 @@ from typing import Mapping, Any, List
 import inspect
 import yaml
 import os
+from urllib.parse import urlparse, urlunparse
 
 
 class EscClient:
@@ -24,15 +25,21 @@ class EscClient:
     def __init__(self, config: configuration.Configuration=None) -> None:
         """Constructor
         """
-        if config is None or 'Authorization' not in config.api_key:
+        if config is None:
+            config = configuration.Configuration()
+        if 'Authorization' not in config.api_key:
             self.accessToken = os.getenv("PULUMI_ACCESS_TOKEN")
             if not self.accessToken:
                 raise ValueError(
                     "PULUMI_ACCESS_TOKEN is neither set in environment nor passed in as configuration") 
-            config = configuration.Configuration(access_token=self.accessToken)
-        if config.host is None:
+            config.api_key["Authorization"] = self.accessToken
+        if config.host == "https://api.pulumi.com/api/esc":
             self.host = os.getenv("PULUMI_BACKEND_URL")
-            config.host = self.host
+            if self.host:
+                self.host = append_esc_to_url(self.host)
+            if self.host:
+                config.host = self.host
+        
         self.esc_api = api.EscApi(api_client.ApiClient(config))
 
     def list_environments(self, org_name: str, continuation_token: str = None) -> models.OrgEnvironments:
@@ -417,3 +424,19 @@ def convertPropertyToValue(property: Any) -> Any:
 
 def isObject(obj):
     return inspect.isclass(obj) or isinstance(obj, dict)
+
+def append_esc_to_url(custom_backend_url_str):
+    try:
+        custom_backend_url = urlparse(custom_backend_url_str)
+        appended_url = urlunparse((
+            str(custom_backend_url.scheme),
+            str(custom_backend_url.netloc),
+            "/api/esc",
+            None,  # path
+            None,  # query
+            None,  # fragment
+        ))
+        return appended_url
+    except Exception as e:
+        print(f"Error parsing URL: {e}")
+        return None

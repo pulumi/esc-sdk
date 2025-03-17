@@ -84,18 +84,24 @@ export class EscApi {
         }
 
         if (!config.accessToken) {
-            const PULUMI_ACCESS_TOKEN = process.env.PULUMI_ACCESS_TOKEN;
-            if (!PULUMI_ACCESS_TOKEN) {
+            const pulumiAccessToken = process.env.PULUMI_ACCESS_TOKEN;
+            if (!pulumiAccessToken) {
                 throw new Error("PULUMI_ACCESS_TOKEN not set");
             }
-            config.accessToken = PULUMI_ACCESS_TOKEN
+            config.accessToken = pulumiAccessToken
         }
 
         if (!config.basePath) {
-            const PULUMI_BASE_PATH = process.env.PULUMI_BACKEND_URL;
-            if (PULUMI_BASE_PATH) {
-                config.basePath = PULUMI_BASE_PATH
+            const pulumiBasePath = process.env.PULUMI_BACKEND_URL;
+            if (pulumiBasePath) {
+                config.basePath = pulumiBasePath
             }
+        }
+
+        // Normalize backend url
+        if (config.basePath) {
+            const url = new URL(config.basePath)
+            const appendedUrl = new URL(`/api/esc`, `${url.protocol}//${url.hostname}`);
         }
 
         this.config = config;

@@ -9,7 +9,6 @@ import (
 	"io"
 	"net/url"
 	"os"
-	"strings"
 
 	esc_workspace "github.com/pulumi/esc/cmd/esc/cli/workspace"
 	"gopkg.in/ghodss/yaml.v1"
@@ -67,10 +66,10 @@ func NewClient(cfg *Configuration) *EscClient {
 
 // NewCustomBackendConfiguration creates a new Configuration object,
 // but replaces default API endpoint with a given custom backend URL
-func NewCustomBackendConfiguration(customBackendURL url.URL) *Configuration {
-	if !strings.HasSuffix(customBackendURL.String(), "/api/esc") {
-		appendedURL := customBackendURL.JoinPath("api", "esc")
-		customBackendURL = *appendedURL
+func NewCustomBackendConfiguration(customBackendURL url.URL) (*Configuration, error) {
+	appendedUrl, err := url.Parse(fmt.Sprintf("%s://%s/api/esc", customBackendURL.Scheme, customBackendURL.Hostname()))
+	if err != nil {
+		return nil, fmt.Errorf("failed to normalize backend url: ")
 	}
 	cfg := &Configuration{
 		DefaultHeader: make(map[string]string),
@@ -78,13 +77,13 @@ func NewCustomBackendConfiguration(customBackendURL url.URL) *Configuration {
 		Debug:         false,
 		Servers: ServerConfigurations{
 			{
-				URL:         customBackendURL.String(),
+				URL:         appendedUrl.String(),
 				Description: "Pulumi Cloud Custom Backend API",
 			},
 		},
 		OperationServers: map[string]ServerConfigurations{},
 	}
-	return cfg
+	return cfg, nil
 }
 
 // NewDefaultClient creates a new ESC client with default configuration.
@@ -101,7 +100,11 @@ func NewDefaultClient() (*EscClient, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Error parsing custom backend url: %w", err)
 	}
-	return NewClient(NewCustomBackendConfiguration(*parsedUrl)), nil
+	config, err := NewCustomBackendConfiguration(*parsedUrl)
+	if err != nil {
+		return nil, err
+	}
+	return NewClient(config), nil
 }
 
 // This is the easiest way to use ESC SDK. DefaultLogin grabs default client

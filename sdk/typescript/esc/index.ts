@@ -78,7 +78,7 @@ type KeyValueMap = { [key: string]: string };
 export class EscApi {
     rawApi: EscRawApi;
     config: Configuration;
-    constructor(config: Configuration|undefined = undefined) {
+    constructor(config?: Configuration) {
         if (!config) {
             const PULUMI_ACCESS_TOKEN = process.env.PULUMI_ACCESS_TOKEN;
             const PULUMI_BASE_PATH = process.env.PULUMI_BACKEND_URL;

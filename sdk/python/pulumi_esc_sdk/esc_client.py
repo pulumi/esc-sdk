@@ -29,14 +29,10 @@ class EscClient:
             config = configuration.Configuration()
         if 'Authorization' not in config.api_key:
             self.accessToken = os.getenv("PULUMI_ACCESS_TOKEN")
-            if not self.accessToken:
-                raise ValueError(
-                    "PULUMI_ACCESS_TOKEN is neither set in environment nor passed in as configuration") 
-            config.api_key["Authorization"] = self.accessToken
+            if self.accessToken:
+                config.api_key["Authorization"] = self.accessToken
         if config.host == "https://api.pulumi.com/api/esc":
-            self.host = os.getenv("PULUMI_BACKEND_URL")
-            if self.host:
-                self.host = append_esc_to_url(self.host)
+            self.host = append_esc_to_url(os.getenv("PULUMI_BACKEND_URL"))
             if self.host:
                 config.host = self.host
         
@@ -426,6 +422,8 @@ def isObject(obj):
     return inspect.isclass(obj) or isinstance(obj, dict)
 
 def append_esc_to_url(custom_backend_url_str):
+    if custom_backend_url_str is None:
+        return None
     try:
         custom_backend_url = urlparse(custom_backend_url_str)
         appended_url = urlunparse((

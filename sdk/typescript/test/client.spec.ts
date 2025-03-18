@@ -23,7 +23,7 @@ describe("ESC", async () => {
     if (!PULUMI_ORG) {
         throw new Error("PULUMI_ORG not set");
     }
-    const client = new esc.EscApi();
+    const client = esc.DefaultClient();
     const baseEnvName = `${ENV_PREFIX}-base-${Date.now()}`;
 
     before(async () => {

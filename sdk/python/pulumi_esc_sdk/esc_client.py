@@ -22,21 +22,11 @@ class EscClient:
     """
     esc_api: api.EscApi = None
     
-    def __init__(self, config: configuration.Configuration=None) -> None:
+    def __init__(self, configuration: configuration.Configuration) -> None:
         """Constructor
         """
-        if config is None:
-            config = configuration.Configuration()
-        if 'Authorization' not in config.api_key:
-            self.accessToken = os.getenv("PULUMI_ACCESS_TOKEN")
-            if self.accessToken:
-                config.api_key["Authorization"] = self.accessToken
-        if config.host == "https://api.pulumi.com/api/esc":
-            self.host = append_esc_to_url(os.getenv("PULUMI_BACKEND_URL"))
-            if self.host:
-                config.host = self.host
-        
-        self.esc_api = api.EscApi(api_client.ApiClient(config))
+        configuration.host = append_esc_to_url(configuration.host)
+        self.esc_api = api.EscApi(api_client.ApiClient(configuration))
 
     def list_environments(self, org_name: str, continuation_token: str = None) -> models.OrgEnvironments:
         """List all environments in an organization.
@@ -438,3 +428,27 @@ def append_esc_to_url(custom_backend_url_str):
     except Exception as e:
         print(f"Error parsing URL: {e}")
         return None
+
+def default_config(host=None,
+             access_token=None,
+             server_index=None, server_variables=None,
+             server_operation_index=None, server_operation_variables=None,
+             ssl_ca_cert=None,
+             ) -> configuration.Configuration:
+    """Creates default configuration for EscClient.
+    """
+    if not access_token:
+        access_token = os.getenv("PULUMI_ACCESS_TOKEN")
+    if not host:
+        host = os.getenv("PULUMI_BACKEND_URL")
+    return configuration.Configuration(host, access_token, server_index, server_variables, server_operation_index, server_operation_variables, ssl_ca_cert)
+
+def default_client(host=None,
+             access_token=None,
+             server_index=None, server_variables=None,
+             server_operation_index=None, server_operation_variables=None,
+             ssl_ca_cert=None,
+             ) -> configuration.Configuration:
+    """Creates default EscClient.
+    """        
+    return EscClient(default_config(host, access_token, server_index, server_variables, server_operation_index, server_operation_variables, ssl_ca_cert))

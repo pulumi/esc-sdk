@@ -78,13 +78,7 @@ type KeyValueMap = { [key: string]: string };
 export class EscApi {
     rawApi: EscRawApi;
     config: Configuration;
-    constructor(config?: Configuration) {
-        if (!config) {
-            config = new Configuration()
-        }
-        config.accessToken ??= process.env.PULUMI_ACCESS_TOKEN;
-        config.basePath ??= process.env.PULUMI_BACKEND_URL;
-
+    constructor(config: Configuration) {
         // Normalize backend url
         if (config.basePath) {
             const url = new URL(config.basePath)
@@ -826,4 +820,17 @@ function convertPropertyToValue(property: any): any {
     }
 
     return value;
+}
+
+export function DefaultConfiguration(config?: Configuration): Configuration {
+    if (!config) {
+        config = new Configuration()
+    }
+    config.accessToken ??= process.env.PULUMI_ACCESS_TOKEN;
+    config.basePath ??= process.env.PULUMI_BACKEND_URL;
+    return config;
+}
+
+export function DefaultClient(config?: Configuration) {
+    return new EscApi(DefaultConfiguration(config));
 }

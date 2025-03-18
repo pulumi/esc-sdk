@@ -16,10 +16,10 @@ class TestEscApi(unittest.TestCase):
     """EscApi unit test stubs"""
 
     def setUp(self) -> None:
-        self.orgName = os.getenv("PULUMI_ORG")
+        self.orgName = "pulumi"
         self.assertIsNotNone(self.orgName, "PULUMI_ORG must be set")
 
-        self.client = esc.EscClient()
+        self.client = esc.esc_client.default_client()
 
         self.remove_all_python_test_envs()
 

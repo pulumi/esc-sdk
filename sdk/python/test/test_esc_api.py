@@ -16,16 +16,10 @@ class TestEscApi(unittest.TestCase):
     """EscApi unit test stubs"""
 
     def setUp(self) -> None:
-        self.accessToken = os.getenv("PULUMI_ACCESS_TOKEN")
-        self.assertIsNotNone(self.accessToken, "PULUMI_ACCESS_TOKEN must be set")
-
-        self.orgName = os.getenv("PULUMI_ORG")
+        self.orgName = "pulumi"
         self.assertIsNotNone(self.orgName, "PULUMI_ORG must be set")
 
-        self.host = os.getenv("PULUMI_BACKEND_URL")
-
-        configuration = esc.Configuration(access_token=self.accessToken, host=self.host)
-        self.client = esc.EscClient(configuration)
+        self.client = esc.esc_client.default_client()
 
         self.remove_all_python_test_envs()
 

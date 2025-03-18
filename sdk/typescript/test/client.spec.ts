@@ -19,18 +19,11 @@ import * as esc from "../esc";
 const PROJECT_NAME = "sdk-ts-test";
 const ENV_PREFIX = "env";
 describe("ESC", async () => {
-    const PULUMI_ACCESS_TOKEN = process.env.PULUMI_ACCESS_TOKEN;
     const PULUMI_ORG = process.env.PULUMI_ORG;
-    const PULUMI_BASE_PATH = process.env.PULUMI_BACKEND_URL;
-    if (!PULUMI_ACCESS_TOKEN) {
-        throw new Error("PULUMI_ACCESS_TOKEN not set");
-    }
     if (!PULUMI_ORG) {
         throw new Error("PULUMI_ORG not set");
     }
-    const basePathConfig = PULUMI_BASE_PATH ? { basePath: PULUMI_BASE_PATH } : {};
-    const config = new esc.Configuration({ accessToken: PULUMI_ACCESS_TOKEN, ...basePathConfig });
-    const client = new esc.EscApi(config);
+    const client = esc.DefaultClient();
     const baseEnvName = `${ENV_PREFIX}-base-${Date.now()}`;
 
     before(async () => {

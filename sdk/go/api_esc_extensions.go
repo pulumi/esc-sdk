@@ -5,8 +5,12 @@ package esc_sdk
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
+	"net/url"
+	"os"
 
+	esc_workspace "github.com/pulumi/esc/cmd/esc/cli/workspace"
 	"gopkg.in/ghodss/yaml.v1"
 )
 
@@ -29,11 +33,92 @@ func NewAuthContext(accessToken string) context.Context {
 	)
 }
 
+// DefaultAuthContext creates a new context, retrieving Pulumi Access Token
+// from either PULUMI_ACCESS_TOKEN environment variable, or from
+// currently logged in account in Pulumi CLI or ESC CLI
+//
+// This context can be used to authenticate requests to the ESC API.
+func NewDefaultAuthContext() (context.Context, error) {
+	accessToken := os.Getenv("PULUMI_ACCESS_TOKEN")
+	if accessToken != "" {
+		return NewAuthContext(accessToken), nil
+	}
+
+	workspace := esc_workspace.New(esc_workspace.DefaultFS(), esc_workspace.DefaultPulumiWorkspace())
+	account, _, err := workspace.GetCurrentAccount(false)
+	if err != nil {
+		return nil, fmt.Errorf("Error grabbing current account: %w", err)
+	}
+	if account != nil {
+		return NewAuthContext(account.AccessToken), nil
+	}
+
+	return nil, errors.New("No default Pulumi Access Token found. Either export PULUMI_ACCESS_TOKEN " +
+		"environment variable, or login using Pulumi or ESC CLI.")
+}
+
 // NewClient creates a new ESC client with the given configuration.
 func NewClient(cfg *Configuration) *EscClient {
 	client := &EscClient{rawClient: NewRawAPIClient(cfg)}
 	client.EscAPI = client.rawClient.EscAPI
 	return client
+}
+
+// NewCustomBackendConfiguration creates a new Configuration object,
+// but replaces default API endpoint with a given custom backend URL
+func NewCustomBackendConfiguration(customBackendURL url.URL) (*Configuration, error) {
+	appendedUrl, err := url.Parse(fmt.Sprintf("%s://%s/api/esc", customBackendURL.Scheme, customBackendURL.Hostname()))
+	if err != nil {
+		return nil, fmt.Errorf("failed to normalize backend url: ")
+	}
+	cfg := &Configuration{
+		DefaultHeader: make(map[string]string),
+		UserAgent:     "esc-sdk",
+		Debug:         false,
+		Servers: ServerConfigurations{
+			{
+				URL:         appendedUrl.String(),
+				Description: "Pulumi Cloud Custom Backend API",
+			},
+		},
+		OperationServers: map[string]ServerConfigurations{},
+	}
+	return cfg, nil
+}
+
+// NewDefaultClient creates a new ESC client with default configuration.
+// Backend URL is automatically detected from either PULUMI_BACKEND_URL environment variable
+// or currently logged in account in Pulumi CLI or ESC CLI
+func NewDefaultClient() (*EscClient, error) {
+	workspace := esc_workspace.New(esc_workspace.DefaultFS(), esc_workspace.DefaultPulumiWorkspace())
+	account, _, err := workspace.GetCurrentAccount(false)
+	if err != nil {
+		return nil, fmt.Errorf("Error grabbing current account: %w", err)
+	}
+	customBackendURL := workspace.GetCurrentCloudURL(account)
+	parsedUrl, err := url.Parse(customBackendURL)
+	if err != nil {
+		return nil, fmt.Errorf("Error parsing custom backend url: %w", err)
+	}
+	config, err := NewCustomBackendConfiguration(*parsedUrl)
+	if err != nil {
+		return nil, err
+	}
+	return NewClient(config), nil
+}
+
+// This is the easiest way to use ESC SDK. DefaultLogin grabs default client
+// and default authorization context, so you can start using SDK right away
+func DefaultLogin() (context.Context, *EscClient, error) {
+	client, err := NewDefaultClient()
+	if err != nil {
+		return nil, nil, err
+	}
+	context, err := NewDefaultAuthContext()
+	if err != nil {
+		return nil, nil, err
+	}
+	return context, client, nil
 }
 
 // ListEnvironments lists all environments in the given organization.

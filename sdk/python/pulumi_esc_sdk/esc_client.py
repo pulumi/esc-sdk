@@ -441,7 +441,14 @@ def default_config(host=None,
         access_token = os.getenv("PULUMI_ACCESS_TOKEN")
     if not host:
         host = os.getenv("PULUMI_BACKEND_URL")
-    return configuration.Configuration(host, access_token, server_index, server_variables, server_operation_index, server_operation_variables, ssl_ca_cert)
+    return configuration.Configuration(
+        host=host,
+        access_token=access_token,
+        server_index=server_index,
+        server_variables=server_variables,
+        server_operation_index=server_operation_index,
+        server_operation_variables=server_operation_variables,
+        ssl_ca_cert=ssl_ca_cert)
 
 def default_client(host=None,
              access_token=None,
@@ -451,4 +458,11 @@ def default_client(host=None,
              ) -> configuration.Configuration:
     """Creates default EscClient.
     """        
-    return EscClient(default_config(host, access_token, server_index, server_variables, server_operation_index, server_operation_variables, ssl_ca_cert))
+    return EscClient(default_config(
+        host=host,
+        access_token=access_token,
+        server_index=server_index,
+        server_variables=server_variables,
+        server_operation_index=server_operation_index,
+        server_operation_variables=server_operation_variables,
+        ssl_ca_cert=ssl_ca_cert))

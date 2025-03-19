@@ -1,0 +1,89 @@
+# Copyright 2025, Pulumi Corporation.  All rights reserved.
+
+"""Recreating Pulumi workspace and account logic for python SDK."""
+
+from dataclasses import dataclass, field
+import json
+import os
+import pathlib
+from typing import Optional
+
+from pulumi_esc_sdk.workspace_models import Account, Credentials
+
+def get_pulumi_home_dir() -> str:
+    """
+    Returns the path of the '.pulumi' folder where Pulumi puts its artifacts.
+    """
+    # Allow the folder we use to be overridden by an environment variable
+    dir_env = os.getenv("PULUMI_HOME")
+    if dir_env:
+        return dir_env
+
+    # Otherwise, use the current user's home dir + .pulumi
+    home_dir = pathlib.Path.home()
+
+    return str(home_dir / ".pulumi")
+
+def get_pulumi_path(*elem: str) -> str:
+    """
+    Returns the path to a file or directory under the '.pulumi' folder.
+    It joins the path of the '.pulumi' folder with elements passed as arguments.
+    """
+    home_dir = get_pulumi_home_dir()
+    return str(pathlib.Path(home_dir).joinpath(*elem))
+
+def get_esc_bookkeeping_dir() -> str:
+    """
+    Returns the path of the '.esc' folder inside Pulumi home dir.
+    """
+    return get_pulumi_path(".esc")
+
+def append_creds_file(dir: str) -> str:
+    """
+    Returns the path to the esc credentials file on disk.
+    """
+    return str(pathlib.Path(dir) / "credentials.json")
+
+def get_esc_current_account_name() -> Optional[str]:
+    """
+    Returns the current account name from the ESC credentials file.
+    """
+    creds_file = append_creds_file(get_esc_bookkeeping_dir())
+    try:
+        with open(creds_file, 'r') as f:
+            data = json.loads(f.read())
+            return data['name']
+    except FileNotFoundError:
+        return None
+    except Exception as e:
+        print(f"An unexpected error occured: {e}")
+        return None
+
+def get_stored_credentials() -> Credentials:
+    """
+    Reads and parses credentials from the Pulumi credentials file.
+    """
+    creds_file = append_creds_file(get_pulumi_path())
+    try:
+        with open(creds_file, 'r') as f:
+            data = f.read()
+            creds = Credentials.from_json(data)
+            return creds
+    except FileNotFoundError:
+        return None
+    except Exception as e:
+        print(f"An unexpected error occured: {e}")
+        return None
+    
+def get_current_account(shared) -> tuple[Account, str]:
+    """
+    Gets current account values from credentials file.
+    """
+    backend_url = get_esc_current_account_name()
+    pulumi_credentials = get_stored_credentials()
+    if not pulumi_credentials:
+        return None, None
+    if backend_url is None or shared:
+        backend_url = pulumi_credentials.current
+    pulumi_account = pulumi_credentials.accounts[backend_url]
+    return pulumi_account, backend_url

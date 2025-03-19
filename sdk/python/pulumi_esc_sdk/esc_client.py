@@ -12,6 +12,7 @@ import inspect
 import yaml
 import os
 from urllib.parse import urlparse, urlunparse
+import pulumi_esc_sdk.workspace as workspace
 
 
 class EscClient:
@@ -441,6 +442,14 @@ def default_config(host=None,
         access_token = os.getenv("PULUMI_ACCESS_TOKEN")
     if not host:
         host = os.getenv("PULUMI_BACKEND_URL")
+    
+    account, backend_url = workspace.get_current_account(False)
+
+    if not access_token:
+        access_token = account.accessToken if account else None
+    if not host:
+        host = backend_url
+
     return configuration.Configuration(
         host=host,
         access_token=access_token,

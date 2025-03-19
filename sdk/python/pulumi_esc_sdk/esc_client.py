@@ -443,12 +443,12 @@ def default_config(host=None,
     if not host:
         host = os.getenv("PULUMI_BACKEND_URL")
     
-    account, backend_url = workspace.get_current_account(False)
-
-    if not access_token:
-        access_token = account.accessToken if account else None
-    if not host:
-        host = backend_url
+    if not access_token or not host:
+        account, backend_url = workspace.get_current_account(False)
+        if not access_token:
+            access_token = account.accessToken if account else None
+        if not host:
+            host = backend_url
 
     return configuration.Configuration(
         host=host,

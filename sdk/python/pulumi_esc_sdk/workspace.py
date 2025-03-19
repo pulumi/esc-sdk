@@ -1,6 +1,10 @@
 # Copyright 2025, Pulumi Corporation.  All rights reserved.
 
-"""Recreating Pulumi workspace and account logic for python SDK."""
+"""
+Pulumi workspace and account logic for python SDK.
+This is a partial port of ESC and Pulumi CLI code found in
+https://github.com/pulumi/esc/tree/main/cmd/esc/cli/workspace
+"""
 
 from dataclasses import dataclass, field
 import json
@@ -22,7 +26,7 @@ def get_pulumi_home_dir() -> str:
     # Otherwise, use the current user's home dir + .pulumi
     home_dir = pathlib.Path.home()
 
-    return str(home_dir / ".pulumi")
+    return str(home_dir.joinpath(".pulumi"))
 
 def get_pulumi_path(*elem: str) -> str:
     """
@@ -38,17 +42,17 @@ def get_esc_bookkeeping_dir() -> str:
     """
     return get_pulumi_path(".esc")
 
-def append_creds_file(dir: str) -> str:
+def get_path_to_creds_file(dir: str) -> str:
     """
     Returns the path to the esc credentials file on disk.
     """
-    return str(pathlib.Path(dir) / "credentials.json")
+    return str(pathlib.Path(dir).joinpath("credentials.json"))
 
 def get_esc_current_account_name() -> Optional[str]:
     """
     Returns the current account name from the ESC credentials file.
     """
-    creds_file = append_creds_file(get_esc_bookkeeping_dir())
+    creds_file = get_path_to_creds_file(get_esc_bookkeeping_dir())
     try:
         with open(creds_file, 'r') as f:
             data = json.loads(f.read())
@@ -63,7 +67,7 @@ def get_stored_credentials() -> Credentials:
     """
     Reads and parses credentials from the Pulumi credentials file.
     """
-    creds_file = append_creds_file(get_pulumi_path())
+    creds_file = get_path_to_creds_file(get_pulumi_path())
     try:
         with open(creds_file, 'r') as f:
             data = f.read()

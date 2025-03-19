@@ -1,6 +1,10 @@
 # Copyright 2025, Pulumi Corporation.  All rights reserved.
 
-"""Pulumi workspace models."""
+"""
+Models for Pulumi workspace and account logic for python SDK.
+This is a partial port of ESC and Pulumi CLI code found in
+https://github.com/pulumi/esc/tree/main/cmd/esc/cli/workspace
+"""
 
 from dataclasses import dataclass, field
 import json

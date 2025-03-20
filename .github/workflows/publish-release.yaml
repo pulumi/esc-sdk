@@ -1,0 +1,51 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - v*.*.*
+      - '!v*.*.*-**'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PULUMI_BOT_TOKEN }}
+
+jobs:
+  lint:
+    uses: ./.github/workflows/stage-lint.yml
+
+  test:
+    uses: ./.github/workflows/stage-test.yml
+    with:
+      enable-coverage: true
+    secrets: inherit
+
+  publish-sdks:
+    needs: [test, lint]
+    uses: ./.github/workflows/stage-publish-sdk.yml
+    with:
+      version: ${{ github.ref_name }}
+      prerelease: false
+    secrets: inherit
+
+  github-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Extract Tag Name
+        id: extract_tag
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "::set-output name=tag_name::$TAG_NAME"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: ${{ steps.extract_tag.outputs.tag_name }}
+          body_path: CHANGELOG_PENDING.md

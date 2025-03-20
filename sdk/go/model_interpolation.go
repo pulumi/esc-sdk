@@ -13,8 +13,6 @@ package esc_sdk
 
 import (
 	"encoding/json"
-	"bytes"
-	"fmt"
 )
 
 // checks if the Interpolation type satisfies the MappedNullable interface at compile time
@@ -22,19 +20,16 @@ var _ MappedNullable = &Interpolation{}
 
 // Interpolation struct for Interpolation
 type Interpolation struct {
-	Text string `json:"text"`
+	Text *string `json:"text,omitempty"`
 	Value []PropertyAccessor `json:"value,omitempty"`
 }
-
-type _Interpolation Interpolation
 
 // NewInterpolation instantiates a new Interpolation object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInterpolation(text string) *Interpolation {
+func NewInterpolation() *Interpolation {
 	this := Interpolation{}
-	this.Text = text
 	return &this
 }
 
@@ -46,28 +41,36 @@ func NewInterpolationWithDefaults() *Interpolation {
 	return &this
 }
 
-// GetText returns the Text field value
+// GetText returns the Text field value if set, zero value otherwise.
 func (o *Interpolation) GetText() string {
-	if o == nil {
+	if o == nil || IsNil(o.Text) {
 		var ret string
 		return ret
 	}
-
-	return o.Text
+	return *o.Text
 }
 
-// GetTextOk returns a tuple with the Text field value
+// GetTextOk returns a tuple with the Text field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Interpolation) GetTextOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Text) {
 		return nil, false
 	}
-	return &o.Text, true
+	return o.Text, true
 }
 
-// SetText sets field value
+// HasText returns a boolean if a field has been set.
+func (o *Interpolation) HasText() bool {
+	if o != nil && !IsNil(o.Text) {
+		return true
+	}
+
+	return false
+}
+
+// SetText gets a reference to the given string and assigns it to the Text field.
 func (o *Interpolation) SetText(v string) {
-	o.Text = v
+	o.Text = &v
 }
 
 // GetValue returns the Value field value if set, zero value otherwise.
@@ -112,48 +115,13 @@ func (o Interpolation) MarshalJSON() ([]byte, error) {
 
 func (o Interpolation) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["text"] = o.Text
+	if !IsNil(o.Text) {
+		toSerialize["text"] = o.Text
+	}
 	if !IsNil(o.Value) {
 		toSerialize["value"] = o.Value
 	}
 	return toSerialize, nil
-}
-
-func (o *Interpolation) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"text",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err;
-	}
-
-	for _, requiredProperty := range(requiredProperties) {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varInterpolation := _Interpolation{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varInterpolation)
-
-	if err != nil {
-		return err
-	}
-
-	*o = Interpolation(varInterpolation)
-
-	return err
 }
 
 type NullableInterpolation struct {

@@ -15,12 +15,14 @@
  */
 
 
+const userAgent = 'esc-sdk/ts/0.11.0-dev.0';
+
 import type { Configuration } from './configuration';
 import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
-import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction } from './common';
+import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction } from './common';
 import type { RequestArgs } from './base';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base';
@@ -89,10 +91,10 @@ export interface CheckEnvironment {
     'properties'?: { [key: string]: Value; };
     /**
      * 
-     * @type {object}
+     * @type {any}
      * @memberof CheckEnvironment
      */
-    'schema'?: object;
+    'schema'?: any;
     /**
      * 
      * @type {EvaluatedExecutionContext}
@@ -105,6 +107,106 @@ export interface CheckEnvironment {
      * @memberof CheckEnvironment
      */
     'diagnostics'?: Array<EnvironmentDiagnostic>;
+}
+/**
+ * 
+ * @export
+ * @interface CloneEnvironment
+ */
+export interface CloneEnvironment {
+    /**
+     * 
+     * @type {string}
+     * @memberof CloneEnvironment
+     */
+    'project': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CloneEnvironment
+     */
+    'name': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CloneEnvironment
+     */
+    'preserveAccess'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CloneEnvironment
+     */
+    'preserveEnvironmentTags'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CloneEnvironment
+     */
+    'preserveHistory'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CloneEnvironment
+     */
+    'preserveRevisionTags'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface CreateEnvironment
+ */
+export interface CreateEnvironment {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateEnvironment
+     */
+    'project': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateEnvironment
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface CreateEnvironmentRevisionTag
+ */
+export interface CreateEnvironmentRevisionTag {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateEnvironmentRevisionTag
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateEnvironmentRevisionTag
+     */
+    'revision': number;
+}
+/**
+ * 
+ * @export
+ * @interface CreateEnvironmentTag
+ */
+export interface CreateEnvironmentTag {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateEnvironmentTag
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateEnvironmentTag
+     */
+    'value': string;
 }
 /**
  * 
@@ -222,6 +324,148 @@ export interface EnvironmentDiagnostics {
      * @memberof EnvironmentDiagnostics
      */
     'diagnostics'?: Array<EnvironmentDiagnostic>;
+}
+/**
+ * 
+ * @export
+ * @interface EnvironmentRevision
+ */
+export interface EnvironmentRevision {
+    /**
+     * 
+     * @type {number}
+     * @memberof EnvironmentRevision
+     */
+    'number': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentRevision
+     */
+    'creatorLogin'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentRevision
+     */
+    'created'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentRevision
+     */
+    'creatorName'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof EnvironmentRevision
+     */
+    'tags'?: Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface EnvironmentRevisionTag
+ */
+export interface EnvironmentRevisionTag {
+    /**
+     * 
+     * @type {number}
+     * @memberof EnvironmentRevisionTag
+     */
+    'revision': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentRevisionTag
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentRevisionTag
+     */
+    'created'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentRevisionTag
+     */
+    'modified'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentRevisionTag
+     */
+    'editorLogin'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentRevisionTag
+     */
+    'editorName'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface EnvironmentRevisionTags
+ */
+export interface EnvironmentRevisionTags {
+    /**
+     * 
+     * @type {Array<EnvironmentRevisionTag>}
+     * @memberof EnvironmentRevisionTags
+     */
+    'tags'?: Array<EnvironmentRevisionTag>;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentRevisionTags
+     */
+    'nextToken'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface EnvironmentTag
+ */
+export interface EnvironmentTag {
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentTag
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentTag
+     */
+    'value'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentTag
+     */
+    'created': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentTag
+     */
+    'modified': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentTag
+     */
+    'editorLogin': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EnvironmentTag
+     */
+    'editorName': string;
 }
 /**
  * 
@@ -357,13 +601,32 @@ export interface Interpolation {
      * @type {string}
      * @memberof Interpolation
      */
-    'text': string;
+    'text'?: string;
     /**
      * 
      * @type {Array<PropertyAccessor>}
      * @memberof Interpolation
      */
     'value'?: Array<PropertyAccessor>;
+}
+/**
+ * 
+ * @export
+ * @interface ListEnvironmentTags
+ */
+export interface ListEnvironmentTags {
+    /**
+     * 
+     * @type {{ [key: string]: EnvironmentTag; }}
+     * @memberof ListEnvironmentTags
+     */
+    'tags': { [key: string]: EnvironmentTag; };
+    /**
+     * 
+     * @type {string}
+     * @memberof ListEnvironmentTags
+     */
+    'nextToken': string;
 }
 /**
  * 
@@ -409,12 +672,20 @@ export interface OpenEnvironment {
  * @interface OrgEnvironment
  */
 export interface OrgEnvironment {
+    [key: string]: object | any;
+
     /**
      * 
      * @type {string}
      * @memberof OrgEnvironment
      */
     'organization'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OrgEnvironment
+     */
+    'project': string;
     /**
      * 
      * @type {string}
@@ -569,6 +840,70 @@ export interface Trace {
 /**
  * 
  * @export
+ * @interface UpdateEnvironmentRevisionTag
+ */
+export interface UpdateEnvironmentRevisionTag {
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateEnvironmentRevisionTag
+     */
+    'revision': number;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateEnvironmentTag
+ */
+export interface UpdateEnvironmentTag {
+    /**
+     * 
+     * @type {UpdateEnvironmentTagCurrentTag}
+     * @memberof UpdateEnvironmentTag
+     */
+    'currentTag': UpdateEnvironmentTagCurrentTag;
+    /**
+     * 
+     * @type {UpdateEnvironmentTagNewTag}
+     * @memberof UpdateEnvironmentTag
+     */
+    'newTag': UpdateEnvironmentTagNewTag;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateEnvironmentTagCurrentTag
+ */
+export interface UpdateEnvironmentTagCurrentTag {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateEnvironmentTagCurrentTag
+     */
+    'value': string;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateEnvironmentTagNewTag
+ */
+export interface UpdateEnvironmentTagNewTag {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateEnvironmentTagNewTag
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateEnvironmentTagNewTag
+     */
+    'value': string;
+}
+/**
+ * 
+ * @export
  * @interface Value
  */
 export interface Value {
@@ -638,8 +973,8 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             localVarHeaderParameter['Content-Type'] = 'application/x-yaml';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
-            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk'
-            localVarHeaderParameter['User-Agent'] = 'esc-sdk/ts/0.9.0-dev.0'
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
@@ -650,20 +985,27 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Creates an environment in the given org with the given name.
-         * @summary Create a new environment
+         * Clones an environment
+         * @summary Clones an environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
+         * @param {CloneEnvironment} cloneEnvironment Clone environment
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createEnvironment: async (orgName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        cloneEnvironment: async (orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
-            assertParamExists('createEnvironment', 'orgName', orgName)
+            assertParamExists('cloneEnvironment', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('cloneEnvironment', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
-            assertParamExists('createEnvironment', 'envName', envName)
-            const localVarPath = `/environments/{orgName}/{envName}`
+            assertParamExists('cloneEnvironment', 'envName', envName)
+            // verify required parameter 'cloneEnvironment' is not null or undefined
+            assertParamExists('cloneEnvironment', 'cloneEnvironment', cloneEnvironment)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/clone`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
                 .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -681,11 +1023,165 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
 
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
-            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk'
-            localVarHeaderParameter['User-Agent'] = 'esc-sdk/ts/0.9.0-dev.0'
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(cloneEnvironment, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Creates an environment in the given org with the given name.
+         * @summary Create a new environment
+         * @param {string} orgName Organization name
+         * @param {CreateEnvironment} createEnvironment Create Environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironment: async (orgName: string, createEnvironment: CreateEnvironment, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('createEnvironment', 'orgName', orgName)
+            // verify required parameter 'createEnvironment' is not null or undefined
+            assertParamExists('createEnvironment', 'createEnvironment', createEnvironment)
+            const localVarPath = `/environments/{orgName}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironment, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Create environment revision tag
+         * @summary Create environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {CreateEnvironmentRevisionTag} createEnvironmentRevisionTag Create environment revision tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironmentRevisionTag: async (orgName: string, projectName: string, envName: string, createEnvironmentRevisionTag: CreateEnvironmentRevisionTag, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('createEnvironmentRevisionTag', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('createEnvironmentRevisionTag', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('createEnvironmentRevisionTag', 'envName', envName)
+            // verify required parameter 'createEnvironmentRevisionTag' is not null or undefined
+            assertParamExists('createEnvironmentRevisionTag', 'createEnvironmentRevisionTag', createEnvironmentRevisionTag)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/tags`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironmentRevisionTag, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Create environment tag
+         * @summary Create environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {CreateEnvironmentTag} createEnvironmentTag Create environment tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironmentTag: async (orgName: string, projectName: string, envName: string, createEnvironmentTag: CreateEnvironmentTag, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('createEnvironmentTag', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('createEnvironmentTag', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('createEnvironmentTag', 'envName', envName)
+            // verify required parameter 'createEnvironmentTag' is not null or undefined
+            assertParamExists('createEnvironmentTag', 'createEnvironmentTag', createEnvironmentTag)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/tags`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironmentTag, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -696,17 +1192,21 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * Reads the definition for the given environment with static secrets in plaintext
          * @summary Reads the definition for the given environment with static secrets in plaintext
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        decryptEnvironment: async (orgName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        decryptEnvironment: async (orgName: string, projectName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('decryptEnvironment', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('decryptEnvironment', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('decryptEnvironment', 'envName', envName)
-            const localVarPath = `/environments/{orgName}/{envName}/decrypt`
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/decrypt`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
                 .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -725,8 +1225,8 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
-            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk'
-            localVarHeaderParameter['User-Agent'] = 'esc-sdk/ts/0.9.0-dev.0'
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
@@ -739,17 +1239,21 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * Delete an environment
          * @summary Delete an environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteEnvironment: async (orgName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteEnvironment: async (orgName: string, projectName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('deleteEnvironment', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('deleteEnvironment', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('deleteEnvironment', 'envName', envName)
-            const localVarPath = `/environments/{orgName}/{envName}`
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
                 .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -768,8 +1272,110 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
-            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk'
-            localVarHeaderParameter['User-Agent'] = 'esc-sdk/ts/0.9.0-dev.0'
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Delete environment revision tag
+         * @summary Delete environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEnvironmentRevisionTag: async (orgName: string, projectName: string, envName: string, tagName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('deleteEnvironmentRevisionTag', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('deleteEnvironmentRevisionTag', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('deleteEnvironmentRevisionTag', 'envName', envName)
+            // verify required parameter 'tagName' is not null or undefined
+            assertParamExists('deleteEnvironmentRevisionTag', 'tagName', tagName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"tagName"}}`, encodeURIComponent(String(tagName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Delete environment tag
+         * @summary Delete environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEnvironmentTag: async (orgName: string, projectName: string, envName: string, tagName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('deleteEnvironmentTag', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('deleteEnvironmentTag', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('deleteEnvironmentTag', 'envName', envName)
+            // verify required parameter 'tagName' is not null or undefined
+            assertParamExists('deleteEnvironmentTag', 'tagName', tagName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/tags/{tagName}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"tagName"}}`, encodeURIComponent(String(tagName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
@@ -782,17 +1388,21 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * Read an environment
          * @summary Read an environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEnvironment: async (orgName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getEnvironment: async (orgName: string, projectName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('getEnvironment', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('getEnvironment', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('getEnvironment', 'envName', envName)
-            const localVarPath = `/environments/{orgName}/{envName}`
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
                 .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -811,8 +1421,59 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
-            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk'
-            localVarHeaderParameter['User-Agent'] = 'esc-sdk/ts/0.9.0-dev.0'
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Read an environmentat a specific revision or tag
+         * @summary Read an environment at a specific version
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} version Revision or tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnvironmentAtVersion: async (orgName: string, projectName: string, envName: string, version: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('getEnvironmentAtVersion', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('getEnvironmentAtVersion', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('getEnvironmentAtVersion', 'envName', envName)
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('getEnvironmentAtVersion', 'version', version)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/{version}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
@@ -825,17 +1486,21 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * Returns the ETag for the given environment if it exists.
          * @summary Return an Environment ETag
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEnvironmentETag: async (orgName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getEnvironmentETag: async (orgName: string, projectName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('getEnvironmentETag', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('getEnvironmentETag', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('getEnvironmentETag', 'envName', envName)
-            const localVarPath = `/environments/{orgName}/{envName}`
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
                 .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -854,8 +1519,281 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
-            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk'
-            localVarHeaderParameter['User-Agent'] = 'esc-sdk/ts/0.9.0-dev.0'
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Read environment revision tag
+         * @summary Read environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnvironmentRevisionTag: async (orgName: string, projectName: string, envName: string, tagName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('getEnvironmentRevisionTag', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('getEnvironmentRevisionTag', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('getEnvironmentRevisionTag', 'envName', envName)
+            // verify required parameter 'tagName' is not null or undefined
+            assertParamExists('getEnvironmentRevisionTag', 'tagName', tagName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"tagName"}}`, encodeURIComponent(String(tagName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Read an environment tag
+         * @summary Read an environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnvironmentTag: async (orgName: string, projectName: string, envName: string, tagName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('getEnvironmentTag', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('getEnvironmentTag', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('getEnvironmentTag', 'envName', envName)
+            // verify required parameter 'tagName' is not null or undefined
+            assertParamExists('getEnvironmentTag', 'tagName', tagName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/tags/{tagName}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"tagName"}}`, encodeURIComponent(String(tagName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * List environment revisions
+         * @summary List environment revisions
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} [after] after tag for pagination
+         * @param {number} [count] limit of tags to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentRevisionTags: async (orgName: string, projectName: string, envName: string, after?: string, count?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listEnvironmentRevisionTags', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('listEnvironmentRevisionTags', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('listEnvironmentRevisionTags', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/tags`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (after !== undefined) {
+                localVarQueryParameter['after'] = after;
+            }
+
+            if (count !== undefined) {
+                localVarQueryParameter['count'] = count;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * List environment revisions
+         * @summary List environment revisions
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {number} [before] before revision number for pagination
+         * @param {number} [count] limit of revisions to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentRevisions: async (orgName: string, projectName: string, envName: string, before?: number, count?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listEnvironmentRevisions', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('listEnvironmentRevisions', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('listEnvironmentRevisions', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (before !== undefined) {
+                localVarQueryParameter['before'] = before;
+            }
+
+            if (count !== undefined) {
+                localVarQueryParameter['count'] = count;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * List environment tags
+         * @summary List environment tags
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} [after] after tag for pagination
+         * @param {number} [count] limit of tags to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentTags: async (orgName: string, projectName: string, envName: string, after?: string, count?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listEnvironmentTags', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('listEnvironmentTags', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('listEnvironmentTags', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/tags`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (after !== undefined) {
+                localVarQueryParameter['after'] = after;
+            }
+
+            if (count !== undefined) {
+                localVarQueryParameter['count'] = count;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
@@ -898,8 +1836,8 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
-            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk'
-            localVarHeaderParameter['User-Agent'] = 'esc-sdk/ts/0.9.0-dev.0'
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
@@ -912,18 +1850,22 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * Opens a session the given environment for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
          * @summary Open an environment session
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        openEnvironment: async (orgName: string, envName: string, duration?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        openEnvironment: async (orgName: string, projectName: string, envName: string, duration?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('openEnvironment', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('openEnvironment', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('openEnvironment', 'envName', envName)
-            const localVarPath = `/environments/{orgName}/{envName}/open`
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/open`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
                 .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -946,8 +1888,64 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
-            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk'
-            localVarHeaderParameter['User-Agent'] = 'esc-sdk/ts/0.9.0-dev.0'
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Opens a session the given environment at a specific version for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
+         * @summary Open an environment session at a specific version
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} version Revision or tag
+         * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        openEnvironmentAtVersion: async (orgName: string, projectName: string, envName: string, version: string, duration?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('openEnvironmentAtVersion', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('openEnvironmentAtVersion', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('openEnvironmentAtVersion', 'envName', envName)
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('openEnvironmentAtVersion', 'version', version)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/{version}/open`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (duration !== undefined) {
+                localVarQueryParameter['duration'] = duration;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
@@ -960,20 +1958,24 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * Reads and decrypts secrets including retrieving dynamic secrets from providers.
          * @summary Read an open environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} openSessionID Open session ID returned from environment open
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readOpenEnvironment: async (orgName: string, envName: string, openSessionID: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        readOpenEnvironment: async (orgName: string, projectName: string, envName: string, openSessionID: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('readOpenEnvironment', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('readOpenEnvironment', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('readOpenEnvironment', 'envName', envName)
             // verify required parameter 'openSessionID' is not null or undefined
             assertParamExists('readOpenEnvironment', 'openSessionID', openSessionID)
-            const localVarPath = `/environments/{orgName}/{envName}/open/{openSessionID}`
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/open/{openSessionID}`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
                 .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
                 .replace(`{${"openSessionID"}}`, encodeURIComponent(String(openSessionID)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -993,8 +1995,8 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
-            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk'
-            localVarHeaderParameter['User-Agent'] = 'esc-sdk/ts/0.9.0-dev.0'
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
@@ -1007,23 +2009,27 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * Reads and decrypts secrets including retrieving dynamic secrets from providers.
          * @summary Read an open environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} openSessionID Open session ID returned from environment open
          * @param {string} property Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readOpenEnvironmentProperty: async (orgName: string, envName: string, openSessionID: string, property: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        readOpenEnvironmentProperty: async (orgName: string, projectName: string, envName: string, openSessionID: string, property: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('readOpenEnvironmentProperty', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('readOpenEnvironmentProperty', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('readOpenEnvironmentProperty', 'envName', envName)
             // verify required parameter 'openSessionID' is not null or undefined
             assertParamExists('readOpenEnvironmentProperty', 'openSessionID', openSessionID)
             // verify required parameter 'property' is not null or undefined
             assertParamExists('readOpenEnvironmentProperty', 'property', property)
-            const localVarPath = `/environments/{orgName}/{envName}/open//{openSessionID}`
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/open//{openSessionID}`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
                 .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
                 .replace(`{${"openSessionID"}}`, encodeURIComponent(String(openSessionID)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1047,10 +2053,124 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
-            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk'
-            localVarHeaderParameter['User-Agent'] = 'esc-sdk/ts/0.9.0-dev.0'
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Update environment revision tag
+         * @summary Update environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {UpdateEnvironmentRevisionTag} updateEnvironmentRevisionTag Update environment revision tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentRevisionTag: async (orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTag: UpdateEnvironmentRevisionTag, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('updateEnvironmentRevisionTag', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('updateEnvironmentRevisionTag', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('updateEnvironmentRevisionTag', 'envName', envName)
+            // verify required parameter 'tagName' is not null or undefined
+            assertParamExists('updateEnvironmentRevisionTag', 'tagName', tagName)
+            // verify required parameter 'updateEnvironmentRevisionTag' is not null or undefined
+            assertParamExists('updateEnvironmentRevisionTag', 'updateEnvironmentRevisionTag', updateEnvironmentRevisionTag)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"tagName"}}`, encodeURIComponent(String(tagName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateEnvironmentRevisionTag, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Update an environment tag
+         * @summary Update an environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {UpdateEnvironmentTag} updateEnvironmentTag Update environment tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentTag: async (orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTag: UpdateEnvironmentTag, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('updateEnvironmentTag', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('updateEnvironmentTag', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('updateEnvironmentTag', 'envName', envName)
+            // verify required parameter 'tagName' is not null or undefined
+            assertParamExists('updateEnvironmentTag', 'tagName', tagName)
+            // verify required parameter 'updateEnvironmentTag' is not null or undefined
+            assertParamExists('updateEnvironmentTag', 'updateEnvironmentTag', updateEnvironmentTag)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/tags/{tagName}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"tagName"}}`, encodeURIComponent(String(tagName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateEnvironmentTag, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1061,20 +2181,24 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * Validates and updates the given environment\'s definition.
          * @summary Update an existing environment with Yaml file
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} body Environment Yaml content
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateEnvironmentYaml: async (orgName: string, envName: string, body: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateEnvironmentYaml: async (orgName: string, projectName: string, envName: string, body: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('updateEnvironmentYaml', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('updateEnvironmentYaml', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('updateEnvironmentYaml', 'envName', envName)
             // verify required parameter 'body' is not null or undefined
             assertParamExists('updateEnvironmentYaml', 'body', body)
-            const localVarPath = `/environments/{orgName}/{envName}`
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
                 .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1095,8 +2219,8 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             localVarHeaderParameter['Content-Type'] = 'application/x-yaml';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
-            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk'
-            localVarHeaderParameter['User-Agent'] = 'esc-sdk/ts/0.9.0-dev.0'
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
@@ -1131,29 +2255,78 @@ export const EscApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Creates an environment in the given org with the given name.
-         * @summary Create a new environment
+         * Clones an environment
+         * @summary Clones an environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
+         * @param {CloneEnvironment} cloneEnvironment Clone environment
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createEnvironment(orgName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Error>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironment(orgName, envName, options);
+        async cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cloneEnvironment(orgName, projectName, envName, cloneEnvironment, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.cloneEnvironment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Creates an environment in the given org with the given name.
+         * @summary Create a new environment
+         * @param {string} orgName Organization name
+         * @param {CreateEnvironment} createEnvironment Create Environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Error>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironment(orgName, createEnvironment, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.createEnvironment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Create environment revision tag
+         * @summary Create environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {CreateEnvironmentRevisionTag} createEnvironmentRevisionTag Create environment revision tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, createEnvironmentRevisionTag: CreateEnvironmentRevisionTag, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironmentRevisionTag(orgName, projectName, envName, createEnvironmentRevisionTag, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.createEnvironmentRevisionTag']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Create environment tag
+         * @summary Create environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {CreateEnvironmentTag} createEnvironmentTag Create environment tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createEnvironmentTag(orgName: string, projectName: string, envName: string, createEnvironmentTag: CreateEnvironmentTag, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentTag>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironmentTag(orgName, projectName, envName, createEnvironmentTag, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.createEnvironmentTag']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * Reads the definition for the given environment with static secrets in plaintext
          * @summary Reads the definition for the given environment with static secrets in plaintext
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async decryptEnvironment(orgName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDefinition>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.decryptEnvironment(orgName, envName, options);
+        async decryptEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDefinition>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.decryptEnvironment(orgName, projectName, envName, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.decryptEnvironment']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1162,42 +2335,176 @@ export const EscApiFp = function(configuration?: Configuration) {
          * Delete an environment
          * @summary Delete an environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteEnvironment(orgName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Error>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteEnvironment(orgName, envName, options);
+        async deleteEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Error>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteEnvironment(orgName, projectName, envName, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.deleteEnvironment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Delete environment revision tag
+         * @summary Delete environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteEnvironmentRevisionTag(orgName, projectName, envName, tagName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.deleteEnvironmentRevisionTag']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Delete environment tag
+         * @summary Delete environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteEnvironmentTag(orgName, projectName, envName, tagName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.deleteEnvironmentTag']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * Read an environment
          * @summary Read an environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getEnvironment(orgName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDefinition>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironment(orgName, envName, options);
+        async getEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDefinition>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironment(orgName, projectName, envName, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.getEnvironment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Read an environmentat a specific revision or tag
+         * @summary Read an environment at a specific version
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} version Revision or tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDefinition>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironmentAtVersion(orgName, projectName, envName, version, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.getEnvironmentAtVersion']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * Returns the ETag for the given environment if it exists.
          * @summary Return an Environment ETag
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getEnvironmentETag(orgName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironmentETag(orgName, envName, options);
+        async getEnvironmentETag(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironmentETag(orgName, projectName, envName, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.getEnvironmentETag']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Read environment revision tag
+         * @summary Read environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentRevisionTag>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironmentRevisionTag(orgName, projectName, envName, tagName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.getEnvironmentRevisionTag']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Read an environment tag
+         * @summary Read an environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentTag>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironmentTag(orgName, projectName, envName, tagName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.getEnvironmentTag']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * List environment revisions
+         * @summary List environment revisions
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} [after] after tag for pagination
+         * @param {number} [count] limit of tags to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listEnvironmentRevisionTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentRevisionTags>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentRevisionTags(orgName, projectName, envName, after, count, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentRevisionTags']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * List environment revisions
+         * @summary List environment revisions
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {number} [before] before revision number for pagination
+         * @param {number} [count] limit of revisions to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listEnvironmentRevisions(orgName: string, projectName: string, envName: string, before?: number, count?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<EnvironmentRevision>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentRevisions(orgName, projectName, envName, before, count, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentRevisions']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * List environment tags
+         * @summary List environment tags
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} [after] after tag for pagination
+         * @param {number} [count] limit of tags to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listEnvironmentTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentTags>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentTags(orgName, projectName, envName, after, count, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentTags']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1218,28 +2525,47 @@ export const EscApiFp = function(configuration?: Configuration) {
          * Opens a session the given environment for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
          * @summary Open an environment session
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async openEnvironment(orgName: string, envName: string, duration?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenEnvironment>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.openEnvironment(orgName, envName, duration, options);
+        async openEnvironment(orgName: string, projectName: string, envName: string, duration?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenEnvironment>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.openEnvironment(orgName, projectName, envName, duration, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.openEnvironment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Opens a session the given environment at a specific version for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
+         * @summary Open an environment session at a specific version
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} version Revision or tag
+         * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async openEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, duration?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenEnvironment>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.openEnvironmentAtVersion(orgName, projectName, envName, version, duration, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.openEnvironmentAtVersion']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * Reads and decrypts secrets including retrieving dynamic secrets from providers.
          * @summary Read an open environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} openSessionID Open session ID returned from environment open
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async readOpenEnvironment(orgName: string, envName: string, openSessionID: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Environment>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.readOpenEnvironment(orgName, envName, openSessionID, options);
+        async readOpenEnvironment(orgName: string, projectName: string, envName: string, openSessionID: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Environment>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readOpenEnvironment(orgName, projectName, envName, openSessionID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.readOpenEnvironment']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1248,29 +2574,65 @@ export const EscApiFp = function(configuration?: Configuration) {
          * Reads and decrypts secrets including retrieving dynamic secrets from providers.
          * @summary Read an open environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} openSessionID Open session ID returned from environment open
          * @param {string} property Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async readOpenEnvironmentProperty(orgName: string, envName: string, openSessionID: string, property: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Value>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.readOpenEnvironmentProperty(orgName, envName, openSessionID, property, options);
+        async readOpenEnvironmentProperty(orgName: string, projectName: string, envName: string, openSessionID: string, property: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Value>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readOpenEnvironmentProperty(orgName, projectName, envName, openSessionID, property, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.readOpenEnvironmentProperty']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Update environment revision tag
+         * @summary Update environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {UpdateEnvironmentRevisionTag} updateEnvironmentRevisionTag Update environment revision tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTag: UpdateEnvironmentRevisionTag, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnvironmentRevisionTag(orgName, projectName, envName, tagName, updateEnvironmentRevisionTag, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.updateEnvironmentRevisionTag']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Update an environment tag
+         * @summary Update an environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {UpdateEnvironmentTag} updateEnvironmentTag Update environment tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTag: UpdateEnvironmentTag, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentTag>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnvironmentTag(orgName, projectName, envName, tagName, updateEnvironmentTag, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.updateEnvironmentTag']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * Validates and updates the given environment\'s definition.
          * @summary Update an existing environment with Yaml file
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} body Environment Yaml content
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateEnvironmentYaml(orgName: string, envName: string, body: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDiagnostics>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnvironmentYaml(orgName, envName, body, options);
+        async updateEnvironmentYaml(orgName: string, projectName: string, envName: string, body: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDiagnostics>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnvironmentYaml(orgName, projectName, envName, body, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.updateEnvironmentYaml']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1297,59 +2659,209 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
             return localVarFp.checkEnvironmentYaml(orgName, body, options).then((request) => request(axios, basePath));
         },
         /**
-         * Creates an environment in the given org with the given name.
-         * @summary Create a new environment
+         * Clones an environment
+         * @summary Clones an environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
+         * @param {CloneEnvironment} cloneEnvironment Clone environment
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createEnvironment(orgName: string, envName: string, options?: any): AxiosPromise<Error> {
-            return localVarFp.createEnvironment(orgName, envName, options).then((request) => request(axios, basePath));
+        cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options?: any): AxiosPromise<void> {
+            return localVarFp.cloneEnvironment(orgName, projectName, envName, cloneEnvironment, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Creates an environment in the given org with the given name.
+         * @summary Create a new environment
+         * @param {string} orgName Organization name
+         * @param {CreateEnvironment} createEnvironment Create Environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: any): AxiosPromise<Error> {
+            return localVarFp.createEnvironment(orgName, createEnvironment, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Create environment revision tag
+         * @summary Create environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {CreateEnvironmentRevisionTag} createEnvironmentRevisionTag Create environment revision tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, createEnvironmentRevisionTag: CreateEnvironmentRevisionTag, options?: any): AxiosPromise<void> {
+            return localVarFp.createEnvironmentRevisionTag(orgName, projectName, envName, createEnvironmentRevisionTag, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Create environment tag
+         * @summary Create environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {CreateEnvironmentTag} createEnvironmentTag Create environment tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironmentTag(orgName: string, projectName: string, envName: string, createEnvironmentTag: CreateEnvironmentTag, options?: any): AxiosPromise<EnvironmentTag> {
+            return localVarFp.createEnvironmentTag(orgName, projectName, envName, createEnvironmentTag, options).then((request) => request(axios, basePath));
         },
         /**
          * Reads the definition for the given environment with static secrets in plaintext
          * @summary Reads the definition for the given environment with static secrets in plaintext
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        decryptEnvironment(orgName: string, envName: string, options?: any): AxiosPromise<EnvironmentDefinition> {
-            return localVarFp.decryptEnvironment(orgName, envName, options).then((request) => request(axios, basePath));
+        decryptEnvironment(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<EnvironmentDefinition> {
+            return localVarFp.decryptEnvironment(orgName, projectName, envName, options).then((request) => request(axios, basePath));
         },
         /**
          * Delete an environment
          * @summary Delete an environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteEnvironment(orgName: string, envName: string, options?: any): AxiosPromise<Error> {
-            return localVarFp.deleteEnvironment(orgName, envName, options).then((request) => request(axios, basePath));
+        deleteEnvironment(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<Error> {
+            return localVarFp.deleteEnvironment(orgName, projectName, envName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Delete environment revision tag
+         * @summary Delete environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteEnvironmentRevisionTag(orgName, projectName, envName, tagName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Delete environment tag
+         * @summary Delete environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteEnvironmentTag(orgName, projectName, envName, tagName, options).then((request) => request(axios, basePath));
         },
         /**
          * Read an environment
          * @summary Read an environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEnvironment(orgName: string, envName: string, options?: any): AxiosPromise<EnvironmentDefinition> {
-            return localVarFp.getEnvironment(orgName, envName, options).then((request) => request(axios, basePath));
+        getEnvironment(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<EnvironmentDefinition> {
+            return localVarFp.getEnvironment(orgName, projectName, envName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Read an environmentat a specific revision or tag
+         * @summary Read an environment at a specific version
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} version Revision or tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, options?: any): AxiosPromise<EnvironmentDefinition> {
+            return localVarFp.getEnvironmentAtVersion(orgName, projectName, envName, version, options).then((request) => request(axios, basePath));
         },
         /**
          * Returns the ETag for the given environment if it exists.
          * @summary Return an Environment ETag
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEnvironmentETag(orgName: string, envName: string, options?: any): AxiosPromise<void> {
-            return localVarFp.getEnvironmentETag(orgName, envName, options).then((request) => request(axios, basePath));
+        getEnvironmentETag(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getEnvironmentETag(orgName, projectName, envName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Read environment revision tag
+         * @summary Read environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, options?: any): AxiosPromise<EnvironmentRevisionTag> {
+            return localVarFp.getEnvironmentRevisionTag(orgName, projectName, envName, tagName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Read an environment tag
+         * @summary Read an environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, options?: any): AxiosPromise<EnvironmentTag> {
+            return localVarFp.getEnvironmentTag(orgName, projectName, envName, tagName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * List environment revisions
+         * @summary List environment revisions
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} [after] after tag for pagination
+         * @param {number} [count] limit of tags to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentRevisionTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: any): AxiosPromise<EnvironmentRevisionTags> {
+            return localVarFp.listEnvironmentRevisionTags(orgName, projectName, envName, after, count, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * List environment revisions
+         * @summary List environment revisions
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {number} [before] before revision number for pagination
+         * @param {number} [count] limit of revisions to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentRevisions(orgName: string, projectName: string, envName: string, before?: number, count?: number, options?: any): AxiosPromise<Array<EnvironmentRevision>> {
+            return localVarFp.listEnvironmentRevisions(orgName, projectName, envName, before, count, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * List environment tags
+         * @summary List environment tags
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} [after] after tag for pagination
+         * @param {number} [count] limit of tags to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: any): AxiosPromise<ListEnvironmentTags> {
+            return localVarFp.listEnvironmentTags(orgName, projectName, envName, after, count, options).then((request) => request(axios, basePath));
         },
         /**
          * List environments in the organization available to the current user
@@ -1366,50 +2878,96 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
          * Opens a session the given environment for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
          * @summary Open an environment session
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        openEnvironment(orgName: string, envName: string, duration?: string, options?: any): AxiosPromise<OpenEnvironment> {
-            return localVarFp.openEnvironment(orgName, envName, duration, options).then((request) => request(axios, basePath));
+        openEnvironment(orgName: string, projectName: string, envName: string, duration?: string, options?: any): AxiosPromise<OpenEnvironment> {
+            return localVarFp.openEnvironment(orgName, projectName, envName, duration, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Opens a session the given environment at a specific version for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
+         * @summary Open an environment session at a specific version
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} version Revision or tag
+         * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        openEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, duration?: string, options?: any): AxiosPromise<OpenEnvironment> {
+            return localVarFp.openEnvironmentAtVersion(orgName, projectName, envName, version, duration, options).then((request) => request(axios, basePath));
         },
         /**
          * Reads and decrypts secrets including retrieving dynamic secrets from providers.
          * @summary Read an open environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} openSessionID Open session ID returned from environment open
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readOpenEnvironment(orgName: string, envName: string, openSessionID: string, options?: any): AxiosPromise<Environment> {
-            return localVarFp.readOpenEnvironment(orgName, envName, openSessionID, options).then((request) => request(axios, basePath));
+        readOpenEnvironment(orgName: string, projectName: string, envName: string, openSessionID: string, options?: any): AxiosPromise<Environment> {
+            return localVarFp.readOpenEnvironment(orgName, projectName, envName, openSessionID, options).then((request) => request(axios, basePath));
         },
         /**
          * Reads and decrypts secrets including retrieving dynamic secrets from providers.
          * @summary Read an open environment
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} openSessionID Open session ID returned from environment open
          * @param {string} property Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readOpenEnvironmentProperty(orgName: string, envName: string, openSessionID: string, property: string, options?: any): AxiosPromise<Value> {
-            return localVarFp.readOpenEnvironmentProperty(orgName, envName, openSessionID, property, options).then((request) => request(axios, basePath));
+        readOpenEnvironmentProperty(orgName: string, projectName: string, envName: string, openSessionID: string, property: string, options?: any): AxiosPromise<Value> {
+            return localVarFp.readOpenEnvironmentProperty(orgName, projectName, envName, openSessionID, property, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update environment revision tag
+         * @summary Update environment revision tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {UpdateEnvironmentRevisionTag} updateEnvironmentRevisionTag Update environment revision tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTag: UpdateEnvironmentRevisionTag, options?: any): AxiosPromise<void> {
+            return localVarFp.updateEnvironmentRevisionTag(orgName, projectName, envName, tagName, updateEnvironmentRevisionTag, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update an environment tag
+         * @summary Update an environment tag
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} tagName Tag name
+         * @param {UpdateEnvironmentTag} updateEnvironmentTag Update environment tag
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTag: UpdateEnvironmentTag, options?: any): AxiosPromise<EnvironmentTag> {
+            return localVarFp.updateEnvironmentTag(orgName, projectName, envName, tagName, updateEnvironmentTag, options).then((request) => request(axios, basePath));
         },
         /**
          * Validates and updates the given environment\'s definition.
          * @summary Update an existing environment with Yaml file
          * @param {string} orgName Organization name
+         * @param {string} projectName Project name
          * @param {string} envName Environment name
          * @param {string} body Environment Yaml content
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateEnvironmentYaml(orgName: string, envName: string, body: string, options?: any): AxiosPromise<EnvironmentDiagnostics> {
-            return localVarFp.updateEnvironmentYaml(orgName, envName, body, options).then((request) => request(axios, basePath));
+        updateEnvironmentYaml(orgName: string, projectName: string, envName: string, body: string, options?: any): AxiosPromise<EnvironmentDiagnostics> {
+            return localVarFp.updateEnvironmentYaml(orgName, projectName, envName, body, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1435,68 +2993,240 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Creates an environment in the given org with the given name.
-     * @summary Create a new environment
+     * Clones an environment
+     * @summary Clones an environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
+     * @param {CloneEnvironment} cloneEnvironment Clone environment
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public createEnvironment(orgName: string, envName: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).createEnvironment(orgName, envName, options).then((request) => request(this.axios, this.basePath));
+    public cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).cloneEnvironment(orgName, projectName, envName, cloneEnvironment, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Creates an environment in the given org with the given name.
+     * @summary Create a new environment
+     * @param {string} orgName Organization name
+     * @param {CreateEnvironment} createEnvironment Create Environment
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).createEnvironment(orgName, createEnvironment, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Create environment revision tag
+     * @summary Create environment revision tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {CreateEnvironmentRevisionTag} createEnvironmentRevisionTag Create environment revision tag
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public createEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, createEnvironmentRevisionTag: CreateEnvironmentRevisionTag, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).createEnvironmentRevisionTag(orgName, projectName, envName, createEnvironmentRevisionTag, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Create environment tag
+     * @summary Create environment tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {CreateEnvironmentTag} createEnvironmentTag Create environment tag
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public createEnvironmentTag(orgName: string, projectName: string, envName: string, createEnvironmentTag: CreateEnvironmentTag, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).createEnvironmentTag(orgName, projectName, envName, createEnvironmentTag, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Reads the definition for the given environment with static secrets in plaintext
      * @summary Reads the definition for the given environment with static secrets in plaintext
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public decryptEnvironment(orgName: string, envName: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).decryptEnvironment(orgName, envName, options).then((request) => request(this.axios, this.basePath));
+    public decryptEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).decryptEnvironment(orgName, projectName, envName, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Delete an environment
      * @summary Delete an environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public deleteEnvironment(orgName: string, envName: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).deleteEnvironment(orgName, envName, options).then((request) => request(this.axios, this.basePath));
+    public deleteEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).deleteEnvironment(orgName, projectName, envName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Delete environment revision tag
+     * @summary Delete environment revision tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} tagName Tag name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public deleteEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).deleteEnvironmentRevisionTag(orgName, projectName, envName, tagName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Delete environment tag
+     * @summary Delete environment tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} tagName Tag name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public deleteEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).deleteEnvironmentTag(orgName, projectName, envName, tagName, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Read an environment
      * @summary Read an environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public getEnvironment(orgName: string, envName: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).getEnvironment(orgName, envName, options).then((request) => request(this.axios, this.basePath));
+    public getEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).getEnvironment(orgName, projectName, envName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Read an environmentat a specific revision or tag
+     * @summary Read an environment at a specific version
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} version Revision or tag
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public getEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).getEnvironmentAtVersion(orgName, projectName, envName, version, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Returns the ETag for the given environment if it exists.
      * @summary Return an Environment ETag
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public getEnvironmentETag(orgName: string, envName: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).getEnvironmentETag(orgName, envName, options).then((request) => request(this.axios, this.basePath));
+    public getEnvironmentETag(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).getEnvironmentETag(orgName, projectName, envName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Read environment revision tag
+     * @summary Read environment revision tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} tagName Tag name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public getEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).getEnvironmentRevisionTag(orgName, projectName, envName, tagName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Read an environment tag
+     * @summary Read an environment tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} tagName Tag name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public getEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).getEnvironmentTag(orgName, projectName, envName, tagName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * List environment revisions
+     * @summary List environment revisions
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} [after] after tag for pagination
+     * @param {number} [count] limit of tags to return
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listEnvironmentRevisionTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironmentRevisionTags(orgName, projectName, envName, after, count, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * List environment revisions
+     * @summary List environment revisions
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {number} [before] before revision number for pagination
+     * @param {number} [count] limit of revisions to return
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listEnvironmentRevisions(orgName: string, projectName: string, envName: string, before?: number, count?: number, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironmentRevisions(orgName, projectName, envName, before, count, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * List environment tags
+     * @summary List environment tags
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} [after] after tag for pagination
+     * @param {number} [count] limit of tags to return
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listEnvironmentTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironmentTags(orgName, projectName, envName, after, count, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1516,34 +3246,53 @@ export class EscApi extends BaseAPI {
      * Opens a session the given environment for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
      * @summary Open an environment session
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public openEnvironment(orgName: string, envName: string, duration?: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).openEnvironment(orgName, envName, duration, options).then((request) => request(this.axios, this.basePath));
+    public openEnvironment(orgName: string, projectName: string, envName: string, duration?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).openEnvironment(orgName, projectName, envName, duration, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Opens a session the given environment at a specific version for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
+     * @summary Open an environment session at a specific version
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} version Revision or tag
+     * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public openEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, duration?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).openEnvironmentAtVersion(orgName, projectName, envName, version, duration, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Reads and decrypts secrets including retrieving dynamic secrets from providers.
      * @summary Read an open environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} openSessionID Open session ID returned from environment open
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public readOpenEnvironment(orgName: string, envName: string, openSessionID: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).readOpenEnvironment(orgName, envName, openSessionID, options).then((request) => request(this.axios, this.basePath));
+    public readOpenEnvironment(orgName: string, projectName: string, envName: string, openSessionID: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).readOpenEnvironment(orgName, projectName, envName, openSessionID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Reads and decrypts secrets including retrieving dynamic secrets from providers.
      * @summary Read an open environment
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} openSessionID Open session ID returned from environment open
      * @param {string} property Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration
@@ -1551,22 +3300,55 @@ export class EscApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public readOpenEnvironmentProperty(orgName: string, envName: string, openSessionID: string, property: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).readOpenEnvironmentProperty(orgName, envName, openSessionID, property, options).then((request) => request(this.axios, this.basePath));
+    public readOpenEnvironmentProperty(orgName: string, projectName: string, envName: string, openSessionID: string, property: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).readOpenEnvironmentProperty(orgName, projectName, envName, openSessionID, property, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update environment revision tag
+     * @summary Update environment revision tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} tagName Tag name
+     * @param {UpdateEnvironmentRevisionTag} updateEnvironmentRevisionTag Update environment revision tag
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public updateEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTag: UpdateEnvironmentRevisionTag, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).updateEnvironmentRevisionTag(orgName, projectName, envName, tagName, updateEnvironmentRevisionTag, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update an environment tag
+     * @summary Update an environment tag
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} tagName Tag name
+     * @param {UpdateEnvironmentTag} updateEnvironmentTag Update environment tag
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public updateEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTag: UpdateEnvironmentTag, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).updateEnvironmentTag(orgName, projectName, envName, tagName, updateEnvironmentTag, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Validates and updates the given environment\'s definition.
      * @summary Update an existing environment with Yaml file
      * @param {string} orgName Organization name
+     * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} body Environment Yaml content
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public updateEnvironmentYaml(orgName: string, envName: string, body: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).updateEnvironmentYaml(orgName, envName, body, options).then((request) => request(this.axios, this.basePath));
+    public updateEnvironmentYaml(orgName: string, projectName: string, envName: string, body: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).updateEnvironmentYaml(orgName, projectName, envName, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

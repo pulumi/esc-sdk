@@ -19,5 +19,5 @@
         "baseUrl": "./esc"
     },
     "lib": ["es2017"],
-    "include": ["src/**/*", "test/**/*"],
+    "include": ["src/**/*", "test/**/*", "esc/**/*"],
 }

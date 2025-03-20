@@ -444,7 +444,7 @@ def default_config(host=None,
         host = os.getenv("PULUMI_BACKEND_URL")
     
     if not access_token or not host:
-        account, backend_url = workspace.get_current_account(False)
+        account, backend_url = workspace.get_current_account()
         if not access_token:
             access_token = account.accessToken if account else None
         if not host:

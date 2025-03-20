@@ -16,7 +16,7 @@ from pulumi_esc_sdk.workspace_models import Account, Credentials
 
 def get_pulumi_home_dir() -> str:
     """
-    Returns the path of the '.pulumi' folder where Pulumi puts its artifacts.
+    Returns the path of the ".pulumi" folder where Pulumi puts its artifacts.
     """
     # Allow the folder we use to be overridden by an environment variable
     dir_env = os.getenv("PULUMI_HOME")
@@ -28,19 +28,12 @@ def get_pulumi_home_dir() -> str:
 
     return str(home_dir.joinpath(".pulumi"))
 
-def get_pulumi_path(*elem: str) -> str:
-    """
-    Returns the path to a file or directory under the '.pulumi' folder.
-    It joins the path of the '.pulumi' folder with elements passed as arguments.
-    """
-    home_dir = get_pulumi_home_dir()
-    return str(pathlib.Path(home_dir).joinpath(*elem))
-
 def get_esc_bookkeeping_dir() -> str:
     """
-    Returns the path of the '.esc' folder inside Pulumi home dir.
+    Returns the path of the ".esc" folder inside Pulumi home dir.
     """
-    return get_pulumi_path(".esc")
+    home_dir = get_pulumi_home_dir()
+    return str(pathlib.Path(home_dir).joinpath(".esc"))
 
 def get_path_to_creds_file(dir: str) -> str:
     """
@@ -54,10 +47,12 @@ def get_esc_current_account_name() -> Optional[str]:
     """
     creds_file = get_path_to_creds_file(get_esc_bookkeeping_dir())
     try:
-        with open(creds_file, 'r') as f:
+        with open(creds_file, "r") as f:
             data = json.loads(f.read())
-            return data['name']
+            return data["name"]
     except FileNotFoundError:
+        return None
+    except KeyError:
         return None
     except Exception as e:
         print(f"An unexpected error occured: {e}")
@@ -67,10 +62,10 @@ def get_stored_credentials() -> Credentials:
     """
     Reads and parses credentials from the Pulumi credentials file.
     """
-    creds_file = get_path_to_creds_file(get_pulumi_path())
+    creds_file = get_path_to_creds_file(get_pulumi_home_dir())
     try:
-        with open(creds_file, 'r') as f:
-            data = f.read()
+        with open(creds_file, "r") as f:
+            data = json.loads(f.read())
             creds = Credentials.from_json(data)
             return creds
     except FileNotFoundError:
@@ -79,7 +74,7 @@ def get_stored_credentials() -> Credentials:
         print(f"An unexpected error occured: {e}")
         return None
     
-def get_current_account(shared) -> tuple[Account, str]:
+def get_current_account() -> tuple[Account, str]:
     """
     Gets current account values from credentials file.
     """
@@ -87,7 +82,8 @@ def get_current_account(shared) -> tuple[Account, str]:
     pulumi_credentials = get_stored_credentials()
     if not pulumi_credentials:
         return None, None
-    if backend_url is None or shared:
+    if backend_url is None:
         backend_url = pulumi_credentials.current
-    pulumi_account = pulumi_credentials.accounts[backend_url]
-    return pulumi_account, backend_url
+    if not backend_url or backend_url not in pulumi_credentials.accounts:
+        return None, None
+    return pulumi_credentials.accounts[backend_url], backend_url

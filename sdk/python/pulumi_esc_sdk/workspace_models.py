@@ -31,12 +31,10 @@ class Credentials:
     accounts: Dict[str, Account]
 
     @classmethod
-    def from_json(self, dataJson: str):
-        data = json.loads(dataJson)
+    def from_json(self, data: dict):
         accounts: Dict[str, Account] = {}
-        accounts_dict = data.get("accounts")
-        if accounts_dict:
-            for account_name, account_data in accounts_dict.items():
+        if "accounts" in data:
+            for account_name, account_data in data.get("accounts").items():
                 accounts[account_name] = Account.from_json(account_data)
         return self(
             current=data.get("current"),

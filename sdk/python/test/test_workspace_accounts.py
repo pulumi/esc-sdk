@@ -38,14 +38,21 @@ class TestWorkspaceAccounts(unittest.TestCase):
         self.client = esc.esc_client.default_client()
         self.config = self.client.esc_api.api_client.configuration
         self.assertEqual(self.config.host, "https://api.moolumi.com/api/esc")
-        self.assertTrue(self.config.api_key['Authorization'], "pul-fake-token-moo")
+        self.assertEqual(self.config.api_key['Authorization'], "pul-fake-token-moo")
 
     def test_pulumi_creds_with_esc(self):
         os.environ["PULUMI_HOME"] = os.getcwd() + "/test/test_pulumi_home_esc"
         self.client = esc.esc_client.default_client()
         self.config = self.client.esc_api.api_client.configuration
         self.assertEqual(self.config.host, "https://api.boolumi.com/api/esc")
-        self.assertTrue(self.config.api_key['Authorization'], "pul-fake-token-boo")
+        self.assertEqual(self.config.api_key['Authorization'], "pul-fake-token-boo")
+
+    def test_pulumi_creds_bad_format(self):
+        os.environ["PULUMI_HOME"] = os.getcwd() + "/test/test_pulumi_home_bad_format"
+        self.client = esc.esc_client.default_client()
+        self.config = self.client.esc_api.api_client.configuration
+        self.assertEqual(self.config.host, "https://api.pulumi.com/api/esc")
+        self.assertTrue('Authorization' not in self.config.api_key)
 
 if __name__ == '__main__':
     unittest.main()

@@ -4,6 +4,8 @@ sdk/go/api_esc_test.go linguist-generated=false
 
 sdk/python/**/* linguist-generated=true
 sdk/python/pulumi_esc_sdk/esc_client.py linguist-generated=false
+sdk/python/pulumi_esc_sdk/workspace.py linguist-generated=false
+sdk/python/pulumi_esc_sdk/workspace_models.py linguist-generated=false
 sdk/python/test/**/* linguist-generated=false
 sdk/python/pyproject.toml linguist-generated=false
 

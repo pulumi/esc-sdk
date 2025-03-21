@@ -15,5 +15,4 @@ sdk/typescript/esc/workspace.ts linguist-generated=false
 sdk/typescript/esc/workspace_models.ts linguist-generated=false
 sdk/typescript/test/**/* linguist-generated=false
 sdk/typescript/* linguist-generated=false
-
 sdk/test/**/* linguist-generated=false

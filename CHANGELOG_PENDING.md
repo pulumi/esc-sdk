@@ -6,6 +6,8 @@
   [#76](https://github.com/pulumi/esc-sdk/pull/76)
 - Adds support for reading credentials from disk to Python SDK
   [#81](https://github.com/pulumi/esc-sdk/pull/81)
+- Adds support for reading credentials from disk to Typescript SDK
+  [#86](https://github.com/pulumi/esc-sdk/pull/86)
 
 ### Bug Fixes
 

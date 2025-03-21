@@ -23,7 +23,7 @@ import {
 } from "./raw/index";
 import * as yaml from "js-yaml";
 import { AxiosError } from "axios";
-import { getCurrentAccount } from "workspace";
+import { getCurrentAccount } from "./workspace";
 
 export {
     Configuration,

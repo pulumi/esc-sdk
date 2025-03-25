@@ -28,10 +28,7 @@ class TestEscApi(unittest.TestCase):
         self.envName = None
 
     def tearDown(self) -> None:
-        if self.baseEnvName is not None:
-            self.client.delete_environment(self.orgName, PROJECT_NAME, self.baseEnvName)
-        if self.envName is not None:
-            self.client.delete_environment(self.orgName, PROJECT_NAME, self.envName)
+        self.remove_all_python_test_envs()
 
     def test_environment_end_to_end(self) -> None:
         self.envName = f"{ENV_PREFIX}-end-to-end-{datetime.now().timestamp()}"
@@ -190,8 +187,8 @@ values:
         while True:
             envs = self.client.list_environments(self.orgName, continuationToken)
             for env in envs.environments:
-                if env.project == PROJECT_NAME and env.name.startswith(ENV_PREFIX):
-                    self.client.delete_environment(self.orgName, PROJECT_NAME, env.name)
+                if (env.project == PROJECT_NAME or env.project == f"{PROJECT_NAME}-clone") and env.name.startswith(ENV_PREFIX):
+                    self.client.delete_environment(self.orgName, env.project, env.name)
 
             continuationToken = envs.next_token
             if continuationToken is None or continuationToken == "":

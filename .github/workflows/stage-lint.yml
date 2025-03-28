@@ -14,10 +14,10 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - name: Set up Go 1.21
+      - name: Set up Go 1.23
         uses: actions/setup-go@v3
         with:
-          go-version: 1.21.x
+          go-version: 1.23.x
       - run: cd sdk && go mod tidy
       - name: Fail if go mod not tidy
         run: |
@@ -32,13 +32,10 @@ jobs:
       # The action doesn't have an install-only mode,
       # so we'll ask it to print its version only.
       - name: Install golangci-lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v7
         with:
-          version: v1.54.2
-          args: --version
-
-      - name: Lint
-        run: make lint-golang
+          version: v2.0
+          working-directory: sdk
   lint_python:
     runs-on: ubuntu-latest
     steps:
@@ -66,10 +63,10 @@ jobs:
         uses: jaxxstorm/action-install-gh-release@v1.5.0
         with:
           repo: pulumi/pulumictl
-      - name: Set up Go 1.21
+      - name: Set up Go 1.23
         uses: actions/setup-go@v3
         with:
-          go-version: 1.21.x
+          go-version: 1.23.x
       - name: Lint
         run: make lint-copyright
   check-sdk-generation-clean:

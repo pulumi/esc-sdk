@@ -53,8 +53,8 @@ func NewDefaultAuthContext() (context.Context, error) {
 		return NewAuthContext(account.AccessToken), nil
 	}
 
-	return nil, errors.New("No default Pulumi Access Token found. Either export PULUMI_ACCESS_TOKEN " +
-		"environment variable, or login using Pulumi or ESC CLI.")
+	return nil, errors.New("no default Pulumi Access Token found. Either export PULUMI_ACCESS_TOKEN " +
+		"environment variable, or login using Pulumi or ESC CLI")
 }
 
 // NewClient creates a new ESC client with the given configuration.

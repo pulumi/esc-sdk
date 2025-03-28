@@ -49,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: [1.21.x]
+        go-version: [1.23.x]
         go-stable: [true]
   test_typescript:
     name: Test Typescript

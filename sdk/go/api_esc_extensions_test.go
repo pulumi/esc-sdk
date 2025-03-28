@@ -19,7 +19,8 @@ import (
 func Test_EscClientLogin(t *testing.T) {
 	t.Run("verify default auth context picks up PULUMI_ACCESS_TOKEN variable", func(t *testing.T) {
 		beforeTest := os.Getenv("PULUMI_ACCESS_TOKEN")
-		os.Setenv("PULUMI_ACCESS_TOKEN", "FAKE_TOKEN")
+		err := os.Setenv("PULUMI_ACCESS_TOKEN", "FAKE_TOKEN")
+		require.NoError(t, err)
 
 		authContext, err := NewDefaultAuthContext()
 		require.NoError(t, err)
@@ -30,12 +31,14 @@ func Test_EscClientLogin(t *testing.T) {
 		require.True(t, ok)
 		require.Equal(t, "FAKE_TOKEN", token.Key)
 
-		os.Setenv("PULUMI_ACCESS_TOKEN", beforeTest)
+		err = os.Setenv("PULUMI_ACCESS_TOKEN", beforeTest)
+		require.NoError(t, err)
 	})
 
 	t.Run("verify default client picks up PULUMI_BACKEND_URL by default", func(t *testing.T) {
 		beforeTest := os.Getenv("PULUMI_BACKEND_URL")
-		os.Setenv("PULUMI_BACKEND_URL", "https://api.moolumi.com")
+		err := os.Setenv("PULUMI_BACKEND_URL", "https://api.moolumi.com")
+		require.NoError(t, err)
 
 		client, err := NewDefaultClient()
 		require.NoError(t, err)
@@ -44,6 +47,7 @@ func Test_EscClientLogin(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, "https://api.moolumi.com/api/esc", url)
 
-		os.Setenv("PULUMI_BACKEND_URL", beforeTest)
+		err = os.Setenv("PULUMI_BACKEND_URL", beforeTest)
+		require.NoError(t, err)
 	})
 }

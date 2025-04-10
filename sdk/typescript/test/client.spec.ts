@@ -38,7 +38,7 @@ describe("ESC", async () => {
     });
 
     after(async () => {
-        await client.deleteEnvironment(PULUMI_ORG, PROJECT_NAME, baseEnvName);
+        await removeAllTestEnvs(client, PULUMI_ORG);
     });
 
     it("should create, clone, list, update, get, decrypt, open and delete an environment", async () => {
@@ -224,8 +224,8 @@ async function removeAllTestEnvs(client: esc.EscApi, orgName: string): Promise<a
 
         assert.notEqual(orgs, undefined);
         orgs?.environments?.forEach(async (e: esc.OrgEnvironment) => {
-            if (e.project === PROJECT_NAME && e.name.startsWith(ENV_PREFIX)) {
-                await client.deleteEnvironment(orgName, PROJECT_NAME, e.name);
+            if ((e.project === PROJECT_NAME || e.project === `${PROJECT_NAME}-clone`) && e.name.startsWith(ENV_PREFIX)) {
+                await client.deleteEnvironment(orgName, e.project, e.name);
             }
         });
 

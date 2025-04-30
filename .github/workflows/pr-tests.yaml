@@ -1,3 +1,4 @@
+permissions: write-all # Equivalent to default permissions plus id-token: write
 name: Run Acceptance Tests from PR
 
 on:
@@ -5,7 +6,7 @@ on:
     paths-ignore:
       - 'CHANGELOG.md'
       - 'CHANGELOG_PENDING.md'
-  
+
 jobs:
   lint:
     uses: ./.github/workflows/stage-lint.yml

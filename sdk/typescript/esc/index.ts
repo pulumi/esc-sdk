@@ -82,7 +82,7 @@ export class EscApi {
     constructor(config: Configuration) {
         // Normalize backend url
         if (config.basePath) {
-            const url = new URL(config.basePath)
+            const url = new URL(config.basePath);
             const appendedUrl = new URL(`/api/esc`, `${url.protocol}//${url.hostname}`);
             config.basePath = appendedUrl.toString();
         }
@@ -825,13 +825,13 @@ function convertPropertyToValue(property: any): any {
 
 export function DefaultConfiguration(config?: Configuration): Configuration {
     if (!config) {
-        config = new Configuration()
+        config = new Configuration();
     }
     config.accessToken ??= process.env.PULUMI_ACCESS_TOKEN;
     config.basePath ??= process.env.PULUMI_BACKEND_URL;
 
     if (!config.accessToken || !config.basePath) {
-        const {account, backendUrl} = getCurrentAccount();
+        const { account, backendUrl } = getCurrentAccount();
         config.accessToken ??= account?.accessToken;
         config.basePath ??= backendUrl;
     }

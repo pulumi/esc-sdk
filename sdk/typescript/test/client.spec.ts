@@ -224,7 +224,10 @@ async function removeAllTestEnvs(client: esc.EscApi, orgName: string): Promise<a
 
         assert.notEqual(orgs, undefined);
         orgs?.environments?.forEach(async (e: esc.OrgEnvironment) => {
-            if ((e.project === PROJECT_NAME || e.project === `${PROJECT_NAME}-clone`) && e.name.startsWith(ENV_PREFIX)) {
+            if (
+                (e.project === PROJECT_NAME || e.project === `${PROJECT_NAME}-clone`) &&
+                e.name.startsWith(ENV_PREFIX)
+            ) {
                 await client.deleteEnvironment(orgName, e.project, e.name);
             }
         });

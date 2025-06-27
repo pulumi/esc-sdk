@@ -6,9 +6,9 @@ import { after, before, describe, it } from "node:test";
 import path from "path";
 
 describe("ESC", async () => {
-    let tokenBefore: string | undefined
-    let backendBefore: string | undefined
-    let homeBefore: string | undefined
+    let tokenBefore: string | undefined;
+    let backendBefore: string | undefined;
+    let homeBefore: string | undefined;
 
     before(async () => {
         tokenBefore = process.env.PULUMI_ACCESS_TOKEN;
@@ -51,5 +51,4 @@ describe("ESC", async () => {
         assert.equal(client.config.basePath, undefined);
         assert.equal(client.config.accessToken, undefined);
     });
-
 });

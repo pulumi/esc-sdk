@@ -389,6 +389,22 @@ components:
       example:
         application/json:
           id: "42562"
+    EnvironmentDraft:
+      type: object
+      properties:
+        changeRequestId:
+          type: string
+          description: change request identifier
+        latestRevisionNumber:
+          type: integer
+          description: latest revision number of environment
+      required:
+        - changeRequestId
+        - latestRevisionNumber
+      example:
+        application/json:
+          changeRequestId: "a9b6ab9b-54b6-4ad6-8236-0d0d1e4eba48"
+          latestRevisionNumber: 27
     OrgEnvironments:
       type: object
       properties:
@@ -459,6 +475,11 @@ components:
           type: integer
       required:
         - revision
+    SubmitChangeRequestInfo:
+      type: object
+      properties:
+        description:
+          type: string
   parameters:
     orgName:
       name: orgName
@@ -502,6 +523,13 @@ components:
         type: string
         pattern: ^(\d*\.\d+|\d+)(ns|us|µs|ms|s|m|h)?(\d*\.\d+|\d+)?(ns|us|µs|ms|s|m|h)?$
         default: 1h
+    changeRequestId:
+      name: changeRequestId
+      in: path
+      required: true
+      description: change request ID
+      schema:
+        type: string
 
   responses:
     ListOrgEnvironments:
@@ -595,6 +623,12 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Value"
+    CreateEnvironmentDraftSuccess:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EnvironmentDraft"
     BadRequestWithDiagnostics:
       description: Bad Request with diagnostics
       content:
@@ -811,6 +845,39 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  /preview/environments/{orgName}/{projectName}/{envName}/drafts:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
+      - $ref: "#/components/parameters/envName"
+    post:
+      tags:
+        - esc
+      operationId: CreateEnvironmentDraft
+      summary: Create a draft update for an existing environment with Yaml file
+      description: Validates the update the given environment's definition and creates a change request
+      requestBody:
+        description: Environment Yaml content
+        required: true
+        content:
+          application/x-yaml:
+            schema:
+              type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/CreateEnvironmentDraftSuccess"
+        "400":
+          $ref: "#/components/responses/BadRequestWithDiagnostics"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
         "500":
           $ref: "#/components/responses/InternalServerError"
         "default":
@@ -1345,6 +1412,38 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  /preview/change-requests/{orgName}/{changeRequestId}/submit:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/changeRequestId"
+    post:
+      tags:
+        - esc
+      operationId: SubmitChangeRequest
+      summary: Submit a draft change request for review
+      description: Submit a draft change request for review, optionally provide a description for the change request
+      requestBody:
+        description: Change request info to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitChangeRequestInfo"
+      responses:
+        "200":
+          description: Success
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
         "500":
           $ref: "#/components/responses/InternalServerError"
         "default":

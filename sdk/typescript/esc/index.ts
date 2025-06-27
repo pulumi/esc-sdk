@@ -20,6 +20,8 @@ import {
     EnvironmentRevisionTags,
     EnvironmentTag,
     ListEnvironmentTags,
+    EnvironmentDraft,
+    SubmitChangeRequestInfo,
 } from "./raw/index";
 import * as yaml from "js-yaml";
 import { AxiosError } from "axios";
@@ -383,6 +385,50 @@ export class EscApi {
         }
 
         throw new Error(`Failed to update environment: ${resp.statusText}`);
+    }
+
+    /**
+     * createEnvironmentDraft creates an environment draft from a YAML string.
+     * @summary Update environment YAML
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} yaml YAML representation of the environment
+     * @returns {Promise<EnvironmentDraft | undefined>} Info on the created change request
+     */
+    async createEnvironmentDraft(
+        orgName: string,
+        projectName: string,
+        envName: string,
+        yaml: string,
+    ): Promise<EnvironmentDraft | undefined> {
+        const resp = await this.rawApi.createEnvironmentDraft(orgName, projectName, envName, yaml);
+        if (resp.status === 200) {
+            return resp.data;
+        }
+
+        throw new Error(`Failed to create environment draft: ${resp.statusText}`);
+    }
+
+    /**
+     * Submit a draft change request for review, optionally provide a description for the change request
+     * @summary Update environment YAML
+     * @param {string} orgName Organization name
+     * @param {string} changeRequestId change request ID
+     * @param {SubmitChangeRequestInfo} submitChangeRequestInfo Change request info to update
+     * @returns {Promise<void>}
+     */
+    async submitChangeRequest(
+        orgName: string,
+        changeRequestId: string,
+        changeRequestInfo: SubmitChangeRequestInfo,
+    ): Promise<void> {
+        const resp = await this.rawApi.submitChangeRequest(orgName, changeRequestId, changeRequestInfo);
+        if (resp.status === 200) {
+            return;
+        }
+
+        throw new Error(`Failed to create environment draft: ${resp.statusText}`);
     }
 
     /**

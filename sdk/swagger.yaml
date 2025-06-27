@@ -2,7 +2,8 @@
 openapi: "3.0.3"
 info:
   title: ESC (Environments, Secrets, Config) API
-  description: "Pulumi ESC allows you to compose and manage hierarchical collections\
+  description:
+    "Pulumi ESC allows you to compose and manage hierarchical collections\
     \ of configuration and secrets and consume them in various ways."
   version: "0.1.0"
   license:
@@ -48,9 +49,9 @@ components:
         end:
           $ref: "#/components/schemas/Pos"
       required:
-      - environment
-      - begin
-      - end
+        - environment
+        - begin
+        - end
     Reference:
       type: object
       required:
@@ -69,8 +70,8 @@ components:
         range:
           $ref: "#/components/schemas/Range"
       required:
-      - key
-      - range
+        - key
+        - range
     PropertyAccessor:
       allOf:
         - $ref: "#/components/schemas/Accessor"
@@ -135,7 +136,7 @@ components:
         arg:
           $ref: "#/components/schemas/Expr"
       required:
-      - name
+        - name
     Expr:
       type: object
       properties:
@@ -149,7 +150,7 @@ components:
           additionalProperties:
             $ref: "#/components/schemas/Range"
         literal: {}
-        interpolate: 
+        interpolate:
           type: array
           items:
             $ref: "#/components/schemas/Interpolation"
@@ -261,13 +262,13 @@ components:
         - newTag
     CheckEnvironment:
       type: object
-      allOf:     
-      - $ref: "#/components/schemas/Environment"
-      - $ref: "#/components/schemas/EnvironmentDiagnostics"
+      allOf:
+        - $ref: "#/components/schemas/Environment"
+        - $ref: "#/components/schemas/EnvironmentDiagnostics"
     Trace:
       type: object
       properties:
-        def: 
+        def:
           $ref: "#/components/schemas/Range"
         base:
           $ref: "#/components/schemas/Value"
@@ -282,8 +283,8 @@ components:
         trace:
           $ref: "#/components/schemas/Trace"
       required:
-      - trace
-      - value
+        - trace
+        - value
     Pos:
       type: object
       properties:
@@ -297,9 +298,9 @@ components:
           type: integer
           description: "Byte is the byte offset into the file where the indicated position begins."
       required:
-      - line
-      - column
-      - byte
+        - line
+        - column
+        - byte
     EnvironmentDiagnostic:
       type: object
       properties:
@@ -348,7 +349,7 @@ components:
       example:
         application/x-yaml:
           imports:
-          - base-env
+            - base-env
           values:
             foo: bar
           pulumiConfig:
@@ -369,12 +370,12 @@ components:
         modified:
           type: string
       additionalProperties:
-          type: object
-      required: 
-      - project
-      - name
-      - created
-      - modified
+        type: object
+      required:
+        - project
+        - name
+        - created
+        - modified
     OpenEnvironment:
       type: object
       properties:
@@ -382,7 +383,7 @@ components:
           type: string
           description: Open environment session identifier
         diagnostics:
-           $ref: "#/components/schemas/EnvironmentDiagnostics"
+          $ref: "#/components/schemas/EnvironmentDiagnostics"
       required:
         - id
       example:
@@ -394,8 +395,8 @@ components:
         environments:
           type: array
           items:
-            $ref:  "#/components/schemas/OrgEnvironment"
-        nextToken: 
+            $ref: "#/components/schemas/OrgEnvironment"
+        nextToken:
           type: string
     EnvironmentRevision:
       type: object
@@ -489,15 +490,15 @@ components:
       name: version
       in: path
       required: true
-      description:  Revision or tag
-      schema: 
+      description: Revision or tag
+      schema:
         type: string
     duration:
       name: duration
       in: query
       required: false
-      description:  open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
-      schema: 
+      description: open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+      schema:
         type: string
         pattern: ^(\d*\.\d+|\d+)(ns|us|µs|ms|s|m|h)?(\d*\.\d+|\d+)?(ns|us|µs|ms|s|m|h)?$
         default: 1h
@@ -661,7 +662,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/EnvironmentRevisionTags"              
+            $ref: "#/components/schemas/EnvironmentRevisionTags"
 security:
   - Authorization: []
 paths:
@@ -674,10 +675,10 @@ paths:
           in: query
           required: false
           description: continuation Token from previous query to fetch next page of results
-          schema: 
+          schema:
             type: string
       tags:
-      - esc
+        - esc
       operationId: ListEnvironments
       summary: List environments in the organization
       description: List environments in the organization available to the current user
@@ -687,17 +688,17 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
-            $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
     post:
       tags:
-      - esc
+        - esc
       operationId: CreateEnvironment
       summary: Create a new environment
-      requestBody: 
+      requestBody:
         description: Create Environment
         required: true
         content:
@@ -707,7 +708,7 @@ paths:
       description: Creates an environment in the given org with the given name.
       responses:
         "200":
-          $ref: '#/components/responses/SuccessWithMessage'
+          $ref: "#/components/responses/SuccessWithMessage"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -727,11 +728,11 @@ paths:
       - $ref: "#/components/parameters/envName"
     patch:
       tags:
-      - esc
+        - esc
       operationId: UpdateEnvironmentYaml
       summary: Update an existing environment with Yaml file
       description: Validates and updates the given environment's definition.
-      requestBody: 
+      requestBody:
         description: Environment Yaml content
         required: true
         content:
@@ -755,7 +756,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     head:
       tags:
-      - esc
+        - esc
       operationId: GetEnvironmentETag
       summary: Return an Environment ETag
       description: Returns the ETag for the given environment if it exists.
@@ -774,7 +775,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     get:
       tags:
-      - esc
+        - esc
       operationId: GetEnvironment
       summary: Read an environment
       description: Read an environment
@@ -797,13 +798,13 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     delete:
       tags:
-      - esc
+        - esc
       operationId: DeleteEnvironment
       summary: Delete an environment
       description: Delete an environment
       responses:
         "200":
-          $ref: '#/components/responses/SuccessWithMessage'
+          $ref: "#/components/responses/SuccessWithMessage"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -821,7 +822,7 @@ paths:
       - $ref: "#/components/parameters/envName"
     post:
       tags:
-      - esc
+        - esc
       operationId: CloneEnvironment
       summary: Clones an environment
       description: Clones an environment
@@ -851,11 +852,11 @@ paths:
       - $ref: "#/components/parameters/orgName"
     post:
       tags:
-      - esc
+        - esc
       operationId: CheckEnvironmentYaml
       summary: Checks an environment definition for errors
       description: Checks an environment definition for errors
-      requestBody: 
+      requestBody:
         description: Environment Yaml content
         required: true
         content:
@@ -882,7 +883,7 @@ paths:
       - $ref: "#/components/parameters/envName"
     get:
       tags:
-      - esc
+        - esc
       operationId: DecryptEnvironment
       summary: Reads the definition for the given environment with static secrets in plaintext
       description: Reads the definition for the given environment with static secrets in plaintext
@@ -907,7 +908,7 @@ paths:
       - $ref: "#/components/parameters/duration"
     post:
       tags:
-      - esc
+        - esc
       operationId: OpenEnvironment
       summary: Open an environment session
       description: Opens a session the given environment for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
@@ -932,12 +933,12 @@ paths:
       - name: openSessionID
         in: path
         required: true
-        description:  Open session ID returned from environment open
-        schema: 
+        description: Open session ID returned from environment open
+        schema:
           type: string
     get:
       tags:
-      - esc
+        - esc
       operationId: ReadOpenEnvironment
       summary: Read an open environment
       description: Reads and decrypts secrets including retrieving dynamic secrets from providers.
@@ -960,18 +961,18 @@ paths:
       - name: openSessionID
         in: path
         required: true
-        description:  Open session ID returned from environment open
-        schema: 
+        description: Open session ID returned from environment open
+        schema:
           type: string
       - name: property
         in: query
         required: true
         description: Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration
-        schema: 
+        schema:
           type: string
     get:
       tags:
-      - esc
+        - esc
       operationId: ReadOpenEnvironmentProperty
       summary: Read an open environment
       description: Reads and decrypts secrets including retrieving dynamic secrets from providers.
@@ -993,22 +994,22 @@ paths:
       - $ref: "#/components/parameters/envName"
     get:
       tags:
-      - esc
+        - esc
       operationId: ListEnvironmentTags
       summary: List environment tags
-      description:  List environment tags
+      description: List environment tags
       parameters:
         - name: after
           in: query
           required: false
           description: after tag for pagination
-          schema: 
+          schema:
             type: string
         - name: count
           in: query
           required: false
           description: limit of tags to return
-          schema: 
+          schema:
             type: integer
       responses:
         "200":
@@ -1023,11 +1024,11 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     post:
       tags:
-      - esc
+        - esc
       operationId: CreateEnvironmentTag
       summary: Create environment tag
-      description:  Create environment tag
-      requestBody: 
+      description: Create environment tag
+      requestBody:
         description: Create environment tag
         required: true
         content:
@@ -1055,12 +1056,12 @@ paths:
       - name: tagName
         in: path
         required: true
-        description:  Tag name
-        schema: 
+        description: Tag name
+        schema:
           type: string
     get:
       tags:
-      - esc
+        - esc
       operationId: GetEnvironmentTag
       summary: Read an environment tag
       description: Read an environment tag
@@ -1077,11 +1078,11 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     patch:
       tags:
-      - esc
+        - esc
       operationId: UpdateEnvironmentTag
       summary: Update an environment tag
       description: Update an environment tag
-      requestBody: 
+      requestBody:
         description: Update environment tag
         required: true
         content:
@@ -1103,10 +1104,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     delete:
       tags:
-      - esc
+        - esc
       operationId: DeleteEnvironmentTag
       summary: Delete environment tag
-      description:  Delete environment tag
+      description: Delete environment tag
       responses:
         "204":
           description: The environment tag was deleted successfully.
@@ -1117,7 +1118,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
         "default":
-          $ref: "#/components/responses/InternalServerError"  
+          $ref: "#/components/responses/InternalServerError"
   /environments/{orgName}/{projectName}/{envName}/versions:
     parameters:
       - $ref: "#/components/parameters/orgName"
@@ -1127,27 +1128,27 @@ paths:
         in: query
         required: false
         description: before revision number for pagination
-        schema: 
+        schema:
           type: integer
       - name: count
         in: query
         required: false
         description: limit of revisions to return
-        schema: 
+        schema:
           type: integer
     get:
       tags:
-      - esc
+        - esc
       operationId: ListEnvironmentRevisions
       summary: List environment revisions
-      description:  List environment revisions
+      description: List environment revisions
       responses:
         "200":
           $ref: "#/components/responses/ListEnvironmentRevisions"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
-            $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
         "default":
@@ -1160,12 +1161,12 @@ paths:
       - name: version
         in: path
         required: true
-        description:  Revision or tag
-        schema: 
+        description: Revision or tag
+        schema:
           type: string
     get:
       tags:
-      - esc
+        - esc
       operationId: GetEnvironmentAtVersion
       summary: Read an environment at a specific version
       description: Read an environmentat a specific revision or tag
@@ -1195,7 +1196,7 @@ paths:
       - $ref: "#/components/parameters/duration"
     post:
       tags:
-      - esc
+        - esc
       operationId: OpenEnvironmentAtVersion
       summary: Open an environment session at a specific version
       description: Opens a session the given environment at a specific version for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
@@ -1219,23 +1220,23 @@ paths:
       - $ref: "#/components/parameters/envName"
     get:
       tags:
-      - esc
+        - esc
       parameters:
-      - name: after
-        in: query
-        required: false
-        description: after tag for pagination
-        schema: 
-          type: string
-      - name: count
-        in: query
-        required: false
-        description: limit of tags to return
-        schema: 
-          type: integer
+        - name: after
+          in: query
+          required: false
+          description: after tag for pagination
+          schema:
+            type: string
+        - name: count
+          in: query
+          required: false
+          description: limit of tags to return
+          schema:
+            type: integer
       operationId: ListEnvironmentRevisionTags
       summary: List environment revisions
-      description:  List environment revisions
+      description: List environment revisions
       responses:
         "200":
           $ref: "#/components/responses/ListEnvironmentRevisionTags"
@@ -1249,11 +1250,11 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     post:
       tags:
-      - esc
+        - esc
       operationId: CreateEnvironmentRevisionTag
       summary: Create environment revision tag
-      description:  Create environment revision tag
-      requestBody: 
+      description: Create environment revision tag
+      requestBody:
         description: Create environment revision tag
         required: true
         content:
@@ -1281,16 +1282,16 @@ paths:
       - name: tagName
         in: path
         required: true
-        description:  Tag name
-        schema: 
+        description: Tag name
+        schema:
           type: string
     patch:
       tags:
-      - esc
+        - esc
       operationId: UpdateEnvironmentRevisionTag
       summary: Update environment revision tag
-      description:  Update environment revision tag
-      requestBody: 
+      description: Update environment revision tag
+      requestBody:
         description: Update environment revision tag
         required: true
         content:
@@ -1305,17 +1306,17 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
-            $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
     delete:
       tags:
-      - esc
+        - esc
       operationId: DeleteEnvironmentRevisionTag
       summary: Delete environment revision tag
-      description:  Delete environment revision tag
+      description: Delete environment revision tag
       responses:
         "204":
           description: The revision tag was deleted successfully.
@@ -1329,10 +1330,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     get:
       tags:
-      - esc
+        - esc
       operationId: GetEnvironmentRevisionTag
       summary: Read environment revision tag
-      description:  Read environment revision tag
+      description: Read environment revision tag
       responses:
         "200":
           description: Success
@@ -1343,7 +1344,7 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
-            $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
         "default":

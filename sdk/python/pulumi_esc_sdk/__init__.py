@@ -48,6 +48,7 @@ from pulumi_esc_sdk.models.environment_definition import EnvironmentDefinition
 from pulumi_esc_sdk.models.environment_definition_values import EnvironmentDefinitionValues
 from pulumi_esc_sdk.models.environment_diagnostic import EnvironmentDiagnostic
 from pulumi_esc_sdk.models.environment_diagnostics import EnvironmentDiagnostics
+from pulumi_esc_sdk.models.environment_draft import EnvironmentDraft
 from pulumi_esc_sdk.models.environment_revision import EnvironmentRevision
 from pulumi_esc_sdk.models.environment_revision_tag import EnvironmentRevisionTag
 from pulumi_esc_sdk.models.environment_revision_tags import EnvironmentRevisionTags
@@ -65,6 +66,7 @@ from pulumi_esc_sdk.models.pos import Pos
 from pulumi_esc_sdk.models.property_accessor import PropertyAccessor
 from pulumi_esc_sdk.models.range import Range
 from pulumi_esc_sdk.models.reference import Reference
+from pulumi_esc_sdk.models.submit_change_request_info import SubmitChangeRequestInfo
 from pulumi_esc_sdk.models.trace import Trace
 from pulumi_esc_sdk.models.update_environment_revision_tag import UpdateEnvironmentRevisionTag
 from pulumi_esc_sdk.models.update_environment_tag import UpdateEnvironmentTag
@@ -95,6 +97,7 @@ __all__ = [
     "EnvironmentDefinitionValues",
     "EnvironmentDiagnostic",
     "EnvironmentDiagnostics",
+    "EnvironmentDraft",
     "EnvironmentRevision",
     "EnvironmentRevisionTag",
     "EnvironmentRevisionTags",
@@ -112,6 +115,7 @@ __all__ = [
     "PropertyAccessor",
     "Range",
     "Reference",
+    "SubmitChangeRequestInfo",
     "Trace",
     "UpdateEnvironmentRevisionTag",
     "UpdateEnvironmentTag",

@@ -29,6 +29,7 @@ from pulumi_esc_sdk.models.create_environment_tag import CreateEnvironmentTag
 from pulumi_esc_sdk.models.environment import Environment
 from pulumi_esc_sdk.models.environment_definition import EnvironmentDefinition
 from pulumi_esc_sdk.models.environment_diagnostics import EnvironmentDiagnostics
+from pulumi_esc_sdk.models.environment_draft import EnvironmentDraft
 from pulumi_esc_sdk.models.environment_revision import EnvironmentRevision
 from pulumi_esc_sdk.models.environment_revision_tag import EnvironmentRevisionTag
 from pulumi_esc_sdk.models.environment_revision_tags import EnvironmentRevisionTags
@@ -37,6 +38,7 @@ from pulumi_esc_sdk.models.error import Error
 from pulumi_esc_sdk.models.list_environment_tags import ListEnvironmentTags
 from pulumi_esc_sdk.models.open_environment import OpenEnvironment
 from pulumi_esc_sdk.models.org_environments import OrgEnvironments
+from pulumi_esc_sdk.models.submit_change_request_info import SubmitChangeRequestInfo
 from pulumi_esc_sdk.models.update_environment_revision_tag import UpdateEnvironmentRevisionTag
 from pulumi_esc_sdk.models.update_environment_tag import UpdateEnvironmentTag
 from pulumi_esc_sdk.models.value import Value
@@ -971,6 +973,337 @@ class EscApi:
         return self.api_client.param_serialize(
             method='POST',
             resource_path='/environments/{orgName}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def create_environment_draft(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        body: Annotated[StrictStr, Field(description="Environment Yaml content")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> EnvironmentDraft:
+        """Create a draft update for an existing environment with Yaml file
+
+        Validates the update the given environment's definition and creates a change request
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param body: Environment Yaml content (required)
+        :type body: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_environment_draft_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            body=body,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentDraft",
+            '400': "EnvironmentDiagnostics",
+            '401': "Error",
+            '404': "Error",
+            '409': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def create_environment_draft_with_http_info(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        body: Annotated[StrictStr, Field(description="Environment Yaml content")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[EnvironmentDraft]:
+        """Create a draft update for an existing environment with Yaml file
+
+        Validates the update the given environment's definition and creates a change request
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param body: Environment Yaml content (required)
+        :type body: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_environment_draft_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            body=body,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentDraft",
+            '400': "EnvironmentDiagnostics",
+            '401': "Error",
+            '404': "Error",
+            '409': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def create_environment_draft_without_preload_content(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        project_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Project name")],
+        env_name: Annotated[str, Field(min_length=1, strict=True, max_length=100, description="Environment name")],
+        body: Annotated[StrictStr, Field(description="Environment Yaml content")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Create a draft update for an existing environment with Yaml file
+
+        Validates the update the given environment's definition and creates a change request
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param project_name: Project name (required)
+        :type project_name: str
+        :param env_name: Environment name (required)
+        :type env_name: str
+        :param body: Environment Yaml content (required)
+        :type body: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_environment_draft_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            body=body,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "EnvironmentDraft",
+            '400': "EnvironmentDiagnostics",
+            '401': "Error",
+            '404': "Error",
+            '409': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _create_environment_draft_serialize(
+        self,
+        org_name,
+        project_name,
+        env_name,
+        body,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if org_name is not None:
+            _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
+        if env_name is not None:
+            _path_params['envName'] = env_name
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if body is not None:
+            _body_params = body
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/x-yaml'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'Authorization'
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/preview/environments/{orgName}/{projectName}/{envName}/drafts',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -6960,6 +7293,322 @@ class EscApi:
         return self.api_client.param_serialize(
             method='GET',
             resource_path='/environments/{orgName}/{projectName}/{envName}/open//{openSessionID}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def submit_change_request(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        change_request_id: Annotated[StrictStr, Field(description="change request ID")],
+        submit_change_request_info: Annotated[SubmitChangeRequestInfo, Field(description="Change request info to update")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> None:
+        """Submit a draft change request for review
+
+        Submit a draft change request for review, optionally provide a description for the change request
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param change_request_id: change request ID (required)
+        :type change_request_id: str
+        :param submit_change_request_info: Change request info to update (required)
+        :type submit_change_request_info: SubmitChangeRequestInfo
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._submit_change_request_serialize(
+            org_name=org_name,
+            change_request_id=change_request_id,
+            submit_change_request_info=submit_change_request_info,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+            '400': "Error",
+            '401': "Error",
+            '404': "Error",
+            '409': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def submit_change_request_with_http_info(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        change_request_id: Annotated[StrictStr, Field(description="change request ID")],
+        submit_change_request_info: Annotated[SubmitChangeRequestInfo, Field(description="Change request info to update")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[None]:
+        """Submit a draft change request for review
+
+        Submit a draft change request for review, optionally provide a description for the change request
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param change_request_id: change request ID (required)
+        :type change_request_id: str
+        :param submit_change_request_info: Change request info to update (required)
+        :type submit_change_request_info: SubmitChangeRequestInfo
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._submit_change_request_serialize(
+            org_name=org_name,
+            change_request_id=change_request_id,
+            submit_change_request_info=submit_change_request_info,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+            '400': "Error",
+            '401': "Error",
+            '404': "Error",
+            '409': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def submit_change_request_without_preload_content(
+        self,
+        org_name: Annotated[str, Field(min_length=3, strict=True, max_length=40, description="Organization name")],
+        change_request_id: Annotated[StrictStr, Field(description="change request ID")],
+        submit_change_request_info: Annotated[SubmitChangeRequestInfo, Field(description="Change request info to update")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Submit a draft change request for review
+
+        Submit a draft change request for review, optionally provide a description for the change request
+
+        :param org_name: Organization name (required)
+        :type org_name: str
+        :param change_request_id: change request ID (required)
+        :type change_request_id: str
+        :param submit_change_request_info: Change request info to update (required)
+        :type submit_change_request_info: SubmitChangeRequestInfo
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._submit_change_request_serialize(
+            org_name=org_name,
+            change_request_id=change_request_id,
+            submit_change_request_info=submit_change_request_info,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+            '400': "Error",
+            '401': "Error",
+            '404': "Error",
+            '409': "Error",
+            '500': "Error",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _submit_change_request_serialize(
+        self,
+        org_name,
+        change_request_id,
+        submit_change_request_info,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if org_name is not None:
+            _path_params['orgName'] = org_name
+        if change_request_id is not None:
+            _path_params['changeRequestId'] = change_request_id
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if submit_change_request_info is not None:
+            _body_params = submit_change_request_info
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'Authorization'
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/preview/change-requests/{orgName}/{changeRequestId}/submit',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

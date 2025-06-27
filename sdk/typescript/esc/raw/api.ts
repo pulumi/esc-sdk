@@ -328,6 +328,25 @@ export interface EnvironmentDiagnostics {
 /**
  * 
  * @export
+ * @interface EnvironmentDraft
+ */
+export interface EnvironmentDraft {
+    /**
+     * change request identifier
+     * @type {string}
+     * @memberof EnvironmentDraft
+     */
+    'changeRequestId': string;
+    /**
+     * latest revision number of environment
+     * @type {number}
+     * @memberof EnvironmentDraft
+     */
+    'latestRevisionNumber': number;
+}
+/**
+ * 
+ * @export
  * @interface EnvironmentRevision
  */
 export interface EnvironmentRevision {
@@ -821,6 +840,19 @@ export interface Reference {
 /**
  * 
  * @export
+ * @interface SubmitChangeRequestInfo
+ */
+export interface SubmitChangeRequestInfo {
+    /**
+     * 
+     * @type {string}
+     * @memberof SubmitChangeRequestInfo
+     */
+    'description'?: string;
+}
+/**
+ * 
+ * @export
  * @interface Trace
  */
 export interface Trace {
@@ -1076,6 +1108,59 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(createEnvironment, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Validates the update the given environment\'s definition and creates a change request
+         * @summary Create a draft update for an existing environment with Yaml file
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} body Environment Yaml content
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironmentDraft: async (orgName: string, projectName: string, envName: string, body: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('createEnvironmentDraft', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('createEnvironmentDraft', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('createEnvironmentDraft', 'envName', envName)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('createEnvironmentDraft', 'body', body)
+            const localVarPath = `/preview/environments/{orgName}/{projectName}/{envName}/drafts`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/x-yaml';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2064,6 +2149,55 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
+         * Submit a draft change request for review, optionally provide a description for the change request
+         * @summary Submit a draft change request for review
+         * @param {string} orgName Organization name
+         * @param {string} changeRequestId change request ID
+         * @param {SubmitChangeRequestInfo} submitChangeRequestInfo Change request info to update
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        submitChangeRequest: async (orgName: string, changeRequestId: string, submitChangeRequestInfo: SubmitChangeRequestInfo, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('submitChangeRequest', 'orgName', orgName)
+            // verify required parameter 'changeRequestId' is not null or undefined
+            assertParamExists('submitChangeRequest', 'changeRequestId', changeRequestId)
+            // verify required parameter 'submitChangeRequestInfo' is not null or undefined
+            assertParamExists('submitChangeRequest', 'submitChangeRequestInfo', submitChangeRequestInfo)
+            const localVarPath = `/preview/change-requests/{orgName}/{changeRequestId}/submit`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"changeRequestId"}}`, encodeURIComponent(String(changeRequestId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(submitChangeRequestInfo, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Update environment revision tag
          * @summary Update environment revision tag
          * @param {string} orgName Organization name
@@ -2282,6 +2416,22 @@ export const EscApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironment(orgName, createEnvironment, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.createEnvironment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Validates the update the given environment\'s definition and creates a change request
+         * @summary Create a draft update for an existing environment with Yaml file
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} body Environment Yaml content
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createEnvironmentDraft(orgName: string, projectName: string, envName: string, body: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDraft>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironmentDraft(orgName, projectName, envName, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.createEnvironmentDraft']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -2588,6 +2738,21 @@ export const EscApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Submit a draft change request for review, optionally provide a description for the change request
+         * @summary Submit a draft change request for review
+         * @param {string} orgName Organization name
+         * @param {string} changeRequestId change request ID
+         * @param {SubmitChangeRequestInfo} submitChangeRequestInfo Change request info to update
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async submitChangeRequest(orgName: string, changeRequestId: string, submitChangeRequestInfo: SubmitChangeRequestInfo, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.submitChangeRequest(orgName, changeRequestId, submitChangeRequestInfo, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.submitChangeRequest']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Update environment revision tag
          * @summary Update environment revision tag
          * @param {string} orgName Organization name
@@ -2681,6 +2846,19 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
          */
         createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: any): AxiosPromise<Error> {
             return localVarFp.createEnvironment(orgName, createEnvironment, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Validates the update the given environment\'s definition and creates a change request
+         * @summary Create a draft update for an existing environment with Yaml file
+         * @param {string} orgName Organization name
+         * @param {string} projectName Project name
+         * @param {string} envName Environment name
+         * @param {string} body Environment Yaml content
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironmentDraft(orgName: string, projectName: string, envName: string, body: string, options?: any): AxiosPromise<EnvironmentDraft> {
+            return localVarFp.createEnvironmentDraft(orgName, projectName, envName, body, options).then((request) => request(axios, basePath));
         },
         /**
          * Create environment revision tag
@@ -2929,6 +3107,18 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
             return localVarFp.readOpenEnvironmentProperty(orgName, projectName, envName, openSessionID, property, options).then((request) => request(axios, basePath));
         },
         /**
+         * Submit a draft change request for review, optionally provide a description for the change request
+         * @summary Submit a draft change request for review
+         * @param {string} orgName Organization name
+         * @param {string} changeRequestId change request ID
+         * @param {SubmitChangeRequestInfo} submitChangeRequestInfo Change request info to update
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        submitChangeRequest(orgName: string, changeRequestId: string, submitChangeRequestInfo: SubmitChangeRequestInfo, options?: any): AxiosPromise<void> {
+            return localVarFp.submitChangeRequest(orgName, changeRequestId, submitChangeRequestInfo, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Update environment revision tag
          * @summary Update environment revision tag
          * @param {string} orgName Organization name
@@ -3018,6 +3208,21 @@ export class EscApi extends BaseAPI {
      */
     public createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: RawAxiosRequestConfig) {
         return EscApiFp(this.configuration).createEnvironment(orgName, createEnvironment, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Validates the update the given environment\'s definition and creates a change request
+     * @summary Create a draft update for an existing environment with Yaml file
+     * @param {string} orgName Organization name
+     * @param {string} projectName Project name
+     * @param {string} envName Environment name
+     * @param {string} body Environment Yaml content
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public createEnvironmentDraft(orgName: string, projectName: string, envName: string, body: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).createEnvironmentDraft(orgName, projectName, envName, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -3302,6 +3507,20 @@ export class EscApi extends BaseAPI {
      */
     public readOpenEnvironmentProperty(orgName: string, projectName: string, envName: string, openSessionID: string, property: string, options?: RawAxiosRequestConfig) {
         return EscApiFp(this.configuration).readOpenEnvironmentProperty(orgName, projectName, envName, openSessionID, property, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Submit a draft change request for review, optionally provide a description for the change request
+     * @summary Submit a draft change request for review
+     * @param {string} orgName Organization name
+     * @param {string} changeRequestId change request ID
+     * @param {SubmitChangeRequestInfo} submitChangeRequestInfo Change request info to update
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public submitChangeRequest(orgName: string, changeRequestId: string, submitChangeRequestInfo: SubmitChangeRequestInfo, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).submitChangeRequest(orgName, changeRequestId, submitChangeRequestInfo, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

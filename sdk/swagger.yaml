@@ -700,7 +700,7 @@ components:
 security:
   - Authorization: []
 paths:
-  /environments/{orgName}:
+  /esc/environments/{orgName}:
     parameters:
       - $ref: "#/components/parameters/orgName"
     get:
@@ -755,7 +755,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}:
+  /esc/environments/{orgName}/{projectName}/{envName}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -849,7 +849,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /preview/environments/{orgName}/{projectName}/{envName}/drafts:
+  /preview/esc/environments/{orgName}/{projectName}/{envName}/drafts:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -882,7 +882,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/clone:
+  /esc/environments/{orgName}/{projectName}/{envName}/clone:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -914,7 +914,7 @@ paths:
         "default":
           $ref: "#/components/responses/InternalServerError"
 
-  /environments/{orgName}/yaml/check:
+  /esc/environments/{orgName}/yaml/check:
     parameters:
       - $ref: "#/components/parameters/orgName"
     post:
@@ -943,7 +943,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/decrypt:
+  /esc/environments/{orgName}/{projectName}/{envName}/decrypt:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -967,7 +967,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/open:
+  /esc/environments/{orgName}/{projectName}/{envName}/open:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -992,7 +992,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/open/{openSessionID}:
+  /esc/environments/{orgName}/{projectName}/{envName}/open/{openSessionID}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1020,7 +1020,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/open//{openSessionID}:
+  /esc/environments/{orgName}/{projectName}/{envName}/open//{openSessionID}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1054,7 +1054,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/tags:
+  /esc/environments/{orgName}/{projectName}/{envName}/tags:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1115,7 +1115,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/tags/{tagName}:
+  /esc/environments/{orgName}/{projectName}/{envName}/tags/{tagName}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1186,7 +1186,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/versions:
+  /esc/environments/{orgName}/{projectName}/{envName}/versions:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1220,7 +1220,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/versions/{version}:
+  /esc/environments/{orgName}/{projectName}/{envName}/versions/{version}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1254,7 +1254,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/versions/{version}/open:
+  /esc/environments/{orgName}/{projectName}/{envName}/versions/{version}/open:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1280,7 +1280,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/versions/tags:
+  /esc/environments/{orgName}/{projectName}/{envName}/versions/tags:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1341,7 +1341,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}:
+  /esc/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"

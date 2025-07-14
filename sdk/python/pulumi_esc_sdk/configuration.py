@@ -80,6 +80,10 @@ conf = pulumi_esc_sdk.Configuration(
                  ) -> None:
         """Constructor
         """
+        # TODO strip "/esc" from base_path to allow us to use other API paths beyond ESC.
+        # This must be kept backwards compatible so remove after this line to account for
+        # user configuration.
+        # This needs to be done for other languages as well.
         self._base_path = "https://api.pulumi.com/api/esc" if host is None else host
         """Default Base url
         """

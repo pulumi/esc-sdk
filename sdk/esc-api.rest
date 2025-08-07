@@ -129,3 +129,238 @@ Authorization: token {{token}}
 
 DELETE https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/tags/new-owner HTTP/1.1
 Authorization: token {{token}}
+
+### Change Management APIs
+
+
+
+# List change gates for an environment
+GET https://api.pulumi.com/api/change-gates/{{organization}}?entityType=environment&qualifiedName={{project}}/sdk-test HTTP/1.1
+Authorization: token {{token}}
+
+###
+
+# Create a new change gate for an environment
+POST https://api.pulumi.com/api/change-gates/{{organization}} HTTP/1.1
+Authorization: token {{token}}
+Content-Type: application/json
+
+
+{
+    "name": "Security Review Gate",
+    "enabled": true,
+    "entityType": "environment",
+    "qualifiedName": "{{project}}/sdk-test",
+    "rule": {
+        "ruleType": "approval_required",
+        "numApprovalsRequired": 2,
+        "allowSelfApproval": false,
+        "requireReapprovalOnChange": true,
+        "eligibleApprovers": [
+            {
+                "eligibilityType": "has_permission_on_target",
+                "permission": "environment:write"
+            }
+        ]
+    },
+    "target": {
+        "actionTypes": ["update"]
+    }
+}
+
+###
+
+@gateId = 7b7dd389-2c35-4bdc-8137-81466cb7abec
+
+# Get a specific change gate
+# @name getChangeGate
+GET https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/change-gates/{{gateId}} HTTP/1.1
+Authorization: token {{token}}
+
+
+###
+
+# Update a change gate
+PUT https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/change-gates/{{gateId}} HTTP/1.1
+Authorization: token {{token}}
+Content-Type: application/json
+
+{
+    "name": "Updated Security Review Gate",
+    "enabled": true,
+    "rule": {
+        "ruleType": "approval_required",
+        "numApprovalsRequired": 1,
+        "allowSelfApproval": false,
+        "requireReapprovalOnChange": true,
+        "eligibleApprovers": [
+            {
+            "eligibilityType": "has_permission_on_target",
+            "permission": "environment:write"
+        }
+        ]
+    },
+     "target": {
+    "actionType": "update",
+    "entityInfo": {
+      "entityType": "environment",
+      "project": "test_rest",
+      "name": "sdk-test"
+    }
+  }
+}
+
+###
+
+# Delete a change gate
+DELETE https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/change-gates/{{gateId}} HTTP/1.1
+Authorization: token {{token}}
+
+
+
+
+###
+
+GET https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/drafts HTTP/1.1
+Authorization: token {{token}}
+
+###
+# Create a new environment draft (change request)
+POST https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/drafts HTTP/1.1
+Authorization: token {{token}}
+Content-Type: application/yaml
+
+values:
+  newSetting: draft-value
+  environment: test
+
+###
+
+# Read environment draft content
+# @name readDraft
+GET https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/drafts/{{changeRequestId}} HTTP/1.1
+Authorization: token {{token}}
+Accept: application/x-yaml
+
+###
+
+# Read environment draft content with specific revision
+GET https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/drafts/{{changeRequestId}}?revision=1 HTTP/1.1
+Authorization: token {{token}}
+
+###
+
+# Update environment draft content
+PATCH https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/drafts/{{changeRequestId}} HTTP/1.1
+Authorization: token {{token}}
+Content-Type: application/yaml
+If-Match: abe7e902-dcf0-49e7-8af3-4f0fc548f9de/0
+
+values:
+  updatedSetting: updated-draft-value
+  environment: test
+  newFeature: enabled
+
+###
+
+# Open an environment draft for evaluation
+POST https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/drafts/{{changeRequestId}}/open HTTP/1.1
+Authorization: token {{token}}
+
+###
+
+# Open an environment draft for evaluation with duration
+POST https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/drafts/{{changeRequestId}}/open?duration=30m HTTP/1.1
+Authorization: token {{token}}
+
+###
+
+# Open an environment draft for evaluation with specific revision
+POST https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/drafts/{{changeRequestId}}/open?revision=1&duration=1h HTTP/1.1
+Authorization: token {{token}}
+
+
+
+
+
+
+
+# List change requests for an organization
+GET https://api.pulumi.com/api/preview/change-requests/{{organization}} HTTP/1.1
+Authorization: token {{token}}
+###
+@environmentId = e069de1a-56ca-48f5-b470-1e7bc9402ccd
+# List change requests for an organization
+GET https://api.pulumi.com/api/preview/change-requests/{{organization}}?entityType=environment&entityId={{environmentId}} HTTP/1.1
+Authorization: token {{token}}
+
+###
+@changeRequestId = 2b96d3c8-1bf7-46ae-8678-66f8cc22f1a4
+
+# Get a specific change request
+# @name getChangeRequest
+GET https://api.pulumi.com/api/preview/change-requests/{{organization}}/{{changeRequestId}} HTTP/1.1
+Authorization: token {{token}}
+
+
+
+###
+
+###
+
+# Submit a change request for approval
+POST https://api.pulumi.com/api/preview/change-requests/{{organization}}/{{changeRequestId}}/submit HTTP/1.1
+Authorization: token {{token}}
+Content-Type: application/json
+
+{
+    "description": "Ready for approval - includes security improvements"
+}
+
+###
+
+# Apply a change request
+POST https://api.pulumi.com/api/preview/change-requests/{{organization}}/{{changeRequestId}}/apply HTTP/1.1
+Authorization: token {{token}}
+
+###
+
+# Close a change request without applying it
+POST https://api.pulumi.com/api/preview/change-requests/{{organization}}/{{changeRequestId}}/close HTTP/1.1
+Authorization: token {{token}}
+Content-Type: application/json
+
+{
+    "comment": "Closing due to requirements change"
+}
+
+###
+
+# Approve a change request
+POST https://api.pulumi.com/api/preview/change-requests/{{organization}}/{{changeRequestId}}/approve HTTP/1.1
+Authorization: token {{token}}
+Content-Type: application/json
+
+{
+    "revisionNumber": 1,
+    "comment": "Looks good to me"
+}
+
+###
+
+# Withdraw approval from a change request
+DELETE https://api.pulumi.com/api/preview/change-requests/{{organization}}/{{changeRequestId}}/approve HTTP/1.1
+Authorization: token {{token}}
+Content-Type: application/json
+
+{
+    "comment": "Need to review security implications"
+}
+
+###
+
+# List events for a change request
+GET https://api.pulumi.com/api/preview/change-requests/{{organization}}/{{changeRequestId}}/events HTTP/1.1
+Authorization: token {{token}}
+
+###

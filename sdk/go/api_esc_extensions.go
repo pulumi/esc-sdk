@@ -4,6 +4,7 @@ package esc_sdk
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -12,6 +13,18 @@ import (
 
 	esc_workspace "github.com/pulumi/esc/cmd/esc/cli/workspace"
 	"gopkg.in/ghodss/yaml.v1"
+)
+
+// Enum constants for discriminated union types
+
+// ChangeGateRuleType constants
+const (
+	ChangeGateRuleTypeApprovalRequired = "approval_required"
+)
+
+// ChangeGateTargetActionType constants
+const (
+	ChangeGateTargetActionTypeUpdate = "update"
 )
 
 // EscClient is a client for the ESC API.
@@ -67,21 +80,16 @@ func NewClient(cfg *Configuration) *EscClient {
 // NewCustomBackendConfiguration creates a new Configuration object,
 // but replaces default API endpoint with a given custom backend URL
 func NewCustomBackendConfiguration(customBackendURL url.URL) (*Configuration, error) {
-	appendedUrl, err := url.Parse(fmt.Sprintf("%s://%s/api/esc", customBackendURL.Scheme, customBackendURL.Hostname()))
-	if err != nil {
-		return nil, fmt.Errorf("failed to normalize backend url: ")
-	}
-	cfg := &Configuration{
-		DefaultHeader: make(map[string]string),
-		UserAgent:     "esc-sdk",
-		Debug:         false,
-		Servers: ServerConfigurations{
-			{
-				URL:         appendedUrl.String(),
-				Description: "Pulumi Cloud Custom Backend API",
-			},
+	cfg := NewConfiguration()
+	cfg.DefaultHeader = make(map[string]string)
+	cfg.UserAgent = "esc-sdk"
+	cfg.Debug = false
+	// Override just the server URL, keeping the rest from the generated configuration
+	cfg.Servers = ServerConfigurations{
+		{
+			URL:         fmt.Sprintf("%s://%s/api", customBackendURL.Scheme, customBackendURL.Hostname()),
+			Description: "Pulumi Cloud Custom Backend API",
 		},
-		OperationServers: map[string]ServerConfigurations{},
 	}
 	return cfg, nil
 }
@@ -584,3 +592,249 @@ func getBoolPtr(data map[string]any, key string) *bool {
 
 	return nil
 }
+
+// Change Management Wrapper Functions
+
+// ListChangeRequests lists change requests for an organization.
+func (c *EscClient) ListChangeRequests(ctx context.Context, org string) (*ListChangeRequestsResponse, error) {
+	resp, _, err := c.EscAPI.ListChangeRequests(ctx, org).Execute()
+	return resp, err
+}
+
+// GetChangeRequest retrieves a specific change request with gate evaluation details.
+func (c *EscClient) GetChangeRequest(ctx context.Context, org, changeRequestID string) (*GetChangeRequestResponse, error) {
+	resp, _, err := c.EscAPI.GetChangeRequest(ctx, org, changeRequestID).Execute()
+	return resp, err
+}
+
+// UpdateChangeRequest updates a change request's description.
+func (c *EscClient) UpdateChangeRequest(ctx context.Context, org, changeRequestID, description string) (*ChangeRequest, error) {
+	req := NewUpdateChangeRequestRequest()
+	req.Description = &description
+
+	resp, _, err := c.EscAPI.UpdateChangeRequest(ctx, org, changeRequestID).UpdateChangeRequestRequest(*req).Execute()
+	return resp, err
+}
+
+// SubmitChangeRequest submits a change request for approval.
+func (c *EscClient) SubmitChangeRequest(ctx context.Context, org, changeRequestID, description string) error {
+	req := NewSubmitChangeRequestRequest()
+	req.Description = &description
+
+	_, err := c.EscAPI.SubmitChangeRequest(ctx, org, changeRequestID).SubmitChangeRequestRequest(*req).Execute()
+	return err
+}
+
+// ApplyChangeRequest applies an approved change request.
+func (c *EscClient) ApplyChangeRequest(ctx context.Context, org, changeRequestID string) (*ChangeRequestApplyResult, error) {
+	resp, _, err := c.EscAPI.ApplyChangeRequest(ctx, org, changeRequestID).Execute()
+	return resp, err
+}
+
+// CloseChangeRequest closes a change request without applying it.
+func (c *EscClient) CloseChangeRequest(ctx context.Context, org, changeRequestID string, comment *string) error {
+	req := NewCloseChangeRequestRequest()
+	req.Comment = comment
+
+	_, err := c.EscAPI.CloseChangeRequest(ctx, org, changeRequestID).CloseChangeRequestRequest(*req).Execute()
+	return err
+}
+
+// ApproveChangeRequest approves a change request.
+func (c *EscClient) ApproveChangeRequest(ctx context.Context, org, changeRequestID string, revisionNumber int64, comment *string) error {
+	req := NewApproveChangeRequestRequest(revisionNumber)
+	req.Comment = comment
+
+	_, err := c.EscAPI.ApproveChangeRequest(ctx, org, changeRequestID).ApproveChangeRequestRequest(*req).Execute()
+	return err
+}
+
+// UnapproveChangeRequest withdraws approval from a change request.
+func (c *EscClient) UnapproveChangeRequest(ctx context.Context, org, changeRequestID string, comment *string) error {
+	req := NewUnapproveChangeRequestRequest()
+	req.Comment = comment
+
+	_, err := c.EscAPI.UnapproveChangeRequest(ctx, org, changeRequestID).UnapproveChangeRequestRequest(*req).Execute()
+	return err
+}
+
+// ListChangeRequestEvents lists events for a change request.
+func (c *EscClient) ListChangeRequestEvents(ctx context.Context, org, changeRequestID string) (*ListChangeRequestEventsResponse, error) {
+	resp, _, err := c.EscAPI.ListChangeRequestEvents(ctx, org, changeRequestID).Execute()
+	return resp, err
+}
+
+// CreateEnvironmentDraft creates a new environment draft (change request).
+func (c *EscClient) CreateEnvironmentDraft(ctx context.Context, org, projectName, envName, yamlContent string) (*ChangeRequestRef, error) {
+	resp, _, err := c.EscAPI.CreateEnvironmentDraft(ctx, org, projectName, envName).Body(yamlContent).Execute()
+	return resp, err
+}
+
+// ReadEnvironmentDraft reads environment draft content.
+func (c *EscClient) ReadEnvironmentDraft(ctx context.Context, org, projectName, envName, changeRequestID string, revision *int32) (string, error) {
+	req := c.EscAPI.ReadEnvironmentDraft(ctx, org, projectName, envName, changeRequestID)
+	if revision != nil {
+		req = req.Revision(*revision)
+	}
+
+	resp, _, err := req.Execute()
+	return resp, err
+}
+
+// UpdateEnvironmentDraft updates environment draft content with optimistic concurrency control.
+func (c *EscClient) UpdateEnvironmentDraft(ctx context.Context, org, projectName, envName, changeRequestID, etag, yamlContent string) (*ChangeRequestRef, error) {
+	resp, _, err := c.EscAPI.UpdateEnvironmentDraft(ctx, org, projectName, envName, changeRequestID).
+		IfMatch(etag).
+		Body(yamlContent).
+		Execute()
+	return resp, err
+}
+
+// OpenEnvironmentDraft opens an environment draft for evaluation.
+func (c *EscClient) OpenEnvironmentDraft(ctx context.Context, org, projectName, envName, changeRequestID string, revision *int32, duration *string) (*OpenEnvironmentDraftResponse, error) {
+	req := c.EscAPI.OpenEnvironmentDraft(ctx, org, projectName, envName, changeRequestID)
+	if revision != nil {
+		req = req.Revision(*revision)
+	}
+	if duration != nil {
+		req = req.Duration(*duration)
+	}
+
+	resp, _, err := req.Execute()
+	return resp, err
+}
+
+// Change Gate Methods
+
+// ListEnvironmentChangeGates lists change gates for an environment.
+func (c *EscClient) ListEnvironmentChangeGates(ctx context.Context, org, projectName, envName string) (*EnvironmentChangeGatesResponse, error) {
+	return c.listEnvironmentChangeGatesWithRawJSON(ctx, org, projectName, envName)
+}
+
+// GetEnvironmentChangeGate retrieves a specific change gate.
+func (c *EscClient) GetChangeGate(ctx context.Context, org, gateID string) (*EnvironmentChangeGate, error) {
+	return c.getChangeGateWithRawJSON(ctx, org, gateID)
+}
+
+// UpdateChangeGate updates a change gate using properly marshaled discriminated unions.
+func (c *EscClient) UpdateChangeGate(ctx context.Context, org, gateID string, config *ChangeGateUpdateConfig) (*EnvironmentChangeGate, error) {
+	return c.UpdateEnvironmentChangeGate(ctx, org, gateID, config)
+}
+
+// UpdateEnvironmentChangeGate updates a change gate using properly marshaled discriminated unions.
+// This method uses structured objects and marshals them to preserve discriminated union fields during marshaling.
+func (c *EscClient) UpdateEnvironmentChangeGate(ctx context.Context, org, gateID string, config *ChangeGateUpdateConfig) (*EnvironmentChangeGate, error) {
+	// Marshal eligible approvers to preserve discriminated union structure
+	eligibleApprovers := make([]json.RawMessage, len(config.EligibleApprovers))
+	for i, wrapper := range config.EligibleApprovers {
+		approverBytes, err := json.Marshal(wrapper.Concrete)
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal approver %d: %w", i, err)
+		}
+		eligibleApprovers[i] = json.RawMessage(approverBytes)
+	}
+
+	// Build the request structure
+	requestStruct := struct {
+		Name    string `json:"name"`
+		Enabled bool   `json:"enabled"`
+		Rule    struct {
+			RuleType                  string            `json:"ruleType"`
+			NumApprovalsRequired      int64             `json:"numApprovalsRequired"`
+			AllowSelfApproval         bool              `json:"allowSelfApproval"`
+			RequireReapprovalOnChange bool              `json:"requireReapprovalOnChange"`
+			EligibleApprovers         []json.RawMessage `json:"eligibleApprovers"`
+		} `json:"rule"`
+		Target struct {
+			ActionTypes []string `json:"actionTypes"`
+		} `json:"target"`
+	}{
+		Name:    config.Name,
+		Enabled: config.Enabled,
+	}
+
+	// Set rule fields
+	requestStruct.Rule.RuleType = "approval_required"
+	requestStruct.Rule.NumApprovalsRequired = config.NumApprovalsRequired
+	requestStruct.Rule.AllowSelfApproval = *config.AllowSelfApproval
+	requestStruct.Rule.RequireReapprovalOnChange = *config.RequireReapprovalOnChange
+	requestStruct.Rule.EligibleApprovers = eligibleApprovers
+
+	// Set target fields
+	requestStruct.Target.ActionTypes = []string{"update"}
+
+	// Marshal the complete request structure
+	requestJSON, err := json.Marshal(requestStruct)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request: %w", err)
+	}
+
+	return c.updateChangeGateWithRawJSON(ctx, org, gateID, string(requestJSON))
+}
+
+// DeleteEnvironmentChangeGate deletes a change gate.
+func (c *EscClient) DeleteEnvironmentChangeGate(ctx context.Context, org, gateID string) error {
+	_, err := c.EscAPI.DeleteEnvironmentChangeGate(ctx, org, gateID).Execute()
+	return err
+}
+
+// DeleteChangeGate deletes a change gate (alias for DeleteEnvironmentChangeGate).
+func (c *EscClient) DeleteChangeGate(ctx context.Context, org, gateID string) error {
+	return c.DeleteEnvironmentChangeGate(ctx, org, gateID)
+}
+
+// CreateEnvironmentChangeGate creates a change gate using properly marshaled discriminated unions.
+// This method uses structured objects and marshals them to avoid the OpenAPI generator's issues with discriminated union marshaling.
+func (c *EscClient) CreateEnvironmentChangeGate(ctx context.Context, org, projectName, envName string, config *ChangeGateConfig) (*EnvironmentChangeGate, error) {
+	// Marshal eligible approvers to preserve discriminated union structure
+	eligibleApprovers := make([]json.RawMessage, len(config.EligibleApprovers))
+	for i, wrapper := range config.EligibleApprovers {
+		approverBytes, err := json.Marshal(wrapper.Concrete)
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal approver %d: %w", i, err)
+		}
+		eligibleApprovers[i] = json.RawMessage(approverBytes)
+	}
+
+	// Build the request structure
+	requestStruct := struct {
+		Name    string `json:"name"`
+		Enabled bool   `json:"enabled"`
+		Rule    struct {
+			RuleType                  string            `json:"ruleType"`
+			NumApprovalsRequired      int64             `json:"numApprovalsRequired"`
+			AllowSelfApproval         bool              `json:"allowSelfApproval"`
+			RequireReapprovalOnChange bool              `json:"requireReapprovalOnChange"`
+			EligibleApprovers         []json.RawMessage `json:"eligibleApprovers"`
+		} `json:"rule"`
+		Target struct {
+			EntityType     string   `json:"entityType"`
+			QualifiedName  string   `json:"qualifiedName"`
+			ActionTypes    []string `json:"actionTypes"`
+		} `json:"target"`
+	}{
+		Name:    config.Name,
+		Enabled: config.Enabled,
+	}
+
+	// Set rule fields
+	requestStruct.Rule.RuleType = "approval_required"
+	requestStruct.Rule.NumApprovalsRequired = config.NumApprovalsRequired
+	requestStruct.Rule.AllowSelfApproval = *config.AllowSelfApproval
+	requestStruct.Rule.RequireReapprovalOnChange = *config.RequireReapprovalOnChange
+	requestStruct.Rule.EligibleApprovers = eligibleApprovers
+
+	// Set target fields
+	requestStruct.Target.EntityType = "environment"
+	requestStruct.Target.QualifiedName = getQualifiedEnvName(projectName, envName)
+	requestStruct.Target.ActionTypes = []string{"update"}
+
+	// Marshal the complete request structure
+	requestJSON, err := json.Marshal(requestStruct)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request: %w", err)
+	}
+
+	return c.createChangeGateWithRawJSON(ctx, org, string(requestJSON))
+}
+

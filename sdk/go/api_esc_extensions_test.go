@@ -45,7 +45,7 @@ func Test_EscClientLogin(t *testing.T) {
 
 		url, err := client.rawClient.cfg.ServerURL(0, make(map[string]string))
 		require.NoError(t, err)
-		require.Equal(t, "https://api.moolumi.com/api/esc", url)
+		require.Equal(t, "https://api.moolumi.com/api", url)
 
 		err = os.Setenv("PULUMI_BACKEND_URL", beforeTest)
 		require.NoError(t, err)

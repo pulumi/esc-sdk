@@ -9,8 +9,8 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: https://api.pulumi.com/api/esc
-    description: Pulumi Cloud Production Preview API
+  - url: https://api.pulumi.com/api
+    description: Pulumi Cloud Production API
 components:
   securitySchemes:
     Authorization:
@@ -458,6 +458,575 @@ components:
           type: integer
       required:
         - revision
+    
+    # Change Management Schemas
+    ChangeRequest:
+      type: object
+      required:
+        - createdAt
+        - createdBy
+        - description
+        - entity
+        - id
+        - latestRevisionNumber
+        - orgID
+        - status
+      properties:
+        id:
+          type: string
+          description: The change request ID
+        status:
+          type: string
+          description: The current status of the change request
+        orgID:
+          type: string
+          description: The organization ID
+        createdBy:
+          $ref: "#/components/schemas/UserInfo"
+          description: The user who created this change request
+        description:
+          type: string
+          description: The description/justification for this change request
+        createdAt:
+          type: string
+          format: date-time
+          description: When this change request was created
+        entity:
+          $ref: "#/components/schemas/TargetEntity"
+          description: The entity this change request targets
+        latestRevisionNumber:
+          type: integer
+          format: int64
+          description: The current revision number
+
+    GetChangeRequestResponse:
+      allOf:
+        - $ref: "#/components/schemas/ChangeRequest"
+        - type: object
+          required:
+            - gateEvaluation
+          properties:
+            gateEvaluation:
+              $ref: "#/components/schemas/ChangeRequestGateEvaluation"
+              description: The gate evaluation results for this change request
+
+    ListChangeRequestsResponse:
+      type: object
+      properties:
+        changeRequests:
+          type: array
+          description: The list of change requests
+          items:
+            $ref: "#/components/schemas/ChangeRequest"
+        nextToken:
+          type: string
+          description: Continuation token for pagination
+
+    UpdateChangeRequestRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Updated description/justification for the change request
+
+    SubmitChangeRequestRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Description/justification for the change request
+
+    ApproveChangeRequestRequest:
+      type: object
+      required:
+        - revisionNumber
+      properties:
+        revisionNumber:
+          type: integer
+          format: int64
+          description: Which revision to approve
+        comment:
+          type: string
+          description: Optional note accompanying the approval
+
+    UnapproveChangeRequestRequest:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: Optional note clarifying the reason for revoking approval
+
+    CloseChangeRequestRequest:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: Optional comment explaining why the change request is being closed
+
+    ChangeRequestApplyResult:
+      type: object
+      required:
+        - entityUrl
+      properties:
+        entityUrl:
+          type: string
+          description: API endpoint for fetching the updated entity
+        message:
+          type: string
+          description: Optional details about the apply operation
+
+    ChangeRequestGateEvaluation:
+      type: object
+      properties:
+        satisfied:
+          type: boolean
+          description: Indicates if all applicable gates are satisfied and the change request is ready for application
+        applicableGates:
+          type: array
+          description: Lists all gates that apply to this change request
+          items:
+            $ref: "#/components/schemas/ChangeGateEvaluation"
+      required:
+        - satisfied
+        - applicableGates
+
+    # Change Request Events
+    ListChangeRequestEventsResponse:
+      type: object
+      properties:
+        events:
+          type: array
+          description: The list of events for this page
+          items:
+            $ref: "#/components/schemas/ChangeRequestEvent"
+        continuationToken:
+          type: string
+          description: Continuation token for pagination. If null, there are no more results available
+
+    ChangeRequestEvent:
+      type: object
+      required:
+        - changeRequestId
+        - createdAt
+        - createdBy
+        - id
+      discriminator:
+        propertyName: eventType
+      properties:
+        id:
+          type: string
+          description: The event ID
+        replacedBy:
+          type: string
+          description: ID of event that replaces this one (for event updates)
+        changeRequestId:
+          type: string
+          description: The change request this event belongs to
+        revisionNumber:
+          type: integer
+          format: int64
+          description: The revision number this event relates to (if applicable)
+        createdBy:
+          $ref: "#/components/schemas/UserInfo"
+          description: The user who triggered this event
+        createdAt:
+          type: string
+          format: date-time
+          description: When this event occurred
+        comment:
+          type: string
+          description: Optional comment associated with this event
+        eventType:
+          type: string
+          description: The type of event
+
+    # Change Gates
+    ChangeGate:
+      type: object
+      required:
+        - enabled
+        - id
+        - name
+        - rule
+        - target
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the change gate
+        name:
+          type: string
+          description: Name of the change gate
+        enabled:
+          type: boolean
+          description: Whether the change gate is enabled
+        rule:
+          $ref: "#/components/schemas/ChangeGateRuleOutput"
+          description: Rule configuration for the gate
+        target:
+          $ref: "#/components/schemas/ChangeGateTargetOutput"
+          description: Target configuration for the gate
+
+    ListChangeGatesResponse:
+      type: object
+      properties:
+        gates:
+          type: array
+          description: List of change gates
+          items:
+            $ref: "#/components/schemas/ChangeGate"
+        nextToken:
+          type: string
+          description: Token for retrieving the next page of results
+
+    CreateChangeGateRequest:
+      type: object
+      required:
+        - enabled
+        - name
+        - rule
+        - target
+      properties:
+        name:
+          type: string
+          description: Name of the change gate
+        enabled:
+          type: boolean
+          description: Whether the change gate is enabled
+        rule:
+          $ref: "#/components/schemas/ChangeGateRuleInput"
+          description: Rule configuration for the gate
+        target:
+          $ref: "#/components/schemas/ChangeGateTargetInput"
+          description: Target configuration for the gate
+
+    UpdateChangeGateRequest:
+      type: object
+      required:
+        - enabled
+        - name
+        - rule
+      properties:
+        name:
+          type: string
+          description: Name of the change gate
+        enabled:
+          type: boolean
+          description: Whether the change gate is enabled
+        rule:
+          $ref: "#/components/schemas/ChangeGateRuleInput"
+          description: Rule configuration for the gate
+
+    ChangeGateEvaluation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the gate
+        name:
+          type: string
+          description: The human-readable name of the gate
+        satisfied:
+          type: boolean
+          description: Indicates whether this gate's requirements have been met
+        
+        ruleDetails:
+          $ref: "#/components/schemas/ChangeGateRuleEvaluation"
+          description: Rule-type-specific evaluation details
+      required:
+          - satisfied
+
+    ChangeGateRuleEvaluation:
+      type: object
+      discriminator:
+        propertyName: ruleType
+      properties:
+        ruleType:
+          type: string
+          enum:
+            - approval_required
+
+    ChangeGateApprovalRuleEvaluation:
+      allOf:
+        - $ref: "#/components/schemas/ChangeGateRuleEvaluation"
+        - type: object
+          properties:
+            requiredApprovals:
+              type: integer
+              format: int64
+              description: Number of approvals required for this gate
+            approvers:
+              type: array
+              description: List of users who have approved this gate
+              items:
+                $ref: "#/components/schemas/UserInfo"
+
+    ChangeGateRuleInput:
+      type: object
+      discriminator:
+        propertyName: ruleType
+      properties:
+        ruleType:
+          type: string
+          enum:
+            - approval_required
+
+    ChangeGateRuleOutput:
+      type: object
+      discriminator:
+        propertyName: ruleType
+      properties:
+        ruleType:
+          type: string
+          enum:
+            - approval_required
+
+    ChangeGateApprovalRuleInput:
+      allOf:
+        - $ref: "#/components/schemas/ChangeGateRuleInput"
+        - type: object
+          required:
+            - eligibleApprovers
+            - numApprovalsRequired
+          properties:
+            numApprovalsRequired:
+              type: integer
+              format: int64
+              description: Number of approvals required
+            allowSelfApproval:
+              type: boolean
+              description: Whether self approval is allowed
+            requireReapprovalOnChange:
+              type: boolean
+              description: Whether reapproval is required when the change request is modified
+            eligibleApprovers:
+              type: array
+              description: List of eligible approvers
+              items:
+                $ref: "#/components/schemas/ApprovalRuleEligibilityInput"
+
+    ChangeGateApprovalRuleOutput:
+      allOf:
+        - $ref: "#/components/schemas/ChangeGateRuleOutput"
+        - type: object
+          required:
+            - eligibleApprovers
+            - numApprovalsRequired
+          properties:
+            numApprovalsRequired:
+              type: integer
+              format: int64
+              description: Number of approvals required
+            allowSelfApproval:
+              type: boolean
+              description: Whether self approval is allowed
+            requireReapprovalOnChange:
+              type: boolean
+              description: Whether reapproval is required when the change request is modified
+            eligibleApprovers:
+              type: array
+              description: List of eligible approvers
+              items:
+                $ref: "#/components/schemas/ApprovalRuleEligibilityOutput"
+
+    ChangeGateTargetInput:
+      type: object
+      required:
+        - actionTypes
+      properties:
+        entityType:
+          type: string
+          description: The type of entity this gate applies to
+          enum:
+            - environment
+        qualifiedName:
+          type: string
+          description: The qualified name of the change gate, i.e. "my-project/production" for an environment
+        actionTypes:
+          type: array
+          minItems: 1
+          description: The action types this gate targets
+          items:
+            type: string
+            enum:
+              - update
+
+    ChangeGateTargetOutput:
+      type: object
+      required:
+        - actionTypes
+      properties:
+        entityType:
+          type: string
+          description: The type of entity this gate applies to
+          enum:
+            - environment
+        qualifiedName:
+          type: string
+          description: The qualified name of the change gate, i.e. "my-project/production" for an environment
+        actionTypes:
+          type: array
+          minItems: 1
+          description: The action types this gate targets
+          items:
+            type: string
+            enum:
+              - update
+        entityInfo:
+          $ref: "#/components/schemas/TargetEntity"
+          description: Populated details about the target entity
+
+    # Approval Rule types
+    ApprovalRuleEligibilityInput:
+      type: object
+      discriminator:
+        propertyName: eligibilityType
+      properties:
+        eligibilityType:
+          type: string
+          enum:
+            - has_permission_on_target
+            - has_user_login
+            - has_team_membership
+
+    ApprovalRuleEligibilityInputPermission:
+      allOf:
+        - $ref: "#/components/schemas/ApprovalRuleEligibilityInput"
+        - type: object
+          required:
+            - permission
+          properties:
+            permission:
+              type: string
+              description: Permission required for eligibility condition
+
+    ApprovalRuleEligibilityInputUser:
+      allOf:
+        - $ref: "#/components/schemas/ApprovalRuleEligibilityInput"
+        - type: object
+          required:
+            - userLogin
+          properties:
+            userLogin:
+              type: string
+              description: User login for user eligibility condition
+
+    ApprovalRuleEligibilityInputTeam:
+      allOf:
+        - $ref: "#/components/schemas/ApprovalRuleEligibilityInput"
+        - type: object
+          required:
+            - teamName
+          properties:
+            teamName:
+              type: string
+              description: Team name for team eligibility condition
+
+    ApprovalRuleEligibilityOutput:
+      type: object
+      discriminator:
+        propertyName: eligibilityType
+      properties:
+        eligibilityType:
+          type: string
+          enum:
+            - has_permission_on_target
+            - has_user_login
+            - has_team_membership
+
+    ApprovalRuleEligibilityOutputPermission:
+      allOf:
+        - $ref: "#/components/schemas/ApprovalRuleEligibilityOutput"
+        - type: object
+          required:
+            - permission
+          properties:
+            permission:
+              type: string
+              description: Required permission
+
+    ApprovalRuleEligibilityOutputUser:
+      allOf:
+        - $ref: "#/components/schemas/ApprovalRuleEligibilityOutput"
+        - type: object
+          properties:
+            user:
+              $ref: "#/components/schemas/UserInfo"
+
+    ApprovalRuleEligibilityOutputTeam:
+      allOf:
+        - $ref: "#/components/schemas/ApprovalRuleEligibilityOutput"
+        - type: object
+          required:
+            - displayName
+            - name
+          properties:
+            name:
+              type: string
+              description: Team name
+            displayName:
+              type: string
+              description: Display name
+
+    # Supporting types
+    TargetEntity:
+      type: object
+      discriminator:
+        propertyName: entityType
+      properties:
+        entityType:
+          type: string
+
+    TargetEntityEnvironment:
+      allOf:
+        - $ref: "#/components/schemas/TargetEntity"
+        - type: object
+          properties:
+            project:
+              type: string
+              example: my-project
+              description: The project name
+            name:
+              type: string
+              example: production
+              description: The environment name
+
+    UserInfo:
+      type: object
+      required:
+        - avatarUrl
+        - githubLogin
+        - name
+      properties:
+        name:
+          type: string
+        githubLogin:
+          type: string
+        avatarUrl:
+          type: string
+        email:
+          type: string
+          description: The email address of the user (only included on admin APIs)
+
+    ChangeRequestRef:
+      type: object
+      properties:
+        changeRequestId:
+          type: string
+        latestRevisionNumber:
+          type: integer
+          format: int64
+
+    OpenEnvironmentDraftResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The open environment session ID
+        expires:
+          type: string
+          format: date-time
+          description: When this open session expires
+
   parameters:
     orgName:
       name: orgName
@@ -501,6 +1070,40 @@ components:
         type: string
         pattern: ^(\d*\.\d+|\d+)(ns|us|µs|ms|s|m|h)?(\d*\.\d+|\d+)?(ns|us|µs|ms|s|m|h)?$
         default: 1h
+    changeRequestID:
+      name: changeRequestID
+      in: path
+      description: Change request ID
+      required: true
+      schema:
+        type: string
+    gateID:
+      name: gateID
+      in: path
+      description: Change gate ID
+      required: true
+      schema:
+        type: string
+    entityId:
+      name: entityId
+      in: query
+      description: Change gate entity ID to filter
+      schema:
+        type: string
+    entityType:
+      name: entityType
+      in: query
+      description: Change gate entity type to filter
+      schema:
+        type: string
+        enum:
+            - environment
+    qualifiedName:
+      name: qualifiedName
+      in: query
+      description: Qualified name of the entity to filter
+      schema:
+        type: string
 
   responses:
     ListOrgEnvironments:
@@ -661,11 +1264,36 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/EnvironmentRevisionTags"              
+            $ref: "#/components/schemas/EnvironmentRevisionTags"
+    # Change Management Responses
+    ListChangeRequestsResponse:
+      description: List of change requests
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ListChangeRequestsResponse"
+    GetChangeRequestResponse:
+      description: Change request details
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetChangeRequestResponse"
+    ListChangeRequestEventsResponse:
+      description: List of change request events
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ListChangeRequestEventsResponse"
+    ListChangeGatesResponse:
+      description: List of change gates
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ListChangeGatesResponse"
 security:
   - Authorization: []
 paths:
-  /environments/{orgName}:
+  /esc/environments/{orgName}:
     parameters:
       - $ref: "#/components/parameters/orgName"
     get:
@@ -720,7 +1348,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}:
+  /esc/environments/{orgName}/{projectName}/{envName}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -814,7 +1442,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/clone:
+  /esc/environments/{orgName}/{projectName}/{envName}/clone:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -846,7 +1474,7 @@ paths:
         "default":
           $ref: "#/components/responses/InternalServerError"
 
-  /environments/{orgName}/yaml/check:
+  /esc/environments/{orgName}/yaml/check:
     parameters:
       - $ref: "#/components/parameters/orgName"
     post:
@@ -875,7 +1503,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/decrypt:
+  /esc/environments/{orgName}/{projectName}/{envName}/decrypt:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -899,7 +1527,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/open:
+  /esc/environments/{orgName}/{projectName}/{envName}/open:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -924,7 +1552,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/open/{openSessionID}:
+  /esc/environments/{orgName}/{projectName}/{envName}/open/{openSessionID}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -952,7 +1580,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/open//{openSessionID}:
+  /esc/environments/{orgName}/{projectName}/{envName}/open//{openSessionID}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -986,7 +1614,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/tags:
+  /esc/environments/{orgName}/{projectName}/{envName}/tags:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1047,7 +1675,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/tags/{tagName}:
+  /esc/environments/{orgName}/{projectName}/{envName}/tags/{tagName}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1118,7 +1746,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"  
-  /environments/{orgName}/{projectName}/{envName}/versions:
+  /esc/environments/{orgName}/{projectName}/{envName}/versions:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1152,7 +1780,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/versions/{version}:
+  /esc/environments/{orgName}/{projectName}/{envName}/versions/{version}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1186,7 +1814,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/versions/{version}/open:
+  /esc/environments/{orgName}/{projectName}/{envName}/versions/{version}/open:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1212,7 +1840,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/versions/tags:
+  /esc/environments/{orgName}/{projectName}/{envName}/versions/tags:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1273,7 +1901,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "default":
           $ref: "#/components/responses/InternalServerError"
-  /environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}:
+  /esc/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}:
     parameters:
       - $ref: "#/components/parameters/orgName"
       - $ref: "#/components/parameters/projectName"
@@ -1344,6 +1972,541 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
             $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  # Change Management APIs
+  /change-requests/{orgName}:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/entityId"
+      - $ref: "#/components/parameters/entityType"
+    get:
+      tags:
+        - esc
+      operationId: listChangeRequests
+      summary: List change requests for an organization
+      description: List change requests for an organization
+      responses:
+        "200":
+          $ref: "#/components/responses/ListChangeRequestsResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /change-requests/{orgName}/{changeRequestID}:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/changeRequestID"
+    get:
+      tags:
+        - esc
+      operationId: getChangeRequest
+      summary: Get a specific change request
+      description: Get a specific change request
+      responses:
+        "200":
+          $ref: "#/components/responses/GetChangeRequestResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    patch:
+      tags:
+        - esc
+      operationId: updateChangeRequest
+      summary: Update a change request
+      description: Update a change request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateChangeRequestRequest"
+      responses:
+        "200":
+          description: Updated change request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangeRequest"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /change-requests/{orgName}/{changeRequestID}/submit:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/changeRequestID"
+    post:
+      tags:
+        - esc
+      operationId: submitChangeRequest
+      summary: Submit a change request for approval
+      description: Submit a change request for approval
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitChangeRequestRequest"
+      responses:
+        "200":
+          description: Change request submitted
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /change-requests/{orgName}/{changeRequestID}/apply:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/changeRequestID"
+    post:
+      tags:
+        - esc
+      operationId: applyChangeRequest
+      summary: Apply a change request
+      description: Apply a change request
+      responses:
+        "200":
+          description: Change request applied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangeRequestApplyResult"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /change-requests/{orgName}/{changeRequestID}/close:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/changeRequestID"
+    post:
+      tags:
+        - esc
+      operationId: closeChangeRequest
+      summary: Close a change request without applying it
+      description: Close a change request without applying it
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CloseChangeRequestRequest"
+      responses:
+        "200":
+          description: Change request closed
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /change-requests/{orgName}/{changeRequestID}/approve:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/changeRequestID"
+    post:
+      tags:
+        - esc
+      operationId: approveChangeRequest
+      summary: Approve a change request
+      description: Approve a change request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApproveChangeRequestRequest"
+      responses:
+        "200":
+          description: Change request approved
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - esc
+      operationId: unapproveChangeRequest
+      summary: Withdraw approval from a change request
+      description: Withdraw approval from a change request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UnapproveChangeRequestRequest"
+      responses:
+        "200":
+          description: Approval withdrawn
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /change-requests/{orgName}/{changeRequestID}/events:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/changeRequestID"
+    get:
+      tags:
+        - esc
+      operationId: listChangeRequestEvents
+      summary: List events for a change request
+      description: List events for a change request
+      responses:
+        "200":
+          $ref: "#/components/responses/ListChangeRequestEventsResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /change-gates/{orgName}:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/entityType"
+      - $ref: "#/components/parameters/qualifiedName"
+    get:
+      tags:
+        - esc
+      operationId: listEnvironmentChangeGates
+      summary: List change gates for an environment
+      description: List change gates for an environment
+      responses:
+        "200":
+          $ref: "#/components/responses/ListChangeGatesResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - esc
+      operationId: createEnvironmentChangeGate
+      summary: Create a new change gate for an environment
+      description: Create a new change gate for an environment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateChangeGateRequest"
+      responses:
+        "201":
+          description: Change gate created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangeGate"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /change-gates/{orgName}/{gateID}:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/gateID"
+    get:
+      tags:
+        - esc
+      operationId: getEnvironmentChangeGate
+      summary: Get a specific change gate
+      description: Get a specific change gate
+      responses:
+        "200":
+          description: Change gate details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangeGate"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      tags:
+        - esc
+      operationId: updateEnvironmentChangeGate
+      summary: Update a change gate
+      description: Update a change gate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateChangeGateRequest"
+      responses:
+        "200":
+          description: Change gate updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangeGate"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - esc
+      operationId: deleteEnvironmentChangeGate
+      summary: Delete a change gate
+      description: Delete a change gate
+      responses:
+        "204":
+          description: Change gate deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /esc/environments/{orgName}/{projectName}/{envName}/drafts:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
+      - $ref: "#/components/parameters/envName"
+    post:
+      tags:
+        - esc
+      operationId: createEnvironmentDraft
+      summary: Create a new environment draft (change request)
+      description: Create a new environment draft (change request)
+      requestBody:
+        required: true
+        description: Environment YAML content
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        "201":
+          description: Environment draft created
+          headers:
+            ETag:
+              schema:
+                type: string
+              description: Entity tag for the created draft
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangeRequestRef"
+        "409":
+          description: Draft already exists for this environment
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /esc/environments/{orgName}/{projectName}/{envName}/drafts/{changeRequestID}:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
+      - $ref: "#/components/parameters/envName"
+      - $ref: "#/components/parameters/changeRequestID"
+    get:
+      tags:
+        - esc
+      operationId: readEnvironmentDraft
+      summary: Read environment draft content
+      description: Read environment draft content
+      parameters:
+        - name: revision
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Specific revision number to read
+      responses:
+        "200":
+          description: Environment draft YAML content
+          headers:
+            ETag:
+              schema:
+                type: string
+              description: Entity tag for the draft
+          content:
+            text/plain:
+              schema:
+                type: string
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+    patch:
+      tags:
+        - esc
+      operationId: updateEnvironmentDraft
+      summary: Update environment draft content
+      description: Update environment draft content
+      parameters:
+        - name: If-Match
+          in: header
+          required: true
+          schema:
+            type: string
+          description: ETag for optimistic concurrency control
+      requestBody:
+        required: true
+        description: Updated environment YAML content
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        "200":
+          description: Environment draft updated
+          headers:
+            ETag:
+              schema:
+                type: string
+              description: Updated entity tag for the draft
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangeRequestRef"
+        "409":
+          description: ETag mismatch - draft was modified by another user
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "default":
+          $ref: "#/components/responses/InternalServerError"
+  
+  /esc/environments/{orgName}/{projectName}/{envName}/drafts/{changeRequestID}/open:
+    parameters:
+      - $ref: "#/components/parameters/orgName"
+      - $ref: "#/components/parameters/projectName"
+      - $ref: "#/components/parameters/envName"
+      - $ref: "#/components/parameters/changeRequestID"
+    post:
+      tags:
+        - esc
+      operationId: openEnvironmentDraft
+      summary: Open an environment draft for evaluation
+      description: Open an environment draft for evaluation
+      parameters:
+        - name: revision
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Specific revision number to open
+        - name: duration
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Duration for which the environment should remain open (e.g., "1h", "30m")
+      responses:
+        "200":
+          description: Environment draft opened successfully
+          headers:
+            ETag:
+              schema:
+                type: string
+              description: Entity tag for the opened draft
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenEnvironmentDraftResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "500":
           $ref: "#/components/responses/InternalServerError"
         "default":

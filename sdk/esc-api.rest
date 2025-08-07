@@ -170,8 +170,6 @@ Content-Type: application/json
 
 ###
 
-@gateId = 7b7dd389-2c35-4bdc-8137-81466cb7abec
-
 # Get a specific change gate
 # @name getChangeGate
 GET https://api.pulumi.com/api/esc/environments/{{organization}}/{{project}}/sdk-test/change-gates/{{gateId}} HTTP/1.1
@@ -295,7 +293,6 @@ GET https://api.pulumi.com/api/preview/change-requests/{{organization}}?entityTy
 Authorization: token {{token}}
 
 ###
-@changeRequestId = 2b96d3c8-1bf7-46ae-8678-66f8cc22f1a4
 
 # Get a specific change request
 # @name getChangeRequest

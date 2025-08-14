@@ -215,10 +215,10 @@ func (a *EnvironmentChangeGateTeamApprover) GetEligibilityType() string {
 type EnvironmentChangeGate struct {
 	*ChangeGate
 	// Approval rule fields for direct access
-	NumApprovalsRequired      int64                              `json:"-"`
-	AllowSelfApproval         *bool                              `json:"-"`
-	RequireReapprovalOnChange *bool                              `json:"-"`
-	EligibleApprovers         []EnvironmentChangeGateApprover    `json:"-"`
+	NumApprovalsRequired      int64                           `json:"-"`
+	AllowSelfApproval         *bool                           `json:"-"`
+	RequireReapprovalOnChange *bool                           `json:"-"`
+	EligibleApprovers         []EnvironmentChangeGateApprover `json:"-"`
 }
 
 // ChangeGateUpdateConfig holds the configuration for updating a change gate.
@@ -332,7 +332,7 @@ func (c *EscClient) createChangeGateWithRawJSON(ctx context.Context, org, jsonBo
 	if err != nil {
 		return nil, fmt.Errorf("failed to make HTTP request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer closeBody(resp)
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -393,7 +393,7 @@ func (c *EscClient) updateChangeGateWithRawJSON(ctx context.Context, org, gateID
 	if err != nil {
 		return nil, fmt.Errorf("failed to make HTTP request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer closeBody(resp)
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -540,7 +540,7 @@ func (c *EscClient) getChangeGateWithRawJSON(ctx context.Context, org, gateID st
 	if err != nil {
 		return nil, fmt.Errorf("failed to make HTTP request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer closeBody(resp)
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -602,7 +602,7 @@ func (c *EscClient) listEnvironmentChangeGatesWithRawJSON(ctx context.Context, o
 	if err != nil {
 		return nil, fmt.Errorf("failed to make HTTP request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer closeBody(resp)
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -652,4 +652,10 @@ func (c *EscClient) listEnvironmentChangeGatesWithRawJSON(ctx context.Context, o
 	return &EnvironmentChangeGatesResponse{
 		Gates: enhancedGates,
 	}, nil
+}
+
+func closeBody(resp *http.Response) {
+	if err := resp.Body.Close(); err != nil {
+		fmt.Printf("failed to close response body: %v\n", err)
+	}
 }

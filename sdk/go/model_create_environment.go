@@ -136,7 +136,7 @@ func (o *CreateEnvironment) UnmarshalJSON(data []byte) (err error) {
 	varCreateEnvironment := _CreateEnvironment{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
+	// Allow unknown fields to be lenient with API responses that may include extra fields
 	err = decoder.Decode(&varCreateEnvironment)
 
 	if err != nil {

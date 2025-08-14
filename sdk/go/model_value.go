@@ -212,7 +212,7 @@ func (o *Value) UnmarshalJSON(data []byte) (err error) {
 	varValue := _Value{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
+	// Allow unknown fields to be lenient with API responses that may include extra fields
 	err = decoder.Decode(&varValue)
 
 	if err != nil {

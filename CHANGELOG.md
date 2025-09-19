@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+## 0.12.2
+
+### Bug Fixes
+
+- Drop urllib constraint from Python SDK release
+  [#99](https://github.com/pulumi/esc-sdk/pull/99)
+
 ## 0.12.1
 
 ### Bug Fixes

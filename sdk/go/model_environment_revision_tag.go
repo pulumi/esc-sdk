@@ -280,7 +280,7 @@ func (o *EnvironmentRevisionTag) UnmarshalJSON(data []byte) (err error) {
 	varEnvironmentRevisionTag := _EnvironmentRevisionTag{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
+	// Allow unknown fields to be lenient with API responses that may include extra fields
 	err = decoder.Decode(&varEnvironmentRevisionTag)
 
 	if err != nil {

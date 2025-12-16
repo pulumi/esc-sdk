@@ -8,11 +8,99 @@ from logging import FileHandler
 {{^asyncio}}
 import multiprocessing
 {{/asyncio}}
+import os
 import sys
-from typing import Optional
+from typing import Optional, List
 import urllib3
+from urllib.parse import urlparse
 
 import http.client as httplib
+
+
+def _get_proxy_from_environment(url: str) -> Optional[str]:
+    """Get the appropriate proxy URL from environment variables.
+
+    Checks HTTPS_PROXY/https_proxy for HTTPS URLs,
+    HTTP_PROXY/http_proxy for HTTP URLs.
+
+    :param url: The target URL to get proxy for.
+    :return: The proxy URL or None if no proxy is configured.
+    """
+    if url is None:
+        return None
+
+    parsed = urlparse(url)
+    scheme = parsed.scheme.lower() if parsed.scheme else 'https'
+
+    if scheme == 'https':
+        proxy = os.environ.get('HTTPS_PROXY') or os.environ.get('https_proxy')
+    else:
+        proxy = os.environ.get('HTTP_PROXY') or os.environ.get('http_proxy')
+
+    # Fall back to generic proxy
+    if not proxy:
+        proxy = os.environ.get('ALL_PROXY') or os.environ.get('all_proxy')
+
+    return proxy
+
+
+def _get_no_proxy_from_environment() -> List[str]:
+    """Get the no_proxy list from environment variables.
+
+    :return: List of hosts/patterns that should bypass the proxy.
+    """
+    no_proxy = os.environ.get('NO_PROXY') or os.environ.get('no_proxy') or ''
+    if not no_proxy:
+        return []
+    return [host.strip() for host in no_proxy.split(',') if host.strip()]
+
+
+def _should_bypass_proxy(url: str, no_proxy: List[str]) -> bool:
+    """Check if the given URL should bypass the proxy.
+
+    :param url: The target URL.
+    :param no_proxy: List of hosts/patterns that should bypass the proxy.
+    :return: True if the URL should bypass the proxy, False otherwise.
+    """
+    if not no_proxy or not url:
+        return False
+
+    parsed = urlparse(url)
+    host = parsed.hostname
+    if not host:
+        return False
+
+    host = host.lower()
+
+    for pattern in no_proxy:
+        pattern = pattern.lower().strip()
+        if not pattern:
+            continue
+
+        # Special case: '*' means bypass all
+        if pattern == '*':
+            return True
+
+        # Remove leading dot for comparison
+        if pattern.startswith('.'):
+            pattern = pattern[1:]
+
+        # Exact match
+        if host == pattern:
+            return True
+
+        # Suffix match (e.g., .example.com matches sub.example.com)
+        if host.endswith('.' + pattern):
+            return True
+
+        # Also check if pattern matches with a leading dot
+        if host.endswith(pattern):
+            # Make sure we're matching a domain boundary
+            prefix_len = len(host) - len(pattern)
+            if prefix_len == 0 or host[prefix_len - 1] == '.':
+                return True
+
+    return False
 
 JSON_SCHEMA_VALIDATION_KEYWORDS = {
     'multipleOf', 'maximum', 'exclusiveMaximum',
@@ -231,7 +319,14 @@ conf = {{{packageName}}}.Configuration(
         {{/asyncio}}
 
         self.proxy: Optional[str] = None
-        """Proxy URL
+        """Proxy URL. If not set, will be read from environment variables
+           (HTTPS_PROXY, HTTP_PROXY, ALL_PROXY) when making requests.
+        """
+        self.no_proxy: Optional[List[str]] = None
+        """List of hosts that should bypass the proxy. If not set, will be
+           read from NO_PROXY environment variable when making requests.
+           Supports exact matches and suffix matches (e.g., '.example.com'
+           matches 'sub.example.com'). Use '*' to bypass all proxies.
         """
         self.proxy_headers = None
         """Proxy headers
@@ -590,3 +685,30 @@ conf = {{{packageName}}}.Configuration(
         """Fix base path."""
         self._base_path = value
         self.server_index = None
+
+    def get_proxy_for_url(self, url: str) -> Optional[str]:
+        """Get the proxy URL to use for the given target URL.
+
+        This method considers both the explicit proxy configuration and
+        environment variables (HTTPS_PROXY, HTTP_PROXY, NO_PROXY).
+
+        :param url: The target URL.
+        :return: The proxy URL to use, or None if no proxy should be used.
+        """
+        # Get proxy URL (explicit config takes precedence)
+        proxy_url = self.proxy
+        if proxy_url is None:
+            proxy_url = _get_proxy_from_environment(url)
+
+        if not proxy_url:
+            return None
+
+        # Check no_proxy list
+        no_proxy_list = self.no_proxy
+        if no_proxy_list is None:
+            no_proxy_list = _get_no_proxy_from_environment()
+
+        if _should_bypass_proxy(url, no_proxy_list):
+            return None
+
+        return proxy_url

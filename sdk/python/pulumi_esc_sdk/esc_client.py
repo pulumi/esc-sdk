@@ -464,7 +464,7 @@ def default_client(host=None,
              server_index=None, server_variables=None,
              server_operation_index=None, server_operation_variables=None,
              ssl_ca_cert=None,
-             ) -> configuration.Configuration:
+             ) -> EscClient:
     """Creates default EscClient.
     """        
     return EscClient(default_config(

@@ -333,9 +333,9 @@ class TestShouldBypassProxy(TestProxyFunctions):
             ['example.com']
         ))
 
-    def test_leading_dot_pattern_matches_exact_domain(self):
-        """Test that pattern '.example.com' matches exact domain 'example.com'"""
-        self.assertTrue(_should_bypass_proxy(
+    def test_leading_dot_pattern_does_not_match_exact_domain(self):
+        """Test that pattern '.example.com' does not match exact domain 'example.com'"""
+        self.assertFalse(_should_bypass_proxy(
             'http://example.com',
             ['.example.com']
         ))

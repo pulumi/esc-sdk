@@ -81,24 +81,17 @@ def _should_bypass_proxy(url: str, no_proxy: List[str]) -> bool:
         if pattern == '*':
             return True
 
-        # Remove leading dot for comparison
-        if pattern.startswith('.'):
-            pattern = pattern[1:]
-
         # Exact match
         if host == pattern:
             return True
 
-        # Suffix match (e.g., .example.com matches sub.example.com)
+        # Explicit suffix match
+        if pattern.startswith('.'):
+            return host.endswith(pattern)
+
+        # Implicit suffix match (e.g., example.com matches sub.example.com)
         if host.endswith('.' + pattern):
             return True
-
-        # Also check if pattern matches with a leading dot
-        if host.endswith(pattern):
-            # Make sure we're matching a domain boundary
-            prefix_len = len(host) - len(pattern)
-            if prefix_len == 0 or host[prefix_len - 1] == '.':
-                return True
 
     return False
 

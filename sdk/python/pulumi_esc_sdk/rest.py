@@ -67,51 +67,76 @@ class RESTClientObject:
         # https://github.com/shazow/urllib3/blob/f9409436f83aeb79fbaf090181cd81b784f1b8ce/urllib3/connectionpool.py#L680  # noqa: E501
         # Custom SSL certificates and client certificates: http://urllib3.readthedocs.io/en/latest/advanced-usage.html  # noqa: E501
 
+        self.configuration = configuration
+
         # cert_reqs
         if configuration.verify_ssl:
             cert_reqs = ssl.CERT_REQUIRED
         else:
             cert_reqs = ssl.CERT_NONE
 
-        pool_args = {
+        self.pool_args = {
             "cert_reqs": cert_reqs,
             "ca_certs": configuration.ssl_ca_cert,
             "cert_file": configuration.cert_file,
             "key_file": configuration.key_file,
         }
         if configuration.assert_hostname is not None:
-            pool_args['assert_hostname'] = (
+            self.pool_args['assert_hostname'] = (
                 configuration.assert_hostname
             )
 
         if configuration.retries is not None:
-            pool_args['retries'] = configuration.retries
+            self.pool_args['retries'] = configuration.retries
 
         if configuration.tls_server_name:
-            pool_args['server_hostname'] = configuration.tls_server_name
+            self.pool_args['server_hostname'] = configuration.tls_server_name
 
 
         if configuration.socket_options is not None:
-            pool_args['socket_options'] = configuration.socket_options
+            self.pool_args['socket_options'] = configuration.socket_options
 
         if configuration.connection_pool_maxsize is not None:
-            pool_args['maxsize'] = configuration.connection_pool_maxsize
+            self.pool_args['maxsize'] = configuration.connection_pool_maxsize
 
-        # https pool manager
-        self.pool_manager: urllib3.PoolManager
+        # Cache for pool managers (keyed by proxy URL, None for no proxy)
+        self._pool_managers: dict = {}
 
-        if configuration.proxy:
-            if is_socks_proxy_url(configuration.proxy):
+    def _get_pool_manager(self, url: str) -> urllib3.PoolManager:
+        """Get the appropriate pool manager for the given URL.
+
+        This method considers proxy settings and no_proxy configuration,
+        including environment variables (HTTPS_PROXY, HTTP_PROXY, NO_PROXY).
+
+        :param url: The target URL.
+        :return: The appropriate pool manager.
+        """
+        # Get the proxy URL for this request (considers no_proxy)
+        proxy_url = self.configuration.get_proxy_for_url(url)
+
+        # Check if we already have a pool manager for this proxy
+        if proxy_url in self._pool_managers:
+            return self._pool_managers[proxy_url]
+
+        # Create a new pool manager
+        pool_args = self.pool_args.copy()
+
+        if proxy_url:
+            if is_socks_proxy_url(proxy_url):
                 from urllib3.contrib.socks import SOCKSProxyManager
-                pool_args["proxy_url"] = configuration.proxy
-                pool_args["headers"] = configuration.proxy_headers
-                self.pool_manager = SOCKSProxyManager(**pool_args)
+                pool_args["proxy_url"] = proxy_url
+                pool_args["headers"] = self.configuration.proxy_headers
+                pool_manager = SOCKSProxyManager(**pool_args)
             else:
-                pool_args["proxy_url"] = configuration.proxy
-                pool_args["proxy_headers"] = configuration.proxy_headers
-                self.pool_manager = urllib3.ProxyManager(**pool_args)
+                pool_args["proxy_url"] = proxy_url
+                pool_args["proxy_headers"] = self.configuration.proxy_headers
+                pool_manager = urllib3.ProxyManager(**pool_args)
         else:
-            self.pool_manager = urllib3.PoolManager(**pool_args)
+            pool_manager = urllib3.PoolManager(**pool_args)
+
+        # Cache the pool manager
+        self._pool_managers[proxy_url] = pool_manager
+        return pool_manager
 
     def request(
         self,
@@ -169,6 +194,10 @@ class RESTClientObject:
                 )
 
         try:
+            # Get the appropriate pool manager for this URL
+            # (considers proxy settings and no_proxy)
+            pool_manager = self._get_pool_manager(url)
+
             # For `POST`, `PUT`, `PATCH`, `OPTIONS`, `DELETE`
             if method in ['POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE']:
 
@@ -181,7 +210,7 @@ class RESTClientObject:
                     request_body = None
                     if body is not None:
                         request_body = json.dumps(body)
-                    r = self.pool_manager.request(
+                    r = pool_manager.request(
                         method,
                         url,
                         body=request_body,
@@ -190,7 +219,7 @@ class RESTClientObject:
                         preload_content=False
                     )
                 elif content_type == 'application/x-www-form-urlencoded':
-                    r = self.pool_manager.request(
+                    r = pool_manager.request(
                         method,
                         url,
                         fields=post_params,
@@ -204,7 +233,7 @@ class RESTClientObject:
                     # Content-Type which generated by urllib3 will be
                     # overwritten.
                     del headers['Content-Type']
-                    r = self.pool_manager.request(
+                    r = pool_manager.request(
                         method,
                         url,
                         fields=post_params,
@@ -217,7 +246,7 @@ class RESTClientObject:
                 # other content types than JSON when `body` argument is
                 # provided in serialized form.
                 elif isinstance(body, str) or isinstance(body, bytes):
-                    r = self.pool_manager.request(
+                    r = pool_manager.request(
                         method,
                         url,
                         body=body,
@@ -227,7 +256,7 @@ class RESTClientObject:
                     )
                 elif headers['Content-Type'] == 'text/plain' and isinstance(body, bool):
                     request_body = "true" if body else "false"
-                    r = self.pool_manager.request(
+                    r = pool_manager.request(
                         method,
                         url,
                         body=request_body,
@@ -242,7 +271,7 @@ class RESTClientObject:
                     raise ApiException(status=0, reason=msg)
             # For `GET`, `HEAD`
             else:
-                r = self.pool_manager.request(
+                r = pool_manager.request(
                     method,
                     url,
                     fields={},

@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+### Bug Fixes
+
+- Fix Python default_client return type annotation
+  [#109](https://github.com/pulumi/esc-sdk/pull/109)
+
 ## 0.12.3
 
 ## 0.12.2

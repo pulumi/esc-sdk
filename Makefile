@@ -25,8 +25,8 @@ lint:: lint-copyright lint-golang lint-python
 lint-golang:
 	cd sdk && golangci-lint run
 lint-python:
-	flake8 ./sdk/python/pulumi_esc_sdk/esc_client.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-	flake8 ./sdk/python/test/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+	flake8 ./sdk/python/pulumi_esc_sdk/esc_client.py --count --max-complexity=10 --max-line-length=127 --statistics
+	flake8 ./sdk/python/test/ --count --max-complexity=10 --max-line-length=127 --statistics
 lint-copyright:
 	pulumictl copyright
 

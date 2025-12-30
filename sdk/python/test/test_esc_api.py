@@ -136,7 +136,9 @@ values:
         self.assertEqual(tags.tags["owner"].name, "owner")
         self.assertEqual(tags.tags["owner"].value, "esc-sdk-test")
 
-        self.client.update_environment_tag(self.orgName, PROJECT_NAME, self.envName, "owner", "esc-sdk-test", "new-owner", "esc-sdk-test-updated")
+        self.client.update_environment_tag(
+            self.orgName, PROJECT_NAME, self.envName, "owner",
+            "esc-sdk-test", "new-owner", "esc-sdk-test-updated")
 
         tag = self.client.get_environment_tag(self.orgName, PROJECT_NAME, self.envName, "new-owner")
         self.assertEqual(tag.name, "new-owner")

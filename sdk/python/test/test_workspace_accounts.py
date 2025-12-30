@@ -8,6 +8,7 @@ import os
 
 import pulumi_esc_sdk as esc
 
+
 class TestWorkspaceAccounts(unittest.TestCase):
     """WorkspaceAccounts unit test stubs"""
     tokenBefore: Optional[str]
@@ -53,6 +54,7 @@ class TestWorkspaceAccounts(unittest.TestCase):
         self.config = self.client.esc_api.api_client.configuration
         self.assertEqual(self.config.host, "https://api.pulumi.com/api/esc")
         self.assertTrue('Authorization' not in self.config.api_key)
+
 
 if __name__ == '__main__':
     unittest.main()

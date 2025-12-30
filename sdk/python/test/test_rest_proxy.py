@@ -2,10 +2,9 @@
 
 # Copyright 2024, Pulumi Corporation.  All rights reserved.
 
-import sys
 import unittest
 import os
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 
 from pulumi_esc_sdk.configuration import Configuration
 from pulumi_esc_sdk.rest import RESTClientObject

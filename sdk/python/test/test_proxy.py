@@ -54,12 +54,12 @@ class TestGetProxyFromEnvironment(TestProxyFunctions):
         result = _get_proxy_from_environment('https://api.pulumi.com')
         self.assertEqual(result, 'http://proxy.example.com:8080')
 
-    def test_https_proxy_uppercase_takes_precedence(self):
-        """Test that HTTPS_PROXY takes precedence over https_proxy"""
+    def test_https_proxy_lowercase_takes_precedence(self):
+        """Test that https_proxy takes precedence over HTTPS_PROXY"""
         os.environ['HTTPS_PROXY'] = 'http://proxy-upper.example.com:8080'
         os.environ['https_proxy'] = 'http://proxy-lower.example.com:8080'
         result = _get_proxy_from_environment('https://api.pulumi.com')
-        self.assertEqual(result, 'http://proxy-upper.example.com:8080')
+        self.assertEqual(result, 'http://proxy-lower.example.com:8080')
 
     def test_http_url_uses_http_proxy_uppercase(self):
         """Test that HTTP URLs use HTTP_PROXY environment variable"""
@@ -73,12 +73,12 @@ class TestGetProxyFromEnvironment(TestProxyFunctions):
         result = _get_proxy_from_environment('http://api.example.com')
         self.assertEqual(result, 'http://proxy.example.com:8080')
 
-    def test_http_proxy_uppercase_takes_precedence(self):
-        """Test that HTTP_PROXY takes precedence over http_proxy"""
+    def test_http_proxy_lowercase_takes_precedence(self):
+        """Test that http_proxy takes precedence over HTTP_PROXY"""
         os.environ['HTTP_PROXY'] = 'http://proxy-upper.example.com:8080'
         os.environ['http_proxy'] = 'http://proxy-lower.example.com:8080'
         result = _get_proxy_from_environment('http://api.example.com')
-        self.assertEqual(result, 'http://proxy-upper.example.com:8080')
+        self.assertEqual(result, 'http://proxy-lower.example.com:8080')
 
     def test_fallback_to_all_proxy_uppercase(self):
         """Test fallback to ALL_PROXY when specific proxy not set"""
@@ -92,12 +92,12 @@ class TestGetProxyFromEnvironment(TestProxyFunctions):
         result = _get_proxy_from_environment('https://api.pulumi.com')
         self.assertEqual(result, 'http://proxy.example.com:8080')
 
-    def test_all_proxy_uppercase_takes_precedence(self):
-        """Test that ALL_PROXY takes precedence over all_proxy"""
+    def test_all_proxy_lowercase_takes_precedence(self):
+        """Test that all_proxy takes precedence over ALL_PROXY"""
         os.environ['ALL_PROXY'] = 'http://proxy-upper.example.com:8080'
         os.environ['all_proxy'] = 'http://proxy-lower.example.com:8080'
         result = _get_proxy_from_environment('https://api.pulumi.com')
-        self.assertEqual(result, 'http://proxy-upper.example.com:8080')
+        self.assertEqual(result, 'http://proxy-lower.example.com:8080')
 
     def test_specific_proxy_takes_precedence_over_all_proxy(self):
         """Test that HTTPS_PROXY takes precedence over ALL_PROXY"""
@@ -146,12 +146,12 @@ class TestGetNoProxyFromEnvironment(TestProxyFunctions):
         result = _get_no_proxy_from_environment()
         self.assertEqual(result, ['localhost', '127.0.0.1', '.example.com'])
 
-    def test_no_proxy_uppercase_takes_precedence(self):
-        """Test that NO_PROXY takes precedence over no_proxy"""
+    def test_no_proxy_lowercase_takes_precedence(self):
+        """Test that no_proxy takes precedence over NO_PROXY"""
         os.environ['NO_PROXY'] = 'uppercase.com'
         os.environ['no_proxy'] = 'lowercase.com'
         result = _get_no_proxy_from_environment()
-        self.assertEqual(result, ['uppercase.com'])
+        self.assertEqual(result, ['lowercase.com'])
 
     def test_empty_no_proxy(self):
         """Test that empty NO_PROXY returns empty list"""
@@ -324,6 +324,64 @@ class TestShouldBypassProxy(TestProxyFunctions):
         self.assertTrue(_should_bypass_proxy(
             'http://example.com:8080',
             ['example.com']
+        ))
+
+    def test_port_in_pattern_exact_match(self):
+        """Test that pattern with port matches URL with same host and port"""
+        self.assertTrue(_should_bypass_proxy(
+            'http://example.com:8080',
+            ['example.com:8080']
+        ))
+
+    def test_port_in_pattern_different_port_no_match(self):
+        """Test that pattern with port doesn't match URL with different port"""
+        self.assertFalse(_should_bypass_proxy(
+            'http://example.com:8080',
+            ['example.com:9090']
+        ))
+
+    def test_port_in_pattern_no_port_in_url_no_match(self):
+        """Test that pattern with port doesn't match URL without port"""
+        self.assertFalse(_should_bypass_proxy(
+            'http://example.com',
+            ['example.com:8080']
+        ))
+
+    def test_multiple_ports_in_patterns(self):
+        """Test matching against multiple patterns with different ports"""
+        self.assertTrue(_should_bypass_proxy(
+            'http://example.com:8080',
+            ['example.com:9090', 'example.com:8080', 'other.com:8080']
+        ))
+
+    def test_pattern_without_port_matches_any_port(self):
+        """Test that pattern without port matches URL with any port or no port"""
+        patterns = ['example.com']
+        self.assertTrue(_should_bypass_proxy('http://example.com', patterns))
+        self.assertTrue(_should_bypass_proxy('http://example.com:80', patterns))
+        self.assertTrue(_should_bypass_proxy('http://example.com:8080', patterns))
+        self.assertTrue(_should_bypass_proxy('http://example.com:443', patterns))
+
+    def test_suffix_match_with_port_in_pattern(self):
+        """Test that suffix pattern with port requires matching port"""
+        self.assertTrue(_should_bypass_proxy(
+            'http://api.example.com:8080',
+            ['example.com:8080']
+        ))
+        self.assertFalse(_should_bypass_proxy(
+            'http://api.example.com:9090',
+            ['example.com:8080']
+        ))
+
+    def test_leading_dot_pattern_with_port(self):
+        """Test that leading dot pattern with port matches subdomains with same port"""
+        self.assertTrue(_should_bypass_proxy(
+            'http://api.example.com:8080',
+            ['.example.com:8080']
+        ))
+        self.assertFalse(_should_bypass_proxy(
+            'http://api.example.com:9090',
+            ['.example.com:8080']
         ))
 
     def test_path_in_url_ignored(self):

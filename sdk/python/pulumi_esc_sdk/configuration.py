@@ -18,17 +18,149 @@ import copy
 import logging
 from logging import FileHandler
 import multiprocessing
+import os
 import sys
-from typing import Optional
+from typing import Optional, List
 import urllib3
+from urllib.parse import urlparse
 
 import http.client as httplib
+
+
+def _get_proxy_from_environment(url: str) -> Optional[str]:
+    """Get the appropriate proxy URL from environment variables.
+
+    Checks HTTPS_PROXY/https_proxy for HTTPS URLs,
+    HTTP_PROXY/http_proxy for HTTP URLs.
+
+    :param url: The target URL to get proxy for.
+    :return: The proxy URL or None if no proxy is configured.
+    """
+    if url is None:
+        return None
+
+    parsed = urlparse(url)
+    scheme = parsed.scheme.lower() if parsed.scheme else 'https'
+
+    if scheme == 'https':
+        proxy = os.environ.get('https_proxy') or os.environ.get('HTTPS_PROXY')
+    else:
+        proxy = os.environ.get('http_proxy') or os.environ.get('HTTP_PROXY')
+
+    # Fall back to generic proxy
+    if not proxy:
+        proxy = os.environ.get('all_proxy') or os.environ.get('ALL_PROXY')
+
+    return proxy
+
+
+def _get_no_proxy_from_environment() -> List[str]:
+    """Get the no_proxy list from environment variables.
+
+    :return: List of hosts/patterns that should bypass the proxy.
+    """
+    no_proxy = os.environ.get('no_proxy') or os.environ.get('NO_PROXY')
+    if not no_proxy:
+        return []
+    return [host.strip() for host in no_proxy.split(',') if host.strip()]
+
+
+def _parse_no_proxy_pattern(pattern: str):
+    """Parse a no_proxy pattern into host and port components.
+
+    :param pattern: The no_proxy pattern to parse.
+    :return: Tuple of (pattern_host, pattern_port).
+    """
+    pattern_host = pattern
+    pattern_port = None
+    if ':' in pattern:
+        # Split pattern into host and port
+        parts = pattern.rsplit(':', 1)
+        if len(parts) == 2 and parts[1].isdigit():
+            pattern_host = parts[0]
+            pattern_port = int(parts[1])
+    return pattern_host, pattern_port
+
+
+def _host_matches_pattern(host: str, pattern_host: str) -> bool:
+    """Check if a host matches a no_proxy pattern.
+
+    :param host: The host to check (already lowercased).
+    :param pattern_host: The pattern host to match against.
+    :return: True if host matches the pattern.
+    """
+    # Exact match
+    if host == pattern_host:
+        return True
+
+    # Explicit suffix match (e.g., pattern .example.com matches
+    # sub.example.com)
+    if pattern_host.startswith('.'):
+        return host.endswith(pattern_host)
+
+    # Implicit suffix match (e.g., pattern example.com matches
+    # sub.example.com)
+    return host.endswith('.' + pattern_host)
+
+
+def _should_bypass_proxy(url: str, no_proxy: List[str]) -> bool:
+    """Check if the given URL should bypass the proxy.
+
+    :param url: The target URL.
+    :param no_proxy: List of hosts/patterns that should bypass the proxy.
+    :return: True if the URL should bypass the proxy, False otherwise.
+    """
+    if not no_proxy or not url:
+        return False
+
+    parsed = urlparse(url)
+    host = parsed.hostname
+    if not host:
+        return False
+
+    host = host.lower()
+    port = parsed.port
+
+    for pattern in no_proxy:
+        pattern = pattern.lower().strip()
+        if not pattern:
+            continue
+
+        # We generally follow curl's NO_PROXY pattern from
+        # https://curl.se/libcurl/c/CURLOPT_NOPROXY.html
+        # And this is used in the Python "httpx" lib
+        # https://github.com/encode/httpx/blob/ae1b9f66238f75ced3ced5e4485408435de10768/httpx/_utils.py#L57
+
+        # Special case: '*' means bypass all
+        if pattern == '*':
+            return True
+
+        # Parse pattern into host and port components
+        pattern_host, pattern_port = _parse_no_proxy_pattern(pattern)
+
+        # If pattern specifies a port, port must match to proceed to
+        # host checks
+        # This mirrors the Python "requests" lib and seems most reasonable.
+        if pattern_port is not None and port != pattern_port:
+            continue  # Port doesn't match, try next pattern
+
+        # Note: suffix matching differs from the Python "requests" lib
+        # because it does not support explicit suffix matching. Instead 
+        # "requests" only checks that the host ends with the pattern 
+        # (allowing "fakegoogle.com" to match "google.com").
+
+        if _host_matches_pattern(host, pattern_host):
+            return True
+
+    return False
+
 
 JSON_SCHEMA_VALIDATION_KEYWORDS = {
     'multipleOf', 'maximum', 'exclusiveMaximum',
     'minimum', 'exclusiveMinimum', 'maxLength',
     'minLength', 'pattern', 'maxItems', 'minItems'
 }
+
 
 class Configuration:
     """This class contains various settings of the API client.
@@ -39,14 +171,15 @@ class Configuration:
     :param server_variables: Mapping with string values to replace variables in
       templated server configuration. The validation of enums is performed for
       variables with defined enum values before.
-    :param server_operation_index: Mapping from operation ID to an index to server
+    :param server_operation_index: Mapping from operation ID to an index
+      to server configuration.
+    :param server_operation_variables: Mapping from operation ID to a
+      mapping with string values to replace variables in templated server
       configuration.
-    :param server_operation_variables: Mapping from operation ID to a mapping with
-      string values to replace variables in templated server configuration.
       The validation of enums is performed for variables with defined enum
       values before.
-    :param ssl_ca_cert: str - the path to a file of concatenated CA certificates
-      in PEM format.
+    :param ssl_ca_cert: str - the path to a file of concatenated CA
+      certificates in PEM format.
 
     :Example:
 
@@ -80,10 +213,14 @@ conf = pulumi_esc_sdk.Configuration(
                  ) -> None:
         """Constructor
         """
-        self._base_path = "https://api.pulumi.com/api/esc" if host is None else host
+        self._base_path = (
+            "https://api.pulumi.com/api/esc" if host is None else host
+        )
         """Default Base url
         """
-        self.server_index = 0 if server_index is None and host is None else server_index
+        self.server_index = (
+            0 if server_index is None and host is None else server_index
+        )
         self.server_operation_index = server_operation_index or {}
         """Default server index
         """
@@ -100,7 +237,7 @@ conf = pulumi_esc_sdk.Configuration(
             self.api_key['Authorization'] = access_token
         """dict to store API key(s)
         """
-        self.api_key_prefix = { 'Authorization': 'token' }
+        self.api_key_prefix = {'Authorization': 'token'}
         self.refresh_api_key_hook = None
         """function hook to refresh API key if expired
         """
@@ -156,7 +293,14 @@ conf = pulumi_esc_sdk.Configuration(
         """
 
         self.proxy: Optional[str] = None
-        """Proxy URL
+        """Proxy URL. If not set, will be read from environment variables
+           (HTTPS_PROXY, HTTP_PROXY, ALL_PROXY) when making requests.
+        """
+        self.no_proxy: Optional[List[str]] = None
+        """List of hosts that should bypass the proxy. If not set, will be
+           read from NO_PROXY environment variable when making requests.
+           Supports exact matches and suffix matches (e.g., '.example.com'
+           matches 'sub.example.com'). Use '*' to bypass all proxies.
         """
         self.proxy_headers = None
         """Proxy headers
@@ -328,7 +472,10 @@ conf = pulumi_esc_sdk.Configuration(
         """
         if self.refresh_api_key_hook is not None:
             self.refresh_api_key_hook(self)
-        key = self.api_key.get(identifier, self.api_key.get(alias) if alias is not None else None)
+        key = self.api_key.get(
+            identifier,
+            self.api_key.get(alias) if alias is not None else None
+        )
         if key:
             prefix = self.api_key_prefix.get(identifier)
             if prefix:
@@ -433,10 +580,39 @@ conf = pulumi_esc_sdk.Configuration(
     @property
     def host(self):
         """Return generated host."""
-        return self.get_host_from_settings(self.server_index, variables=self.server_variables)
+        return self.get_host_from_settings(
+            self.server_index, variables=self.server_variables
+        )
 
     @host.setter
     def host(self, value):
         """Fix base path."""
         self._base_path = value
         self.server_index = None
+
+    def get_proxy_for_url(self, url: str) -> Optional[str]:
+        """Get the proxy URL to use for the given target URL.
+
+        This method considers both the explicit proxy configuration and
+        environment variables (HTTPS_PROXY, HTTP_PROXY, NO_PROXY).
+
+        :param url: The target URL.
+        :return: The proxy URL to use, or None if no proxy should be used.
+        """
+        # Get proxy URL (explicit config takes precedence)
+        proxy_url = self.proxy
+        if proxy_url is None:
+            proxy_url = _get_proxy_from_environment(url)
+
+        if not proxy_url:
+            return None
+
+        # Check no_proxy list
+        no_proxy_list = self.no_proxy
+        if no_proxy_list is None:
+            no_proxy_list = _get_no_proxy_from_environment()
+
+        if _should_bypass_proxy(url, no_proxy_list):
+            return None
+
+        return proxy_url

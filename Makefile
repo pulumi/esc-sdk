@@ -74,5 +74,29 @@ generate_ts_client_sdk:
 generate_python_client_sdk:
 	PYTHON_POST_PROCESS_FILE="/usr/local/bin/yapf -i" openapi-generator-cli generate -i ./sdk/swagger.yaml -p packageName=pulumi_esc_sdk,httpUserAgent=esc-sdk/python/${VERSION},packageVersion=${PYTHON_SDK_VERSION} -t ./sdk/templates/python -g python -o ./sdk/python --git-repo-id esc --git-user-id pulumi
 
+.PHONY: generate_csharp_client_sdk
+generate_csharp_client_sdk:
+	openapi-generator-cli generate \
+		-i ./sdk/swagger.yaml \
+		-g csharp \
+		--library generichost \
+		--additional-properties packageName=Pulumi.Esc.Sdk \
+		--additional-properties targetFramework=net6.0 \
+		--additional-properties nullableReferenceTypes=true \
+		--additional-properties validatable=true \
+		--additional-properties hideGenerationTimestamp=false \
+		--additional-properties sourceFolder=. \
+		--additional-properties httpUserAgent=esc-sdk/csharp/${VERSION} \
+		-t ./sdk/templates/csharp \
+		-o ./sdk/csharp \
+		--git-repo-id esc \
+		--git-user-id pulumi
+
+build_csharp::
+	cd sdk/csharp/Pulumi.Esc.Sdk && dotnet build
+
+test_csharp::
+	cd sdk/csharp && dotnet test
+
 .phony: generate_sdks
-generate_sdks:: generate_go_client_sdk generate_ts_client_sdk generate_python_client_sdk
+generate_sdks:: generate_go_client_sdk generate_ts_client_sdk generate_python_client_sdk generate_csharp_client_sdk

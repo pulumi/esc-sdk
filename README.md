@@ -45,8 +45,34 @@ go get github.com/pulumi/esc-sdk/sdk
 
 [Go examples](https://www.pulumi.com/docs/esc/development/languages-sdks/go/)
 
+### C#/.NET
+
+```shell
+dotnet add package Pulumi.Esc.Sdk
+```
+
+#### Quick Example
+
+```csharp
+using Pulumi.Esc.Sdk;
+
+// Create a client using default credentials (PULUMI_ACCESS_TOKEN or CLI login)
+using var client = EscClient.CreateDefault();
+
+// Or provide credentials explicitly
+// using var client = EscClient.Create("pul-abc123");
+
+// Open and read an environment
+var (env, values) = await client.OpenAndReadEnvironmentAsync("myorg", "myproject", "dev");
+Console.WriteLine(values["dbConnectionString"]);
+
+// Get the environment definition as parsed YAML
+var definition = await client.GetEnvironmentAsync("myorg", "myproject", "dev");
+```
+
 ## API Reference Documentation
 
 * [TypeScript/JavaScript](https://www.pulumi.com/docs/reference/pkg/nodejs/pulumi/esc-sdk/)
 * [Python](https://www.pulumi.com/docs/reference/pkg/python/pulumi_esc_sdk/)
 * [Go](https://pkg.go.dev/github.com/pulumi/esc-sdk/sdk/go)
+* C# — API docs coming soon

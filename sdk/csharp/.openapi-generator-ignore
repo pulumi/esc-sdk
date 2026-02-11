@@ -26,6 +26,7 @@ git_push.sh
 .travis.yml
 .gitignore
 README.md
+Pulumi.Esc.Sdk/README.md
 test/*
 docs/**
 api/*

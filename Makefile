@@ -96,7 +96,10 @@ build_csharp::
 	cd sdk/csharp/Pulumi.Esc.Sdk && dotnet build
 
 test_csharp::
-	cd sdk/csharp && dotnet test
+	cd sdk/csharp && dotnet test --filter "Category!=Integration"
+
+test_csharp_integration::
+	cd sdk/csharp && dotnet test --filter "Category=Integration"
 
 .phony: generate_sdks
 generate_sdks:: generate_go_client_sdk generate_ts_client_sdk generate_python_client_sdk generate_csharp_client_sdk

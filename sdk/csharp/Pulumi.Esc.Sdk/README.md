@@ -129,7 +129,7 @@ Authentication schemes defined for the API:
 
 ## Build
 - SDK version: 1.0.0
-- Build date: 2026-02-10T17:40:02.529648200-06:00[America/Chicago]
+- Build date: 2026-02-10T18:08:21.254053800-06:00[America/Chicago]
 - Generator version: 7.6.0
 - Build package: org.openapitools.codegen.languages.CSharpClientCodegen
 
@@ -174,7 +174,7 @@ Authentication schemes defined for the API:
 - packageCompany: OpenAPI
 - packageCopyright: No Copyright
 - packageDescription: A library generated from a OpenAPI doc
-- packageGuid: {42909904-247D-4DA4-8043-3BE5ADA694C2}
+- packageGuid: {712CAE8C-8595-4B29-810F-75234D7B42C3}
 - packageName: Pulumi.Esc.Sdk
 - packageTags: 
 - packageTitle: OpenAPI Library

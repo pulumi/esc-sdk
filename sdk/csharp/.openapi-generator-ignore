@@ -27,7 +27,7 @@ git_push.sh
 .gitignore
 README.md
 test/*
-docs/*
+docs/**
 api/*
 appveyor.yml
 

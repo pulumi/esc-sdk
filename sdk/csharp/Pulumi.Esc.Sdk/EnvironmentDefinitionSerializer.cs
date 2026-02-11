@@ -67,6 +67,12 @@ namespace Pulumi.Esc.Sdk
                 if (values.FilesOption.IsSet && values.Files != null)
                     valuesDict["files"] = values.Files;
 
+                // Include additional properties (foo, my_secret, my_array, etc.)
+                foreach (var kvp in values.AdditionalProperties)
+                {
+                    valuesDict[kvp.Key] = JsonElementToObject(kvp.Value) ?? "";
+                }
+
                 dict["values"] = valuesDict;
             }
 
@@ -143,7 +149,20 @@ namespace Pulumi.Esc.Sdk
                 pulumiConfig = new Option<Dictionary<string, object>?>(ConvertToObjectDict(pcDict));
             }
 
-            return new EnvironmentDefinitionValues(envVars, files, pulumiConfig);
+            var result = new EnvironmentDefinitionValues(envVars, files, pulumiConfig);
+
+            // Capture additional properties (any key not handled above)
+            var knownKeys = new HashSet<string> { "environmentVariables", "files", "pulumiConfig" };
+            foreach (var kvp in valuesDict)
+            {
+                var key = kvp.Key.ToString()!;
+                if (!knownKeys.Contains(key))
+                {
+                    result.AdditionalProperties[key] = ObjectToJsonElement(kvp.Value);
+                }
+            }
+
+            return result;
         }
 
         private static Dictionary<string, string> ConvertToStringDict(Dictionary<object, object> dict)
@@ -169,6 +188,83 @@ namespace Pulumi.Esc.Sdk
                     _ => kvp.Value ?? ""
                 };
             }
+            return result;
+        }
+
+        /// <summary>
+        /// Converts a YAML-deserialized object to a <see cref="JsonElement"/>.
+        /// This bridges YamlDotNet's object model to System.Text.Json for storing
+        /// in <see cref="EnvironmentDefinitionValues.AdditionalProperties"/>.
+        /// </summary>
+        private static JsonElement ObjectToJsonElement(object? value)
+        {
+            // Serialize the object to JSON then parse back as JsonElement
+            var json = JsonSerializer.Serialize(ConvertYamlValue(value));
+            return JsonDocument.Parse(json).RootElement.Clone();
+        }
+
+        /// <summary>
+        /// Converts a <see cref="JsonElement"/> to a plain .NET object suitable for
+        /// YamlDotNet serialization.
+        /// </summary>
+        private static object? JsonElementToObject(JsonElement element)
+        {
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.Object:
+                    var dict = new Dictionary<string, object?>();
+                    foreach (var prop in element.EnumerateObject())
+                        dict[prop.Name] = JsonElementToObject(prop.Value);
+                    return dict;
+                case JsonValueKind.Array:
+                    var list = new List<object?>();
+                    foreach (var item in element.EnumerateArray())
+                        list.Add(JsonElementToObject(item));
+                    return list;
+                case JsonValueKind.String:
+                    return element.GetString();
+                case JsonValueKind.Number:
+                    // Preserve integer vs floating point
+                    if (element.TryGetInt64(out var longVal))
+                        return longVal;
+                    return element.GetDouble();
+                case JsonValueKind.True:
+                    return true;
+                case JsonValueKind.False:
+                    return false;
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Converts YamlDotNet's object types to standard .NET types suitable for
+        /// JSON serialization. YamlDotNet uses Dictionary&lt;object, object&gt; for
+        /// mappings and List&lt;object&gt; for sequences.
+        /// </summary>
+        private static object? ConvertYamlValue(object? value)
+        {
+            return value switch
+            {
+                Dictionary<object, object> dict => ConvertYamlDict(dict),
+                List<object> list => ConvertYamlList(list),
+                _ => value
+            };
+        }
+
+        private static Dictionary<string, object?> ConvertYamlDict(Dictionary<object, object> dict)
+        {
+            var result = new Dictionary<string, object?>();
+            foreach (var kvp in dict)
+                result[kvp.Key.ToString()!] = ConvertYamlValue(kvp.Value);
+            return result;
+        }
+
+        private static List<object?> ConvertYamlList(List<object> list)
+        {
+            var result = new List<object?>();
+            foreach (var item in list)
+                result.Add(ConvertYamlValue(item));
             return result;
         }
     }

@@ -130,6 +130,8 @@ namespace Pulumi.Esc.Sdk
                 config.AddApiHttpClients(client =>
                 {
                     client.BaseAddress = new Uri(apiUrl);
+                    client.DefaultRequestHeaders.Add("X-Pulumi-Source", "esc-sdk");
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd("esc-sdk");
                 });
             });
 
@@ -251,6 +253,33 @@ namespace Pulumi.Esc.Sdk
                 return diags;
 
             return null;
+        }
+
+        /// <summary>
+        /// Reads the environment definition and returns a parsed <see cref="EnvironmentDefinition"/>.
+        /// </summary>
+        public async Task<EnvironmentDefinition?> GetEnvironmentAsync(string orgName, string projectName, string envName, CancellationToken cancellationToken = default)
+        {
+            var yaml = await GetEnvironmentYamlAsync(orgName, projectName, envName, cancellationToken).ConfigureAwait(false);
+            return EnvironmentDefinitionSerializer.Deserialize(yaml);
+        }
+
+        /// <summary>
+        /// Reads the environment definition at a specific version and returns a parsed <see cref="EnvironmentDefinition"/>.
+        /// </summary>
+        public async Task<EnvironmentDefinition?> GetEnvironmentAtVersionAsync(string orgName, string projectName, string envName, string version, CancellationToken cancellationToken = default)
+        {
+            var yaml = await GetEnvironmentAtVersionYamlAsync(orgName, projectName, envName, version, cancellationToken).ConfigureAwait(false);
+            return EnvironmentDefinitionSerializer.Deserialize(yaml);
+        }
+
+        /// <summary>
+        /// Reads the environment definition with static secrets in plaintext and returns a parsed <see cref="EnvironmentDefinition"/>.
+        /// </summary>
+        public async Task<EnvironmentDefinition?> DecryptEnvironmentAsync(string orgName, string projectName, string envName, CancellationToken cancellationToken = default)
+        {
+            var yaml = await DecryptEnvironmentYamlAsync(orgName, projectName, envName, cancellationToken).ConfigureAwait(false);
+            return EnvironmentDefinitionSerializer.Deserialize(yaml);
         }
 
         /// <summary>

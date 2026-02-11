@@ -30,7 +30,11 @@ test/*
 docs/**
 api/*
 appveyor.yml
+# Solution file has corrected project paths
+Pulumi.Esc.Sdk.sln
 Pulumi.Esc.Sdk.Test/**
+# Value.cs has a fix for varValue not being truly required (API returns Value without "value" when unknown=true)
+Pulumi.Esc.Sdk/Model/Value.cs
 
 # Hand-written extension files — DO NOT overwrite
 Pulumi.Esc.Sdk/EscClient.cs

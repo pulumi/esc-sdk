@@ -43,8 +43,8 @@ namespace Pulumi.Esc.Sdk
     /// </summary>
     internal class EscCredentials
     {
-        [JsonPropertyName("currentAccountName")]
-        public string? CurrentAccountName { get; set; }
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
     }
 
     /// <summary>
@@ -130,9 +130,9 @@ namespace Pulumi.Esc.Sdk
         private static string? GetCurrentUrl(PulumiCredentials? credentials, EscCredentials? escCredentials)
         {
             // ESC CLI credentials override the default Pulumi CLI "current" URL
-            if (!string.IsNullOrEmpty(escCredentials?.CurrentAccountName))
+            if (!string.IsNullOrEmpty(escCredentials?.Name))
             {
-                return escCredentials!.CurrentAccountName;
+                return escCredentials!.Name;
             }
 
             return credentials?.Current;

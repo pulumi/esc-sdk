@@ -30,6 +30,7 @@ test/*
 docs/**
 api/*
 appveyor.yml
+Pulumi.Esc.Sdk.Test/**
 
 # Hand-written extension files — DO NOT overwrite
 Pulumi.Esc.Sdk/EscClient.cs

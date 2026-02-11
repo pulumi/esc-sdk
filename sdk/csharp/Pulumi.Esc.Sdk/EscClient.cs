@@ -2,7 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,6 +71,7 @@ namespace Pulumi.Esc.Sdk
     public class EscClient : IDisposable
     {
         private readonly ServiceProvider _serviceProvider;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
         private bool _disposed;
 
         /// <summary>
@@ -76,6 +82,7 @@ namespace Pulumi.Esc.Sdk
         private EscClient(ServiceProvider serviceProvider, IEscApi rawApi)
         {
             _serviceProvider = serviceProvider;
+            _jsonSerializerOptions = serviceProvider.GetRequiredService<JsonSerializerOptionsProvider>().Options;
             RawApi = rawApi;
         }
 
@@ -149,7 +156,7 @@ namespace Pulumi.Esc.Sdk
         /// </summary>
         public async Task CreateEnvironmentAsync(string orgName, string projectName, string envName, CancellationToken cancellationToken = default)
         {
-            var createEnv = new CreateEnvironment(projectName, envName);
+            var createEnv = new CreateEnvironment(envName, projectName);
             var response = await RawApi.CreateEnvironmentAsync(createEnv, orgName, cancellationToken).ConfigureAwait(false);
             EnsureSuccess(response, "CreateEnvironment");
         }
@@ -162,7 +169,7 @@ namespace Pulumi.Esc.Sdk
             string destProjectName, string destEnvName,
             CloneEnvironmentOptions? options = null, CancellationToken cancellationToken = default)
         {
-            var clone = new CloneEnvironment(destProjectName, destEnvName);
+            var clone = new CloneEnvironment(destEnvName, destProjectName);
             if (options != null)
             {
                 clone.PreserveHistory = options.PreserveHistory;
@@ -246,13 +253,33 @@ namespace Pulumi.Esc.Sdk
         /// <returns>Diagnostics from the update, if any.</returns>
         public async Task<EnvironmentDiagnostics?> UpdateEnvironmentYamlAsync(string orgName, string projectName, string envName, string yaml, CancellationToken cancellationToken = default)
         {
-            var response = await RawApi.UpdateEnvironmentYamlAsync(orgName, projectName, envName, yaml, cancellationToken).ConfigureAwait(false);
-            EnsureSuccess(response, "UpdateEnvironmentYaml");
+            // Bypass the generated code which JSON-serializes the YAML string body,
+            // wrapping it in quotes. Send the raw YAML directly.
+            var path = $"{ClientUtils.CONTEXT_PATH}/environments/{Uri.EscapeDataString(orgName)}/{Uri.EscapeDataString(projectName)}/{Uri.EscapeDataString(envName)}";
+            var (statusCode, content) = await SendYamlRequestAsync(HttpMethod.Patch, path, yaml, cancellationToken).ConfigureAwait(false);
 
-            if (response.TryOk(out var diags))
-                return diags;
+            if ((int)statusCode >= 200 && (int)statusCode < 300)
+            {
+                if (!string.IsNullOrEmpty(content))
+                    return JsonSerializer.Deserialize<EnvironmentDiagnostics>(content, _jsonSerializerOptions);
+                return null;
+            }
 
-            return null;
+            throw new EscApiException(
+                $"UpdateEnvironmentYaml failed with status code {(int)statusCode} ({statusCode}): {content}",
+                statusCode,
+                content);
+        }
+
+        /// <summary>
+        /// Updates the environment definition using an <see cref="EnvironmentDefinition"/> object.
+        /// The definition is serialized to YAML before sending.
+        /// </summary>
+        /// <returns>Diagnostics from the update, if any.</returns>
+        public async Task<EnvironmentDiagnostics?> UpdateEnvironmentAsync(string orgName, string projectName, string envName, EnvironmentDefinition definition, CancellationToken cancellationToken = default)
+        {
+            var yaml = EnvironmentDefinitionSerializer.SerializeToYaml(definition);
+            return await UpdateEnvironmentYamlAsync(orgName, projectName, envName, yaml, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -288,17 +315,34 @@ namespace Pulumi.Esc.Sdk
         /// <returns>The check result, which may contain diagnostics even on error.</returns>
         public async Task<CheckEnvironment?> CheckEnvironmentYamlAsync(string orgName, string yaml, CancellationToken cancellationToken = default)
         {
-            var response = await RawApi.CheckEnvironmentYamlAsync(orgName, yaml, cancellationToken).ConfigureAwait(false);
+            // Bypass the generated code which JSON-serializes the YAML string body,
+            // wrapping it in quotes. Send the raw YAML directly.
+            var path = $"{ClientUtils.CONTEXT_PATH}/environments/{Uri.EscapeDataString(orgName)}/yaml/check";
+            var (statusCode, content) = await SendYamlRequestAsync(HttpMethod.Post, path, yaml, cancellationToken).ConfigureAwait(false);
 
             // CheckEnvironment returns the result in both 200 and 400 cases
-            if (response.TryOk(out var okResult))
-                return okResult;
+            if (statusCode == HttpStatusCode.OK || statusCode == HttpStatusCode.BadRequest)
+            {
+                if (!string.IsNullOrEmpty(content))
+                    return JsonSerializer.Deserialize<CheckEnvironment>(content, _jsonSerializerOptions);
+                return null;
+            }
 
-            if (response.TryBadRequest(out var badResult))
-                return badResult;
+            throw new EscApiException(
+                $"CheckEnvironmentYaml failed with status code {(int)statusCode} ({statusCode}): {content}",
+                statusCode,
+                content);
+        }
 
-            EnsureSuccess(response, "CheckEnvironmentYaml");
-            return null;
+        /// <summary>
+        /// Checks an <see cref="EnvironmentDefinition"/> for errors.
+        /// The definition is serialized to YAML before sending.
+        /// </summary>
+        /// <returns>The check result, which may contain diagnostics even on error.</returns>
+        public async Task<CheckEnvironment?> CheckEnvironmentAsync(string orgName, EnvironmentDefinition definition, CancellationToken cancellationToken = default)
+        {
+            var yaml = EnvironmentDefinitionSerializer.SerializeToYaml(definition);
+            return await CheckEnvironmentYamlAsync(orgName, yaml, cancellationToken).ConfigureAwait(false);
         }
 
         #endregion
@@ -358,19 +402,51 @@ namespace Pulumi.Esc.Sdk
         /// Reads a specific property from an open environment session.
         /// Returns both the raw Value and the unwrapped primitive.
         /// </summary>
+        /// <remarks>
+        /// The generated ReadOpenEnvironmentProperty API endpoint uses a double-slash (//) in its
+        /// URL path to differentiate it from the ReadOpenEnvironment endpoint. .NET's Uri class
+        /// normalizes // to /, breaking the request. As a workaround, this method reads the full
+        /// environment and extracts the requested property using dot-separated path navigation.
+        /// </remarks>
         public async Task<(Value Value, object? Primitive)> ReadOpenEnvironmentPropertyAsync(
             string orgName, string projectName, string envName, string openSessionId, string propertyPath, CancellationToken cancellationToken = default)
         {
-            var response = await RawApi.ReadOpenEnvironmentPropertyAsync(orgName, projectName, envName, openSessionId, propertyPath, cancellationToken).ConfigureAwait(false);
-            EnsureSuccess(response, "ReadOpenEnvironmentProperty");
+            var (env, _) = await ReadOpenEnvironmentAsync(orgName, projectName, envName, openSessionId, cancellationToken).ConfigureAwait(false);
+            var value = ResolvePropertyPath(env, propertyPath);
+            var primitive = ValueMapper.MapValuePrimitive(value);
+            return (value, primitive);
+        }
 
-            if (response.TryOk(out var value))
+        /// <summary>
+        /// Navigates a dot-separated property path within a ModelEnvironment's properties.
+        /// </summary>
+        private static Value ResolvePropertyPath(ModelEnvironment env, string propertyPath)
+        {
+            if (env.Properties == null)
+                throw new EscApiException("Environment has no properties.");
+
+            var segments = propertyPath.Split('.');
+
+            if (!env.Properties.TryGetValue(segments[0], out var current))
+                throw new EscApiException($"Property '{segments[0]}' not found in environment.");
+
+            for (int i = 1; i < segments.Length; i++)
             {
-                var primitive = ValueMapper.MapValuePrimitive(value);
-                return (value, primitive);
+                if (current.VarValue is JsonElement je && je.ValueKind == JsonValueKind.Object)
+                {
+                    if (!je.TryGetProperty(segments[i], out var childElement))
+                        throw new EscApiException($"Property '{segments[i]}' not found at path '{string.Join(".", segments.Take(i + 1))}'.");
+
+                    current = JsonSerializer.Deserialize<Value>(childElement.GetRawText())
+                        ?? throw new EscApiException($"Failed to deserialize value at path '{string.Join(".", segments.Take(i + 1))}'.");
+                }
+                else
+                {
+                    throw new EscApiException($"Cannot navigate into non-object value at '{string.Join(".", segments.Take(i))}'.");
+                }
             }
 
-            throw new EscApiException("ReadOpenEnvironmentProperty returned success but no data.");
+            return current;
         }
 
         /// <summary>
@@ -624,6 +700,37 @@ namespace Pulumi.Esc.Sdk
                     response.StatusCode,
                     response.RawContent);
             }
+        }
+
+        /// <summary>
+        /// Sends an HTTP request with a raw YAML body, bypassing the generated code's
+        /// JsonSerializer.Serialize(string) bug that JSON-encodes the YAML string.
+        /// </summary>
+        private async Task<(HttpStatusCode StatusCode, string Content)> SendYamlRequestAsync(
+            HttpMethod method, string path, string yaml, CancellationToken cancellationToken)
+        {
+            var api = (EscApi)RawApi;
+            var baseUri = api.HttpClient.BaseAddress!;
+
+            var uriBuilder = new UriBuilder
+            {
+                Scheme = baseUri.Scheme,
+                Host = baseUri.Host,
+                Port = baseUri.Port,
+                Path = path
+            };
+
+            using var request = new HttpRequestMessage(method, uriBuilder.Uri);
+            request.Content = new StringContent(yaml, Encoding.UTF8);
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-yaml");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var token = (ApiKeyToken)await api.ApiKeyProvider.GetAsync("Authorization", cancellationToken).ConfigureAwait(false);
+            token.UseInHeader(request);
+
+            using var response = await api.HttpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            return (response.StatusCode, content);
         }
 
         #endregion

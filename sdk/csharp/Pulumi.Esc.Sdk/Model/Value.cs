@@ -182,8 +182,9 @@ namespace Pulumi.Esc.Sdk.Model
             if (!trace.IsSet)
                 throw new ArgumentException("Property is required for class Value.", nameof(trace));
 
-            if (!varValue.IsSet)
-                throw new ArgumentException("Property is required for class Value.", nameof(varValue));
+            // Note: varValue is marked required in the swagger spec but the API
+            // returns Value objects without a "value" field (e.g. when unknown=true).
+            // Do not enforce it as required here.
 
             if (trace.IsSet && trace.Value == null)
                 throw new ArgumentNullException(nameof(trace), "Property is not nullable for class Value.");

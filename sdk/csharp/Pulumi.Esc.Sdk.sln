@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 VisualStudioVersion = 12.0.0.0
 MinimumVisualStudioVersion = 10.0.0.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pulumi.Esc.Sdk", "src\Pulumi.Esc.Sdk\Pulumi.Esc.Sdk.csproj", "{42909904-247D-4DA4-8043-3BE5ADA694C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pulumi.Esc.Sdk", "src\Pulumi.Esc.Sdk\Pulumi.Esc.Sdk.csproj", "{712CAE8C-8595-4B29-810F-75234D7B42C3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pulumi.Esc.Sdk.Test", "src\Pulumi.Esc.Sdk.Test\Pulumi.Esc.Sdk.Test.csproj", "{19F1DEBC-DE5E-4517-8062-F000CD499087}"
 EndProject
@@ -12,10 +12,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{42909904-247D-4DA4-8043-3BE5ADA694C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{42909904-247D-4DA4-8043-3BE5ADA694C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{42909904-247D-4DA4-8043-3BE5ADA694C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{42909904-247D-4DA4-8043-3BE5ADA694C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{712CAE8C-8595-4B29-810F-75234D7B42C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{712CAE8C-8595-4B29-810F-75234D7B42C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{712CAE8C-8595-4B29-810F-75234D7B42C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{712CAE8C-8595-4B29-810F-75234D7B42C3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Release|Any CPU.ActiveCfg = Release|Any CPU

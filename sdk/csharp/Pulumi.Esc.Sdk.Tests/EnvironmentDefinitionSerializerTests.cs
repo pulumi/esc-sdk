@@ -1,6 +1,7 @@
 // Copyright 2024, Pulumi Corporation.  All rights reserved.
 
 using System.Collections.Generic;
+using System.Text.Json;
 using Pulumi.Esc.Sdk.Client;
 using Pulumi.Esc.Sdk.Model;
 using Xunit;
@@ -172,6 +173,113 @@ values:
             Assert.Contains("DB_PORT:", roundTripped);
             Assert.Contains("pulumiConfig:", roundTripped);
             Assert.Contains("aws:region: us-east-1", roundTripped);
+        }
+
+        [Fact]
+        public void Deserialize_AdditionalProperties_AreCaptured()
+        {
+            var yaml = @"
+imports:
+  - myproject/base
+values:
+  foo: bar
+  my_secret:
+    fn::secret: ""shh""
+  my_array: [1, 2, 3]
+  pulumiConfig:
+    foo: ${foo}
+  environmentVariables:
+    FOO: ${foo}
+";
+
+            var result = EnvironmentDefinitionSerializer.Deserialize(yaml);
+            Assert.NotNull(result);
+            Assert.NotNull(result!.Values);
+
+            // Typed properties
+            Assert.NotNull(result.Values!.PulumiConfig);
+            Assert.Equal("${foo}", result.Values.PulumiConfig!["foo"]);
+            Assert.NotNull(result.Values.EnvironmentVariables);
+            Assert.Equal("${foo}", result.Values.EnvironmentVariables!["FOO"]);
+
+            // Additional properties
+            var additional = result.Values.AdditionalProperties;
+            Assert.True(additional.ContainsKey("foo"));
+            Assert.Equal(JsonValueKind.String, additional["foo"].ValueKind);
+            Assert.Equal("bar", additional["foo"].GetString());
+
+            Assert.True(additional.ContainsKey("my_secret"));
+            Assert.Equal(JsonValueKind.Object, additional["my_secret"].ValueKind);
+
+            Assert.True(additional.ContainsKey("my_array"));
+            Assert.Equal(JsonValueKind.Array, additional["my_array"].ValueKind);
+            Assert.Equal(3, additional["my_array"].GetArrayLength());
+        }
+
+        [Fact]
+        public void SerializeToYaml_AdditionalProperties_AreIncluded()
+        {
+            var values = new EnvironmentDefinitionValues(
+                pulumiConfig: new Option<Dictionary<string, object>?>(new Dictionary<string, object>
+                {
+                    ["region"] = "us-west-2",
+                })
+            );
+
+            // Add additional properties (simulating what deserialization produces)
+            values.AdditionalProperties["foo"] = ToJsonElement("bar");
+            values.AdditionalProperties["count"] = ToJsonElement(42);
+            values.AdditionalProperties["items"] = ToJsonElement(new[] { 1, 2, 3 });
+
+            var definition = new EnvironmentDefinition(
+                values: new Option<EnvironmentDefinitionValues?>(values));
+
+            var yaml = EnvironmentDefinitionSerializer.SerializeToYaml(definition);
+            Assert.Contains("pulumiConfig:", yaml);
+            Assert.Contains("region: us-west-2", yaml);
+            Assert.Contains("foo: bar", yaml);
+            Assert.Contains("count: 42", yaml);
+            Assert.Contains("items:", yaml);
+        }
+
+        [Fact]
+        public void RoundTrip_AdditionalProperties_PreservedThroughDeserializeSerialize()
+        {
+            var originalYaml = @"
+imports:
+  - myproject/base
+values:
+  foo: bar
+  my_secret:
+    fn::secret: ""shh! don't tell anyone""
+  my_array: [1, 2, 3]
+  pulumiConfig:
+    foo: ${foo}
+  environmentVariables:
+    FOO: ${foo}
+";
+
+            var definition = EnvironmentDefinitionSerializer.Deserialize(originalYaml);
+            Assert.NotNull(definition);
+
+            var roundTripped = EnvironmentDefinitionSerializer.SerializeToYaml(definition!);
+
+            // Typed properties
+            Assert.Contains("pulumiConfig:", roundTripped);
+            Assert.Contains("environmentVariables:", roundTripped);
+            Assert.Contains("imports:", roundTripped);
+            Assert.Contains("myproject/base", roundTripped);
+
+            // Additional properties survived the round-trip
+            Assert.Contains("foo: bar", roundTripped);
+            Assert.Contains("fn::secret:", roundTripped);
+            Assert.Contains("my_array:", roundTripped);
+        }
+
+        private static JsonElement ToJsonElement<T>(T value)
+        {
+            var json = JsonSerializer.Serialize(value);
+            return JsonDocument.Parse(json).RootElement.Clone();
         }
     }
 }

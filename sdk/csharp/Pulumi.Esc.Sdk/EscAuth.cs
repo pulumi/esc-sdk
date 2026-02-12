@@ -152,7 +152,7 @@ namespace Pulumi.Esc.Sdk
                 try
                 {
                     var json = File.ReadAllText(credentialsPath);
-                    credentials = JsonSerializer.Deserialize<PulumiCredentials>(json);
+                    credentials = JsonSerializer.Deserialize<PulumiCredentials>(json, JsonDefaults.Options);
                 }
                 catch (JsonException)
                 {
@@ -167,7 +167,7 @@ namespace Pulumi.Esc.Sdk
                 try
                 {
                     var json = File.ReadAllText(escCredentialsPath);
-                    escCredentials = JsonSerializer.Deserialize<EscCredentials>(json);
+                    escCredentials = JsonSerializer.Deserialize<EscCredentials>(json, JsonDefaults.Options);
                 }
                 catch (JsonException)
                 {

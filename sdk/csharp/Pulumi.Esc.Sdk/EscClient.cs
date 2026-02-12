@@ -420,7 +420,7 @@ namespace Pulumi.Esc.Sdk
         /// <summary>
         /// Navigates a dot-separated property path within a ModelEnvironment's properties.
         /// </summary>
-        private static Value ResolvePropertyPath(ModelEnvironment env, string propertyPath)
+        private Value ResolvePropertyPath(ModelEnvironment env, string propertyPath)
         {
             if (env.Properties == null)
                 throw new EscApiException("Environment has no properties.");
@@ -437,7 +437,7 @@ namespace Pulumi.Esc.Sdk
                     if (!je.TryGetProperty(segments[i], out var childElement))
                         throw new EscApiException($"Property '{segments[i]}' not found at path '{string.Join(".", segments.Take(i + 1))}'.");
 
-                    current = JsonSerializer.Deserialize<Value>(childElement.GetRawText())
+                    current = JsonSerializer.Deserialize<Value>(childElement.GetRawText(), _jsonSerializerOptions)
                         ?? throw new EscApiException($"Failed to deserialize value at path '{string.Join(".", segments.Take(i + 1))}'.");
                 }
                 else

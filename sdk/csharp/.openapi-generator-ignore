@@ -43,3 +43,4 @@ Pulumi.Esc.Sdk/EscAuth.cs
 Pulumi.Esc.Sdk/EscClientFactory.cs
 Pulumi.Esc.Sdk/ValueMapper.cs
 Pulumi.Esc.Sdk/EnvironmentDefinitionSerializer.cs
+Pulumi.Esc.Sdk/JsonDefaults.cs

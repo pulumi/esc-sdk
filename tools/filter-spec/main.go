@@ -129,8 +129,16 @@ func filterSpec(spec map[string]any) (map[string]any, error) {
 	// with deduplication.
 	usedIDs := make(map[string]bool)
 
+	// Sort path keys for deterministic iteration order.
+	sortedPaths := make([]string, 0, len(stripped))
+	for pathKey := range stripped {
+		sortedPaths = append(sortedPaths, pathKey)
+	}
+	sort.Strings(sortedPaths)
+
 	// First pass: apply explicit map entries
-	for pathKey, pathItem := range stripped {
+	for _, pathKey := range sortedPaths {
+		pathItem := stripped[pathKey]
 		pi, ok := pathItem.(map[string]any)
 		if !ok {
 			continue
@@ -158,7 +166,8 @@ func filterSpec(spec map[string]any) (map[string]any, error) {
 
 	// Second pass: apply suffix stripping for operations not in the explicit map,
 	// avoiding collisions with already-assigned IDs.
-	for pathKey, pathItem := range stripped {
+	for _, pathKey := range sortedPaths {
+		pathItem := stripped[pathKey]
 		pi, ok := pathItem.(map[string]any)
 		if !ok {
 			continue

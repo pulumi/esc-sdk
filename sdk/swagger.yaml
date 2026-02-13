@@ -4038,7 +4038,7 @@ paths:
   /environments/{orgName}/{projectName}/{envName}/referrers:
     get:
       description: Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
-      operationId: ListEnvironmentReferrers_esc_environments
+      operationId: ListEnvironmentReferrers
       parameters:
         - description: The organization name
           in: path
@@ -5316,7 +5316,7 @@ paths:
   /environments/{orgName}/{projectName}/{envName}/versions/{version}/referrers:
     get:
       description: Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
-      operationId: ListEnvironmentReferrers
+      operationId: ListEnvironmentReferrers_esc_environments_versions
       parameters:
         - description: The organization name
           in: path

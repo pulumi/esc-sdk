@@ -13043,6 +13043,368 @@ class EscApi:
         org_name: Annotated[StrictStr, Field(description="The organization name")],
         project_name: Annotated[StrictStr, Field(description="The project name")],
         env_name: Annotated[StrictStr, Field(description="The environment name")],
+        all_revisions: Annotated[Optional[StrictBool], Field(description="Whether to include all revisions")] = None,
+        continuation_token: Annotated[Optional[StrictStr], Field(description="Continuation token for paginated results")] = None,
+        count: Annotated[Optional[StrictInt], Field(description="Maximum number of results to return")] = None,
+        latest_stack_version_only: Annotated[Optional[StrictBool], Field(description="Whether to return only the latest stack version")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ListEnvironmentReferrersResponse:
+        """ListEnvironmentReferrers
+
+        Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+
+        :param org_name: The organization name (required)
+        :type org_name: str
+        :param project_name: The project name (required)
+        :type project_name: str
+        :param env_name: The environment name (required)
+        :type env_name: str
+        :param all_revisions: Whether to include all revisions
+        :type all_revisions: bool
+        :param continuation_token: Continuation token for paginated results
+        :type continuation_token: str
+        :param count: Maximum number of results to return
+        :type count: int
+        :param latest_stack_version_only: Whether to return only the latest stack version
+        :type latest_stack_version_only: bool
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_environment_referrers_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            all_revisions=all_revisions,
+            continuation_token=continuation_token,
+            count=count,
+            latest_stack_version_only=latest_stack_version_only,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "ListEnvironmentReferrersResponse",
+            '400': None,
+            '404': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def list_environment_referrers_with_http_info(
+        self,
+        org_name: Annotated[StrictStr, Field(description="The organization name")],
+        project_name: Annotated[StrictStr, Field(description="The project name")],
+        env_name: Annotated[StrictStr, Field(description="The environment name")],
+        all_revisions: Annotated[Optional[StrictBool], Field(description="Whether to include all revisions")] = None,
+        continuation_token: Annotated[Optional[StrictStr], Field(description="Continuation token for paginated results")] = None,
+        count: Annotated[Optional[StrictInt], Field(description="Maximum number of results to return")] = None,
+        latest_stack_version_only: Annotated[Optional[StrictBool], Field(description="Whether to return only the latest stack version")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[ListEnvironmentReferrersResponse]:
+        """ListEnvironmentReferrers
+
+        Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+
+        :param org_name: The organization name (required)
+        :type org_name: str
+        :param project_name: The project name (required)
+        :type project_name: str
+        :param env_name: The environment name (required)
+        :type env_name: str
+        :param all_revisions: Whether to include all revisions
+        :type all_revisions: bool
+        :param continuation_token: Continuation token for paginated results
+        :type continuation_token: str
+        :param count: Maximum number of results to return
+        :type count: int
+        :param latest_stack_version_only: Whether to return only the latest stack version
+        :type latest_stack_version_only: bool
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_environment_referrers_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            all_revisions=all_revisions,
+            continuation_token=continuation_token,
+            count=count,
+            latest_stack_version_only=latest_stack_version_only,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "ListEnvironmentReferrersResponse",
+            '400': None,
+            '404': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def list_environment_referrers_without_preload_content(
+        self,
+        org_name: Annotated[StrictStr, Field(description="The organization name")],
+        project_name: Annotated[StrictStr, Field(description="The project name")],
+        env_name: Annotated[StrictStr, Field(description="The environment name")],
+        all_revisions: Annotated[Optional[StrictBool], Field(description="Whether to include all revisions")] = None,
+        continuation_token: Annotated[Optional[StrictStr], Field(description="Continuation token for paginated results")] = None,
+        count: Annotated[Optional[StrictInt], Field(description="Maximum number of results to return")] = None,
+        latest_stack_version_only: Annotated[Optional[StrictBool], Field(description="Whether to return only the latest stack version")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """ListEnvironmentReferrers
+
+        Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+
+        :param org_name: The organization name (required)
+        :type org_name: str
+        :param project_name: The project name (required)
+        :type project_name: str
+        :param env_name: The environment name (required)
+        :type env_name: str
+        :param all_revisions: Whether to include all revisions
+        :type all_revisions: bool
+        :param continuation_token: Continuation token for paginated results
+        :type continuation_token: str
+        :param count: Maximum number of results to return
+        :type count: int
+        :param latest_stack_version_only: Whether to return only the latest stack version
+        :type latest_stack_version_only: bool
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_environment_referrers_serialize(
+            org_name=org_name,
+            project_name=project_name,
+            env_name=env_name,
+            all_revisions=all_revisions,
+            continuation_token=continuation_token,
+            count=count,
+            latest_stack_version_only=latest_stack_version_only,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "ListEnvironmentReferrersResponse",
+            '400': None,
+            '404': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _list_environment_referrers_serialize(
+        self,
+        org_name,
+        project_name,
+        env_name,
+        all_revisions,
+        continuation_token,
+        count,
+        latest_stack_version_only,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if org_name is not None:
+            _path_params['orgName'] = org_name
+        if project_name is not None:
+            _path_params['projectName'] = project_name
+        if env_name is not None:
+            _path_params['envName'] = env_name
+        # process the query parameters
+        if all_revisions is not None:
+            
+            _query_params.append(('allRevisions', all_revisions))
+            
+        if continuation_token is not None:
+            
+            _query_params.append(('continuationToken', continuation_token))
+            
+        if count is not None:
+            
+            _query_params.append(('count', count))
+            
+        if latest_stack_version_only is not None:
+            
+            _query_params.append(('latestStackVersionOnly', latest_stack_version_only))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'Authorization'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/environments/{orgName}/{projectName}/{envName}/referrers',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def list_environment_referrers_esc_environments_versions(
+        self,
+        org_name: Annotated[StrictStr, Field(description="The organization name")],
+        project_name: Annotated[StrictStr, Field(description="The project name")],
+        env_name: Annotated[StrictStr, Field(description="The environment name")],
         version: Annotated[StrictStr, Field(description="The revision version number")],
         all_revisions: Annotated[Optional[StrictBool], Field(description="Whether to include all revisions")] = None,
         continuation_token: Annotated[Optional[StrictStr], Field(description="Continuation token for paginated results")] = None,
@@ -13103,7 +13465,7 @@ class EscApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._list_environment_referrers_serialize(
+        _param = self._list_environment_referrers_esc_environments_versions_serialize(
             org_name=org_name,
             project_name=project_name,
             env_name=env_name,
@@ -13136,7 +13498,7 @@ class EscApi:
 
 
     @validate_call
-    def list_environment_referrers_with_http_info(
+    def list_environment_referrers_esc_environments_versions_with_http_info(
         self,
         org_name: Annotated[StrictStr, Field(description="The organization name")],
         project_name: Annotated[StrictStr, Field(description="The project name")],
@@ -13201,7 +13563,7 @@ class EscApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._list_environment_referrers_serialize(
+        _param = self._list_environment_referrers_esc_environments_versions_serialize(
             org_name=org_name,
             project_name=project_name,
             env_name=env_name,
@@ -13234,7 +13596,7 @@ class EscApi:
 
 
     @validate_call
-    def list_environment_referrers_without_preload_content(
+    def list_environment_referrers_esc_environments_versions_without_preload_content(
         self,
         org_name: Annotated[StrictStr, Field(description="The organization name")],
         project_name: Annotated[StrictStr, Field(description="The project name")],
@@ -13299,7 +13661,7 @@ class EscApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._list_environment_referrers_serialize(
+        _param = self._list_environment_referrers_esc_environments_versions_serialize(
             org_name=org_name,
             project_name=project_name,
             env_name=env_name,
@@ -13327,7 +13689,7 @@ class EscApi:
         return response_data.response
 
 
-    def _list_environment_referrers_serialize(
+    def _list_environment_referrers_esc_environments_versions_serialize(
         self,
         org_name,
         project_name,
@@ -13402,368 +13764,6 @@ class EscApi:
         return self.api_client.param_serialize(
             method='GET',
             resource_path='/environments/{orgName}/{projectName}/{envName}/versions/{version}/referrers',
-            path_params=_path_params,
-            query_params=_query_params,
-            header_params=_header_params,
-            body=_body_params,
-            post_params=_form_params,
-            files=_files,
-            auth_settings=_auth_settings,
-            collection_formats=_collection_formats,
-            _host=_host,
-            _request_auth=_request_auth
-        )
-
-
-
-
-    @validate_call
-    def list_environment_referrers_esc_environments(
-        self,
-        org_name: Annotated[StrictStr, Field(description="The organization name")],
-        project_name: Annotated[StrictStr, Field(description="The project name")],
-        env_name: Annotated[StrictStr, Field(description="The environment name")],
-        all_revisions: Annotated[Optional[StrictBool], Field(description="Whether to include all revisions")] = None,
-        continuation_token: Annotated[Optional[StrictStr], Field(description="Continuation token for paginated results")] = None,
-        count: Annotated[Optional[StrictInt], Field(description="Maximum number of results to return")] = None,
-        latest_stack_version_only: Annotated[Optional[StrictBool], Field(description="Whether to return only the latest stack version")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ListEnvironmentReferrersResponse:
-        """ListEnvironmentReferrers
-
-        Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
-
-        :param org_name: The organization name (required)
-        :type org_name: str
-        :param project_name: The project name (required)
-        :type project_name: str
-        :param env_name: The environment name (required)
-        :type env_name: str
-        :param all_revisions: Whether to include all revisions
-        :type all_revisions: bool
-        :param continuation_token: Continuation token for paginated results
-        :type continuation_token: str
-        :param count: Maximum number of results to return
-        :type count: int
-        :param latest_stack_version_only: Whether to return only the latest stack version
-        :type latest_stack_version_only: bool
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_environment_referrers_esc_environments_serialize(
-            org_name=org_name,
-            project_name=project_name,
-            env_name=env_name,
-            all_revisions=all_revisions,
-            continuation_token=continuation_token,
-            count=count,
-            latest_stack_version_only=latest_stack_version_only,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "ListEnvironmentReferrersResponse",
-            '400': None,
-            '404': None,
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        ).data
-
-
-    @validate_call
-    def list_environment_referrers_esc_environments_with_http_info(
-        self,
-        org_name: Annotated[StrictStr, Field(description="The organization name")],
-        project_name: Annotated[StrictStr, Field(description="The project name")],
-        env_name: Annotated[StrictStr, Field(description="The environment name")],
-        all_revisions: Annotated[Optional[StrictBool], Field(description="Whether to include all revisions")] = None,
-        continuation_token: Annotated[Optional[StrictStr], Field(description="Continuation token for paginated results")] = None,
-        count: Annotated[Optional[StrictInt], Field(description="Maximum number of results to return")] = None,
-        latest_stack_version_only: Annotated[Optional[StrictBool], Field(description="Whether to return only the latest stack version")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[ListEnvironmentReferrersResponse]:
-        """ListEnvironmentReferrers
-
-        Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
-
-        :param org_name: The organization name (required)
-        :type org_name: str
-        :param project_name: The project name (required)
-        :type project_name: str
-        :param env_name: The environment name (required)
-        :type env_name: str
-        :param all_revisions: Whether to include all revisions
-        :type all_revisions: bool
-        :param continuation_token: Continuation token for paginated results
-        :type continuation_token: str
-        :param count: Maximum number of results to return
-        :type count: int
-        :param latest_stack_version_only: Whether to return only the latest stack version
-        :type latest_stack_version_only: bool
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_environment_referrers_esc_environments_serialize(
-            org_name=org_name,
-            project_name=project_name,
-            env_name=env_name,
-            all_revisions=all_revisions,
-            continuation_token=continuation_token,
-            count=count,
-            latest_stack_version_only=latest_stack_version_only,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "ListEnvironmentReferrersResponse",
-            '400': None,
-            '404': None,
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        )
-
-
-    @validate_call
-    def list_environment_referrers_esc_environments_without_preload_content(
-        self,
-        org_name: Annotated[StrictStr, Field(description="The organization name")],
-        project_name: Annotated[StrictStr, Field(description="The project name")],
-        env_name: Annotated[StrictStr, Field(description="The environment name")],
-        all_revisions: Annotated[Optional[StrictBool], Field(description="Whether to include all revisions")] = None,
-        continuation_token: Annotated[Optional[StrictStr], Field(description="Continuation token for paginated results")] = None,
-        count: Annotated[Optional[StrictInt], Field(description="Maximum number of results to return")] = None,
-        latest_stack_version_only: Annotated[Optional[StrictBool], Field(description="Whether to return only the latest stack version")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> RESTResponseType:
-        """ListEnvironmentReferrers
-
-        Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
-
-        :param org_name: The organization name (required)
-        :type org_name: str
-        :param project_name: The project name (required)
-        :type project_name: str
-        :param env_name: The environment name (required)
-        :type env_name: str
-        :param all_revisions: Whether to include all revisions
-        :type all_revisions: bool
-        :param continuation_token: Continuation token for paginated results
-        :type continuation_token: str
-        :param count: Maximum number of results to return
-        :type count: int
-        :param latest_stack_version_only: Whether to return only the latest stack version
-        :type latest_stack_version_only: bool
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_environment_referrers_esc_environments_serialize(
-            org_name=org_name,
-            project_name=project_name,
-            env_name=env_name,
-            all_revisions=all_revisions,
-            continuation_token=continuation_token,
-            count=count,
-            latest_stack_version_only=latest_stack_version_only,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "ListEnvironmentReferrersResponse",
-            '400': None,
-            '404': None,
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        return response_data.response
-
-
-    def _list_environment_referrers_esc_environments_serialize(
-        self,
-        org_name,
-        project_name,
-        env_name,
-        all_revisions,
-        continuation_token,
-        count,
-        latest_stack_version_only,
-        _request_auth,
-        _content_type,
-        _headers,
-        _host_index,
-    ) -> RequestSerialized:
-
-        _host = None
-
-        _collection_formats: Dict[str, str] = {
-        }
-
-        _path_params: Dict[str, str] = {}
-        _query_params: List[Tuple[str, str]] = []
-        _header_params: Dict[str, Optional[str]] = _headers or {}
-        _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
-        _body_params: Optional[bytes] = None
-
-        # process the path parameters
-        if org_name is not None:
-            _path_params['orgName'] = org_name
-        if project_name is not None:
-            _path_params['projectName'] = project_name
-        if env_name is not None:
-            _path_params['envName'] = env_name
-        # process the query parameters
-        if all_revisions is not None:
-            
-            _query_params.append(('allRevisions', all_revisions))
-            
-        if continuation_token is not None:
-            
-            _query_params.append(('continuationToken', continuation_token))
-            
-        if count is not None:
-            
-            _query_params.append(('count', count))
-            
-        if latest_stack_version_only is not None:
-            
-            _query_params.append(('latestStackVersionOnly', latest_stack_version_only))
-            
-        # process the header parameters
-        # process the form parameters
-        # process the body parameter
-
-
-        # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
-
-
-        # authentication setting
-        _auth_settings: List[str] = [
-            'Authorization'
-        ]
-
-        return self.api_client.param_serialize(
-            method='GET',
-            resource_path='/environments/{orgName}/{projectName}/{envName}/referrers',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

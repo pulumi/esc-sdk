@@ -5541,7 +5541,6 @@ type ApiListEnvironmentReferrersRequest struct {
 	orgName string
 	projectName string
 	envName string
-	version string
 	allRevisions *bool
 	continuationToken *string
 	count *int64
@@ -5585,17 +5584,15 @@ Returns a paginated list of entities that reference a Pulumi ESC environment, in
  @param orgName The organization name
  @param projectName The project name
  @param envName The environment name
- @param version The revision version number
  @return ApiListEnvironmentReferrersRequest
 */
-func (a *EscAPIService) ListEnvironmentReferrers(ctx context.Context, orgName string, projectName string, envName string, version string) ApiListEnvironmentReferrersRequest {
+func (a *EscAPIService) ListEnvironmentReferrers(ctx context.Context, orgName string, projectName string, envName string) ApiListEnvironmentReferrersRequest {
 	return ApiListEnvironmentReferrersRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
 		projectName: projectName,
 		envName: envName,
-		version: version,
 	}
 }
 
@@ -5614,11 +5611,10 @@ func (a *EscAPIService) ListEnvironmentReferrersExecute(r ApiListEnvironmentRefe
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/{version}/referrers"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/referrers"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"version"+"}", url.PathEscape(parameterValueToString(r.version, "version")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5706,12 +5702,13 @@ func (a *EscAPIService) ListEnvironmentReferrersExecute(r ApiListEnvironmentRefe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiListEnvironmentReferrersEscEnvironmentsRequest struct {
+type ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
 	projectName string
 	envName string
+	version string
 	allRevisions *bool
 	continuationToken *string
 	count *int64
@@ -5719,35 +5716,35 @@ type ApiListEnvironmentReferrersEscEnvironmentsRequest struct {
 }
 
 // Whether to include all revisions
-func (r ApiListEnvironmentReferrersEscEnvironmentsRequest) AllRevisions(allRevisions bool) ApiListEnvironmentReferrersEscEnvironmentsRequest {
+func (r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) AllRevisions(allRevisions bool) ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest {
 	r.allRevisions = &allRevisions
 	return r
 }
 
 // Continuation token for paginated results
-func (r ApiListEnvironmentReferrersEscEnvironmentsRequest) ContinuationToken(continuationToken string) ApiListEnvironmentReferrersEscEnvironmentsRequest {
+func (r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) ContinuationToken(continuationToken string) ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest {
 	r.continuationToken = &continuationToken
 	return r
 }
 
 // Maximum number of results to return
-func (r ApiListEnvironmentReferrersEscEnvironmentsRequest) Count(count int64) ApiListEnvironmentReferrersEscEnvironmentsRequest {
+func (r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) Count(count int64) ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest {
 	r.count = &count
 	return r
 }
 
 // Whether to return only the latest stack version
-func (r ApiListEnvironmentReferrersEscEnvironmentsRequest) LatestStackVersionOnly(latestStackVersionOnly bool) ApiListEnvironmentReferrersEscEnvironmentsRequest {
+func (r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) LatestStackVersionOnly(latestStackVersionOnly bool) ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest {
 	r.latestStackVersionOnly = &latestStackVersionOnly
 	return r
 }
 
-func (r ApiListEnvironmentReferrersEscEnvironmentsRequest) Execute() (*ListEnvironmentReferrersResponse, *http.Response, error) {
-	return r.ApiService.ListEnvironmentReferrersEscEnvironmentsExecute(r)
+func (r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) Execute() (*ListEnvironmentReferrersResponse, *http.Response, error) {
+	return r.ApiService.ListEnvironmentReferrersEscEnvironmentsVersionsExecute(r)
 }
 
 /*
-ListEnvironmentReferrersEscEnvironments ListEnvironmentReferrers
+ListEnvironmentReferrersEscEnvironmentsVersions ListEnvironmentReferrers
 
 Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
 
@@ -5755,21 +5752,23 @@ Returns a paginated list of entities that reference a Pulumi ESC environment, in
  @param orgName The organization name
  @param projectName The project name
  @param envName The environment name
- @return ApiListEnvironmentReferrersEscEnvironmentsRequest
+ @param version The revision version number
+ @return ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest
 */
-func (a *EscAPIService) ListEnvironmentReferrersEscEnvironments(ctx context.Context, orgName string, projectName string, envName string) ApiListEnvironmentReferrersEscEnvironmentsRequest {
-	return ApiListEnvironmentReferrersEscEnvironmentsRequest{
+func (a *EscAPIService) ListEnvironmentReferrersEscEnvironmentsVersions(ctx context.Context, orgName string, projectName string, envName string, version string) ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest {
+	return ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
 		projectName: projectName,
 		envName: envName,
+		version: version,
 	}
 }
 
 // Execute executes the request
 //  @return ListEnvironmentReferrersResponse
-func (a *EscAPIService) ListEnvironmentReferrersEscEnvironmentsExecute(r ApiListEnvironmentReferrersEscEnvironmentsRequest) (*ListEnvironmentReferrersResponse, *http.Response, error) {
+func (a *EscAPIService) ListEnvironmentReferrersEscEnvironmentsVersionsExecute(r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) (*ListEnvironmentReferrersResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -5777,15 +5776,16 @@ func (a *EscAPIService) ListEnvironmentReferrersEscEnvironmentsExecute(r ApiList
 		localVarReturnValue  *ListEnvironmentReferrersResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListEnvironmentReferrersEscEnvironments")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListEnvironmentReferrersEscEnvironmentsVersions")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/referrers"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/{version}/referrers"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"version"+"}", url.PathEscape(parameterValueToString(r.version, "version")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

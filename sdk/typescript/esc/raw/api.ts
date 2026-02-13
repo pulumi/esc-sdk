@@ -4845,7 +4845,6 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * @param {string} orgName The organization name
          * @param {string} projectName The project name
          * @param {string} envName The environment name
-         * @param {string} version The revision version number
          * @param {boolean} [allRevisions] Whether to include all revisions
          * @param {string} [continuationToken] Continuation token for paginated results
          * @param {number} [count] Maximum number of results to return
@@ -4853,20 +4852,17 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listEnvironmentReferrers: async (orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        listEnvironmentReferrers: async (orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('listEnvironmentReferrers', 'orgName', orgName)
             // verify required parameter 'projectName' is not null or undefined
             assertParamExists('listEnvironmentReferrers', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('listEnvironmentReferrers', 'envName', envName)
-            // verify required parameter 'version' is not null or undefined
-            assertParamExists('listEnvironmentReferrers', 'version', version)
-            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/{version}/referrers`
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/referrers`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
                 .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
-                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
-                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -4916,6 +4912,7 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * @param {string} orgName The organization name
          * @param {string} projectName The project name
          * @param {string} envName The environment name
+         * @param {string} version The revision version number
          * @param {boolean} [allRevisions] Whether to include all revisions
          * @param {string} [continuationToken] Continuation token for paginated results
          * @param {number} [count] Maximum number of results to return
@@ -4923,17 +4920,20 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listEnvironmentReferrersEscEnvironments: async (orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        listEnvironmentReferrersEscEnvironmentsVersions: async (orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
-            assertParamExists('listEnvironmentReferrersEscEnvironments', 'orgName', orgName)
+            assertParamExists('listEnvironmentReferrersEscEnvironmentsVersions', 'orgName', orgName)
             // verify required parameter 'projectName' is not null or undefined
-            assertParamExists('listEnvironmentReferrersEscEnvironments', 'projectName', projectName)
+            assertParamExists('listEnvironmentReferrersEscEnvironmentsVersions', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
-            assertParamExists('listEnvironmentReferrersEscEnvironments', 'envName', envName)
-            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/referrers`
+            assertParamExists('listEnvironmentReferrersEscEnvironmentsVersions', 'envName', envName)
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('listEnvironmentReferrersEscEnvironmentsVersions', 'version', version)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/{version}/referrers`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
                 .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
-                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -7568,7 +7568,6 @@ export const EscApiFp = function(configuration?: Configuration) {
          * @param {string} orgName The organization name
          * @param {string} projectName The project name
          * @param {string} envName The environment name
-         * @param {string} version The revision version number
          * @param {boolean} [allRevisions] Whether to include all revisions
          * @param {string} [continuationToken] Continuation token for paginated results
          * @param {number} [count] Maximum number of results to return
@@ -7576,8 +7575,8 @@ export const EscApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listEnvironmentReferrers(orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentReferrersResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentReferrers(orgName, projectName, envName, version, allRevisions, continuationToken, count, latestStackVersionOnly, options);
+        async listEnvironmentReferrers(orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentReferrersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentReferrers(orgName, projectName, envName, allRevisions, continuationToken, count, latestStackVersionOnly, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentReferrers']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -7588,6 +7587,7 @@ export const EscApiFp = function(configuration?: Configuration) {
          * @param {string} orgName The organization name
          * @param {string} projectName The project name
          * @param {string} envName The environment name
+         * @param {string} version The revision version number
          * @param {boolean} [allRevisions] Whether to include all revisions
          * @param {string} [continuationToken] Continuation token for paginated results
          * @param {number} [count] Maximum number of results to return
@@ -7595,10 +7595,10 @@ export const EscApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listEnvironmentReferrersEscEnvironments(orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentReferrersResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentReferrersEscEnvironments(orgName, projectName, envName, allRevisions, continuationToken, count, latestStackVersionOnly, options);
+        async listEnvironmentReferrersEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentReferrersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentReferrersEscEnvironmentsVersions(orgName, projectName, envName, version, allRevisions, continuationToken, count, latestStackVersionOnly, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentReferrersEscEnvironments']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentReferrersEscEnvironmentsVersions']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -8732,6 +8732,22 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
          * @param {string} orgName The organization name
          * @param {string} projectName The project name
          * @param {string} envName The environment name
+         * @param {boolean} [allRevisions] Whether to include all revisions
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {number} [count] Maximum number of results to return
+         * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentReferrers(orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: any): AxiosPromise<ListEnvironmentReferrersResponse> {
+            return localVarFp.listEnvironmentReferrers(orgName, projectName, envName, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+         * @summary ListEnvironmentReferrers
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {string} version The revision version number
          * @param {boolean} [allRevisions] Whether to include all revisions
          * @param {string} [continuationToken] Continuation token for paginated results
@@ -8740,24 +8756,8 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listEnvironmentReferrers(orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: any): AxiosPromise<ListEnvironmentReferrersResponse> {
-            return localVarFp.listEnvironmentReferrers(orgName, projectName, envName, version, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
-         * @summary ListEnvironmentReferrers
-         * @param {string} orgName The organization name
-         * @param {string} projectName The project name
-         * @param {string} envName The environment name
-         * @param {boolean} [allRevisions] Whether to include all revisions
-         * @param {string} [continuationToken] Continuation token for paginated results
-         * @param {number} [count] Maximum number of results to return
-         * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        listEnvironmentReferrersEscEnvironments(orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: any): AxiosPromise<ListEnvironmentReferrersResponse> {
-            return localVarFp.listEnvironmentReferrersEscEnvironments(orgName, projectName, envName, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(axios, basePath));
+        listEnvironmentReferrersEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: any): AxiosPromise<ListEnvironmentReferrersResponse> {
+            return localVarFp.listEnvironmentReferrersEscEnvironmentsVersions(orgName, projectName, envName, version, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(axios, basePath));
         },
         /**
          * Returns a paginated list of revision tags for a Pulumi ESC environment. Revision tags are named references pointing to specific revision numbers (e.g., \'latest\', \'prod\', \'stable\'). They can be used in environment imports and Pulumi stack configuration to pin to a specific version. Use the after parameter for cursor-based pagination and count to limit results.
@@ -9865,6 +9865,24 @@ export class EscApi extends BaseAPI {
      * @param {string} orgName The organization name
      * @param {string} projectName The project name
      * @param {string} envName The environment name
+     * @param {boolean} [allRevisions] Whether to include all revisions
+     * @param {string} [continuationToken] Continuation token for paginated results
+     * @param {number} [count] Maximum number of results to return
+     * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listEnvironmentReferrers(orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironmentReferrers(orgName, projectName, envName, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+     * @summary ListEnvironmentReferrers
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
      * @param {string} version The revision version number
      * @param {boolean} [allRevisions] Whether to include all revisions
      * @param {string} [continuationToken] Continuation token for paginated results
@@ -9874,26 +9892,8 @@ export class EscApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public listEnvironmentReferrers(orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).listEnvironmentReferrers(orgName, projectName, envName, version, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
-     * @summary ListEnvironmentReferrers
-     * @param {string} orgName The organization name
-     * @param {string} projectName The project name
-     * @param {string} envName The environment name
-     * @param {boolean} [allRevisions] Whether to include all revisions
-     * @param {string} [continuationToken] Continuation token for paginated results
-     * @param {number} [count] Maximum number of results to return
-     * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof EscApi
-     */
-    public listEnvironmentReferrersEscEnvironments(orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).listEnvironmentReferrersEscEnvironments(orgName, projectName, envName, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(this.axios, this.basePath));
+    public listEnvironmentReferrersEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironmentReferrersEscEnvironmentsVersions(orgName, projectName, envName, version, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

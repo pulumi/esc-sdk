@@ -6,7 +6,7 @@ import pulumi_esc_sdk.models as models
 import pulumi_esc_sdk.api as api
 import pulumi_esc_sdk.configuration as configuration
 import pulumi_esc_sdk.api_client as api_client
-from pydantic import StrictBytes, StrictInt
+from pydantic import StrictInt
 from typing import Mapping, Any, List
 import inspect
 import json

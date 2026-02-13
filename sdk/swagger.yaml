@@ -533,15 +533,8 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/EnvironmentTag"
-    SuccessWithMessage:
-      description: Success with message
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Error"
-          example:
-            message: ""
-            code: "200"
+    SuccessWithoutContent:
+      description: Success
     SuccessWithDiagnostics:
       description: Success with diagnostics
       content:
@@ -707,7 +700,7 @@ paths:
       description: Creates an environment in the given org with the given name.
       responses:
         "204":
-          $ref: '#/components/responses/SuccessWithMessage'
+          $ref: '#/components/responses/SuccessWithoutContent'
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -803,7 +796,7 @@ paths:
       description: Delete an environment
       responses:
         "204":
-          $ref: '#/components/responses/SuccessWithMessage'
+          $ref: '#/components/responses/SuccessWithoutContent'
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":

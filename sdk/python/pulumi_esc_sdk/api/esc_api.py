@@ -33,7 +33,6 @@ from pulumi_esc_sdk.models.environment_revision import EnvironmentRevision
 from pulumi_esc_sdk.models.environment_revision_tag import EnvironmentRevisionTag
 from pulumi_esc_sdk.models.environment_revision_tags import EnvironmentRevisionTags
 from pulumi_esc_sdk.models.environment_tag import EnvironmentTag
-from pulumi_esc_sdk.models.error import Error
 from pulumi_esc_sdk.models.list_environment_tags import ListEnvironmentTags
 from pulumi_esc_sdk.models.open_environment import OpenEnvironment
 from pulumi_esc_sdk.models.org_environments import OrgEnvironments
@@ -702,7 +701,7 @@ class EscApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Error:
+    ) -> None:
         """Create a new environment
 
         Creates an environment in the given org with the given name.
@@ -778,7 +777,7 @@ class EscApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[Error]:
+    ) -> ApiResponse[None]:
         """Create a new environment
 
         Creates an environment in the given org with the given name.
@@ -1961,7 +1960,7 @@ class EscApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Error:
+    ) -> None:
         """Delete an environment
 
         Delete an environment
@@ -2040,7 +2039,7 @@ class EscApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[Error]:
+    ) -> ApiResponse[None]:
         """Delete an environment
 
         Delete an environment

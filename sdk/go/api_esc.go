@@ -426,7 +426,7 @@ func (r ApiCreateEnvironmentRequest) CreateEnvironment(createEnvironment CreateE
 	return r
 }
 
-func (r ApiCreateEnvironmentRequest) Execute() (*Error, *http.Response, error) {
+func (r ApiCreateEnvironmentRequest) Execute() (*http.Response, error) {
 	return r.ApiService.CreateEnvironmentExecute(r)
 }
 
@@ -448,18 +448,16 @@ func (a *EscAPIService) CreateEnvironment(ctx context.Context, orgName string) A
 }
 
 // Execute executes the request
-//  @return Error
-func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) (*Error, *http.Response, error) {
+func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *Error
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CreateEnvironment")
 	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/environments/{orgName}"
@@ -469,13 +467,13 @@ func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) 
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
+		return nil, reportError("orgName must have at least 3 elements")
 	}
 	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+		return nil, reportError("orgName must have less than 40 elements")
 	}
 	if r.createEnvironment == nil {
-		return localVarReturnValue, nil, reportError("createEnvironment is required and must be specified")
+		return nil, reportError("createEnvironment is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -515,19 +513,19 @@ func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) 
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
-		return localVarReturnValue, nil, err
+		return nil, err
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
+		return localVarHTTPResponse, err
 	}
 
 	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
 	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
+		return localVarHTTPResponse, err
 	}
 
 	if localVarHTTPResponse.StatusCode >= 300 {
@@ -540,77 +538,68 @@ func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) 
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v Error
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v Error
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 409 {
 			var v Error
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 500 {
 			var v Error
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+			return localVarHTTPResponse, newErr
 		}
 			var v Error
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-		return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarHTTPResponse, newErr
 	}
 
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
+	return localVarHTTPResponse, nil
 }
 
 type ApiCreateEnvironmentRevisionTagRequest struct {
@@ -1225,7 +1214,7 @@ type ApiDeleteEnvironmentRequest struct {
 	envName string
 }
 
-func (r ApiDeleteEnvironmentRequest) Execute() (*Error, *http.Response, error) {
+func (r ApiDeleteEnvironmentRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeleteEnvironmentExecute(r)
 }
 
@@ -1251,18 +1240,16 @@ func (a *EscAPIService) DeleteEnvironment(ctx context.Context, orgName string, p
 }
 
 // Execute executes the request
-//  @return Error
-func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) (*Error, *http.Response, error) {
+func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *Error
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.DeleteEnvironment")
 	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}"
@@ -1274,22 +1261,22 @@ func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) 
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
+		return nil, reportError("orgName must have at least 3 elements")
 	}
 	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
+		return nil, reportError("orgName must have less than 40 elements")
 	}
 	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
+		return nil, reportError("projectName must have at least 1 elements")
 	}
 	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
+		return nil, reportError("projectName must have less than 100 elements")
 	}
 	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
+		return nil, reportError("envName must have at least 1 elements")
 	}
 	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
+		return nil, reportError("envName must have less than 100 elements")
 	}
 
 	// to determine the Content-Type header
@@ -1327,19 +1314,19 @@ func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) 
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
-		return localVarReturnValue, nil, err
+		return nil, err
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
+		return localVarHTTPResponse, err
 	}
 
 	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
 	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
+		return localVarHTTPResponse, err
 	}
 
 	if localVarHTTPResponse.StatusCode >= 300 {
@@ -1352,66 +1339,57 @@ func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) 
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v Error
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v Error
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 500 {
 			var v Error
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+			return localVarHTTPResponse, newErr
 		}
 			var v Error
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+				return localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-		return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarHTTPResponse, newErr
 	}
 
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
+	return localVarHTTPResponse, nil
 }
 
 type ApiDeleteEnvironmentRevisionTagRequest struct {

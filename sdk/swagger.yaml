@@ -697,7 +697,7 @@ paths:
       - esc
       operationId: CreateEnvironment
       summary: Create a new environment
-      requestBody: 
+      requestBody:
         description: Create Environment
         required: true
         content:
@@ -706,7 +706,7 @@ paths:
               $ref: "#/components/schemas/CreateEnvironment"
       description: Creates an environment in the given org with the given name.
       responses:
-        "200":
+        "204":
           $ref: '#/components/responses/SuccessWithMessage'
         "400":
           $ref: "#/components/responses/BadRequest"
@@ -802,7 +802,7 @@ paths:
       summary: Delete an environment
       description: Delete an environment
       responses:
-        "200":
+        "204":
           $ref: '#/components/responses/SuccessWithMessage'
         "400":
           $ref: "#/components/responses/BadRequest"

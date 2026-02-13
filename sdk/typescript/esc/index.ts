@@ -322,7 +322,7 @@ export class EscApi {
         };
 
         const resp = await this.rawApi.createEnvironment(orgName, body);
-        if (resp.status === 200) {
+        if (resp.status === 204) {
             return;
         }
 
@@ -419,7 +419,7 @@ export class EscApi {
      */
     async deleteEnvironment(orgName: string, projectName: string, envName: string): Promise<void> {
         const resp = await this.rawApi.deleteEnvironment(orgName, projectName, envName);
-        if (resp.status === 200) {
+        if (resp.status === 204) {
             return;
         }
 

@@ -13,6 +13,7 @@ package esc_sdk
 
 import (
 	"encoding/json"
+	"time"
 	"bytes"
 	"fmt"
 )
@@ -20,14 +21,20 @@ import (
 // checks if the EnvironmentTag type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &EnvironmentTag{}
 
-// EnvironmentTag struct for EnvironmentTag
+// EnvironmentTag EnvironmentTag represents a key-value tag associated with an environment.
 type EnvironmentTag struct {
-	Name string `json:"name"`
-	Value *string `json:"value,omitempty"`
-	Created string `json:"created"`
-	Modified string `json:"modified"`
+	// The timestamp when the tag was created.
+	Created time.Time `json:"created"`
+	// The login name of the user who last edited the tag.
 	EditorLogin string `json:"editorLogin"`
+	// The display name of the user who last edited the tag.
 	EditorName string `json:"editorName"`
+	// The timestamp when the tag was last modified.
+	Modified time.Time `json:"modified"`
+	// The name of the tag.
+	Name string `json:"name"`
+	// The value of the tag.
+	Value string `json:"value"`
 }
 
 type _EnvironmentTag EnvironmentTag
@@ -36,13 +43,14 @@ type _EnvironmentTag EnvironmentTag
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEnvironmentTag(name string, created string, modified string, editorLogin string, editorName string) *EnvironmentTag {
+func NewEnvironmentTag(created time.Time, editorLogin string, editorName string, modified time.Time, name string, value string) *EnvironmentTag {
 	this := EnvironmentTag{}
-	this.Name = name
 	this.Created = created
-	this.Modified = modified
 	this.EditorLogin = editorLogin
 	this.EditorName = editorName
+	this.Modified = modified
+	this.Name = name
+	this.Value = value
 	return &this
 }
 
@@ -54,66 +62,10 @@ func NewEnvironmentTagWithDefaults() *EnvironmentTag {
 	return &this
 }
 
-// GetName returns the Name field value
-func (o *EnvironmentTag) GetName() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value
-// and a boolean to check if the value has been set.
-func (o *EnvironmentTag) GetNameOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Name, true
-}
-
-// SetName sets field value
-func (o *EnvironmentTag) SetName(v string) {
-	o.Name = v
-}
-
-// GetValue returns the Value field value if set, zero value otherwise.
-func (o *EnvironmentTag) GetValue() string {
-	if o == nil || IsNil(o.Value) {
-		var ret string
-		return ret
-	}
-	return *o.Value
-}
-
-// GetValueOk returns a tuple with the Value field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EnvironmentTag) GetValueOk() (*string, bool) {
-	if o == nil || IsNil(o.Value) {
-		return nil, false
-	}
-	return o.Value, true
-}
-
-// HasValue returns a boolean if a field has been set.
-func (o *EnvironmentTag) HasValue() bool {
-	if o != nil && !IsNil(o.Value) {
-		return true
-	}
-
-	return false
-}
-
-// SetValue gets a reference to the given string and assigns it to the Value field.
-func (o *EnvironmentTag) SetValue(v string) {
-	o.Value = &v
-}
-
 // GetCreated returns the Created field value
-func (o *EnvironmentTag) GetCreated() string {
+func (o *EnvironmentTag) GetCreated() time.Time {
 	if o == nil {
-		var ret string
+		var ret time.Time
 		return ret
 	}
 
@@ -122,7 +74,7 @@ func (o *EnvironmentTag) GetCreated() string {
 
 // GetCreatedOk returns a tuple with the Created field value
 // and a boolean to check if the value has been set.
-func (o *EnvironmentTag) GetCreatedOk() (*string, bool) {
+func (o *EnvironmentTag) GetCreatedOk() (*time.Time, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -130,32 +82,8 @@ func (o *EnvironmentTag) GetCreatedOk() (*string, bool) {
 }
 
 // SetCreated sets field value
-func (o *EnvironmentTag) SetCreated(v string) {
+func (o *EnvironmentTag) SetCreated(v time.Time) {
 	o.Created = v
-}
-
-// GetModified returns the Modified field value
-func (o *EnvironmentTag) GetModified() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Modified
-}
-
-// GetModifiedOk returns a tuple with the Modified field value
-// and a boolean to check if the value has been set.
-func (o *EnvironmentTag) GetModifiedOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Modified, true
-}
-
-// SetModified sets field value
-func (o *EnvironmentTag) SetModified(v string) {
-	o.Modified = v
 }
 
 // GetEditorLogin returns the EditorLogin field value
@@ -206,6 +134,78 @@ func (o *EnvironmentTag) SetEditorName(v string) {
 	o.EditorName = v
 }
 
+// GetModified returns the Modified field value
+func (o *EnvironmentTag) GetModified() time.Time {
+	if o == nil {
+		var ret time.Time
+		return ret
+	}
+
+	return o.Modified
+}
+
+// GetModifiedOk returns a tuple with the Modified field value
+// and a boolean to check if the value has been set.
+func (o *EnvironmentTag) GetModifiedOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Modified, true
+}
+
+// SetModified sets field value
+func (o *EnvironmentTag) SetModified(v time.Time) {
+	o.Modified = v
+}
+
+// GetName returns the Name field value
+func (o *EnvironmentTag) GetName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+func (o *EnvironmentTag) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Name, true
+}
+
+// SetName sets field value
+func (o *EnvironmentTag) SetName(v string) {
+	o.Name = v
+}
+
+// GetValue returns the Value field value
+func (o *EnvironmentTag) GetValue() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Value
+}
+
+// GetValueOk returns a tuple with the Value field value
+// and a boolean to check if the value has been set.
+func (o *EnvironmentTag) GetValueOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Value, true
+}
+
+// SetValue sets field value
+func (o *EnvironmentTag) SetValue(v string) {
+	o.Value = v
+}
+
 func (o EnvironmentTag) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -216,14 +216,12 @@ func (o EnvironmentTag) MarshalJSON() ([]byte, error) {
 
 func (o EnvironmentTag) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["name"] = o.Name
-	if !IsNil(o.Value) {
-		toSerialize["value"] = o.Value
-	}
 	toSerialize["created"] = o.Created
-	toSerialize["modified"] = o.Modified
 	toSerialize["editorLogin"] = o.EditorLogin
 	toSerialize["editorName"] = o.EditorName
+	toSerialize["modified"] = o.Modified
+	toSerialize["name"] = o.Name
+	toSerialize["value"] = o.Value
 	return toSerialize, nil
 }
 
@@ -232,11 +230,12 @@ func (o *EnvironmentTag) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"name",
 		"created",
-		"modified",
 		"editorLogin",
 		"editorName",
+		"modified",
+		"name",
+		"value",
 	}
 
 	allProperties := make(map[string]interface{})

@@ -1,9 +1,25 @@
 name: Generate SDKs
 description: Generate SDKs using the openapi-generator-cli
 
+inputs:
+  spec-url:
+    description: URL or path to the OpenAPI spec to filter
+    required: false
+    default: "https://api.pulumi.com/api/openapi/pulumi-spec.json"
+
 runs:
   using: "composite"
   steps:
+  - name: Set up Go
+    uses: actions/setup-go@v5
+    with:
+      go-version: "1.23"
+      cache-dependency-path: tools/filter-spec/go.sum
+
+  - name: Fetch and filter spec
+    run: cd tools/filter-spec && go run . -input "${{ inputs.spec-url }}" -output ../../sdk/swagger.yaml
+    shell: bash
+
   - name: Install OpenAPI Generator CLI
     run: npm install @openapitools/openapi-generator-cli -g
     shell: bash

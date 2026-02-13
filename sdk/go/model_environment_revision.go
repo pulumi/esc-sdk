@@ -13,6 +13,7 @@ package esc_sdk
 
 import (
 	"encoding/json"
+	"time"
 	"bytes"
 	"fmt"
 )
@@ -20,12 +21,19 @@ import (
 // checks if the EnvironmentRevision type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &EnvironmentRevision{}
 
-// EnvironmentRevision struct for EnvironmentRevision
+// EnvironmentRevision EnvironmentRevision represents a specific revision of an environment definition.
 type EnvironmentRevision struct {
-	Number int32 `json:"number"`
+	// The timestamp when the revision was created.
+	Created time.Time `json:"created"`
+	// The login name of the user who created the revision.
 	CreatorLogin *string `json:"creatorLogin,omitempty"`
-	Created *string `json:"created,omitempty"`
+	// The display name of the user who created the revision.
 	CreatorName *string `json:"creatorName,omitempty"`
+	// A monotonically increasing integer identifying this revision.
+	Number int64 `json:"number"`
+	Retracted *EnvironmentRevisionRetracted `json:"retracted,omitempty"`
+	SourceChangeRequest *EnvironmentRevisionChangeRequest `json:"sourceChangeRequest,omitempty"`
+	// The tags associated with this revision.
 	Tags []string `json:"tags,omitempty"`
 }
 
@@ -35,8 +43,9 @@ type _EnvironmentRevision EnvironmentRevision
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEnvironmentRevision(number int32) *EnvironmentRevision {
+func NewEnvironmentRevision(created time.Time, number int64) *EnvironmentRevision {
 	this := EnvironmentRevision{}
+	this.Created = created
 	this.Number = number
 	return &this
 }
@@ -49,28 +58,28 @@ func NewEnvironmentRevisionWithDefaults() *EnvironmentRevision {
 	return &this
 }
 
-// GetNumber returns the Number field value
-func (o *EnvironmentRevision) GetNumber() int32 {
+// GetCreated returns the Created field value
+func (o *EnvironmentRevision) GetCreated() time.Time {
 	if o == nil {
-		var ret int32
+		var ret time.Time
 		return ret
 	}
 
-	return o.Number
+	return o.Created
 }
 
-// GetNumberOk returns a tuple with the Number field value
+// GetCreatedOk returns a tuple with the Created field value
 // and a boolean to check if the value has been set.
-func (o *EnvironmentRevision) GetNumberOk() (*int32, bool) {
+func (o *EnvironmentRevision) GetCreatedOk() (*time.Time, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Number, true
+	return &o.Created, true
 }
 
-// SetNumber sets field value
-func (o *EnvironmentRevision) SetNumber(v int32) {
-	o.Number = v
+// SetCreated sets field value
+func (o *EnvironmentRevision) SetCreated(v time.Time) {
+	o.Created = v
 }
 
 // GetCreatorLogin returns the CreatorLogin field value if set, zero value otherwise.
@@ -105,38 +114,6 @@ func (o *EnvironmentRevision) SetCreatorLogin(v string) {
 	o.CreatorLogin = &v
 }
 
-// GetCreated returns the Created field value if set, zero value otherwise.
-func (o *EnvironmentRevision) GetCreated() string {
-	if o == nil || IsNil(o.Created) {
-		var ret string
-		return ret
-	}
-	return *o.Created
-}
-
-// GetCreatedOk returns a tuple with the Created field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EnvironmentRevision) GetCreatedOk() (*string, bool) {
-	if o == nil || IsNil(o.Created) {
-		return nil, false
-	}
-	return o.Created, true
-}
-
-// HasCreated returns a boolean if a field has been set.
-func (o *EnvironmentRevision) HasCreated() bool {
-	if o != nil && !IsNil(o.Created) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreated gets a reference to the given string and assigns it to the Created field.
-func (o *EnvironmentRevision) SetCreated(v string) {
-	o.Created = &v
-}
-
 // GetCreatorName returns the CreatorName field value if set, zero value otherwise.
 func (o *EnvironmentRevision) GetCreatorName() string {
 	if o == nil || IsNil(o.CreatorName) {
@@ -167,6 +144,94 @@ func (o *EnvironmentRevision) HasCreatorName() bool {
 // SetCreatorName gets a reference to the given string and assigns it to the CreatorName field.
 func (o *EnvironmentRevision) SetCreatorName(v string) {
 	o.CreatorName = &v
+}
+
+// GetNumber returns the Number field value
+func (o *EnvironmentRevision) GetNumber() int64 {
+	if o == nil {
+		var ret int64
+		return ret
+	}
+
+	return o.Number
+}
+
+// GetNumberOk returns a tuple with the Number field value
+// and a boolean to check if the value has been set.
+func (o *EnvironmentRevision) GetNumberOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Number, true
+}
+
+// SetNumber sets field value
+func (o *EnvironmentRevision) SetNumber(v int64) {
+	o.Number = v
+}
+
+// GetRetracted returns the Retracted field value if set, zero value otherwise.
+func (o *EnvironmentRevision) GetRetracted() EnvironmentRevisionRetracted {
+	if o == nil || IsNil(o.Retracted) {
+		var ret EnvironmentRevisionRetracted
+		return ret
+	}
+	return *o.Retracted
+}
+
+// GetRetractedOk returns a tuple with the Retracted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EnvironmentRevision) GetRetractedOk() (*EnvironmentRevisionRetracted, bool) {
+	if o == nil || IsNil(o.Retracted) {
+		return nil, false
+	}
+	return o.Retracted, true
+}
+
+// HasRetracted returns a boolean if a field has been set.
+func (o *EnvironmentRevision) HasRetracted() bool {
+	if o != nil && !IsNil(o.Retracted) {
+		return true
+	}
+
+	return false
+}
+
+// SetRetracted gets a reference to the given EnvironmentRevisionRetracted and assigns it to the Retracted field.
+func (o *EnvironmentRevision) SetRetracted(v EnvironmentRevisionRetracted) {
+	o.Retracted = &v
+}
+
+// GetSourceChangeRequest returns the SourceChangeRequest field value if set, zero value otherwise.
+func (o *EnvironmentRevision) GetSourceChangeRequest() EnvironmentRevisionChangeRequest {
+	if o == nil || IsNil(o.SourceChangeRequest) {
+		var ret EnvironmentRevisionChangeRequest
+		return ret
+	}
+	return *o.SourceChangeRequest
+}
+
+// GetSourceChangeRequestOk returns a tuple with the SourceChangeRequest field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EnvironmentRevision) GetSourceChangeRequestOk() (*EnvironmentRevisionChangeRequest, bool) {
+	if o == nil || IsNil(o.SourceChangeRequest) {
+		return nil, false
+	}
+	return o.SourceChangeRequest, true
+}
+
+// HasSourceChangeRequest returns a boolean if a field has been set.
+func (o *EnvironmentRevision) HasSourceChangeRequest() bool {
+	if o != nil && !IsNil(o.SourceChangeRequest) {
+		return true
+	}
+
+	return false
+}
+
+// SetSourceChangeRequest gets a reference to the given EnvironmentRevisionChangeRequest and assigns it to the SourceChangeRequest field.
+func (o *EnvironmentRevision) SetSourceChangeRequest(v EnvironmentRevisionChangeRequest) {
+	o.SourceChangeRequest = &v
 }
 
 // GetTags returns the Tags field value if set, zero value otherwise.
@@ -211,15 +276,19 @@ func (o EnvironmentRevision) MarshalJSON() ([]byte, error) {
 
 func (o EnvironmentRevision) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["number"] = o.Number
+	toSerialize["created"] = o.Created
 	if !IsNil(o.CreatorLogin) {
 		toSerialize["creatorLogin"] = o.CreatorLogin
 	}
-	if !IsNil(o.Created) {
-		toSerialize["created"] = o.Created
-	}
 	if !IsNil(o.CreatorName) {
 		toSerialize["creatorName"] = o.CreatorName
+	}
+	toSerialize["number"] = o.Number
+	if !IsNil(o.Retracted) {
+		toSerialize["retracted"] = o.Retracted
+	}
+	if !IsNil(o.SourceChangeRequest) {
+		toSerialize["sourceChangeRequest"] = o.SourceChangeRequest
 	}
 	if !IsNil(o.Tags) {
 		toSerialize["tags"] = o.Tags
@@ -232,6 +301,7 @@ func (o *EnvironmentRevision) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"created",
 		"number",
 	}
 

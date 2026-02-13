@@ -20,8 +20,9 @@ import (
 // checks if the UpdateEnvironmentTagRequestCurrentTag type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateEnvironmentTagRequestCurrentTag{}
 
-// UpdateEnvironmentTagRequestCurrentTag struct for UpdateEnvironmentTagRequestCurrentTag
+// UpdateEnvironmentTagRequestCurrentTag The current tag value to match when updating an environment tag.
 type UpdateEnvironmentTagRequestCurrentTag struct {
+	// The current tag value.
 	Value string `json:"value"`
 }
 

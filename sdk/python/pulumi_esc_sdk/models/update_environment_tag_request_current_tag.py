@@ -19,16 +19,16 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List
 from typing import Optional, Set
 from typing_extensions import Self
 
 class UpdateEnvironmentTagRequestCurrentTag(BaseModel):
     """
-    UpdateEnvironmentTagRequestCurrentTag
+    The current tag value to match when updating an environment tag.
     """ # noqa: E501
-    value: StrictStr
+    value: StrictStr = Field(description="The current tag value.")
     __properties: ClassVar[List[str]] = ["value"]
 
     model_config = ConfigDict(

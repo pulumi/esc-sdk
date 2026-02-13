@@ -28,9 +28,9 @@ class Error(BaseModel):
     """
     Error
     """ # noqa: E501
-    message: StrictStr
     code: StrictInt
-    __properties: ClassVar[List[str]] = ["message", "code"]
+    message: StrictStr
+    __properties: ClassVar[List[str]] = ["code", "message"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -83,8 +83,8 @@ class Error(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "message": obj.get("message"),
-            "code": obj.get("code")
+            "code": obj.get("code"),
+            "message": obj.get("message")
         })
         return _obj
 

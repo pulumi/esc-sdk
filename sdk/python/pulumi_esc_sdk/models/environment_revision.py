@@ -19,21 +19,26 @@ import pprint
 import re  # noqa: F401
 import json
 
+from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from pulumi_esc_sdk.models.environment_revision_change_request import EnvironmentRevisionChangeRequest
+from pulumi_esc_sdk.models.environment_revision_retracted import EnvironmentRevisionRetracted
 from typing import Optional, Set
 from typing_extensions import Self
 
 class EnvironmentRevision(BaseModel):
     """
-    EnvironmentRevision
+    EnvironmentRevision represents a specific revision of an environment definition.
     """ # noqa: E501
-    number: StrictInt
-    creator_login: Optional[StrictStr] = Field(default=None, alias="creatorLogin")
-    created: Optional[StrictStr] = None
-    creator_name: Optional[StrictStr] = Field(default=None, alias="creatorName")
-    tags: Optional[List[StrictStr]] = None
-    __properties: ClassVar[List[str]] = ["number", "creatorLogin", "created", "creatorName", "tags"]
+    created: datetime = Field(description="The timestamp when the revision was created.")
+    creator_login: Optional[StrictStr] = Field(default=None, description="The login name of the user who created the revision.", alias="creatorLogin")
+    creator_name: Optional[StrictStr] = Field(default=None, description="The display name of the user who created the revision.", alias="creatorName")
+    number: StrictInt = Field(description="A monotonically increasing integer identifying this revision.")
+    retracted: Optional[EnvironmentRevisionRetracted] = None
+    source_change_request: Optional[EnvironmentRevisionChangeRequest] = Field(default=None, alias="sourceChangeRequest")
+    tags: Optional[List[StrictStr]] = Field(default=None, description="The tags associated with this revision.")
+    __properties: ClassVar[List[str]] = ["created", "creatorLogin", "creatorName", "number", "retracted", "sourceChangeRequest", "tags"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -74,6 +79,12 @@ class EnvironmentRevision(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of retracted
+        if self.retracted:
+            _dict['retracted'] = self.retracted.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of source_change_request
+        if self.source_change_request:
+            _dict['sourceChangeRequest'] = self.source_change_request.to_dict()
         return _dict
 
     @classmethod
@@ -86,10 +97,12 @@ class EnvironmentRevision(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "number": obj.get("number"),
-            "creatorLogin": obj.get("creatorLogin"),
             "created": obj.get("created"),
+            "creatorLogin": obj.get("creatorLogin"),
             "creatorName": obj.get("creatorName"),
+            "number": obj.get("number"),
+            "retracted": EnvironmentRevisionRetracted.from_dict(obj["retracted"]) if obj.get("retracted") is not None else None,
+            "sourceChangeRequest": EnvironmentRevisionChangeRequest.from_dict(obj["sourceChangeRequest"]) if obj.get("sourceChangeRequest") is not None else None,
             "tags": obj.get("tags")
         })
         return _obj

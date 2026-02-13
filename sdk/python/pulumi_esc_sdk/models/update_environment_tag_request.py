@@ -28,7 +28,7 @@ from typing_extensions import Self
 
 class UpdateEnvironmentTagRequest(BaseModel):
     """
-    UpdateEnvironmentTagRequest
+    Request to update an environment tag.
     """ # noqa: E501
     current_tag: UpdateEnvironmentTagRequestCurrentTag = Field(alias="currentTag")
     new_tag: UpdateEnvironmentTagRequestNewTag = Field(alias="newTag")

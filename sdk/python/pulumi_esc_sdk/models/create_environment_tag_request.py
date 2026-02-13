@@ -19,17 +19,17 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List
 from typing import Optional, Set
 from typing_extensions import Self
 
 class CreateEnvironmentTagRequest(BaseModel):
     """
-    CreateEnvironmentTagRequest
+    Request body for create environment tag.
     """ # noqa: E501
-    name: StrictStr
-    value: StrictStr
+    name: StrictStr = Field(description="The name")
+    value: StrictStr = Field(description="The value")
     __properties: ClassVar[List[str]] = ["name", "value"]
 
     model_config = ConfigDict(

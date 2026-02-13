@@ -22,8 +22,8 @@ var _ MappedNullable = &Error{}
 
 // Error struct for Error
 type Error struct {
-	Message string `json:"message"`
 	Code int32 `json:"code"`
+	Message string `json:"message"`
 }
 
 type _Error Error
@@ -32,10 +32,10 @@ type _Error Error
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewError(message string, code int32) *Error {
+func NewError(code int32, message string) *Error {
 	this := Error{}
-	this.Message = message
 	this.Code = code
+	this.Message = message
 	return &this
 }
 
@@ -45,30 +45,6 @@ func NewError(message string, code int32) *Error {
 func NewErrorWithDefaults() *Error {
 	this := Error{}
 	return &this
-}
-
-// GetMessage returns the Message field value
-func (o *Error) GetMessage() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Message
-}
-
-// GetMessageOk returns a tuple with the Message field value
-// and a boolean to check if the value has been set.
-func (o *Error) GetMessageOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Message, true
-}
-
-// SetMessage sets field value
-func (o *Error) SetMessage(v string) {
-	o.Message = v
 }
 
 // GetCode returns the Code field value
@@ -95,6 +71,30 @@ func (o *Error) SetCode(v int32) {
 	o.Code = v
 }
 
+// GetMessage returns the Message field value
+func (o *Error) GetMessage() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Message
+}
+
+// GetMessageOk returns a tuple with the Message field value
+// and a boolean to check if the value has been set.
+func (o *Error) GetMessageOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Message, true
+}
+
+// SetMessage sets field value
+func (o *Error) SetMessage(v string) {
+	o.Message = v
+}
+
 func (o Error) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -105,8 +105,8 @@ func (o Error) MarshalJSON() ([]byte, error) {
 
 func (o Error) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["message"] = o.Message
 	toSerialize["code"] = o.Code
+	toSerialize["message"] = o.Message
 	return toSerialize, nil
 }
 
@@ -115,8 +115,8 @@ func (o *Error) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"message",
 		"code",
+		"message",
 	}
 
 	allProperties := make(map[string]interface{})

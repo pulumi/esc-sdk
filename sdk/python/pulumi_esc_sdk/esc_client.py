@@ -9,6 +9,7 @@ import pulumi_esc_sdk.api_client as api_client
 from pydantic import StrictBytes, StrictInt
 from typing import Mapping, Any, List
 import inspect
+import json
 import yaml
 import os
 from urllib.parse import urlparse, urlunparse
@@ -30,7 +31,7 @@ class EscClient:
         self.esc_api = api.EscApi(api_client.ApiClient(configuration))
 
     def list_environments(self, org_name: str,
-                          continuation_token: str = None) -> models.OrgEnvironments:
+                          continuation_token: str = None) -> models.ListEnvironmentsResponse:
         """List all environments in an organization.
 
         :param org_name: The name of the organization.
@@ -40,34 +41,38 @@ class EscClient:
         return self.esc_api.list_environments(org_name, continuation_token)
 
     def get_environment(self, org_name: str, project_name: str,
-                        env_name: str) -> tuple[models.EnvironmentDefinition, StrictBytes]:
+                        env_name: str) -> tuple[models.EnvironmentDefinition, str]:
         """Get an environment by name.
 
         :param org_name: The name of the organization.
         :param project_name: The name of the project.
         :param env_name: The name of the environment.
-        :return: The environment definition and the raw data.
+        :return: The environment definition and the raw YAML string.
         """
         response = self.esc_api.get_environment_with_http_info(org_name, project_name, env_name)
-        return response.data, response.raw_data
+        yaml_str = response.data if isinstance(response.data, str) else response.raw_data.decode('utf-8')
+        env_def = _parse_environment_definition(yaml_str)
+        return env_def, yaml_str
 
     def get_environment_at_version(
             self, org_name: str, project_name: str, env_name: str,
-            version: str) -> tuple[models.EnvironmentDefinition, StrictBytes]:
+            version: str) -> tuple[models.EnvironmentDefinition, str]:
         """Get an environment by name and version.
 
         :param org_name: The name of the organization.
         :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :param version: The version of the environment.
-        :return: The environment definition and the raw data.
+        :return: The environment definition and the raw YAML string.
         """
         response = self.esc_api.get_environment_at_version_with_http_info(
             org_name, project_name, env_name, version)
-        return response.data, response.raw_data
+        yaml_str = response.data if isinstance(response.data, str) else response.raw_data.decode('utf-8')
+        env_def = _parse_environment_definition(yaml_str)
+        return env_def, yaml_str
 
     def open_environment(self, org_name: str, project_name: str,
-                         env_name: str) -> models.OpenEnvironment:
+                         env_name: str) -> models.OpenEnvironmentResponse:
         """Open an environment for reading.
 
         :param org_name: The name of the organization.
@@ -79,7 +84,7 @@ class EscClient:
 
     def open_environment_at_version(
             self, org_name: str, project_name: str, env_name: str,
-            version: str) -> models.OpenEnvironment:
+            version: str) -> models.OpenEnvironmentResponse:
         """Open an environment for reading at a specific version.
 
         :param org_name: The name of the organization.
@@ -91,7 +96,7 @@ class EscClient:
 
     def read_open_environment(
             self, org_name: str, project_name: str, env_name: str,
-            open_session_id: str) -> tuple[models.Environment, Mapping[str, Any], str]:
+            open_session_id: str) -> tuple[models.EscEnvironment, Mapping[str, Any], str]:
         """Read an open environment and resolves config and data.
 
         :param org_name: The name of the organization.
@@ -106,7 +111,7 @@ class EscClient:
 
     def open_and_read_environment(
             self, org_name: str, project_name: str,
-            env_name: str) -> tuple[models.Environment, Mapping[str, Any], str]:
+            env_name: str) -> tuple[models.EscEnvironment, Mapping[str, Any], str]:
         """Open and read an environment and resolves config and data.
 
         :param org_name: The name of the organization.
@@ -119,7 +124,7 @@ class EscClient:
 
     def open_and_read_environment_at_version(
             self, org_name: str, project_name: str, env_name: str,
-            version: str) -> tuple[models.Environment, Mapping[str, Any], str]:
+            version: str) -> tuple[models.EscEnvironment, Mapping[str, Any], str]:
         """Open and read an environment at a specific version and resolves config and data.
 
         :param org_name: The name of the organization.
@@ -133,7 +138,7 @@ class EscClient:
 
     def read_open_environment_property(
             self, org_name: str, project_name: str, env_name: str,
-            open_session_id: str, property_name: str) -> tuple[models.Value, Any]:
+            open_session_id: str, property_name: str) -> tuple[models.EscValue, Any]:
         """Read a property from an open environment and resolves the value.
 
         :param org_name: The name of the organization.
@@ -148,20 +153,20 @@ class EscClient:
         return v, convertPropertyToValue(v.value)
 
     def create_environment(self, org_name: str, project_name: str,
-                           env_name: str) -> models.Environment:
+                           env_name: str) -> models.EscEnvironment:
         """Create an environment.
 
         :param org_name: The name of the organization.
         :param project_name: The name of the project.
         :param env_name: The name of the environment.
         :return: The created environment."""
-        createEnv = models.CreateEnvironment(project=project_name, name=env_name)
+        createEnv = models.CreateEnvironmentRequest(project=project_name, name=env_name)
         return self.esc_api.create_environment(org_name, createEnv)
 
     def clone_environment(
             self, org_name: str, src_project_name: str, src_env_name: str,
             dest_project_name: str, dest_env_name: str,
-            clone_options: dict = {}) -> models.Environment:
+            clone_options: dict = {}) -> models.EscEnvironment:
         """Clone an environment.
 
         :param org_name: The name of the organization.
@@ -176,13 +181,13 @@ class EscClient:
         :key bool preserve_revision_tags: Whether to preserve version tags.
         :return: The created environment."""
 
-        cloneEnv = models.CloneEnvironment(
+        cloneEnv = models.CloneEnvironmentRequest(
             project=dest_project_name, name=dest_env_name, **clone_options)
         return self.esc_api.clone_environment(org_name, src_project_name, src_env_name, cloneEnv)
 
     def update_environment_yaml(
             self, org_name: str, project_name: str, env_name: str,
-            yaml_body: str) -> models.EnvironmentDiagnostics:
+            yaml_body: str) -> models.EnvironmentDiagnosticsResponse:
         """Update an environment using the YAML body.
 
         :param org_name: The name of the organization.
@@ -194,7 +199,7 @@ class EscClient:
 
     def update_environment(
             self, org_name: str, project_name: str, env_name: str,
-            env: models.EnvironmentDefinition) -> models.Environment:
+            env: models.EnvironmentDefinition) -> models.EscEnvironment:
         """Update an environment using the environment definition.
 
         :param org_name: The name of the organization.
@@ -215,25 +220,30 @@ class EscClient:
         """
         self.esc_api.delete_environment(org_name, project_name, env_name)
 
-    def check_environment_yaml(self, org_name: str, yaml_body: str) -> models.CheckEnvironment:
+    def check_environment_yaml(self, org_name: str, yaml_body: str) -> models.EnvironmentResponse:
         """Check an environment using the YAML body.
 
         :param org_name: The name of the organization.
         :param yaml_body: The YAML text.
-        :return: The check environment result with diagnostics."""
+        :return: The environment response with diagnostics."""
         try:
             response = self.esc_api.check_environment_yaml_with_http_info(org_name, yaml_body)
             return response.data
         except ApiException as e:
-            return e.data
+            if e.body:
+                try:
+                    return models.EnvironmentResponse.from_dict(json.loads(e.body))
+                except Exception:
+                    pass
+            raise
 
     def check_environment(self, org_name: str,
-                          env: models.EnvironmentDefinition) -> models.CheckEnvironment:
+                          env: models.EnvironmentDefinition) -> models.EnvironmentResponse:
         """Check an environment using the environment definition.
 
         :param org_name: The name of the organization.
         :param env: The environment definition.
-        :return: The check environment result with diagnostics."""
+        :return: The environment response with diagnostics."""
         yaml_body = yaml.safe_dump(env.to_dict())
         return self.check_environment_yaml(org_name, yaml_body)
 
@@ -245,9 +255,11 @@ class EscClient:
         :param org_name: The name of the organization.
         :param project_name: The name of the project.
         :param env_name: The name of the environment.
-        :return: The decrypted environment and the raw data."""
+        :return: The decrypted environment and the raw YAML string."""
         response = self.esc_api.decrypt_environment_with_http_info(org_name, project_name, env_name)
-        return response.data, response.raw_data.decode('utf-8')
+        yaml_str = response.data if isinstance(response.data, str) else response.raw_data.decode('utf-8')
+        env_def = _parse_environment_definition(yaml_str)
+        return env_def, yaml_str
 
     def list_environment_revisions(
             self,
@@ -274,7 +286,7 @@ class EscClient:
             env_name: str,
             after: str | None = None,
             count: StrictInt | None = None
-            ) -> models.EnvironmentRevisionTags:
+            ) -> models.ListEnvironmentRevisionTagsResponse:
         """List environment revision tags.
 
         :param org_name: The name of the organization.
@@ -296,7 +308,7 @@ class EscClient:
         :param tag_name: The name of the tag.
         :param revision: The revision to tag.
         """
-        create_tag = models.CreateEnvironmentRevisionTag(name=tag_name, revision=revision)
+        create_tag = models.CreateEnvironmentRevisionTagRequest(name=tag_name, revision=revision)
         return self.esc_api.create_environment_revision_tag(
             org_name, project_name, env_name, create_tag)
 
@@ -311,7 +323,7 @@ class EscClient:
         :param tag_name: The name of the tag.
         :param revision: The revision to tag.
         """
-        update_tag = models.UpdateEnvironmentRevisionTag(revision=revision)
+        update_tag = models.UpdateEnvironmentRevisionTagRequest(revision=revision)
         return self.esc_api.update_environment_revision_tag(
             org_name, project_name, env_name, tag_name, update_tag)
 
@@ -344,7 +356,7 @@ class EscClient:
             project_name: str,
             env_name: str,
             after: str | None = None,
-            count: StrictInt | None = None) -> models.ListEnvironmentTags:
+            count: StrictInt | None = None) -> models.ListEnvironmentTagsResponse:
         """List environment tags.
 
         :param org_name: The name of the organization.
@@ -378,7 +390,7 @@ class EscClient:
         :param tag_name: The name of the tag.
         :param tag_value: The value of the tag.
         :return: The created environment tag."""
-        create_tag = models.CreateEnvironmentTag(name=tag_name, value=tag_value)
+        create_tag = models.CreateEnvironmentTagRequest(name=tag_name, value=tag_value)
         return self.esc_api.create_environment_tag(org_name, project_name, env_name, create_tag)
 
     def update_environment_tag(
@@ -394,9 +406,9 @@ class EscClient:
         :param new_tag_name: The new name of the tag.
         :param new_tag_value: The new value of the tag.
         :return: The updated environment tag."""
-        update_tag = models.UpdateEnvironmentTag(
-            currentTag=models.UpdateEnvironmentTagCurrentTag(value=current_tag_value),
-            newTag=models.UpdateEnvironmentTagNewTag(name=new_tag_name, value=new_tag_value)
+        update_tag = models.UpdateEnvironmentTagRequest(
+            currentTag=models.UpdateEnvironmentTagRequestCurrentTag(value=current_tag_value),
+            newTag=models.UpdateEnvironmentTagRequestNewTag(name=new_tag_name, value=new_tag_value)
         )
         return self.esc_api.update_environment_tag(
             org_name, project_name, env_name, tag_name, update_tag)
@@ -413,7 +425,42 @@ class EscClient:
         self.esc_api.delete_environment_tag(org_name, project_name, env_name, tag_name)
 
 
-def convertEnvPropertiesToValues(env: Mapping[str, models.Value]) -> Any:
+def _parse_environment_definition(yaml_str: str) -> models.EnvironmentDefinition:
+    """Parse a YAML string into an EnvironmentDefinition.
+
+    The API returns environment definitions as YAML text. This function
+    parses the YAML and constructs a typed EnvironmentDefinition object.
+    """
+    doc = yaml.safe_load(yaml_str)
+    if doc is None:
+        return models.EnvironmentDefinition()
+    if not isinstance(doc, dict):
+        return models.EnvironmentDefinition()
+
+    imports = doc.get("imports", [])
+    raw_values = doc.get("values", {})
+
+    pulumi_config = None
+    env_variables = None
+    files = None
+    additional = {}
+
+    if isinstance(raw_values, dict):
+        pulumi_config = raw_values.pop("pulumiConfig", None)
+        env_variables = raw_values.pop("environmentVariables", None)
+        files = raw_values.pop("files", None)
+        additional = raw_values
+    values = models.EnvironmentDefinitionValues(
+        pulumi_config=pulumi_config,
+        environment_variables=env_variables,
+        files=files,
+        additional_properties=additional,
+    )
+
+    return models.EnvironmentDefinition(imports=imports, values=values)
+
+
+def convertEnvPropertiesToValues(env: Mapping[str, models.EscValue]) -> Any:
     if env is None:
         return env
 

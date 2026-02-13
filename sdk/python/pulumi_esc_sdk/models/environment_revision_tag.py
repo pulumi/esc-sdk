@@ -19,6 +19,7 @@ import pprint
 import re  # noqa: F401
 import json
 
+from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
@@ -26,15 +27,15 @@ from typing_extensions import Self
 
 class EnvironmentRevisionTag(BaseModel):
     """
-    EnvironmentRevisionTag
+    EnvironmentRevisionTag represents a named tag pointing to a specific environment revision.
     """ # noqa: E501
-    revision: StrictInt
-    name: StrictStr
-    created: Optional[StrictStr] = None
-    modified: Optional[StrictStr] = None
-    editor_login: Optional[StrictStr] = Field(default=None, alias="editorLogin")
-    editor_name: Optional[StrictStr] = Field(default=None, alias="editorName")
-    __properties: ClassVar[List[str]] = ["revision", "name", "created", "modified", "editorLogin", "editorName"]
+    created: datetime = Field(description="The timestamp when the tag was created.")
+    editor_login: Optional[StrictStr] = Field(default=None, description="The login name of the user who last edited the tag.", alias="editorLogin")
+    editor_name: Optional[StrictStr] = Field(default=None, description="The display name of the user who last edited the tag.", alias="editorName")
+    modified: datetime = Field(description="The timestamp when the tag was last modified.")
+    name: StrictStr = Field(description="The name of the tag.")
+    revision: StrictInt = Field(description="The revision number this tag points to.")
+    __properties: ClassVar[List[str]] = ["created", "editorLogin", "editorName", "modified", "name", "revision"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -87,12 +88,12 @@ class EnvironmentRevisionTag(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "revision": obj.get("revision"),
-            "name": obj.get("name"),
             "created": obj.get("created"),
-            "modified": obj.get("modified"),
             "editorLogin": obj.get("editorLogin"),
-            "editorName": obj.get("editorName")
+            "editorName": obj.get("editorName"),
+            "modified": obj.get("modified"),
+            "name": obj.get("name"),
+            "revision": obj.get("revision")
         })
         return _obj
 

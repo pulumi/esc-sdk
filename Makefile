@@ -6,6 +6,8 @@ SHELL := sh
 
 GO := go
 
+SPEC_URL := https://api.pulumi.com/api/openapi/pulumi-spec.json
+
 .phony: .EXPORT_ALL_VARIABLES
 .EXPORT_ALL_VARIABLES:
 
@@ -73,6 +75,13 @@ generate_ts_client_sdk:
 .PHONY: generate_python_client_sdk
 generate_python_client_sdk:
 	PYTHON_POST_PROCESS_FILE="/usr/local/bin/yapf -i" openapi-generator-cli generate -i ./sdk/swagger.yaml -p packageName=pulumi_esc_sdk,httpUserAgent=esc-sdk/python/${VERSION},packageVersion=${PYTHON_SDK_VERSION} -t ./sdk/templates/python -g python -o ./sdk/python --git-repo-id esc --git-user-id pulumi
+
+.PHONY: fetch_spec
+fetch_spec:
+	cd tools/filter-spec && ${GO} run . -input $(SPEC_URL) -output ../../sdk/swagger.yaml
+
+.PHONY: fetch_and_generate
+fetch_and_generate: fetch_spec generate_sdks
 
 .phony: generate_sdks
 generate_sdks:: generate_go_client_sdk generate_ts_client_sdk generate_python_client_sdk

@@ -19,22 +19,30 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from pulumi_esc_sdk.models.environment_links import EnvironmentLinks
+from pulumi_esc_sdk.models.environment_referrer_metadata import EnvironmentReferrerMetadata
+from pulumi_esc_sdk.models.environment_settings import EnvironmentSettings
 from typing import Optional, Set
 from typing_extensions import Self
 
 class OrgEnvironment(BaseModel):
     """
-    OrgEnvironment
+    OrgEnvironment represents an environment within an organization.
     """ # noqa: E501
-    organization: Optional[StrictStr] = None
-    project: StrictStr
-    name: StrictStr
-    created: StrictStr
-    modified: StrictStr
-    additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["organization", "project", "name", "created", "modified"]
+    created: StrictStr = Field(description="The ISO 8601 timestamp when the environment was created.")
+    deleted_at: Optional[StrictStr] = Field(default=None, description="The ISO 8601 timestamp when the environment was soft-deleted, or null if not deleted.", alias="deletedAt")
+    id: StrictStr = Field(description="The unique identifier of the environment.")
+    links: Optional[EnvironmentLinks] = None
+    modified: StrictStr = Field(description="The ISO 8601 timestamp when the environment was last modified.")
+    name: Optional[StrictStr] = Field(default=None, description="The name of the environment.")
+    organization: Optional[StrictStr] = Field(default=None, description="The login name of the organization that owns this environment.")
+    project: Optional[StrictStr] = Field(default=None, description="The project name that contains this environment, if project-scoped.")
+    referrer_metadata: EnvironmentReferrerMetadata = Field(alias="referrerMetadata")
+    settings: EnvironmentSettings
+    tags: Dict[str, StrictStr] = Field(description="User-defined key-value tags associated with the environment for organization and filtering.")
+    __properties: ClassVar[List[str]] = ["created", "deletedAt", "id", "links", "modified", "name", "organization", "project", "referrerMetadata", "settings", "tags"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -66,10 +74,8 @@ class OrgEnvironment(BaseModel):
         * `None` is only added to the output dict for nullable fields that
           were set at model initialization. Other fields with value `None`
           are ignored.
-        * Fields in `self.additional_properties` are added to the output dict.
         """
         excluded_fields: Set[str] = set([
-            "additional_properties",
         ])
 
         _dict = self.model_dump(
@@ -77,11 +83,15 @@ class OrgEnvironment(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # puts key-value pairs in additional_properties in the top level
-        if self.additional_properties is not None:
-            for _key, _value in self.additional_properties.items():
-                _dict[_key] = _value
-
+        # override the default output from pydantic by calling `to_dict()` of links
+        if self.links:
+            _dict['links'] = self.links.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of referrer_metadata
+        if self.referrer_metadata:
+            _dict['referrerMetadata'] = self.referrer_metadata.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of settings
+        if self.settings:
+            _dict['settings'] = self.settings.to_dict()
         return _dict
 
     @classmethod
@@ -94,17 +104,18 @@ class OrgEnvironment(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "created": obj.get("created"),
+            "deletedAt": obj.get("deletedAt"),
+            "id": obj.get("id"),
+            "links": EnvironmentLinks.from_dict(obj["links"]) if obj.get("links") is not None else None,
+            "modified": obj.get("modified"),
+            "name": obj.get("name"),
             "organization": obj.get("organization"),
             "project": obj.get("project"),
-            "name": obj.get("name"),
-            "created": obj.get("created"),
-            "modified": obj.get("modified")
+            "referrerMetadata": EnvironmentReferrerMetadata.from_dict(obj["referrerMetadata"]) if obj.get("referrerMetadata") is not None else None,
+            "settings": EnvironmentSettings.from_dict(obj["settings"]) if obj.get("settings") is not None else None,
+            "tags": obj.get("tags")
         })
-        # store additional fields in additional_properties
-        for _key in obj.keys():
-            if _key not in cls.__properties:
-                _obj.additional_properties[_key] = obj.get(_key)
-
         return _obj
 
 

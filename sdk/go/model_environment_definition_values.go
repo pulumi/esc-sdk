@@ -20,9 +20,9 @@ var _ MappedNullable = &EnvironmentDefinitionValues{}
 
 // EnvironmentDefinitionValues struct for EnvironmentDefinitionValues
 type EnvironmentDefinitionValues struct {
-	PulumiConfig map[string]interface{} `json:"pulumiConfig,omitempty"`
 	EnvironmentVariables *map[string]string `json:"environmentVariables,omitempty"`
 	Files *map[string]string `json:"files,omitempty"`
+	PulumiConfig map[string]interface{} `json:"pulumiConfig,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -43,38 +43,6 @@ func NewEnvironmentDefinitionValues() *EnvironmentDefinitionValues {
 func NewEnvironmentDefinitionValuesWithDefaults() *EnvironmentDefinitionValues {
 	this := EnvironmentDefinitionValues{}
 	return &this
-}
-
-// GetPulumiConfig returns the PulumiConfig field value if set, zero value otherwise.
-func (o *EnvironmentDefinitionValues) GetPulumiConfig() map[string]interface{} {
-	if o == nil || IsNil(o.PulumiConfig) {
-		var ret map[string]interface{}
-		return ret
-	}
-	return o.PulumiConfig
-}
-
-// GetPulumiConfigOk returns a tuple with the PulumiConfig field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EnvironmentDefinitionValues) GetPulumiConfigOk() (map[string]interface{}, bool) {
-	if o == nil || IsNil(o.PulumiConfig) {
-		return map[string]interface{}{}, false
-	}
-	return o.PulumiConfig, true
-}
-
-// HasPulumiConfig returns a boolean if a field has been set.
-func (o *EnvironmentDefinitionValues) HasPulumiConfig() bool {
-	if o != nil && !IsNil(o.PulumiConfig) {
-		return true
-	}
-
-	return false
-}
-
-// SetPulumiConfig gets a reference to the given map[string]interface{} and assigns it to the PulumiConfig field.
-func (o *EnvironmentDefinitionValues) SetPulumiConfig(v map[string]interface{}) {
-	o.PulumiConfig = v
 }
 
 // GetEnvironmentVariables returns the EnvironmentVariables field value if set, zero value otherwise.
@@ -141,6 +109,38 @@ func (o *EnvironmentDefinitionValues) SetFiles(v map[string]string) {
 	o.Files = &v
 }
 
+// GetPulumiConfig returns the PulumiConfig field value if set, zero value otherwise.
+func (o *EnvironmentDefinitionValues) GetPulumiConfig() map[string]interface{} {
+	if o == nil || IsNil(o.PulumiConfig) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.PulumiConfig
+}
+
+// GetPulumiConfigOk returns a tuple with the PulumiConfig field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EnvironmentDefinitionValues) GetPulumiConfigOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.PulumiConfig) {
+		return map[string]interface{}{}, false
+	}
+	return o.PulumiConfig, true
+}
+
+// HasPulumiConfig returns a boolean if a field has been set.
+func (o *EnvironmentDefinitionValues) HasPulumiConfig() bool {
+	if o != nil && !IsNil(o.PulumiConfig) {
+		return true
+	}
+
+	return false
+}
+
+// SetPulumiConfig gets a reference to the given map[string]interface{} and assigns it to the PulumiConfig field.
+func (o *EnvironmentDefinitionValues) SetPulumiConfig(v map[string]interface{}) {
+	o.PulumiConfig = v
+}
+
 func (o EnvironmentDefinitionValues) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -151,14 +151,14 @@ func (o EnvironmentDefinitionValues) MarshalJSON() ([]byte, error) {
 
 func (o EnvironmentDefinitionValues) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.PulumiConfig) {
-		toSerialize["pulumiConfig"] = o.PulumiConfig
-	}
 	if !IsNil(o.EnvironmentVariables) {
 		toSerialize["environmentVariables"] = o.EnvironmentVariables
 	}
 	if !IsNil(o.Files) {
 		toSerialize["files"] = o.Files
+	}
+	if !IsNil(o.PulumiConfig) {
+		toSerialize["pulumiConfig"] = o.PulumiConfig
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -182,9 +182,9 @@ func (o *EnvironmentDefinitionValues) UnmarshalJSON(data []byte) (err error) {
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
-		delete(additionalProperties, "pulumiConfig")
 		delete(additionalProperties, "environmentVariables")
 		delete(additionalProperties, "files")
+		delete(additionalProperties, "pulumiConfig")
 		o.AdditionalProperties = additionalProperties
 	}
 

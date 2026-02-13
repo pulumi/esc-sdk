@@ -13,20 +13,34 @@ package esc_sdk
 
 import (
 	"encoding/json"
+	"bytes"
 	"fmt"
 )
 
 // checks if the OrgEnvironment type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &OrgEnvironment{}
 
-// OrgEnvironment struct for OrgEnvironment
+// OrgEnvironment OrgEnvironment represents an environment within an organization.
 type OrgEnvironment struct {
-	Organization *string `json:"organization,omitempty"`
-	Project string `json:"project"`
-	Name string `json:"name"`
+	// The ISO 8601 timestamp when the environment was created.
 	Created string `json:"created"`
+	// The ISO 8601 timestamp when the environment was soft-deleted, or null if not deleted.
+	DeletedAt *string `json:"deletedAt,omitempty"`
+	// The unique identifier of the environment.
+	Id string `json:"id"`
+	Links *EnvironmentLinks `json:"links,omitempty"`
+	// The ISO 8601 timestamp when the environment was last modified.
 	Modified string `json:"modified"`
-	AdditionalProperties map[string]interface{}
+	// The name of the environment.
+	Name *string `json:"name,omitempty"`
+	// The login name of the organization that owns this environment.
+	Organization *string `json:"organization,omitempty"`
+	// The project name that contains this environment, if project-scoped.
+	Project *string `json:"project,omitempty"`
+	ReferrerMetadata EnvironmentReferrerMetadata `json:"referrerMetadata"`
+	Settings EnvironmentSettings `json:"settings"`
+	// User-defined key-value tags associated with the environment for organization and filtering.
+	Tags map[string]string `json:"tags"`
 }
 
 type _OrgEnvironment OrgEnvironment
@@ -35,12 +49,14 @@ type _OrgEnvironment OrgEnvironment
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewOrgEnvironment(project string, name string, created string, modified string) *OrgEnvironment {
+func NewOrgEnvironment(created string, id string, modified string, referrerMetadata EnvironmentReferrerMetadata, settings EnvironmentSettings, tags map[string]string) *OrgEnvironment {
 	this := OrgEnvironment{}
-	this.Project = project
-	this.Name = name
 	this.Created = created
+	this.Id = id
 	this.Modified = modified
+	this.ReferrerMetadata = referrerMetadata
+	this.Settings = settings
+	this.Tags = tags
 	return &this
 }
 
@@ -50,6 +66,174 @@ func NewOrgEnvironment(project string, name string, created string, modified str
 func NewOrgEnvironmentWithDefaults() *OrgEnvironment {
 	this := OrgEnvironment{}
 	return &this
+}
+
+// GetCreated returns the Created field value
+func (o *OrgEnvironment) GetCreated() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Created
+}
+
+// GetCreatedOk returns a tuple with the Created field value
+// and a boolean to check if the value has been set.
+func (o *OrgEnvironment) GetCreatedOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Created, true
+}
+
+// SetCreated sets field value
+func (o *OrgEnvironment) SetCreated(v string) {
+	o.Created = v
+}
+
+// GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
+func (o *OrgEnvironment) GetDeletedAt() string {
+	if o == nil || IsNil(o.DeletedAt) {
+		var ret string
+		return ret
+	}
+	return *o.DeletedAt
+}
+
+// GetDeletedAtOk returns a tuple with the DeletedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OrgEnvironment) GetDeletedAtOk() (*string, bool) {
+	if o == nil || IsNil(o.DeletedAt) {
+		return nil, false
+	}
+	return o.DeletedAt, true
+}
+
+// HasDeletedAt returns a boolean if a field has been set.
+func (o *OrgEnvironment) HasDeletedAt() bool {
+	if o != nil && !IsNil(o.DeletedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeletedAt gets a reference to the given string and assigns it to the DeletedAt field.
+func (o *OrgEnvironment) SetDeletedAt(v string) {
+	o.DeletedAt = &v
+}
+
+// GetId returns the Id field value
+func (o *OrgEnvironment) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *OrgEnvironment) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
+
+// SetId sets field value
+func (o *OrgEnvironment) SetId(v string) {
+	o.Id = v
+}
+
+// GetLinks returns the Links field value if set, zero value otherwise.
+func (o *OrgEnvironment) GetLinks() EnvironmentLinks {
+	if o == nil || IsNil(o.Links) {
+		var ret EnvironmentLinks
+		return ret
+	}
+	return *o.Links
+}
+
+// GetLinksOk returns a tuple with the Links field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OrgEnvironment) GetLinksOk() (*EnvironmentLinks, bool) {
+	if o == nil || IsNil(o.Links) {
+		return nil, false
+	}
+	return o.Links, true
+}
+
+// HasLinks returns a boolean if a field has been set.
+func (o *OrgEnvironment) HasLinks() bool {
+	if o != nil && !IsNil(o.Links) {
+		return true
+	}
+
+	return false
+}
+
+// SetLinks gets a reference to the given EnvironmentLinks and assigns it to the Links field.
+func (o *OrgEnvironment) SetLinks(v EnvironmentLinks) {
+	o.Links = &v
+}
+
+// GetModified returns the Modified field value
+func (o *OrgEnvironment) GetModified() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Modified
+}
+
+// GetModifiedOk returns a tuple with the Modified field value
+// and a boolean to check if the value has been set.
+func (o *OrgEnvironment) GetModifiedOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Modified, true
+}
+
+// SetModified sets field value
+func (o *OrgEnvironment) SetModified(v string) {
+	o.Modified = v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *OrgEnvironment) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OrgEnvironment) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *OrgEnvironment) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *OrgEnvironment) SetName(v string) {
+	o.Name = &v
 }
 
 // GetOrganization returns the Organization field value if set, zero value otherwise.
@@ -84,100 +268,108 @@ func (o *OrgEnvironment) SetOrganization(v string) {
 	o.Organization = &v
 }
 
-// GetProject returns the Project field value
+// GetProject returns the Project field value if set, zero value otherwise.
 func (o *OrgEnvironment) GetProject() string {
-	if o == nil {
+	if o == nil || IsNil(o.Project) {
 		var ret string
 		return ret
 	}
-
-	return o.Project
+	return *o.Project
 }
 
-// GetProjectOk returns a tuple with the Project field value
+// GetProjectOk returns a tuple with the Project field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OrgEnvironment) GetProjectOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Project) {
 		return nil, false
 	}
-	return &o.Project, true
+	return o.Project, true
 }
 
-// SetProject sets field value
+// HasProject returns a boolean if a field has been set.
+func (o *OrgEnvironment) HasProject() bool {
+	if o != nil && !IsNil(o.Project) {
+		return true
+	}
+
+	return false
+}
+
+// SetProject gets a reference to the given string and assigns it to the Project field.
 func (o *OrgEnvironment) SetProject(v string) {
-	o.Project = v
+	o.Project = &v
 }
 
-// GetName returns the Name field value
-func (o *OrgEnvironment) GetName() string {
+// GetReferrerMetadata returns the ReferrerMetadata field value
+func (o *OrgEnvironment) GetReferrerMetadata() EnvironmentReferrerMetadata {
 	if o == nil {
-		var ret string
+		var ret EnvironmentReferrerMetadata
 		return ret
 	}
 
-	return o.Name
+	return o.ReferrerMetadata
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetReferrerMetadataOk returns a tuple with the ReferrerMetadata field value
 // and a boolean to check if the value has been set.
-func (o *OrgEnvironment) GetNameOk() (*string, bool) {
+func (o *OrgEnvironment) GetReferrerMetadataOk() (*EnvironmentReferrerMetadata, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Name, true
+	return &o.ReferrerMetadata, true
 }
 
-// SetName sets field value
-func (o *OrgEnvironment) SetName(v string) {
-	o.Name = v
+// SetReferrerMetadata sets field value
+func (o *OrgEnvironment) SetReferrerMetadata(v EnvironmentReferrerMetadata) {
+	o.ReferrerMetadata = v
 }
 
-// GetCreated returns the Created field value
-func (o *OrgEnvironment) GetCreated() string {
+// GetSettings returns the Settings field value
+func (o *OrgEnvironment) GetSettings() EnvironmentSettings {
 	if o == nil {
-		var ret string
+		var ret EnvironmentSettings
 		return ret
 	}
 
-	return o.Created
+	return o.Settings
 }
 
-// GetCreatedOk returns a tuple with the Created field value
+// GetSettingsOk returns a tuple with the Settings field value
 // and a boolean to check if the value has been set.
-func (o *OrgEnvironment) GetCreatedOk() (*string, bool) {
+func (o *OrgEnvironment) GetSettingsOk() (*EnvironmentSettings, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Created, true
+	return &o.Settings, true
 }
 
-// SetCreated sets field value
-func (o *OrgEnvironment) SetCreated(v string) {
-	o.Created = v
+// SetSettings sets field value
+func (o *OrgEnvironment) SetSettings(v EnvironmentSettings) {
+	o.Settings = v
 }
 
-// GetModified returns the Modified field value
-func (o *OrgEnvironment) GetModified() string {
+// GetTags returns the Tags field value
+func (o *OrgEnvironment) GetTags() map[string]string {
 	if o == nil {
-		var ret string
+		var ret map[string]string
 		return ret
 	}
 
-	return o.Modified
+	return o.Tags
 }
 
-// GetModifiedOk returns a tuple with the Modified field value
+// GetTagsOk returns a tuple with the Tags field value
 // and a boolean to check if the value has been set.
-func (o *OrgEnvironment) GetModifiedOk() (*string, bool) {
+func (o *OrgEnvironment) GetTagsOk() (*map[string]string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Modified, true
+	return &o.Tags, true
 }
 
-// SetModified sets field value
-func (o *OrgEnvironment) SetModified(v string) {
-	o.Modified = v
+// SetTags sets field value
+func (o *OrgEnvironment) SetTags(v map[string]string) {
+	o.Tags = v
 }
 
 func (o OrgEnvironment) MarshalJSON() ([]byte, error) {
@@ -190,18 +382,27 @@ func (o OrgEnvironment) MarshalJSON() ([]byte, error) {
 
 func (o OrgEnvironment) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	toSerialize["created"] = o.Created
+	if !IsNil(o.DeletedAt) {
+		toSerialize["deletedAt"] = o.DeletedAt
+	}
+	toSerialize["id"] = o.Id
+	if !IsNil(o.Links) {
+		toSerialize["links"] = o.Links
+	}
+	toSerialize["modified"] = o.Modified
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
 	if !IsNil(o.Organization) {
 		toSerialize["organization"] = o.Organization
 	}
-	toSerialize["project"] = o.Project
-	toSerialize["name"] = o.Name
-	toSerialize["created"] = o.Created
-	toSerialize["modified"] = o.Modified
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
+	if !IsNil(o.Project) {
+		toSerialize["project"] = o.Project
 	}
-
+	toSerialize["referrerMetadata"] = o.ReferrerMetadata
+	toSerialize["settings"] = o.Settings
+	toSerialize["tags"] = o.Tags
 	return toSerialize, nil
 }
 
@@ -210,10 +411,12 @@ func (o *OrgEnvironment) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"project",
-		"name",
 		"created",
+		"id",
 		"modified",
+		"referrerMetadata",
+		"settings",
+		"tags",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -232,24 +435,15 @@ func (o *OrgEnvironment) UnmarshalJSON(data []byte) (err error) {
 
 	varOrgEnvironment := _OrgEnvironment{}
 
-	err = json.Unmarshal(data, &varOrgEnvironment)
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varOrgEnvironment)
 
 	if err != nil {
 		return err
 	}
 
 	*o = OrgEnvironment(varOrgEnvironment)
-
-	additionalProperties := make(map[string]interface{})
-
-	if err = json.Unmarshal(data, &additionalProperties); err == nil {
-		delete(additionalProperties, "organization")
-		delete(additionalProperties, "project")
-		delete(additionalProperties, "name")
-		delete(additionalProperties, "created")
-		delete(additionalProperties, "modified")
-		o.AdditionalProperties = additionalProperties
-	}
 
 	return err
 }

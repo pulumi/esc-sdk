@@ -19,17 +19,17 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictStr
-from typing import Any, ClassVar, Dict, List
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
 
 class UpdateEnvironmentTagRequestNewTag(BaseModel):
     """
-    UpdateEnvironmentTagRequestNewTag
+    The new tag name and value to set when updating an environment tag.
     """ # noqa: E501
-    name: StrictStr
-    value: StrictStr
+    name: Optional[StrictStr] = Field(default=None, description="The new tag name.")
+    value: Optional[StrictStr] = Field(default=None, description="The new tag value.")
     __properties: ClassVar[List[str]] = ["name", "value"]
 
     model_config = ConfigDict(

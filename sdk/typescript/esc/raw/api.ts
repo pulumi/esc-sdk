@@ -2278,7 +2278,7 @@ export const EscApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Error>> {
+        async createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironment(orgName, createEnvironment, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.createEnvironment']?.[localVarOperationServerIndex]?.url;
@@ -2340,7 +2340,7 @@ export const EscApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Error>> {
+        async deleteEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteEnvironment(orgName, projectName, envName, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.deleteEnvironment']?.[localVarOperationServerIndex]?.url;
@@ -2679,7 +2679,7 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: any): AxiosPromise<Error> {
+        createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: any): AxiosPromise<void> {
             return localVarFp.createEnvironment(orgName, createEnvironment, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2729,7 +2729,7 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteEnvironment(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<Error> {
+        deleteEnvironment(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<void> {
             return localVarFp.deleteEnvironment(orgName, projectName, envName, options).then((request) => request(axios, basePath));
         },
         /**

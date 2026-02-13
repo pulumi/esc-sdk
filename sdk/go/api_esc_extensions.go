@@ -242,7 +242,7 @@ func (c *EscClient) ReadEnvironmentProperty(ctx context.Context, org, projectNam
 // CreateEnvironment creates a new environment with the given name in the given organization.
 func (c *EscClient) CreateEnvironment(ctx context.Context, org, projectName, envName string) error {
 	createEnvironment := NewCreateEnvironment(projectName, envName)
-	_, _, err := c.EscAPI.CreateEnvironment(ctx, org).CreateEnvironment(*createEnvironment).Execute()
+	_, err := c.EscAPI.CreateEnvironment(ctx, org).CreateEnvironment(*createEnvironment).Execute()
 	return err
 }
 
@@ -284,7 +284,7 @@ func (c *EscClient) UpdateEnvironment(ctx context.Context, org, projectName, env
 
 // DeleteEnvironment deletes the environment with the given name in the given organization.
 func (c *EscClient) DeleteEnvironment(ctx context.Context, org, projectName, envName string) error {
-	_, _, err := c.EscAPI.DeleteEnvironment(ctx, org, projectName, envName).Execute()
+	_, err := c.EscAPI.DeleteEnvironment(ctx, org, projectName, envName).Execute()
 	return err
 }
 

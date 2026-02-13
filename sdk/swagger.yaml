@@ -2929,7 +2929,7 @@ paths:
   /environments/{orgName}/{projectName}/{envName}/check:
     post:
       description: Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
-      operationId: CheckEnvironment_esc_environments
+      operationId: CheckEnvironment
       parameters:
         - description: The organization name
           in: path
@@ -4038,7 +4038,7 @@ paths:
   /environments/{orgName}/{projectName}/{envName}/referrers:
     get:
       description: Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
-      operationId: ListEnvironmentReferrers
+      operationId: ListEnvironmentReferrers_esc_environments
       parameters:
         - description: The organization name
           in: path
@@ -5167,7 +5167,7 @@ paths:
   /environments/{orgName}/{projectName}/{envName}/versions/{version}/check:
     post:
       description: Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
-      operationId: CheckEnvironment
+      operationId: CheckEnvironment_esc_environments_versions
       parameters:
         - description: The organization name
           in: path
@@ -5316,7 +5316,7 @@ paths:
   /environments/{orgName}/{projectName}/{envName}/versions/{version}/referrers:
     get:
       description: Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
-      operationId: ListEnvironmentReferrers_esc_environments_versions
+      operationId: ListEnvironmentReferrers
       parameters:
         - description: The organization name
           in: path

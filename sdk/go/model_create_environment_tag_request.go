@@ -20,9 +20,11 @@ import (
 // checks if the CreateEnvironmentTagRequest type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreateEnvironmentTagRequest{}
 
-// CreateEnvironmentTagRequest struct for CreateEnvironmentTagRequest
+// CreateEnvironmentTagRequest Request body for create environment tag.
 type CreateEnvironmentTagRequest struct {
+	// The name
 	Name string `json:"name"`
+	// The value
 	Value string `json:"value"`
 }
 

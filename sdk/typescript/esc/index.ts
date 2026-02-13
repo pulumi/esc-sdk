@@ -1,25 +1,25 @@
 // Copyright 2024, Pulumi Corporation.  All rights reserved.
 
 import {
-    Environment,
+    EscEnvironment,
     EnvironmentDefinitionValues,
-    OpenEnvironment,
-    OrgEnvironments,
+    OpenEnvironmentResponse,
+    ListEnvironmentsResponse,
     OrgEnvironment,
     EnvironmentDefinition,
     EscApi as EscRawApi,
     Configuration,
-    Value,
-    EnvironmentDiagnostics,
-    CheckEnvironment,
-    Pos,
-    Range,
-    Trace,
+    EscValue,
+    UpdateEnvironmentResponse,
+    EnvironmentResponse as CheckEnvironmentResponse,
+    EscPos,
+    EscRange,
+    EscTrace,
     EnvironmentRevision,
     EnvironmentRevisionTag,
-    EnvironmentRevisionTags,
+    ListEnvironmentRevisionTagsResponse,
     EnvironmentTag,
-    ListEnvironmentTags,
+    ListEnvironmentTagsResponse,
 } from "./raw/index";
 import * as yaml from "js-yaml";
 import { AxiosError } from "axios";
@@ -27,22 +27,22 @@ import { getCurrentAccount } from "./workspace";
 
 export {
     Configuration,
-    Environment,
+    EscEnvironment,
     EnvironmentDefinitionValues,
-    OpenEnvironment,
-    OrgEnvironments,
+    OpenEnvironmentResponse,
+    ListEnvironmentsResponse,
     OrgEnvironment,
     EnvironmentDefinition,
     EscRawApi,
-    Value,
-    EnvironmentDiagnostics,
-    CheckEnvironment,
-    Pos,
-    Range,
-    Trace,
+    EscValue,
+    UpdateEnvironmentResponse,
+    CheckEnvironmentResponse,
+    EscPos,
+    EscRange,
+    EscTrace,
     EnvironmentRevision,
     EnvironmentRevisionTag,
-    EnvironmentRevisionTags,
+    ListEnvironmentRevisionTagsResponse,
 };
 
 export interface EnvironmentDefinitionResponse {
@@ -51,12 +51,12 @@ export interface EnvironmentDefinitionResponse {
 }
 
 export interface EnvironmentResponse {
-    environment?: Environment;
+    environment?: EscEnvironment;
     values?: EnvironmentDefinitionValues;
 }
 
 export interface EnvironmentPropertyResponse {
-    property: Value;
+    property: EscValue;
     value: any;
 }
 
@@ -96,11 +96,11 @@ export class EscApi {
      * @summary List environments
      * @param {string} orgName Organization name
      * @param {string} continuationToken continuation Token from previous query to fetch next page of results
-     * @returns {Promise<OrgEnvironments | undefined>} A list of environments
+     * @returns {Promise<ListEnvironmentsResponse | undefined>} A list of environments
      */
-    async listEnvironments(orgName: string, continuationToken?: string): Promise<OrgEnvironments | undefined> {
+    async listEnvironments(orgName: string, continuationToken?: string): Promise<ListEnvironmentsResponse | undefined> {
         const resp = await this.rawApi.listEnvironments(orgName, continuationToken);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return resp.data;
         }
 
@@ -121,7 +121,7 @@ export class EscApi {
         envName: string,
     ): Promise<EnvironmentDefinitionResponse | undefined> {
         const resp = await this.rawApi.getEnvironment(orgName, projectName, envName);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             const doc = yaml.load(resp.data as string);
             return {
                 definition: doc as EnvironmentDefinition,
@@ -148,7 +148,7 @@ export class EscApi {
         version: string,
     ): Promise<EnvironmentDefinitionResponse | undefined> {
         const resp = await this.rawApi.getEnvironmentAtVersion(orgName, projectName, envName, version);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             const doc = yaml.load(resp.data as string);
             return {
                 definition: doc as EnvironmentDefinition,
@@ -165,11 +165,11 @@ export class EscApi {
      * @param {string} orgName Organization name
      * @param {string} projectName Project name
      * @param {string} envName Environment name
-     * @returns {Promise<OpenEnvironment | undefined>} The open environment session information
+     * @returns {Promise<OpenEnvironmentResponse | undefined>} The open environment session information
      */
-    async openEnvironment(orgName: string, projectName: string, envName: string): Promise<OpenEnvironment | undefined> {
+    async openEnvironment(orgName: string, projectName: string, envName: string): Promise<OpenEnvironmentResponse | undefined> {
         const resp = await this.rawApi.openEnvironment(orgName, projectName, envName);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return resp.data;
         }
 
@@ -183,16 +183,16 @@ export class EscApi {
      * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} version Version of the environment
-     * @returns {Promise<OpenEnvironment | undefined>} The open environment session information
+     * @returns {Promise<OpenEnvironmentResponse | undefined>} The open environment session information
      */
     async openEnvironmentAtVersion(
         orgName: string,
         projectName: string,
         envName: string,
         version: string,
-    ): Promise<OpenEnvironment | undefined> {
+    ): Promise<OpenEnvironmentResponse | undefined> {
         const resp = await this.rawApi.openEnvironmentAtVersion(orgName, projectName, envName, version);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return resp.data;
         }
 
@@ -216,7 +216,7 @@ export class EscApi {
         openSessionID: string,
     ): Promise<EnvironmentResponse | undefined> {
         const resp = await this.rawApi.readOpenEnvironment(orgName, projectName, envName, openSessionID);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return {
                 environment: resp.data,
                 values: convertEnvPropertiesToValues(resp.data.properties),
@@ -297,7 +297,7 @@ export class EscApi {
             openSessionID,
             property,
         );
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return {
                 property: resp.data,
                 value: convertPropertyToValue(resp.data),
@@ -322,7 +322,7 @@ export class EscApi {
         };
 
         const resp = await this.rawApi.createEnvironment(orgName, body);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return;
         }
 
@@ -355,7 +355,7 @@ export class EscApi {
         };
 
         const resp = await this.rawApi.cloneEnvironment(orgName, srcProjectName, srcEnvName, body);
-        if (resp.status === 204) {
+        if (resp.status >= 200 && resp.status < 300) {
             return;
         }
 
@@ -369,16 +369,16 @@ export class EscApi {
      * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {string} yaml YAML representation of the environment
-     * @returns {Promise<EnvironmentDiagnostics | undefined>} The environment diagnostics
+     * @returns {Promise<UpdateEnvironmentResponse | undefined>} The environment diagnostics
      */
     async updateEnvironmentYaml(
         orgName: string,
         projectName: string,
         envName: string,
         yaml: string,
-    ): Promise<EnvironmentDiagnostics | undefined> {
+    ): Promise<UpdateEnvironmentResponse | undefined> {
         const resp = await this.rawApi.updateEnvironmentYaml(orgName, projectName, envName, yaml);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return resp.data;
         }
 
@@ -392,17 +392,17 @@ export class EscApi {
      * @param {string} projectName Project name
      * @param {string} envName Environment name
      * @param {EnvironmentDefinition} values The environment definition
-     * @returns {Promise<EnvironmentDiagnostics | undefined>} The environment diagnostics
+     * @returns {Promise<UpdateEnvironmentResponse | undefined>} The environment diagnostics
      */
     async updateEnvironment(
         orgName: string,
         projectName: string,
         envName: string,
         values: EnvironmentDefinition,
-    ): Promise<EnvironmentDiagnostics | undefined> {
+    ): Promise<UpdateEnvironmentResponse | undefined> {
         const body = yaml.dump(values);
         const resp = await this.rawApi.updateEnvironmentYaml(orgName, projectName, envName, body);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return resp.data;
         }
 
@@ -419,7 +419,7 @@ export class EscApi {
      */
     async deleteEnvironment(orgName: string, projectName: string, envName: string): Promise<void> {
         const resp = await this.rawApi.deleteEnvironment(orgName, projectName, envName);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return;
         }
 
@@ -431,12 +431,12 @@ export class EscApi {
      * @summary Check environment YAML
      * @param {string} orgName Organization name
      * @param {string} yaml YAML representation of the environment
-     * @returns {Promise<CheckEnvironment | undefined>} The environment diagnostics
+     * @returns {Promise<CheckEnvironmentResponse | undefined>} The environment diagnostics
      */
-    async checkEnvironmentYaml(orgName: string, yaml: string): Promise<CheckEnvironment | undefined> {
+    async checkEnvironmentYaml(orgName: string, yaml: string): Promise<CheckEnvironmentResponse | undefined> {
         try {
             const resp = await this.rawApi.checkEnvironmentYaml(orgName, yaml);
-            if (resp.status === 200) {
+            if (resp.status >= 200 && resp.status < 300) {
                 return resp.data;
             }
 
@@ -456,9 +456,9 @@ export class EscApi {
      * @summary Check environment
      * @param {string} orgName Organization name
      * @param {EnvironmentDefinition} env The environment definition
-     * @returns {Promise<CheckEnvironment | undefined>} The environment diagnostics
+     * @returns {Promise<CheckEnvironmentResponse | undefined>} The environment diagnostics
      */
-    async checkEnvironment(orgName: string, env: EnvironmentDefinition): Promise<CheckEnvironment | undefined> {
+    async checkEnvironment(orgName: string, env: EnvironmentDefinition): Promise<CheckEnvironmentResponse | undefined> {
         const body = yaml.dump(env);
         return await this.checkEnvironmentYaml(orgName, body);
     }
@@ -477,7 +477,7 @@ export class EscApi {
         envName: string,
     ): Promise<EnvironmentDefinitionResponse | undefined> {
         const resp = await this.rawApi.decryptEnvironment(orgName, projectName, envName);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             const doc = yaml.load(resp.data as string);
             return {
                 definition: doc as EnvironmentDefinition,
@@ -506,7 +506,7 @@ export class EscApi {
         count?: number,
     ): Promise<Array<EnvironmentRevision> | undefined> {
         const resp = await this.rawApi.listEnvironmentRevisions(orgName, projectName, envName, before, count);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return resp.data;
         }
 
@@ -521,7 +521,7 @@ export class EscApi {
      * @param {string} envName Environment name
      * @param {string} after The tag to start listing from
      * @param {number} count The number of tags to list
-     * @returns {Promise<EnvironmentRevisionTags | undefined>} A list of environment revision tags
+     * @returns {Promise<ListEnvironmentRevisionTagsResponse | undefined>} A list of environment revision tags
      */
     async listEnvironmentRevisionTags(
         orgName: string,
@@ -529,9 +529,9 @@ export class EscApi {
         envName: string,
         after?: string,
         count?: number,
-    ): Promise<EnvironmentRevisionTags | undefined> {
+    ): Promise<ListEnvironmentRevisionTagsResponse | undefined> {
         const resp = await this.rawApi.listEnvironmentRevisionTags(orgName, projectName, envName, after, count);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return resp.data;
         }
 
@@ -554,7 +554,7 @@ export class EscApi {
         tag: string,
     ): Promise<EnvironmentRevisionTag | undefined> {
         const resp = await this.rawApi.getEnvironmentRevisionTag(orgName, projectName, envName, tag);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return resp.data;
         }
 
@@ -584,7 +584,7 @@ export class EscApi {
         };
 
         const resp = await this.rawApi.createEnvironmentRevisionTag(orgName, projectName, envName, createTag);
-        if (resp.status === 204) {
+        if (resp.status >= 200 && resp.status < 300) {
             return;
         }
 
@@ -612,7 +612,7 @@ export class EscApi {
             revision: revision,
         };
         const resp = await this.rawApi.updateEnvironmentRevisionTag(orgName, projectName, envName, tag, updateTag);
-        if (resp.status === 204) {
+        if (resp.status >= 200 && resp.status < 300) {
             return;
         }
 
@@ -635,7 +635,7 @@ export class EscApi {
         tag: string,
     ): Promise<void> {
         const resp = await this.rawApi.deleteEnvironmentRevisionTag(orgName, projectName, envName, tag);
-        if (resp.status === 204) {
+        if (resp.status >= 200 && resp.status < 300) {
             return;
         }
 
@@ -650,17 +650,17 @@ export class EscApi {
      * @param {string} envName Environment name
      * @param {string} after The tag to start listing from
      * @param {number} count The number of tags to list
-     * @returns {Promise<ListEnvironmentTags | undefined>} A list of environment tags
+     * @returns {Promise<ListEnvironmentTagsResponse | undefined>} A list of environment tags
      */
     async listEnvironmentTags(
         orgName: string,
         projectName: string,
         envName: string,
-        after?: string,
+        after?: number,
         count?: number,
-    ): Promise<ListEnvironmentTags | undefined> {
+    ): Promise<ListEnvironmentTagsResponse | undefined> {
         const resp = await this.rawApi.listEnvironmentTags(orgName, projectName, envName, after, count);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return resp.data;
         }
 
@@ -683,7 +683,7 @@ export class EscApi {
         tag: string,
     ): Promise<EnvironmentTag | undefined> {
         const resp = await this.rawApi.getEnvironmentTag(orgName, projectName, envName, tag);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return resp.data;
         }
 
@@ -713,7 +713,7 @@ export class EscApi {
         };
 
         const resp = await this.rawApi.createEnvironmentTag(orgName, projectName, envName, createTag);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return;
         }
 
@@ -751,7 +751,7 @@ export class EscApi {
             },
         };
         const resp = await this.rawApi.updateEnvironmentTag(orgName, projectName, envName, tag, updateTag);
-        if (resp.status === 200) {
+        if (resp.status >= 200 && resp.status < 300) {
             return;
         }
 
@@ -769,7 +769,7 @@ export class EscApi {
      */
     async deleteEnvironmentTag(orgName: string, projectName: string, envName: string, tag: string): Promise<void> {
         const resp = await this.rawApi.deleteEnvironmentTag(orgName, projectName, envName, tag);
-        if (resp.status === 204) {
+        if (resp.status >= 200 && resp.status < 300) {
             return;
         }
 
@@ -777,7 +777,7 @@ export class EscApi {
     }
 }
 
-function convertEnvPropertiesToValues(env: { [key: string]: Value } | undefined): KeyValueMap {
+function convertEnvPropertiesToValues(env: { [key: string]: EscValue } | undefined): KeyValueMap {
     if (!env) {
         return {};
     }
@@ -807,7 +807,7 @@ function convertPropertyToValue(property: any): any {
     }
 
     if (Array.isArray(value)) {
-        const array = value as Value[];
+        const array = value as EscValue[];
         return array.map((v) => convertPropertyToValue(v));
     }
 

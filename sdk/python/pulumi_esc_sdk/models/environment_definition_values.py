@@ -28,11 +28,11 @@ class EnvironmentDefinitionValues(BaseModel):
     """
     EnvironmentDefinitionValues
     """ # noqa: E501
-    pulumi_config: Optional[Dict[str, Any]] = Field(default=None, alias="pulumiConfig")
     environment_variables: Optional[Dict[str, StrictStr]] = Field(default=None, alias="environmentVariables")
     files: Optional[Dict[str, StrictStr]] = None
+    pulumi_config: Optional[Dict[str, Any]] = Field(default=None, alias="pulumiConfig")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["pulumiConfig", "environmentVariables", "files"]
+    __properties: ClassVar[List[str]] = ["environmentVariables", "files", "pulumiConfig"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -92,9 +92,9 @@ class EnvironmentDefinitionValues(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "pulumiConfig": obj.get("pulumiConfig"),
             "environmentVariables": obj.get("environmentVariables"),
-            "files": obj.get("files")
+            "files": obj.get("files"),
+            "pulumiConfig": obj.get("pulumiConfig")
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

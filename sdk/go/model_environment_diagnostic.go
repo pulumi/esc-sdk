@@ -13,29 +13,26 @@ package esc_sdk
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the EnvironmentDiagnostic type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &EnvironmentDiagnostic{}
 
-// EnvironmentDiagnostic struct for EnvironmentDiagnostic
+// EnvironmentDiagnostic EnvironmentDiagnostic represents a diagnostic message associated with an environment definition.
 type EnvironmentDiagnostic struct {
-	Summary string `json:"summary"`
+	// The path within the environment definition where the diagnostic occurred.
 	Path *string `json:"path,omitempty"`
-	Range *Range `json:"range,omitempty"`
-	AdditionalProperties map[string]interface{}
+	Range *EscRange `json:"range,omitempty"`
+	// A summary of the diagnostic message.
+	Summary *string `json:"summary,omitempty"`
 }
-
-type _EnvironmentDiagnostic EnvironmentDiagnostic
 
 // NewEnvironmentDiagnostic instantiates a new EnvironmentDiagnostic object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEnvironmentDiagnostic(summary string) *EnvironmentDiagnostic {
+func NewEnvironmentDiagnostic() *EnvironmentDiagnostic {
 	this := EnvironmentDiagnostic{}
-	this.Summary = summary
 	return &this
 }
 
@@ -45,30 +42,6 @@ func NewEnvironmentDiagnostic(summary string) *EnvironmentDiagnostic {
 func NewEnvironmentDiagnosticWithDefaults() *EnvironmentDiagnostic {
 	this := EnvironmentDiagnostic{}
 	return &this
-}
-
-// GetSummary returns the Summary field value
-func (o *EnvironmentDiagnostic) GetSummary() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Summary
-}
-
-// GetSummaryOk returns a tuple with the Summary field value
-// and a boolean to check if the value has been set.
-func (o *EnvironmentDiagnostic) GetSummaryOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Summary, true
-}
-
-// SetSummary sets field value
-func (o *EnvironmentDiagnostic) SetSummary(v string) {
-	o.Summary = v
 }
 
 // GetPath returns the Path field value if set, zero value otherwise.
@@ -104,9 +77,9 @@ func (o *EnvironmentDiagnostic) SetPath(v string) {
 }
 
 // GetRange returns the Range field value if set, zero value otherwise.
-func (o *EnvironmentDiagnostic) GetRange() Range {
+func (o *EnvironmentDiagnostic) GetRange() EscRange {
 	if o == nil || IsNil(o.Range) {
-		var ret Range
+		var ret EscRange
 		return ret
 	}
 	return *o.Range
@@ -114,7 +87,7 @@ func (o *EnvironmentDiagnostic) GetRange() Range {
 
 // GetRangeOk returns a tuple with the Range field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EnvironmentDiagnostic) GetRangeOk() (*Range, bool) {
+func (o *EnvironmentDiagnostic) GetRangeOk() (*EscRange, bool) {
 	if o == nil || IsNil(o.Range) {
 		return nil, false
 	}
@@ -130,9 +103,41 @@ func (o *EnvironmentDiagnostic) HasRange() bool {
 	return false
 }
 
-// SetRange gets a reference to the given Range and assigns it to the Range field.
-func (o *EnvironmentDiagnostic) SetRange(v Range) {
+// SetRange gets a reference to the given EscRange and assigns it to the Range field.
+func (o *EnvironmentDiagnostic) SetRange(v EscRange) {
 	o.Range = &v
+}
+
+// GetSummary returns the Summary field value if set, zero value otherwise.
+func (o *EnvironmentDiagnostic) GetSummary() string {
+	if o == nil || IsNil(o.Summary) {
+		var ret string
+		return ret
+	}
+	return *o.Summary
+}
+
+// GetSummaryOk returns a tuple with the Summary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EnvironmentDiagnostic) GetSummaryOk() (*string, bool) {
+	if o == nil || IsNil(o.Summary) {
+		return nil, false
+	}
+	return o.Summary, true
+}
+
+// HasSummary returns a boolean if a field has been set.
+func (o *EnvironmentDiagnostic) HasSummary() bool {
+	if o != nil && !IsNil(o.Summary) {
+		return true
+	}
+
+	return false
+}
+
+// SetSummary gets a reference to the given string and assigns it to the Summary field.
+func (o *EnvironmentDiagnostic) SetSummary(v string) {
+	o.Summary = &v
 }
 
 func (o EnvironmentDiagnostic) MarshalJSON() ([]byte, error) {
@@ -145,63 +150,16 @@ func (o EnvironmentDiagnostic) MarshalJSON() ([]byte, error) {
 
 func (o EnvironmentDiagnostic) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["summary"] = o.Summary
 	if !IsNil(o.Path) {
 		toSerialize["path"] = o.Path
 	}
 	if !IsNil(o.Range) {
 		toSerialize["range"] = o.Range
 	}
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
+	if !IsNil(o.Summary) {
+		toSerialize["summary"] = o.Summary
 	}
-
 	return toSerialize, nil
-}
-
-func (o *EnvironmentDiagnostic) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"summary",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err;
-	}
-
-	for _, requiredProperty := range(requiredProperties) {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varEnvironmentDiagnostic := _EnvironmentDiagnostic{}
-
-	err = json.Unmarshal(data, &varEnvironmentDiagnostic)
-
-	if err != nil {
-		return err
-	}
-
-	*o = EnvironmentDiagnostic(varEnvironmentDiagnostic)
-
-	additionalProperties := make(map[string]interface{})
-
-	if err = json.Unmarshal(data, &additionalProperties); err == nil {
-		delete(additionalProperties, "summary")
-		delete(additionalProperties, "path")
-		delete(additionalProperties, "range")
-		o.AdditionalProperties = additionalProperties
-	}
-
-	return err
 }
 
 type NullableEnvironmentDiagnostic struct {

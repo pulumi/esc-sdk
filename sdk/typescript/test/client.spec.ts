@@ -220,12 +220,12 @@ function assertEnvDef(env: esc.EnvironmentDefinitionResponse, baseEnvName: strin
 async function removeAllTestEnvs(client: esc.EscApi, orgName: string): Promise<any> {
     let continuationToken: string | undefined = undefined;
     do {
-        const orgs: esc.OrgEnvironments | undefined = await client.listEnvironments(orgName, continuationToken);
+        const orgs: esc.ListEnvironmentsResponse | undefined = await client.listEnvironments(orgName, continuationToken);
 
         assert.notEqual(orgs, undefined);
         orgs?.environments?.forEach(async (e: esc.OrgEnvironment) => {
-            if ((e.project === PROJECT_NAME || e.project === `${PROJECT_NAME}-clone`) && e.name.startsWith(ENV_PREFIX)) {
-                await client.deleteEnvironment(orgName, e.project, e.name);
+            if ((e.project === PROJECT_NAME || e.project === `${PROJECT_NAME}-clone`) && e.name?.startsWith(ENV_PREFIX)) {
+                await client.deleteEnvironment(orgName, e.project!, e.name!);
             }
         });
 

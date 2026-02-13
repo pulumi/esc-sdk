@@ -19,22 +19,23 @@ import pprint
 import re  # noqa: F401
 import json
 
+from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List
 from typing import Optional, Set
 from typing_extensions import Self
 
 class EnvironmentTag(BaseModel):
     """
-    EnvironmentTag
+    EnvironmentTag represents a key-value tag associated with an environment.
     """ # noqa: E501
-    name: StrictStr
-    value: Optional[StrictStr] = None
-    created: StrictStr
-    modified: StrictStr
-    editor_login: StrictStr = Field(alias="editorLogin")
-    editor_name: StrictStr = Field(alias="editorName")
-    __properties: ClassVar[List[str]] = ["name", "value", "created", "modified", "editorLogin", "editorName"]
+    created: datetime = Field(description="The timestamp when the tag was created.")
+    editor_login: StrictStr = Field(description="The login name of the user who last edited the tag.", alias="editorLogin")
+    editor_name: StrictStr = Field(description="The display name of the user who last edited the tag.", alias="editorName")
+    modified: datetime = Field(description="The timestamp when the tag was last modified.")
+    name: StrictStr = Field(description="The name of the tag.")
+    value: StrictStr = Field(description="The value of the tag.")
+    __properties: ClassVar[List[str]] = ["created", "editorLogin", "editorName", "modified", "name", "value"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -87,12 +88,12 @@ class EnvironmentTag(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "name": obj.get("name"),
-            "value": obj.get("value"),
             "created": obj.get("created"),
-            "modified": obj.get("modified"),
             "editorLogin": obj.get("editorLogin"),
-            "editorName": obj.get("editorName")
+            "editorName": obj.get("editorName"),
+            "modified": obj.get("modified"),
+            "name": obj.get("name"),
+            "value": obj.get("value")
         })
         return _obj
 

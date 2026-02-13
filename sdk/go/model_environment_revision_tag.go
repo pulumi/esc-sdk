@@ -13,6 +13,7 @@ package esc_sdk
 
 import (
 	"encoding/json"
+	"time"
 	"bytes"
 	"fmt"
 )
@@ -20,14 +21,20 @@ import (
 // checks if the EnvironmentRevisionTag type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &EnvironmentRevisionTag{}
 
-// EnvironmentRevisionTag struct for EnvironmentRevisionTag
+// EnvironmentRevisionTag EnvironmentRevisionTag represents a named tag pointing to a specific environment revision.
 type EnvironmentRevisionTag struct {
-	Revision int32 `json:"revision"`
-	Name string `json:"name"`
-	Created *string `json:"created,omitempty"`
-	Modified *string `json:"modified,omitempty"`
+	// The timestamp when the tag was created.
+	Created time.Time `json:"created"`
+	// The login name of the user who last edited the tag.
 	EditorLogin *string `json:"editorLogin,omitempty"`
+	// The display name of the user who last edited the tag.
 	EditorName *string `json:"editorName,omitempty"`
+	// The timestamp when the tag was last modified.
+	Modified time.Time `json:"modified"`
+	// The name of the tag.
+	Name string `json:"name"`
+	// The revision number this tag points to.
+	Revision int64 `json:"revision"`
 }
 
 type _EnvironmentRevisionTag EnvironmentRevisionTag
@@ -36,10 +43,12 @@ type _EnvironmentRevisionTag EnvironmentRevisionTag
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEnvironmentRevisionTag(revision int32, name string) *EnvironmentRevisionTag {
+func NewEnvironmentRevisionTag(created time.Time, modified time.Time, name string, revision int64) *EnvironmentRevisionTag {
 	this := EnvironmentRevisionTag{}
-	this.Revision = revision
+	this.Created = created
+	this.Modified = modified
 	this.Name = name
+	this.Revision = revision
 	return &this
 }
 
@@ -51,116 +60,28 @@ func NewEnvironmentRevisionTagWithDefaults() *EnvironmentRevisionTag {
 	return &this
 }
 
-// GetRevision returns the Revision field value
-func (o *EnvironmentRevisionTag) GetRevision() int32 {
+// GetCreated returns the Created field value
+func (o *EnvironmentRevisionTag) GetCreated() time.Time {
 	if o == nil {
-		var ret int32
+		var ret time.Time
 		return ret
 	}
 
-	return o.Revision
+	return o.Created
 }
 
-// GetRevisionOk returns a tuple with the Revision field value
+// GetCreatedOk returns a tuple with the Created field value
 // and a boolean to check if the value has been set.
-func (o *EnvironmentRevisionTag) GetRevisionOk() (*int32, bool) {
+func (o *EnvironmentRevisionTag) GetCreatedOk() (*time.Time, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Revision, true
+	return &o.Created, true
 }
 
-// SetRevision sets field value
-func (o *EnvironmentRevisionTag) SetRevision(v int32) {
-	o.Revision = v
-}
-
-// GetName returns the Name field value
-func (o *EnvironmentRevisionTag) GetName() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value
-// and a boolean to check if the value has been set.
-func (o *EnvironmentRevisionTag) GetNameOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Name, true
-}
-
-// SetName sets field value
-func (o *EnvironmentRevisionTag) SetName(v string) {
-	o.Name = v
-}
-
-// GetCreated returns the Created field value if set, zero value otherwise.
-func (o *EnvironmentRevisionTag) GetCreated() string {
-	if o == nil || IsNil(o.Created) {
-		var ret string
-		return ret
-	}
-	return *o.Created
-}
-
-// GetCreatedOk returns a tuple with the Created field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EnvironmentRevisionTag) GetCreatedOk() (*string, bool) {
-	if o == nil || IsNil(o.Created) {
-		return nil, false
-	}
-	return o.Created, true
-}
-
-// HasCreated returns a boolean if a field has been set.
-func (o *EnvironmentRevisionTag) HasCreated() bool {
-	if o != nil && !IsNil(o.Created) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreated gets a reference to the given string and assigns it to the Created field.
-func (o *EnvironmentRevisionTag) SetCreated(v string) {
-	o.Created = &v
-}
-
-// GetModified returns the Modified field value if set, zero value otherwise.
-func (o *EnvironmentRevisionTag) GetModified() string {
-	if o == nil || IsNil(o.Modified) {
-		var ret string
-		return ret
-	}
-	return *o.Modified
-}
-
-// GetModifiedOk returns a tuple with the Modified field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EnvironmentRevisionTag) GetModifiedOk() (*string, bool) {
-	if o == nil || IsNil(o.Modified) {
-		return nil, false
-	}
-	return o.Modified, true
-}
-
-// HasModified returns a boolean if a field has been set.
-func (o *EnvironmentRevisionTag) HasModified() bool {
-	if o != nil && !IsNil(o.Modified) {
-		return true
-	}
-
-	return false
-}
-
-// SetModified gets a reference to the given string and assigns it to the Modified field.
-func (o *EnvironmentRevisionTag) SetModified(v string) {
-	o.Modified = &v
+// SetCreated sets field value
+func (o *EnvironmentRevisionTag) SetCreated(v time.Time) {
+	o.Created = v
 }
 
 // GetEditorLogin returns the EditorLogin field value if set, zero value otherwise.
@@ -227,6 +148,78 @@ func (o *EnvironmentRevisionTag) SetEditorName(v string) {
 	o.EditorName = &v
 }
 
+// GetModified returns the Modified field value
+func (o *EnvironmentRevisionTag) GetModified() time.Time {
+	if o == nil {
+		var ret time.Time
+		return ret
+	}
+
+	return o.Modified
+}
+
+// GetModifiedOk returns a tuple with the Modified field value
+// and a boolean to check if the value has been set.
+func (o *EnvironmentRevisionTag) GetModifiedOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Modified, true
+}
+
+// SetModified sets field value
+func (o *EnvironmentRevisionTag) SetModified(v time.Time) {
+	o.Modified = v
+}
+
+// GetName returns the Name field value
+func (o *EnvironmentRevisionTag) GetName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+func (o *EnvironmentRevisionTag) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Name, true
+}
+
+// SetName sets field value
+func (o *EnvironmentRevisionTag) SetName(v string) {
+	o.Name = v
+}
+
+// GetRevision returns the Revision field value
+func (o *EnvironmentRevisionTag) GetRevision() int64 {
+	if o == nil {
+		var ret int64
+		return ret
+	}
+
+	return o.Revision
+}
+
+// GetRevisionOk returns a tuple with the Revision field value
+// and a boolean to check if the value has been set.
+func (o *EnvironmentRevisionTag) GetRevisionOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Revision, true
+}
+
+// SetRevision sets field value
+func (o *EnvironmentRevisionTag) SetRevision(v int64) {
+	o.Revision = v
+}
+
 func (o EnvironmentRevisionTag) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -237,20 +230,16 @@ func (o EnvironmentRevisionTag) MarshalJSON() ([]byte, error) {
 
 func (o EnvironmentRevisionTag) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["revision"] = o.Revision
-	toSerialize["name"] = o.Name
-	if !IsNil(o.Created) {
-		toSerialize["created"] = o.Created
-	}
-	if !IsNil(o.Modified) {
-		toSerialize["modified"] = o.Modified
-	}
+	toSerialize["created"] = o.Created
 	if !IsNil(o.EditorLogin) {
 		toSerialize["editorLogin"] = o.EditorLogin
 	}
 	if !IsNil(o.EditorName) {
 		toSerialize["editorName"] = o.EditorName
 	}
+	toSerialize["modified"] = o.Modified
+	toSerialize["name"] = o.Name
+	toSerialize["revision"] = o.Revision
 	return toSerialize, nil
 }
 
@@ -259,8 +248,10 @@ func (o *EnvironmentRevisionTag) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"revision",
+		"created",
+		"modified",
 		"name",
+		"revision",
 	}
 
 	allProperties := make(map[string]interface{})

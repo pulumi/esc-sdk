@@ -172,7 +172,7 @@ values:
 		testTag, err := apiClient.GetEnvironmentRevisionTag(auth, orgName, PROJECT_NAME, envName, "testTag")
 		require.Nil(t, err)
 		require.NotNil(t, testTag)
-		require.Equal(t, int32(3), testTag.Revision)
+		require.Equal(t, int64(3), testTag.Revision)
 
 		err = apiClient.DeleteEnvironmentRevisionTag(auth, orgName, PROJECT_NAME, envName, "testTag")
 		require.Nil(t, err)
@@ -190,7 +190,7 @@ values:
 		require.NotNil(t, envTags)
 		require.Len(t, envTags.Tags, 1)
 		require.Equal(t, "owner", envTags.Tags["owner"].Name)
-		require.Equal(t, "esc-sdk-test", *envTags.Tags["owner"].Value)
+		require.Equal(t, "esc-sdk-test", envTags.Tags["owner"].Value)
 
 		_, err = apiClient.UpdateEnvironmentTag(auth, orgName, PROJECT_NAME, envName, "owner", "esc-sdk-test", "new-owner", "esc-sdk-test-updated")
 		require.Nil(t, err)
@@ -199,7 +199,7 @@ values:
 		require.Nil(t, err)
 		require.NotNil(t, envTag)
 		require.Equal(t, "new-owner", envTag.Name)
-		require.Equal(t, "esc-sdk-test-updated", *envTag.Value)
+		require.Equal(t, "esc-sdk-test-updated", envTag.Value)
 
 		err = apiClient.DeleteEnvironmentTag(auth, orgName, PROJECT_NAME, envName, "new-owner")
 		require.Nil(t, err)
@@ -236,7 +236,7 @@ values:
 		require.Error(t, err, "400 Bad Request")
 		require.NotNil(t, diags)
 		require.Len(t, diags.Diagnostics, 1)
-		require.Equal(t, "unknown property \"bad_ref\"", diags.Diagnostics[0].Summary)
+		require.Equal(t, "unknown property \"bad_ref\"", *diags.Diagnostics[0].Summary)
 
 	})
 }
@@ -253,10 +253,10 @@ func assertEnvDef(t *testing.T, env *EnvironmentDefinition, baseEnvName string) 
 	require.Equal(t, "${foo}", envVariables["FOO"])
 }
 
-func requireFindEnvironment(t *testing.T, envs *OrgEnvironments, findProject, findName string) {
+func requireFindEnvironment(t *testing.T, envs *ListEnvironmentsResponse, findProject, findName string) {
 	found := false
 	for _, env := range envs.Environments {
-		if env.Project == findProject && env.Name == findName {
+		if env.Project != nil && *env.Project == findProject && env.Name != nil && *env.Name == findName {
 			found = true
 		}
 	}
@@ -274,8 +274,8 @@ func removeAllGoTestEnvs(t *testing.T, apiClient *EscClient, auth context.Contex
 			break
 		}
 		for _, env := range envs.Environments {
-			if env.Project == PROJECT_NAME && strings.HasPrefix(env.Name, ENV_PREFIX) {
-				err := apiClient.DeleteEnvironment(auth, orgName, PROJECT_NAME, env.Name)
+			if env.Project != nil && *env.Project == PROJECT_NAME && env.Name != nil && strings.HasPrefix(*env.Name, ENV_PREFIX) {
+				err := apiClient.DeleteEnvironment(auth, orgName, PROJECT_NAME, *env.Name)
 				require.Nil(t, err)
 			}
 		}

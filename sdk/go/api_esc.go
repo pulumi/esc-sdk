@@ -26,11 +26,1066 @@ const userAgent = "esc-sdk/go/0.12.4-dev.0"
 // EscAPIService EscAPI service
 type EscAPIService service
 
+type ApiAWSSSOInitiateRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	aWSSSOInitiateRequest *AWSSSOInitiateRequest
+}
+
+func (r ApiAWSSSOInitiateRequest) AWSSSOInitiateRequest(aWSSSOInitiateRequest AWSSSOInitiateRequest) ApiAWSSSOInitiateRequest {
+	r.aWSSSOInitiateRequest = &aWSSSOInitiateRequest
+	return r
+}
+
+func (r ApiAWSSSOInitiateRequest) Execute() (*AWSSSOInitiateResponse, *http.Response, error) {
+	return r.ApiService.AWSSSOInitiateExecute(r)
+}
+
+/*
+AWSSSOInitiate AWSSSOInitiate
+
+Initiates the AWS SSO flow
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiAWSSSOInitiateRequest
+*/
+func (a *EscAPIService) AWSSSOInitiate(ctx context.Context, orgName string) ApiAWSSSOInitiateRequest {
+	return ApiAWSSSOInitiateRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return AWSSSOInitiateResponse
+func (a *EscAPIService) AWSSSOInitiateExecute(r ApiAWSSSOInitiateRequest) (*AWSSSOInitiateResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *AWSSSOInitiateResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.AWSSSOInitiate")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/cloudsetup/{orgName}/aws/sso/initiate"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.aWSSSOInitiateRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiAWSSSOListAccountsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	region *string
+	sessionId *string
+}
+
+// The AWS region
+func (r ApiAWSSSOListAccountsRequest) Region(region string) ApiAWSSSOListAccountsRequest {
+	r.region = &region
+	return r
+}
+
+// The SSO session identifier
+func (r ApiAWSSSOListAccountsRequest) SessionId(sessionId string) ApiAWSSSOListAccountsRequest {
+	r.sessionId = &sessionId
+	return r
+}
+
+func (r ApiAWSSSOListAccountsRequest) Execute() (*ListCloudAccountsResponse, *http.Response, error) {
+	return r.ApiService.AWSSSOListAccountsExecute(r)
+}
+
+/*
+AWSSSOListAccounts AWSSSOListAccounts
+
+Lists AWS accounts accessible with the provided session
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiAWSSSOListAccountsRequest
+*/
+func (a *EscAPIService) AWSSSOListAccounts(ctx context.Context, orgName string) ApiAWSSSOListAccountsRequest {
+	return ApiAWSSSOListAccountsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return ListCloudAccountsResponse
+func (a *EscAPIService) AWSSSOListAccountsExecute(r ApiAWSSSOListAccountsRequest) (*ListCloudAccountsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListCloudAccountsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.AWSSSOListAccounts")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/cloudsetup/{orgName}/aws/sso/accounts"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.region != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "region", r.region, "")
+	}
+	if r.sessionId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sessionId", r.sessionId, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiAWSSSOSetupRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	aWSSSOSetupRequest *AWSSSOSetupRequest
+}
+
+func (r ApiAWSSSOSetupRequest) AWSSSOSetupRequest(aWSSSOSetupRequest AWSSSOSetupRequest) ApiAWSSSOSetupRequest {
+	r.aWSSSOSetupRequest = &aWSSSOSetupRequest
+	return r
+}
+
+func (r ApiAWSSSOSetupRequest) Execute() (*CloudSetupResult, *http.Response, error) {
+	return r.ApiService.AWSSSOSetupExecute(r)
+}
+
+/*
+AWSSSOSetup AWSSSOSetup
+
+Sets up AWS infrastructure and ESC environments using AWS SSO
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiAWSSSOSetupRequest
+*/
+func (a *EscAPIService) AWSSSOSetup(ctx context.Context, orgName string) ApiAWSSSOSetupRequest {
+	return ApiAWSSSOSetupRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return CloudSetupResult
+func (a *EscAPIService) AWSSSOSetupExecute(r ApiAWSSSOSetupRequest) (*CloudSetupResult, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *CloudSetupResult
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.AWSSSOSetup")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/cloudsetup/{orgName}/aws/sso/setup"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.aWSSSOSetupRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiAWSSetupRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	aWSSetupRequest *AWSSetupRequest
+}
+
+func (r ApiAWSSetupRequest) AWSSetupRequest(aWSSetupRequest AWSSetupRequest) ApiAWSSetupRequest {
+	r.aWSSetupRequest = &aWSSetupRequest
+	return r
+}
+
+func (r ApiAWSSetupRequest) Execute() (*CloudSetupResult, *http.Response, error) {
+	return r.ApiService.AWSSetupExecute(r)
+}
+
+/*
+AWSSetup AWSSetup
+
+Sets up AWS infrastructure using provided static credentials
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiAWSSetupRequest
+*/
+func (a *EscAPIService) AWSSetup(ctx context.Context, orgName string) ApiAWSSetupRequest {
+	return ApiAWSSetupRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return CloudSetupResult
+func (a *EscAPIService) AWSSetupExecute(r ApiAWSSetupRequest) (*CloudSetupResult, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *CloudSetupResult
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.AWSSetup")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/cloudsetup/{orgName}/aws/setup"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.aWSSetupRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiAzureListAccountsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	armSessionId *string
+}
+
+// The Azure ARM session identifier
+func (r ApiAzureListAccountsRequest) ArmSessionId(armSessionId string) ApiAzureListAccountsRequest {
+	r.armSessionId = &armSessionId
+	return r
+}
+
+func (r ApiAzureListAccountsRequest) Execute() (*ListCloudAccountsResponse, *http.Response, error) {
+	return r.ApiService.AzureListAccountsExecute(r)
+}
+
+/*
+AzureListAccounts AzureListAccounts
+
+Lists Azure subscriptions accessible with the provided ARM session
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiAzureListAccountsRequest
+*/
+func (a *EscAPIService) AzureListAccounts(ctx context.Context, orgName string) ApiAzureListAccountsRequest {
+	return ApiAzureListAccountsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return ListCloudAccountsResponse
+func (a *EscAPIService) AzureListAccountsExecute(r ApiAzureListAccountsRequest) (*ListCloudAccountsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListCloudAccountsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.AzureListAccounts")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/cloudsetup/{orgName}/oauth/azure/accounts"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.armSessionId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "armSessionId", r.armSessionId, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiAzureSetupRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	azureSetupRequest *AzureSetupRequest
+}
+
+func (r ApiAzureSetupRequest) AzureSetupRequest(azureSetupRequest AzureSetupRequest) ApiAzureSetupRequest {
+	r.azureSetupRequest = &azureSetupRequest
+	return r
+}
+
+func (r ApiAzureSetupRequest) Execute() (*CloudSetupResult, *http.Response, error) {
+	return r.ApiService.AzureSetupExecute(r)
+}
+
+/*
+AzureSetup AzureSetup
+
+Sets up Azure infrastructure and ESC environments using OAuth credentials
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiAzureSetupRequest
+*/
+func (a *EscAPIService) AzureSetup(ctx context.Context, orgName string) ApiAzureSetupRequest {
+	return ApiAzureSetupRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return CloudSetupResult
+func (a *EscAPIService) AzureSetupExecute(r ApiAzureSetupRequest) (*CloudSetupResult, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *CloudSetupResult
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.AzureSetup")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/cloudsetup/{orgName}/oauth/azure/setup"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.azureSetupRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiCheckEnvironmentRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	showSecrets *bool
+}
+
+// Whether to show secret values in plaintext
+func (r ApiCheckEnvironmentRequest) ShowSecrets(showSecrets bool) ApiCheckEnvironmentRequest {
+	r.showSecrets = &showSecrets
+	return r
+}
+
+func (r ApiCheckEnvironmentRequest) Execute() (*CheckEnvironmentResponse, *http.Response, error) {
+	return r.ApiService.CheckEnvironmentExecute(r)
+}
+
+/*
+CheckEnvironment CheckEnvironment
+
+Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiCheckEnvironmentRequest
+*/
+func (a *EscAPIService) CheckEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiCheckEnvironmentRequest {
+	return ApiCheckEnvironmentRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return CheckEnvironmentResponse
+func (a *EscAPIService) CheckEnvironmentExecute(r ApiCheckEnvironmentRequest) (*CheckEnvironmentResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *CheckEnvironmentResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CheckEnvironment")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/check"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.showSecrets != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "showSecrets", r.showSecrets, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiCheckEnvironmentEscEnvironmentsVersionsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	version string
+	showSecrets *bool
+}
+
+// Whether to show secret values in plaintext
+func (r ApiCheckEnvironmentEscEnvironmentsVersionsRequest) ShowSecrets(showSecrets bool) ApiCheckEnvironmentEscEnvironmentsVersionsRequest {
+	r.showSecrets = &showSecrets
+	return r
+}
+
+func (r ApiCheckEnvironmentEscEnvironmentsVersionsRequest) Execute() (*CheckEnvironmentResponse, *http.Response, error) {
+	return r.ApiService.CheckEnvironmentEscEnvironmentsVersionsExecute(r)
+}
+
+/*
+CheckEnvironmentEscEnvironmentsVersions CheckEnvironment
+
+Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param version The revision version number
+ @return ApiCheckEnvironmentEscEnvironmentsVersionsRequest
+*/
+func (a *EscAPIService) CheckEnvironmentEscEnvironmentsVersions(ctx context.Context, orgName string, projectName string, envName string, version string) ApiCheckEnvironmentEscEnvironmentsVersionsRequest {
+	return ApiCheckEnvironmentEscEnvironmentsVersionsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		version: version,
+	}
+}
+
+// Execute executes the request
+//  @return CheckEnvironmentResponse
+func (a *EscAPIService) CheckEnvironmentEscEnvironmentsVersionsExecute(r ApiCheckEnvironmentEscEnvironmentsVersionsRequest) (*CheckEnvironmentResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *CheckEnvironmentResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CheckEnvironmentEscEnvironmentsVersions")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/{version}/check"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"version"+"}", url.PathEscape(parameterValueToString(r.version, "version")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.showSecrets != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "showSecrets", r.showSecrets, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiCheckEnvironmentYamlRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
 	body *string
+	showSecrets *bool
 }
 
 // Environment Yaml content
@@ -39,17 +1094,23 @@ func (r ApiCheckEnvironmentYamlRequest) Body(body string) ApiCheckEnvironmentYam
 	return r
 }
 
-func (r ApiCheckEnvironmentYamlRequest) Execute() (*CheckEnvironment, *http.Response, error) {
+// Whether to show secret values in plaintext
+func (r ApiCheckEnvironmentYamlRequest) ShowSecrets(showSecrets bool) ApiCheckEnvironmentYamlRequest {
+	r.showSecrets = &showSecrets
+	return r
+}
+
+func (r ApiCheckEnvironmentYamlRequest) Execute() (*EnvironmentResponse, *http.Response, error) {
 	return r.ApiService.CheckEnvironmentYamlExecute(r)
 }
 
 /*
-CheckEnvironmentYaml Checks an environment definition for errors
+CheckEnvironmentYaml CheckYAML
 
-Checks an environment definition for errors
+Checks a raw YAML environment definition for errors without creating or modifying any environment. The YAML definition is provided in the request body and validated for correctness, including imports, provider configurations, function invocations, and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. This is useful for validating environment definitions before applying them.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
+ @param orgName The organization name
  @return ApiCheckEnvironmentYamlRequest
 */
 func (a *EscAPIService) CheckEnvironmentYaml(ctx context.Context, orgName string) ApiCheckEnvironmentYamlRequest {
@@ -61,13 +1122,13 @@ func (a *EscAPIService) CheckEnvironmentYaml(ctx context.Context, orgName string
 }
 
 // Execute executes the request
-//  @return CheckEnvironment
-func (a *EscAPIService) CheckEnvironmentYamlExecute(r ApiCheckEnvironmentYamlRequest) (*CheckEnvironment, *http.Response, error) {
+//  @return EnvironmentResponse
+func (a *EscAPIService) CheckEnvironmentYamlExecute(r ApiCheckEnvironmentYamlRequest) (*EnvironmentResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *CheckEnvironment
+		localVarReturnValue  *EnvironmentResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CheckEnvironmentYaml")
@@ -81,16 +1142,13 @@ func (a *EscAPIService) CheckEnvironmentYamlExecute(r ApiCheckEnvironmentYamlReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
 
+	if r.showSecrets != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "showSecrets", r.showSecrets, "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/x-yaml"}
 
@@ -148,58 +1206,6 @@ func (a *EscAPIService) CheckEnvironmentYamlExecute(r ApiCheckEnvironmentYamlReq
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v CheckEnvironment
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -221,12 +1227,11 @@ type ApiCloneEnvironmentRequest struct {
 	orgName string
 	projectName string
 	envName string
-	cloneEnvironment *CloneEnvironment
+	cloneEnvironmentRequest *CloneEnvironmentRequest
 }
 
-// Clone environment
-func (r ApiCloneEnvironmentRequest) CloneEnvironment(cloneEnvironment CloneEnvironment) ApiCloneEnvironmentRequest {
-	r.cloneEnvironment = &cloneEnvironment
+func (r ApiCloneEnvironmentRequest) CloneEnvironmentRequest(cloneEnvironmentRequest CloneEnvironmentRequest) ApiCloneEnvironmentRequest {
+	r.cloneEnvironmentRequest = &cloneEnvironmentRequest
 	return r
 }
 
@@ -235,14 +1240,14 @@ func (r ApiCloneEnvironmentRequest) Execute() (*http.Response, error) {
 }
 
 /*
-CloneEnvironment Clones an environment
+CloneEnvironment CloneEnvironment
 
-Clones an environment
+Creates a duplicate of a Pulumi ESC environment in a new project and/or under a new name. The request body specifies the destination project and environment name, along with options to control what is preserved during the clone: preserveAccess retains permission settings, preserveHistory retains the full revision history, preserveEnvironmentTags retains environment-level tags, and preserveRevisionTags retains version-specific tags. Environments cannot be renamed directly, so cloning is the mechanism for moving or renaming environments.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
  @return ApiCloneEnvironmentRequest
 */
 func (a *EscAPIService) CloneEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiCloneEnvironmentRequest {
@@ -276,27 +1281,6 @@ func (a *EscAPIService) CloneEnvironmentExecute(r ApiCloneEnvironmentRequest) (*
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return nil, reportError("envName must have less than 100 elements")
-	}
-	if r.cloneEnvironment == nil {
-		return nil, reportError("cloneEnvironment is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -308,7 +1292,7 @@ func (a *EscAPIService) CloneEnvironmentExecute(r ApiCloneEnvironmentRequest) (*
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
+	localVarHTTPHeaderAccepts := []string{}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
@@ -318,7 +1302,7 @@ func (a *EscAPIService) CloneEnvironmentExecute(r ApiCloneEnvironmentRequest) (*
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
 	// body params
-	localVarPostBody = r.cloneEnvironment
+	localVarPostBody = r.cloneEnvironmentRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -355,92 +1339,39 @@ func (a *EscAPIService) CloneEnvironmentExecute(r ApiCloneEnvironmentRequest) (*
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
 
 	return localVarHTTPResponse, nil
 }
 
-type ApiCreateEnvironmentRequest struct {
+type ApiCompleteOAuthRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
-	createEnvironment *CreateEnvironment
+	completeOAuthRequest *CompleteOAuthRequest
 }
 
-// Create Environment
-func (r ApiCreateEnvironmentRequest) CreateEnvironment(createEnvironment CreateEnvironment) ApiCreateEnvironmentRequest {
-	r.createEnvironment = &createEnvironment
+func (r ApiCompleteOAuthRequest) CompleteOAuthRequest(completeOAuthRequest CompleteOAuthRequest) ApiCompleteOAuthRequest {
+	r.completeOAuthRequest = &completeOAuthRequest
 	return r
 }
 
-func (r ApiCreateEnvironmentRequest) Execute() (*Error, *http.Response, error) {
-	return r.ApiService.CreateEnvironmentExecute(r)
+func (r ApiCompleteOAuthRequest) Execute() (map[string]interface{}, *http.Response, error) {
+	return r.ApiService.CompleteOAuthExecute(r)
 }
 
 /*
-CreateEnvironment Create a new environment
+CompleteOAuth CompleteOAuth
 
-Creates an environment in the given org with the given name.
+Completes OAuth flow by exchanging authorization code for access token
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @return ApiCreateEnvironmentRequest
+ @param orgName The organization name
+ @return ApiCompleteOAuthRequest
 */
-func (a *EscAPIService) CreateEnvironment(ctx context.Context, orgName string) ApiCreateEnvironmentRequest {
-	return ApiCreateEnvironmentRequest{
+func (a *EscAPIService) CompleteOAuth(ctx context.Context, orgName string) ApiCompleteOAuthRequest {
+	return ApiCompleteOAuthRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
@@ -448,35 +1379,26 @@ func (a *EscAPIService) CreateEnvironment(ctx context.Context, orgName string) A
 }
 
 // Execute executes the request
-//  @return Error
-func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) (*Error, *http.Response, error) {
+//  @return map[string]interface{}
+func (a *EscAPIService) CompleteOAuthExecute(r ApiCompleteOAuthRequest) (map[string]interface{}, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *Error
+		localVarReturnValue  map[string]interface{}
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CreateEnvironment")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CompleteOAuth")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}"
+	localVarPath := localBasePath + "/cloudsetup/{orgName}/oauth/complete"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if r.createEnvironment == nil {
-		return localVarReturnValue, nil, reportError("createEnvironment is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -498,7 +1420,7 @@ func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) 
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
 	// body params
-	localVarPostBody = r.createEnvironment
+	localVarPostBody = r.completeOAuthRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -535,69 +1457,6 @@ func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) 
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 409 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -613,88 +1472,58 @@ func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) 
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiCreateEnvironmentRevisionTagRequest struct {
+type ApiCreateEnvironmentRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
-	projectName string
-	envName string
-	createEnvironmentRevisionTag *CreateEnvironmentRevisionTag
+	createEnvironmentRequest *CreateEnvironmentRequest
 }
 
-// Create environment revision tag
-func (r ApiCreateEnvironmentRevisionTagRequest) CreateEnvironmentRevisionTag(createEnvironmentRevisionTag CreateEnvironmentRevisionTag) ApiCreateEnvironmentRevisionTagRequest {
-	r.createEnvironmentRevisionTag = &createEnvironmentRevisionTag
+func (r ApiCreateEnvironmentRequest) CreateEnvironmentRequest(createEnvironmentRequest CreateEnvironmentRequest) ApiCreateEnvironmentRequest {
+	r.createEnvironmentRequest = &createEnvironmentRequest
 	return r
 }
 
-func (r ApiCreateEnvironmentRevisionTagRequest) Execute() (*http.Response, error) {
-	return r.ApiService.CreateEnvironmentRevisionTagExecute(r)
+func (r ApiCreateEnvironmentRequest) Execute() (*http.Response, error) {
+	return r.ApiService.CreateEnvironmentExecute(r)
 }
 
 /*
-CreateEnvironmentRevisionTag Create environment revision tag
+CreateEnvironment CreateEnvironment
 
-Create environment revision tag
+Creates a new Pulumi ESC (Environments, Secrets, and Configuration) environment within the specified organization. The request body must include the project name and the environment name. Environment names must be unique within a project and may only contain alphanumeric characters, hyphens, underscores, and periods. The newly created environment starts with an empty YAML definition that can be updated via the UpdateEnvironment endpoint.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @return ApiCreateEnvironmentRevisionTagRequest
+ @param orgName The organization name
+ @return ApiCreateEnvironmentRequest
 */
-func (a *EscAPIService) CreateEnvironmentRevisionTag(ctx context.Context, orgName string, projectName string, envName string) ApiCreateEnvironmentRevisionTagRequest {
-	return ApiCreateEnvironmentRevisionTagRequest{
+func (a *EscAPIService) CreateEnvironment(ctx context.Context, orgName string) ApiCreateEnvironmentRequest {
+	return ApiCreateEnvironmentRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
-		projectName: projectName,
-		envName: envName,
 	}
 }
 
 // Execute executes the request
-func (a *EscAPIService) CreateEnvironmentRevisionTagExecute(r ApiCreateEnvironmentRevisionTagRequest) (*http.Response, error) {
+func (a *EscAPIService) CreateEnvironmentExecute(r ApiCreateEnvironmentRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CreateEnvironmentRevisionTag")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CreateEnvironment")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/tags"
+	localVarPath := localBasePath + "/environments/{orgName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return nil, reportError("envName must have less than 100 elements")
-	}
-	if r.createEnvironmentRevisionTag == nil {
-		return nil, reportError("createEnvironmentRevisionTag is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -706,7 +1535,7 @@ func (a *EscAPIService) CreateEnvironmentRevisionTagExecute(r ApiCreateEnvironme
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
+	localVarHTTPHeaderAccepts := []string{}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
@@ -716,7 +1545,7 @@ func (a *EscAPIService) CreateEnvironmentRevisionTagExecute(r ApiCreateEnvironme
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
 	// body params
-	localVarPostBody = r.createEnvironmentRevisionTag
+	localVarPostBody = r.createEnvironmentRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -753,62 +1582,396 @@ func (a *EscAPIService) CreateEnvironmentRevisionTagExecute(r ApiCreateEnvironme
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 409 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
 
 	return localVarHTTPResponse, nil
+}
+
+type ApiCreateEnvironmentDraftRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+}
+
+func (r ApiCreateEnvironmentDraftRequest) Execute() (*ChangeRequestRef, *http.Response, error) {
+	return r.ApiService.CreateEnvironmentDraftExecute(r)
+}
+
+/*
+CreateEnvironmentDraft CreateEnvironmentDraft
+
+Creates a new draft change request for a Pulumi ESC environment. Drafts allow proposing changes to an environment definition that can be reviewed and approved before being applied. This is part of the approvals workflow for environments. Returns a ChangeRequestRef containing the draft identifier. Requires the Approvals feature to be enabled for the organization.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiCreateEnvironmentDraftRequest
+*/
+func (a *EscAPIService) CreateEnvironmentDraft(ctx context.Context, orgName string, projectName string, envName string) ApiCreateEnvironmentDraftRequest {
+	return ApiCreateEnvironmentDraftRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return ChangeRequestRef
+func (a *EscAPIService) CreateEnvironmentDraftExecute(r ApiCreateEnvironmentDraftRequest) (*ChangeRequestRef, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ChangeRequestRef
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CreateEnvironmentDraft")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/drafts"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiCreateEnvironmentRevisionTagRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	createEnvironmentRevisionTagRequest *CreateEnvironmentRevisionTagRequest
+}
+
+func (r ApiCreateEnvironmentRevisionTagRequest) CreateEnvironmentRevisionTagRequest(createEnvironmentRevisionTagRequest CreateEnvironmentRevisionTagRequest) ApiCreateEnvironmentRevisionTagRequest {
+	r.createEnvironmentRevisionTagRequest = &createEnvironmentRevisionTagRequest
+	return r
+}
+
+func (r ApiCreateEnvironmentRevisionTagRequest) Execute() (*http.Response, error) {
+	return r.ApiService.CreateEnvironmentRevisionTagExecute(r)
+}
+
+/*
+CreateEnvironmentRevisionTag CreateRevisionTag
+
+Creates a new revision tag for a Pulumi ESC environment. Revision tags are named references that point to specific revision numbers, similar to Git tags. They allow pinning a stable reference to a known-good version of an environment. Tagged versions can be used in imports and Pulumi stack configuration (e.g., myproject/env@prod) to ensure stable references unaffected by subsequent changes. The built-in 'latest' tag always points to the most recent revision.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiCreateEnvironmentRevisionTagRequest
+*/
+func (a *EscAPIService) CreateEnvironmentRevisionTag(ctx context.Context, orgName string, projectName string, envName string) ApiCreateEnvironmentRevisionTagRequest {
+	return ApiCreateEnvironmentRevisionTagRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+func (a *EscAPIService) CreateEnvironmentRevisionTagExecute(r ApiCreateEnvironmentRevisionTagRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CreateEnvironmentRevisionTag")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/tags"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.createEnvironmentRevisionTagRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiCreateEnvironmentScheduleRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	createEnvironmentScheduleRequest *CreateEnvironmentScheduleRequest
+}
+
+func (r ApiCreateEnvironmentScheduleRequest) CreateEnvironmentScheduleRequest(createEnvironmentScheduleRequest CreateEnvironmentScheduleRequest) ApiCreateEnvironmentScheduleRequest {
+	r.createEnvironmentScheduleRequest = &createEnvironmentScheduleRequest
+	return r
+}
+
+func (r ApiCreateEnvironmentScheduleRequest) Execute() (*ScheduledAction, *http.Response, error) {
+	return r.ApiService.CreateEnvironmentScheduleExecute(r)
+}
+
+/*
+CreateEnvironmentSchedule CreateEnvironmentSchedule
+
+Creates a new scheduled action for a Pulumi ESC environment. Schedules can be used to automate recurring operations on environments, such as secret rotation. The request body specifies the schedule timing and the action to perform. Returns the created ScheduledAction on success. Requires the secret rotation feature to be enabled for the organization.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiCreateEnvironmentScheduleRequest
+*/
+func (a *EscAPIService) CreateEnvironmentSchedule(ctx context.Context, orgName string, projectName string, envName string) ApiCreateEnvironmentScheduleRequest {
+	return ApiCreateEnvironmentScheduleRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return ScheduledAction
+func (a *EscAPIService) CreateEnvironmentScheduleExecute(r ApiCreateEnvironmentScheduleRequest) (*ScheduledAction, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ScheduledAction
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CreateEnvironmentSchedule")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/schedules"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.createEnvironmentScheduleRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 type ApiCreateEnvironmentTagRequest struct {
@@ -817,12 +1980,11 @@ type ApiCreateEnvironmentTagRequest struct {
 	orgName string
 	projectName string
 	envName string
-	createEnvironmentTag *CreateEnvironmentTag
+	createEnvironmentTagRequest *CreateEnvironmentTagRequest
 }
 
-// Create environment tag
-func (r ApiCreateEnvironmentTagRequest) CreateEnvironmentTag(createEnvironmentTag CreateEnvironmentTag) ApiCreateEnvironmentTagRequest {
-	r.createEnvironmentTag = &createEnvironmentTag
+func (r ApiCreateEnvironmentTagRequest) CreateEnvironmentTagRequest(createEnvironmentTagRequest CreateEnvironmentTagRequest) ApiCreateEnvironmentTagRequest {
+	r.createEnvironmentTagRequest = &createEnvironmentTagRequest
 	return r
 }
 
@@ -831,14 +1993,14 @@ func (r ApiCreateEnvironmentTagRequest) Execute() (*EnvironmentTag, *http.Respon
 }
 
 /*
-CreateEnvironmentTag Create environment tag
+CreateEnvironmentTag CreateEnvironmentTag
 
-Create environment tag
+Adds a new user-defined tag to a Pulumi ESC environment. Tags are key-value pairs that provide contextual metadata for organizing and searching environments (e.g., region=us-east-1, team=platform). The tag name and value are provided in the request body. Returns the created EnvironmentTag on success. Returns 409 if a tag with the same name already exists on the environment.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
  @return ApiCreateEnvironmentTagRequest
 */
 func (a *EscAPIService) CreateEnvironmentTag(ctx context.Context, orgName string, projectName string, envName string) ApiCreateEnvironmentTagRequest {
@@ -874,27 +2036,6 @@ func (a *EscAPIService) CreateEnvironmentTagExecute(r ApiCreateEnvironmentTagReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
-	if r.createEnvironmentTag == nil {
-		return localVarReturnValue, nil, reportError("createEnvironmentTag is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -916,7 +2057,7 @@ func (a *EscAPIService) CreateEnvironmentTagExecute(r ApiCreateEnvironmentTagReq
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
 	// body params
-	localVarPostBody = r.createEnvironmentTag
+	localVarPostBody = r.createEnvironmentTagRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -953,58 +2094,276 @@ func (a *EscAPIService) CreateEnvironmentTagExecute(r ApiCreateEnvironmentTagReq
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiCreateOpenEnvironmentRequestRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	createEnvironmentOpenRequest *CreateEnvironmentOpenRequest
+}
+
+func (r ApiCreateOpenEnvironmentRequestRequest) CreateEnvironmentOpenRequest(createEnvironmentOpenRequest CreateEnvironmentOpenRequest) ApiCreateOpenEnvironmentRequestRequest {
+	r.createEnvironmentOpenRequest = &createEnvironmentOpenRequest
+	return r
+}
+
+func (r ApiCreateOpenEnvironmentRequestRequest) Execute() (*CreateEnvironmentOpenRequestResponse, *http.Response, error) {
+	return r.ApiService.CreateOpenEnvironmentRequestExecute(r)
+}
+
+/*
+CreateOpenEnvironmentRequest CreateOpenEnvironmentRequest
+
+Creates an open request for a Pulumi ESC environment that has gated opens enabled. When an environment has open gates configured, opening the environment requires an approval workflow. This endpoint initiates that process by creating an open request, and also creates corresponding open requests for each imported environment that has open gates. Requires the Approvals feature to be enabled for the organization. Returns 400 if the environment does not have gated opens.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiCreateOpenEnvironmentRequestRequest
+*/
+func (a *EscAPIService) CreateOpenEnvironmentRequest(ctx context.Context, orgName string, projectName string, envName string) ApiCreateOpenEnvironmentRequestRequest {
+	return ApiCreateOpenEnvironmentRequestRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return CreateEnvironmentOpenRequestResponse
+func (a *EscAPIService) CreateOpenEnvironmentRequestExecute(r ApiCreateOpenEnvironmentRequestRequest) (*CreateEnvironmentOpenRequestResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *CreateEnvironmentOpenRequestResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CreateOpenEnvironmentRequest")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/open/request"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.createEnvironmentOpenRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiCreateWebhookRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	webhook *Webhook
+}
+
+func (r ApiCreateWebhookRequest) Webhook(webhook Webhook) ApiCreateWebhookRequest {
+	r.webhook = &webhook
+	return r
+}
+
+func (r ApiCreateWebhookRequest) Execute() (*WebhookResponse, *http.Response, error) {
+	return r.ApiService.CreateWebhookExecute(r)
+}
+
+/*
+CreateWebhook CreateWebhook
+
+Creates a new webhook for a Pulumi ESC environment. Webhooks allow external services to be notified when environment events occur, such as updates or opens. The request body specifies the webhook configuration including the destination URL, event filters, and format. Returns 400 if the organization name in the request body does not match the URL path parameter. Returns 409 if a webhook with the same name already exists.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiCreateWebhookRequest
+*/
+func (a *EscAPIService) CreateWebhook(ctx context.Context, orgName string, projectName string, envName string) ApiCreateWebhookRequest {
+	return ApiCreateWebhookRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return WebhookResponse
+func (a *EscAPIService) CreateWebhookExecute(r ApiCreateWebhookRequest) (*WebhookResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *WebhookResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.CreateWebhook")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/hooks"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.webhook
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -1028,19 +2387,19 @@ type ApiDecryptEnvironmentRequest struct {
 	envName string
 }
 
-func (r ApiDecryptEnvironmentRequest) Execute() (*EnvironmentDefinition, *http.Response, error) {
+func (r ApiDecryptEnvironmentRequest) Execute() (string, *http.Response, error) {
 	return r.ApiService.DecryptEnvironmentExecute(r)
 }
 
 /*
-DecryptEnvironment Reads the definition for the given environment with static secrets in plaintext
+DecryptEnvironment DecryptEnvironment
 
-Reads the definition for the given environment with static secrets in plaintext
+Reads the YAML definition for a Pulumi ESC environment with all static secrets decrypted and shown in plaintext. Unlike the standard ReadEnvironment endpoint which returns secrets in their encrypted form, this endpoint resolves fn::secret values to their plaintext representations. The response is returned in application/x-yaml format. This does not resolve dynamic provider values (fn::open); use OpenEnvironment for full resolution. Requires environment open permission.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
  @return ApiDecryptEnvironmentRequest
 */
 func (a *EscAPIService) DecryptEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiDecryptEnvironmentRequest {
@@ -1054,13 +2413,13 @@ func (a *EscAPIService) DecryptEnvironment(ctx context.Context, orgName string, 
 }
 
 // Execute executes the request
-//  @return EnvironmentDefinition
-func (a *EscAPIService) DecryptEnvironmentExecute(r ApiDecryptEnvironmentRequest) (*EnvironmentDefinition, *http.Response, error) {
+//  @return string
+func (a *EscAPIService) DecryptEnvironmentExecute(r ApiDecryptEnvironmentRequest) (string, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *EnvironmentDefinition
+		localVarReturnValue  string
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.DecryptEnvironment")
@@ -1076,24 +2435,6 @@ func (a *EscAPIService) DecryptEnvironmentExecute(r ApiDecryptEnvironmentRequest
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1105,7 +2446,7 @@ func (a *EscAPIService) DecryptEnvironmentExecute(r ApiDecryptEnvironmentRequest
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/x-yaml", "application/json"}
+	localVarHTTPHeaderAccepts := []string{"application/x-yaml"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
@@ -1150,58 +2491,272 @@ func (a *EscAPIService) DecryptEnvironmentExecute(r ApiDecryptEnvironmentRequest
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiDecryptEnvironmentEscEnvironmentsVersionsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	version string
+}
+
+func (r ApiDecryptEnvironmentEscEnvironmentsVersionsRequest) Execute() (string, *http.Response, error) {
+	return r.ApiService.DecryptEnvironmentEscEnvironmentsVersionsExecute(r)
+}
+
+/*
+DecryptEnvironmentEscEnvironmentsVersions DecryptEnvironment
+
+Reads the YAML definition for a Pulumi ESC environment with all static secrets decrypted and shown in plaintext. Unlike the standard ReadEnvironment endpoint which returns secrets in their encrypted form, this endpoint resolves fn::secret values to their plaintext representations. The response is returned in application/x-yaml format. This does not resolve dynamic provider values (fn::open); use OpenEnvironment for full resolution. Requires environment open permission.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param version The revision version number
+ @return ApiDecryptEnvironmentEscEnvironmentsVersionsRequest
+*/
+func (a *EscAPIService) DecryptEnvironmentEscEnvironmentsVersions(ctx context.Context, orgName string, projectName string, envName string, version string) ApiDecryptEnvironmentEscEnvironmentsVersionsRequest {
+	return ApiDecryptEnvironmentEscEnvironmentsVersionsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		version: version,
+	}
+}
+
+// Execute executes the request
+//  @return string
+func (a *EscAPIService) DecryptEnvironmentEscEnvironmentsVersionsExecute(r ApiDecryptEnvironmentEscEnvironmentsVersionsRequest) (string, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  string
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.DecryptEnvironmentEscEnvironmentsVersions")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/{version}/decrypt"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"version"+"}", url.PathEscape(parameterValueToString(r.version, "version")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/x-yaml"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiDecryptEnvironmentSecretsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	decryptEnvironmentSecretsRequest *DecryptEnvironmentSecretsRequest
+}
+
+func (r ApiDecryptEnvironmentSecretsRequest) DecryptEnvironmentSecretsRequest(decryptEnvironmentSecretsRequest DecryptEnvironmentSecretsRequest) ApiDecryptEnvironmentSecretsRequest {
+	r.decryptEnvironmentSecretsRequest = &decryptEnvironmentSecretsRequest
+	return r
+}
+
+func (r ApiDecryptEnvironmentSecretsRequest) Execute() (*DecryptEnvironmentSecretsResponse, *http.Response, error) {
+	return r.ApiService.DecryptEnvironmentSecretsExecute(r)
+}
+
+/*
+DecryptEnvironmentSecrets DecryptEnvironmentSecrets
+
+Decrypts encrypted secret values in a Pulumi ESC environment definition. Takes an environment definition containing encrypted secrets and returns the same definition with those values decrypted to plaintext. This is useful for inspecting or migrating environment definitions that contain fn::secret values. Requires environment open permission. Returns 413 if the request content exceeds the maximum allowed size.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiDecryptEnvironmentSecretsRequest
+*/
+func (a *EscAPIService) DecryptEnvironmentSecrets(ctx context.Context, orgName string, projectName string, envName string) ApiDecryptEnvironmentSecretsRequest {
+	return ApiDecryptEnvironmentSecretsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return DecryptEnvironmentSecretsResponse
+func (a *EscAPIService) DecryptEnvironmentSecretsExecute(r ApiDecryptEnvironmentSecretsRequest) (*DecryptEnvironmentSecretsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *DecryptEnvironmentSecretsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.DecryptEnvironmentSecrets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/decrypt-secrets"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.decryptEnvironmentSecretsRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -1225,19 +2780,19 @@ type ApiDeleteEnvironmentRequest struct {
 	envName string
 }
 
-func (r ApiDeleteEnvironmentRequest) Execute() (*Error, *http.Response, error) {
+func (r ApiDeleteEnvironmentRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeleteEnvironmentExecute(r)
 }
 
 /*
-DeleteEnvironment Delete an environment
+DeleteEnvironment DeleteEnvironment
 
-Delete an environment
+Permanently deletes a Pulumi ESC environment and all of its revision history, tags, and associated configuration. This operation is blocked if deletion protection is enabled on the environment (see PatchEnvironmentSettings). Enterprise and Business Critical edition organizations may be able to restore deleted environments within a retention window. Returns 409 if the environment is deletion-protected or has been modified since it was last read.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
  @return ApiDeleteEnvironmentRequest
 */
 func (a *EscAPIService) DeleteEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiDeleteEnvironmentRequest {
@@ -1251,18 +2806,16 @@ func (a *EscAPIService) DeleteEnvironment(ctx context.Context, orgName string, p
 }
 
 // Execute executes the request
-//  @return Error
-func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) (*Error, *http.Response, error) {
+func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *Error
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.DeleteEnvironment")
 	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}"
@@ -1273,24 +2826,6 @@ func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1302,7 +2837,7 @@ func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) 
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
+	localVarHTTPHeaderAccepts := []string{}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
@@ -1327,19 +2862,19 @@ func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) 
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
-		return localVarReturnValue, nil, err
+		return nil, err
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
+		return localVarHTTPResponse, err
 	}
 
 	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
 	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
+		return localVarHTTPResponse, err
 	}
 
 	if localVarHTTPResponse.StatusCode >= 300 {
@@ -1347,71 +2882,10 @@ func (a *EscAPIService) DeleteEnvironmentExecute(r ApiDeleteEnvironmentRequest) 
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarHTTPResponse, newErr
 	}
 
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
+	return localVarHTTPResponse, nil
 }
 
 type ApiDeleteEnvironmentRevisionTagRequest struct {
@@ -1428,15 +2902,15 @@ func (r ApiDeleteEnvironmentRevisionTagRequest) Execute() (*http.Response, error
 }
 
 /*
-DeleteEnvironmentRevisionTag Delete environment revision tag
+DeleteEnvironmentRevisionTag DeleteRevisionTag
 
-Delete environment revision tag
+Deletes a named revision tag from a Pulumi ESC environment. The tag is identified by its name in the URL path. After deletion, any imports or stack configurations referencing this tag will fail to resolve. The built-in 'latest' tag cannot be deleted. Returns 204 on success with no response body.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @param tagName Tag name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param tagName The revision tag name
  @return ApiDeleteEnvironmentRevisionTagRequest
 */
 func (a *EscAPIService) DeleteEnvironmentRevisionTag(ctx context.Context, orgName string, projectName string, envName string, tagName string) ApiDeleteEnvironmentRevisionTagRequest {
@@ -1472,24 +2946,6 @@ func (a *EscAPIService) DeleteEnvironmentRevisionTagExecute(r ApiDeleteEnvironme
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return nil, reportError("envName must have less than 100 elements")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1501,7 +2957,7 @@ func (a *EscAPIService) DeleteEnvironmentRevisionTagExecute(r ApiDeleteEnvironme
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
+	localVarHTTPHeaderAccepts := []string{}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
@@ -1546,47 +3002,126 @@ func (a *EscAPIService) DeleteEnvironmentRevisionTagExecute(r ApiDeleteEnvironme
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiDeleteEnvironmentScheduleRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	scheduleID string
+}
+
+func (r ApiDeleteEnvironmentScheduleRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeleteEnvironmentScheduleExecute(r)
+}
+
+/*
+DeleteEnvironmentSchedule DeleteEnvironmentSchedule
+
+Permanently deletes a scheduled action from a Pulumi ESC environment. This removes the schedule and cancels any future executions. The schedule is identified by its scheduleID. Requires the secret rotation feature to be enabled for the organization.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param scheduleID The schedule ID
+ @return ApiDeleteEnvironmentScheduleRequest
+*/
+func (a *EscAPIService) DeleteEnvironmentSchedule(ctx context.Context, orgName string, projectName string, envName string, scheduleID string) ApiDeleteEnvironmentScheduleRequest {
+	return ApiDeleteEnvironmentScheduleRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		scheduleID: scheduleID,
+	}
+}
+
+// Execute executes the request
+func (a *EscAPIService) DeleteEnvironmentScheduleExecute(r ApiDeleteEnvironmentScheduleRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodDelete
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.DeleteEnvironmentSchedule")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"scheduleID"+"}", url.PathEscape(parameterValueToString(r.scheduleID, "scheduleID")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
 
@@ -1607,15 +3142,15 @@ func (r ApiDeleteEnvironmentTagRequest) Execute() (*http.Response, error) {
 }
 
 /*
-DeleteEnvironmentTag Delete environment tag
+DeleteEnvironmentTag DeleteEnvironmentTag
 
-Delete environment tag
+Removes a user-defined tag from a Pulumi ESC environment. The tag is identified by its name in the URL path. Returns 204 on success with no response body. Returns 404 if the tag does not exist on the environment.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @param tagName Tag name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param tagName The environment tag name
  @return ApiDeleteEnvironmentTagRequest
 */
 func (a *EscAPIService) DeleteEnvironmentTag(ctx context.Context, orgName string, projectName string, envName string, tagName string) ApiDeleteEnvironmentTagRequest {
@@ -1651,24 +3186,6 @@ func (a *EscAPIService) DeleteEnvironmentTagExecute(r ApiDeleteEnvironmentTagReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return nil, reportError("envName must have less than 100 elements")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1680,7 +3197,7 @@ func (a *EscAPIService) DeleteEnvironmentTagExecute(r ApiDeleteEnvironmentTagReq
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
+	localVarHTTPHeaderAccepts := []string{}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
@@ -1725,127 +3242,70 @@ func (a *EscAPIService) DeleteEnvironmentTagExecute(r ApiDeleteEnvironmentTagReq
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
 
 	return localVarHTTPResponse, nil
 }
 
-type ApiGetEnvironmentRequest struct {
+type ApiDeleteWebhookRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
 	projectName string
 	envName string
+	hookName string
 }
 
-func (r ApiGetEnvironmentRequest) Execute() (*EnvironmentDefinition, *http.Response, error) {
-	return r.ApiService.GetEnvironmentExecute(r)
+func (r ApiDeleteWebhookRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeleteWebhookExecute(r)
 }
 
 /*
-GetEnvironment Read an environment
+DeleteWebhook DeleteWebhook
 
-Read an environment
+Deletes a webhook from a Pulumi ESC environment. The webhook is identified by its name in the URL path. After deletion, the external service will no longer receive notifications for environment events. Returns 204 on success with no response body.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @return ApiGetEnvironmentRequest
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param hookName The webhook name
+ @return ApiDeleteWebhookRequest
 */
-func (a *EscAPIService) GetEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiGetEnvironmentRequest {
-	return ApiGetEnvironmentRequest{
+func (a *EscAPIService) DeleteWebhook(ctx context.Context, orgName string, projectName string, envName string, hookName string) ApiDeleteWebhookRequest {
+	return ApiDeleteWebhookRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
 		projectName: projectName,
 		envName: envName,
+		hookName: hookName,
 	}
 }
 
 // Execute executes the request
-//  @return EnvironmentDefinition
-func (a *EscAPIService) GetEnvironmentExecute(r ApiGetEnvironmentRequest) (*EnvironmentDefinition, *http.Response, error) {
+func (a *EscAPIService) DeleteWebhookExecute(r ApiDeleteWebhookRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
+		localVarHTTPMethod   = http.MethodDelete
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *EnvironmentDefinition
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GetEnvironment")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.DeleteWebhook")
 	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"hookName"+"}", url.PathEscape(parameterValueToString(r.hookName, "hookName")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1857,7 +3317,262 @@ func (a *EscAPIService) GetEnvironmentExecute(r ApiGetEnvironmentRequest) (*Envi
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/x-yaml", "application/json"}
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiEncryptEnvironmentSecretsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	encryptEnvironmentSecretsRequest *EncryptEnvironmentSecretsRequest
+}
+
+func (r ApiEncryptEnvironmentSecretsRequest) EncryptEnvironmentSecretsRequest(encryptEnvironmentSecretsRequest EncryptEnvironmentSecretsRequest) ApiEncryptEnvironmentSecretsRequest {
+	r.encryptEnvironmentSecretsRequest = &encryptEnvironmentSecretsRequest
+	return r
+}
+
+func (r ApiEncryptEnvironmentSecretsRequest) Execute() (*EncryptEnvironmentSecretsResponse, *http.Response, error) {
+	return r.ApiService.EncryptEnvironmentSecretsExecute(r)
+}
+
+/*
+EncryptEnvironmentSecrets EncryptEnvironmentSecrets
+
+Encrypts plaintext secret values in a Pulumi ESC environment definition. Takes an environment definition containing plaintext secrets and returns the same definition with those values encrypted using the environment's encryption key. This is useful for preparing environment definitions that contain sensitive values before storing or updating them. Returns 413 if the request content exceeds the maximum allowed size.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiEncryptEnvironmentSecretsRequest
+*/
+func (a *EscAPIService) EncryptEnvironmentSecrets(ctx context.Context, orgName string, projectName string, envName string) ApiEncryptEnvironmentSecretsRequest {
+	return ApiEncryptEnvironmentSecretsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return EncryptEnvironmentSecretsResponse
+func (a *EscAPIService) EncryptEnvironmentSecretsExecute(r ApiEncryptEnvironmentSecretsRequest) (*EncryptEnvironmentSecretsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *EncryptEnvironmentSecretsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.EncryptEnvironmentSecrets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/encrypt-secrets"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.encryptEnvironmentSecretsRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGCPListAccountsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	oauthSessionId *string
+}
+
+// The OAuth session identifier
+func (r ApiGCPListAccountsRequest) OauthSessionId(oauthSessionId string) ApiGCPListAccountsRequest {
+	r.oauthSessionId = &oauthSessionId
+	return r
+}
+
+func (r ApiGCPListAccountsRequest) Execute() (*ListCloudAccountsResponse, *http.Response, error) {
+	return r.ApiService.GCPListAccountsExecute(r)
+}
+
+/*
+GCPListAccounts GCPListAccounts
+
+Lists GCP projects accessible with the provided oauth session
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiGCPListAccountsRequest
+*/
+func (a *EscAPIService) GCPListAccounts(ctx context.Context, orgName string) ApiGCPListAccountsRequest {
+	return ApiGCPListAccountsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return ListCloudAccountsResponse
+func (a *EscAPIService) GCPListAccountsExecute(r ApiGCPListAccountsRequest) (*ListCloudAccountsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListCloudAccountsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GCPListAccounts")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/cloudsetup/{orgName}/oauth/gcp/accounts"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.oauthSessionId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "oauthSessionId", r.oauthSessionId, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
@@ -1902,58 +3617,260 @@ func (a *EscAPIService) GetEnvironmentExecute(r ApiGetEnvironmentRequest) (*Envi
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGCPSetupRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	gCPSetupRequest *GCPSetupRequest
+}
+
+func (r ApiGCPSetupRequest) GCPSetupRequest(gCPSetupRequest GCPSetupRequest) ApiGCPSetupRequest {
+	r.gCPSetupRequest = &gCPSetupRequest
+	return r
+}
+
+func (r ApiGCPSetupRequest) Execute() (*CloudSetupResult, *http.Response, error) {
+	return r.ApiService.GCPSetupExecute(r)
+}
+
+/*
+GCPSetup GCPSetup
+
+Sets up GCP infrastructure using OAuth credentials
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiGCPSetupRequest
+*/
+func (a *EscAPIService) GCPSetup(ctx context.Context, orgName string) ApiGCPSetupRequest {
+	return ApiGCPSetupRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return CloudSetupResult
+func (a *EscAPIService) GCPSetupExecute(r ApiGCPSetupRequest) (*CloudSetupResult, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *CloudSetupResult
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GCPSetup")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/cloudsetup/{orgName}/oauth/gcp/setup"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.gCPSetupRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetEnvironmentRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+}
+
+func (r ApiGetEnvironmentRequest) Execute() (string, *http.Response, error) {
+	return r.ApiService.GetEnvironmentExecute(r)
+}
+
+/*
+GetEnvironment ReadEnvironment
+
+Returns the YAML definition of a Pulumi ESC environment. The response is in application/x-yaml format and includes the environment's imports, values, provider configurations, and function invocations. Secrets remain in their encrypted form (use DecryptEnvironment to see plaintext secrets, or OpenEnvironment to fully resolve all dynamic values). When a version path parameter is provided, returns the definition for that specific revision.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiGetEnvironmentRequest
+*/
+func (a *EscAPIService) GetEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiGetEnvironmentRequest {
+	return ApiGetEnvironmentRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return string
+func (a *EscAPIService) GetEnvironmentExecute(r ApiGetEnvironmentRequest) (string, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  string
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GetEnvironment")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/x-yaml"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -1978,20 +3895,20 @@ type ApiGetEnvironmentAtVersionRequest struct {
 	version string
 }
 
-func (r ApiGetEnvironmentAtVersionRequest) Execute() (*EnvironmentDefinition, *http.Response, error) {
+func (r ApiGetEnvironmentAtVersionRequest) Execute() (string, *http.Response, error) {
 	return r.ApiService.GetEnvironmentAtVersionExecute(r)
 }
 
 /*
-GetEnvironmentAtVersion Read an environment at a specific version
+GetEnvironmentAtVersion ReadEnvironment
 
-Read an environmentat a specific revision or tag
+Returns the YAML definition of a Pulumi ESC environment. The response is in application/x-yaml format and includes the environment's imports, values, provider configurations, and function invocations. Secrets remain in their encrypted form (use DecryptEnvironment to see plaintext secrets, or OpenEnvironment to fully resolve all dynamic values). When a version path parameter is provided, returns the definition for that specific revision.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @param version Revision or tag
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param version The revision version number
  @return ApiGetEnvironmentAtVersionRequest
 */
 func (a *EscAPIService) GetEnvironmentAtVersion(ctx context.Context, orgName string, projectName string, envName string, version string) ApiGetEnvironmentAtVersionRequest {
@@ -2006,13 +3923,13 @@ func (a *EscAPIService) GetEnvironmentAtVersion(ctx context.Context, orgName str
 }
 
 // Execute executes the request
-//  @return EnvironmentDefinition
-func (a *EscAPIService) GetEnvironmentAtVersionExecute(r ApiGetEnvironmentAtVersionRequest) (*EnvironmentDefinition, *http.Response, error) {
+//  @return string
+func (a *EscAPIService) GetEnvironmentAtVersionExecute(r ApiGetEnvironmentAtVersionRequest) (string, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *EnvironmentDefinition
+		localVarReturnValue  string
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GetEnvironmentAtVersion")
@@ -2029,24 +3946,6 @@ func (a *EscAPIService) GetEnvironmentAtVersionExecute(r ApiGetEnvironmentAtVers
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2058,7 +3957,7 @@ func (a *EscAPIService) GetEnvironmentAtVersionExecute(r ApiGetEnvironmentAtVers
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/x-yaml", "application/json"}
+	localVarHTTPHeaderAccepts := []string{"application/x-yaml"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
@@ -2103,58 +4002,6 @@ func (a *EscAPIService) GetEnvironmentAtVersionExecute(r ApiGetEnvironmentAtVers
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -2178,19 +4025,19 @@ type ApiGetEnvironmentETagRequest struct {
 	envName string
 }
 
-func (r ApiGetEnvironmentETagRequest) Execute() (*http.Response, error) {
+func (r ApiGetEnvironmentETagRequest) Execute() (map[string]interface{}, *http.Response, error) {
 	return r.ApiService.GetEnvironmentETagExecute(r)
 }
 
 /*
-GetEnvironmentETag Return an Environment ETag
+GetEnvironmentETag HeadEnvironment
 
-Returns the ETag for the given environment if it exists.
+Returns the ETag header for a Pulumi ESC environment without returning the full definition body. This is used for lightweight existence checks and for obtaining the current ETag value for optimistic concurrency control. The ETag should be included in subsequent update requests via the If-Match header to prevent concurrent modification conflicts. Returns 404 if the environment does not exist.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
  @return ApiGetEnvironmentETagRequest
 */
 func (a *EscAPIService) GetEnvironmentETag(ctx context.Context, orgName string, projectName string, envName string) ApiGetEnvironmentETagRequest {
@@ -2204,16 +4051,18 @@ func (a *EscAPIService) GetEnvironmentETag(ctx context.Context, orgName string, 
 }
 
 // Execute executes the request
-func (a *EscAPIService) GetEnvironmentETagExecute(r ApiGetEnvironmentETagRequest) (*http.Response, error) {
+//  @return map[string]interface{}
+func (a *EscAPIService) GetEnvironmentETagExecute(r ApiGetEnvironmentETagRequest) (map[string]interface{}, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodHead
 		localVarPostBody     interface{}
 		formFiles            []formFile
+		localVarReturnValue  map[string]interface{}
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GetEnvironmentETag")
 	if err != nil {
-		return nil, &GenericOpenAPIError{error: err.Error()}
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}"
@@ -2224,24 +4073,6 @@ func (a *EscAPIService) GetEnvironmentETagExecute(r ApiGetEnvironmentETagRequest
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return nil, reportError("envName must have less than 100 elements")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2278,19 +4109,19 @@ func (a *EscAPIService) GetEnvironmentETagExecute(r ApiGetEnvironmentETagRequest
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
-		return nil, err
+		return localVarReturnValue, nil, err
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
 	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	if localVarHTTPResponse.StatusCode >= 300 {
@@ -2298,51 +4129,146 @@ func (a *EscAPIService) GetEnvironmentETagExecute(r ApiGetEnvironmentETagRequest
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		return localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	return localVarHTTPResponse, nil
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetEnvironmentMetadataRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+}
+
+func (r ApiGetEnvironmentMetadataRequest) Execute() (*EnvironmentMetadata, *http.Response, error) {
+	return r.ApiService.GetEnvironmentMetadataExecute(r)
+}
+
+/*
+GetEnvironmentMetadata GetEnvironmentMetadata
+
+Returns metadata for a Pulumi ESC environment, including the calling user's effective permission level (read, open, write, admin), creation and modification timestamps, the environment's project, and other administrative information. This is useful for determining what actions the current user can perform on the environment before attempting those operations.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiGetEnvironmentMetadataRequest
+*/
+func (a *EscAPIService) GetEnvironmentMetadata(ctx context.Context, orgName string, projectName string, envName string) ApiGetEnvironmentMetadataRequest {
+	return ApiGetEnvironmentMetadataRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return EnvironmentMetadata
+func (a *EscAPIService) GetEnvironmentMetadataExecute(r ApiGetEnvironmentMetadataRequest) (*EnvironmentMetadata, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *EnvironmentMetadata
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GetEnvironmentMetadata")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/metadata"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 type ApiGetEnvironmentRevisionTagRequest struct {
@@ -2359,15 +4285,15 @@ func (r ApiGetEnvironmentRevisionTagRequest) Execute() (*EnvironmentRevisionTag,
 }
 
 /*
-GetEnvironmentRevisionTag Read environment revision tag
+GetEnvironmentRevisionTag ReadRevisionTag
 
-Read environment revision tag
+Returns the details of a specific revision tag for a Pulumi ESC environment. The tag is identified by its name in the URL path. The response includes the tag name and the revision number it points to. Returns 404 if the tag does not exist.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @param tagName Tag name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param tagName The revision tag name
  @return ApiGetEnvironmentRevisionTagRequest
 */
 func (a *EscAPIService) GetEnvironmentRevisionTag(ctx context.Context, orgName string, projectName string, envName string, tagName string) ApiGetEnvironmentRevisionTagRequest {
@@ -2405,24 +4331,6 @@ func (a *EscAPIService) GetEnvironmentRevisionTagExecute(r ApiGetEnvironmentRevi
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2479,47 +4387,133 @@ func (a *EscAPIService) GetEnvironmentRevisionTagExecute(r ApiGetEnvironmentRevi
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetEnvironmentSettingsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+}
+
+func (r ApiGetEnvironmentSettingsRequest) Execute() (*EnvironmentSettings, *http.Response, error) {
+	return r.ApiService.GetEnvironmentSettingsExecute(r)
+}
+
+/*
+GetEnvironmentSettings GetEnvironmentSettings
+
+Returns the current settings for a Pulumi ESC environment, including whether deletion protection is enabled. Deletion protection prevents the environment from being deleted until the setting is explicitly disabled. Settings can be modified via the PatchEnvironmentSettings endpoint.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiGetEnvironmentSettingsRequest
+*/
+func (a *EscAPIService) GetEnvironmentSettings(ctx context.Context, orgName string, projectName string, envName string) ApiGetEnvironmentSettingsRequest {
+	return ApiGetEnvironmentSettingsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return EnvironmentSettings
+func (a *EscAPIService) GetEnvironmentSettingsExecute(r ApiGetEnvironmentSettingsRequest) (*EnvironmentSettings, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *EnvironmentSettings
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GetEnvironmentSettings")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/settings"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -2549,15 +4543,15 @@ func (r ApiGetEnvironmentTagRequest) Execute() (*EnvironmentTag, *http.Response,
 }
 
 /*
-GetEnvironmentTag Read an environment tag
+GetEnvironmentTag GetEnvironmentTag
 
-Read an environment tag
+Returns a single user-defined tag for a Pulumi ESC environment, identified by the tag name in the URL path. The response includes the tag name, value, and metadata. Returns 404 if the tag does not exist on the environment.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @param tagName Tag name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param tagName The environment tag name
  @return ApiGetEnvironmentTagRequest
 */
 func (a *EscAPIService) GetEnvironmentTag(ctx context.Context, orgName string, projectName string, envName string, tagName string) ApiGetEnvironmentTagRequest {
@@ -2595,24 +4589,6 @@ func (a *EscAPIService) GetEnvironmentTagExecute(r ApiGetEnvironmentTagRequest) 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2669,47 +4645,1219 @@ func (a *EscAPIService) GetEnvironmentTagExecute(r ApiGetEnvironmentTagRequest) 
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetProviderSchemaRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	providerName string
+}
+
+func (r ApiGetProviderSchemaRequest) Execute() (*ProviderSchema, *http.Response, error) {
+	return r.ApiService.GetProviderSchemaExecute(r)
+}
+
+/*
+GetProviderSchema GetProviderSchema
+
+Returns the JSON schema for a Pulumi ESC provider. Providers are integrations that dynamically retrieve configuration and secrets from external sources such as AWS, Azure, Google Cloud, HashiCorp Vault, and others via fn::open. The schema describes the provider's input parameters, output structure, and configuration options. The provider is identified by name in the URL path.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param providerName The provider name
+ @return ApiGetProviderSchemaRequest
+*/
+func (a *EscAPIService) GetProviderSchema(ctx context.Context, providerName string) ApiGetProviderSchemaRequest {
+	return ApiGetProviderSchemaRequest{
+		ApiService: a,
+		ctx: ctx,
+		providerName: providerName,
+	}
+}
+
+// Execute executes the request
+//  @return ProviderSchema
+func (a *EscAPIService) GetProviderSchemaExecute(r ApiGetProviderSchemaRequest) (*ProviderSchema, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ProviderSchema
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GetProviderSchema")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/providers/{providerName}/schema"
+	localVarPath = strings.Replace(localVarPath, "{"+"providerName"+"}", url.PathEscape(parameterValueToString(r.providerName, "providerName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetRotatorSchemaRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	rotatorName string
+}
+
+func (r ApiGetRotatorSchemaRequest) Execute() (*ProviderSchema, *http.Response, error) {
+	return r.ApiService.GetRotatorSchemaExecute(r)
+}
+
+/*
+GetRotatorSchema GetRotatorSchema
+
+Returns the JSON schema for a Pulumi ESC secret rotator. Rotators are integrations that automatically rotate secrets in external systems via fn::rotate. The schema describes the rotator's input parameters, output structure, and configuration options. The rotator is identified by name in the URL path.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param rotatorName The rotator name
+ @return ApiGetRotatorSchemaRequest
+*/
+func (a *EscAPIService) GetRotatorSchema(ctx context.Context, rotatorName string) ApiGetRotatorSchemaRequest {
+	return ApiGetRotatorSchemaRequest{
+		ApiService: a,
+		ctx: ctx,
+		rotatorName: rotatorName,
+	}
+}
+
+// Execute executes the request
+//  @return ProviderSchema
+func (a *EscAPIService) GetRotatorSchemaExecute(r ApiGetRotatorSchemaRequest) (*ProviderSchema, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ProviderSchema
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GetRotatorSchema")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/rotators/{rotatorName}/schema"
+	localVarPath = strings.Replace(localVarPath, "{"+"rotatorName"+"}", url.PathEscape(parameterValueToString(r.rotatorName, "rotatorName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetWebhookRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	hookName string
+}
+
+func (r ApiGetWebhookRequest) Execute() (*WebhookResponse, *http.Response, error) {
+	return r.ApiService.GetWebhookExecute(r)
+}
+
+/*
+GetWebhook GetWebhook
+
+Returns the configuration and status of a single webhook for a Pulumi ESC environment. The webhook is identified by its name in the URL path. The response includes the webhook's destination URL, event filters, format, and active status. Returns 404 if the webhook does not exist.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param hookName The webhook name
+ @return ApiGetWebhookRequest
+*/
+func (a *EscAPIService) GetWebhook(ctx context.Context, orgName string, projectName string, envName string, hookName string) ApiGetWebhookRequest {
+	return ApiGetWebhookRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		hookName: hookName,
+	}
+}
+
+// Execute executes the request
+//  @return WebhookResponse
+func (a *EscAPIService) GetWebhookExecute(r ApiGetWebhookRequest) (*WebhookResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *WebhookResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GetWebhook")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"hookName"+"}", url.PathEscape(parameterValueToString(r.hookName, "hookName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetWebhookDeliveriesRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	hookName string
+}
+
+func (r ApiGetWebhookDeliveriesRequest) Execute() ([]WebhookDelivery, *http.Response, error) {
+	return r.ApiService.GetWebhookDeliveriesExecute(r)
+}
+
+/*
+GetWebhookDeliveries GetWebhookDeliveries
+
+Returns a list of recent delivery attempts for a specific webhook on a Pulumi ESC environment. Each delivery record includes the HTTP status code, response body, timestamp, and whether the delivery was successful. This is useful for debugging webhook integration issues and verifying that events are being received.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param hookName The webhook name
+ @return ApiGetWebhookDeliveriesRequest
+*/
+func (a *EscAPIService) GetWebhookDeliveries(ctx context.Context, orgName string, projectName string, envName string, hookName string) ApiGetWebhookDeliveriesRequest {
+	return ApiGetWebhookDeliveriesRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		hookName: hookName,
+	}
+}
+
+// Execute executes the request
+//  @return []WebhookDelivery
+func (a *EscAPIService) GetWebhookDeliveriesExecute(r ApiGetWebhookDeliveriesRequest) ([]WebhookDelivery, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  []WebhookDelivery
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.GetWebhookDeliveries")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}/deliveries"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"hookName"+"}", url.PathEscape(parameterValueToString(r.hookName, "hookName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiInitiateOAuthRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	initiateOAuthRequest *InitiateOAuthRequest
+}
+
+func (r ApiInitiateOAuthRequest) InitiateOAuthRequest(initiateOAuthRequest InitiateOAuthRequest) ApiInitiateOAuthRequest {
+	r.initiateOAuthRequest = &initiateOAuthRequest
+	return r
+}
+
+func (r ApiInitiateOAuthRequest) Execute() (*InitiateOAuthResponse, *http.Response, error) {
+	return r.ApiService.InitiateOAuthExecute(r)
+}
+
+/*
+InitiateOAuth InitiateOAuth
+
+Initiates OAuth flow for a given cloud provider
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiInitiateOAuthRequest
+*/
+func (a *EscAPIService) InitiateOAuth(ctx context.Context, orgName string) ApiInitiateOAuthRequest {
+	return ApiInitiateOAuthRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return InitiateOAuthResponse
+func (a *EscAPIService) InitiateOAuthExecute(r ApiInitiateOAuthRequest) (*InitiateOAuthResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *InitiateOAuthResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.InitiateOAuth")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/cloudsetup/{orgName}/oauth/initiate"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.initiateOAuthRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListAllEnvironmentTagsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+}
+
+func (r ApiListAllEnvironmentTagsRequest) Execute() (*map[string][]string, *http.Response, error) {
+	return r.ApiService.ListAllEnvironmentTagsExecute(r)
+}
+
+/*
+ListAllEnvironmentTags ListAllEnvironmentTags
+
+Returns a map of all unique tag names and their distinct values across all Pulumi ESC environments in the organization. The response is a map where each key is a tag name and the value is a list of all distinct values for that tag across all environments. This is useful for building tag-based filtering or discovery UIs.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiListAllEnvironmentTagsRequest
+*/
+func (a *EscAPIService) ListAllEnvironmentTags(ctx context.Context, orgName string) ApiListAllEnvironmentTagsRequest {
+	return ApiListAllEnvironmentTagsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return map[string][]string
+func (a *EscAPIService) ListAllEnvironmentTagsExecute(r ApiListAllEnvironmentTagsRequest) (*map[string][]string, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *map[string][]string
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListAllEnvironmentTags")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/tags"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListDeletedEnvironmentsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	continuationToken *string
+}
+
+// Continuation token for paginated results
+func (r ApiListDeletedEnvironmentsRequest) ContinuationToken(continuationToken string) ApiListDeletedEnvironmentsRequest {
+	r.continuationToken = &continuationToken
+	return r
+}
+
+func (r ApiListDeletedEnvironmentsRequest) Execute() (*ListEnvironmentsResponse, *http.Response, error) {
+	return r.ApiService.ListDeletedEnvironmentsExecute(r)
+}
+
+/*
+ListDeletedEnvironments ListDeletedEnvironments
+
+Returns a paginated list of soft-deleted Pulumi ESC environments within an organization that are still within the retention window and eligible for restoration. Use the continuationToken query parameter for pagination. Deleted environments can be restored via the RestoreEnvironment endpoint.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiListDeletedEnvironmentsRequest
+*/
+func (a *EscAPIService) ListDeletedEnvironments(ctx context.Context, orgName string) ApiListDeletedEnvironmentsRequest {
+	return ApiListDeletedEnvironmentsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return ListEnvironmentsResponse
+func (a *EscAPIService) ListDeletedEnvironmentsExecute(r ApiListDeletedEnvironmentsRequest) (*ListEnvironmentsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListEnvironmentsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListDeletedEnvironments")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/restore"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.continuationToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "continuationToken", r.continuationToken, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListEnvironmentReferrersRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	allRevisions *bool
+	continuationToken *string
+	count *int64
+	latestStackVersionOnly *bool
+}
+
+// Whether to include all revisions
+func (r ApiListEnvironmentReferrersRequest) AllRevisions(allRevisions bool) ApiListEnvironmentReferrersRequest {
+	r.allRevisions = &allRevisions
+	return r
+}
+
+// Continuation token for paginated results
+func (r ApiListEnvironmentReferrersRequest) ContinuationToken(continuationToken string) ApiListEnvironmentReferrersRequest {
+	r.continuationToken = &continuationToken
+	return r
+}
+
+// Maximum number of results to return
+func (r ApiListEnvironmentReferrersRequest) Count(count int64) ApiListEnvironmentReferrersRequest {
+	r.count = &count
+	return r
+}
+
+// Whether to return only the latest stack version
+func (r ApiListEnvironmentReferrersRequest) LatestStackVersionOnly(latestStackVersionOnly bool) ApiListEnvironmentReferrersRequest {
+	r.latestStackVersionOnly = &latestStackVersionOnly
+	return r
+}
+
+func (r ApiListEnvironmentReferrersRequest) Execute() (*ListEnvironmentReferrersResponse, *http.Response, error) {
+	return r.ApiService.ListEnvironmentReferrersExecute(r)
+}
+
+/*
+ListEnvironmentReferrers ListEnvironmentReferrers
+
+Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiListEnvironmentReferrersRequest
+*/
+func (a *EscAPIService) ListEnvironmentReferrers(ctx context.Context, orgName string, projectName string, envName string) ApiListEnvironmentReferrersRequest {
+	return ApiListEnvironmentReferrersRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return ListEnvironmentReferrersResponse
+func (a *EscAPIService) ListEnvironmentReferrersExecute(r ApiListEnvironmentReferrersRequest) (*ListEnvironmentReferrersResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListEnvironmentReferrersResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListEnvironmentReferrers")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/referrers"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.allRevisions != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "allRevisions", r.allRevisions, "")
+	}
+	if r.continuationToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "continuationToken", r.continuationToken, "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "count", r.count, "")
+	}
+	if r.latestStackVersionOnly != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "latestStackVersionOnly", r.latestStackVersionOnly, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	version string
+	allRevisions *bool
+	continuationToken *string
+	count *int64
+	latestStackVersionOnly *bool
+}
+
+// Whether to include all revisions
+func (r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) AllRevisions(allRevisions bool) ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest {
+	r.allRevisions = &allRevisions
+	return r
+}
+
+// Continuation token for paginated results
+func (r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) ContinuationToken(continuationToken string) ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest {
+	r.continuationToken = &continuationToken
+	return r
+}
+
+// Maximum number of results to return
+func (r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) Count(count int64) ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest {
+	r.count = &count
+	return r
+}
+
+// Whether to return only the latest stack version
+func (r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) LatestStackVersionOnly(latestStackVersionOnly bool) ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest {
+	r.latestStackVersionOnly = &latestStackVersionOnly
+	return r
+}
+
+func (r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) Execute() (*ListEnvironmentReferrersResponse, *http.Response, error) {
+	return r.ApiService.ListEnvironmentReferrersEscEnvironmentsVersionsExecute(r)
+}
+
+/*
+ListEnvironmentReferrersEscEnvironmentsVersions ListEnvironmentReferrers
+
+Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param version The revision version number
+ @return ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest
+*/
+func (a *EscAPIService) ListEnvironmentReferrersEscEnvironmentsVersions(ctx context.Context, orgName string, projectName string, envName string, version string) ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest {
+	return ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		version: version,
+	}
+}
+
+// Execute executes the request
+//  @return ListEnvironmentReferrersResponse
+func (a *EscAPIService) ListEnvironmentReferrersEscEnvironmentsVersionsExecute(r ApiListEnvironmentReferrersEscEnvironmentsVersionsRequest) (*ListEnvironmentReferrersResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListEnvironmentReferrersResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListEnvironmentReferrersEscEnvironmentsVersions")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/{version}/referrers"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"version"+"}", url.PathEscape(parameterValueToString(r.version, "version")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.allRevisions != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "allRevisions", r.allRevisions, "")
+	}
+	if r.continuationToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "continuationToken", r.continuationToken, "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "count", r.count, "")
+	}
+	if r.latestStackVersionOnly != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "latestStackVersionOnly", r.latestStackVersionOnly, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -2732,34 +5880,34 @@ type ApiListEnvironmentRevisionTagsRequest struct {
 	projectName string
 	envName string
 	after *string
-	count *int32
+	count *int64
 }
 
-// after tag for pagination
+// Only return results after this value
 func (r ApiListEnvironmentRevisionTagsRequest) After(after string) ApiListEnvironmentRevisionTagsRequest {
 	r.after = &after
 	return r
 }
 
-// limit of tags to return
-func (r ApiListEnvironmentRevisionTagsRequest) Count(count int32) ApiListEnvironmentRevisionTagsRequest {
+// Maximum number of results to return
+func (r ApiListEnvironmentRevisionTagsRequest) Count(count int64) ApiListEnvironmentRevisionTagsRequest {
 	r.count = &count
 	return r
 }
 
-func (r ApiListEnvironmentRevisionTagsRequest) Execute() (*EnvironmentRevisionTags, *http.Response, error) {
+func (r ApiListEnvironmentRevisionTagsRequest) Execute() (*ListEnvironmentRevisionTagsResponse, *http.Response, error) {
 	return r.ApiService.ListEnvironmentRevisionTagsExecute(r)
 }
 
 /*
-ListEnvironmentRevisionTags List environment revisions
+ListEnvironmentRevisionTags ListRevisionTags
 
-List environment revisions
+Returns a paginated list of revision tags for a Pulumi ESC environment. Revision tags are named references pointing to specific revision numbers (e.g., 'latest', 'prod', 'stable'). They can be used in environment imports and Pulumi stack configuration to pin to a specific version. Use the after parameter for cursor-based pagination and count to limit results.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
  @return ApiListEnvironmentRevisionTagsRequest
 */
 func (a *EscAPIService) ListEnvironmentRevisionTags(ctx context.Context, orgName string, projectName string, envName string) ApiListEnvironmentRevisionTagsRequest {
@@ -2773,13 +5921,13 @@ func (a *EscAPIService) ListEnvironmentRevisionTags(ctx context.Context, orgName
 }
 
 // Execute executes the request
-//  @return EnvironmentRevisionTags
-func (a *EscAPIService) ListEnvironmentRevisionTagsExecute(r ApiListEnvironmentRevisionTagsRequest) (*EnvironmentRevisionTags, *http.Response, error) {
+//  @return ListEnvironmentRevisionTagsResponse
+func (a *EscAPIService) ListEnvironmentRevisionTagsExecute(r ApiListEnvironmentRevisionTagsRequest) (*ListEnvironmentRevisionTagsResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *EnvironmentRevisionTags
+		localVarReturnValue  *ListEnvironmentRevisionTagsResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListEnvironmentRevisionTags")
@@ -2795,24 +5943,6 @@ func (a *EscAPIService) ListEnvironmentRevisionTagsExecute(r ApiListEnvironmentR
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
 	if r.after != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "after", r.after, "")
@@ -2875,47 +6005,6 @@ func (a *EscAPIService) ListEnvironmentRevisionTagsExecute(r ApiListEnvironmentR
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -2937,18 +6026,18 @@ type ApiListEnvironmentRevisionsRequest struct {
 	orgName string
 	projectName string
 	envName string
-	before *int32
-	count *int32
+	before *int64
+	count *int64
 }
 
-// before revision number for pagination
-func (r ApiListEnvironmentRevisionsRequest) Before(before int32) ApiListEnvironmentRevisionsRequest {
+// Only return results before this revision
+func (r ApiListEnvironmentRevisionsRequest) Before(before int64) ApiListEnvironmentRevisionsRequest {
 	r.before = &before
 	return r
 }
 
-// limit of revisions to return
-func (r ApiListEnvironmentRevisionsRequest) Count(count int32) ApiListEnvironmentRevisionsRequest {
+// Maximum number of results to return
+func (r ApiListEnvironmentRevisionsRequest) Count(count int64) ApiListEnvironmentRevisionsRequest {
 	r.count = &count
 	return r
 }
@@ -2958,14 +6047,14 @@ func (r ApiListEnvironmentRevisionsRequest) Execute() ([]EnvironmentRevision, *h
 }
 
 /*
-ListEnvironmentRevisions List environment revisions
+ListEnvironmentRevisions ListEnvironmentRevisions
 
-List environment revisions
+Returns a paginated list of revisions for a Pulumi ESC environment. Each revision represents an immutable snapshot of the environment definition created when the environment is updated. The response includes revision numbers, timestamps, and the identity of the user who made each change. Use the before parameter to fetch revisions before a specific revision number, and count to limit the number of results returned.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
  @return ApiListEnvironmentRevisionsRequest
 */
 func (a *EscAPIService) ListEnvironmentRevisions(ctx context.Context, orgName string, projectName string, envName string) ApiListEnvironmentRevisionsRequest {
@@ -3001,24 +6090,6 @@ func (a *EscAPIService) ListEnvironmentRevisionsExecute(r ApiListEnvironmentRevi
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
 	if r.before != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "before", r.before, "")
@@ -3081,47 +6152,391 @@ func (a *EscAPIService) ListEnvironmentRevisionsExecute(r ApiListEnvironmentRevi
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListEnvironmentScheduleRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+}
+
+func (r ApiListEnvironmentScheduleRequest) Execute() (*ListScheduledActionsResponse, *http.Response, error) {
+	return r.ApiService.ListEnvironmentScheduleExecute(r)
+}
+
+/*
+ListEnvironmentSchedule ListEnvironmentSchedule
+
+Returns all scheduled actions configured for a Pulumi ESC environment. Schedules automate recurring operations such as secret rotation. The response includes each schedule's timing configuration, action type, and current status (active or paused).
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiListEnvironmentScheduleRequest
+*/
+func (a *EscAPIService) ListEnvironmentSchedule(ctx context.Context, orgName string, projectName string, envName string) ApiListEnvironmentScheduleRequest {
+	return ApiListEnvironmentScheduleRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return ListScheduledActionsResponse
+func (a *EscAPIService) ListEnvironmentScheduleExecute(r ApiListEnvironmentScheduleRequest) (*ListScheduledActionsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListScheduledActionsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListEnvironmentSchedule")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/schedules"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListEnvironmentScheduleHistoryRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	scheduleID string
+}
+
+func (r ApiListEnvironmentScheduleHistoryRequest) Execute() (*ListScheduledActionHistoryResponse, *http.Response, error) {
+	return r.ApiService.ListEnvironmentScheduleHistoryExecute(r)
+}
+
+/*
+ListEnvironmentScheduleHistory ListEnvironmentScheduleHistory
+
+Returns the execution history for a specific scheduled action on a Pulumi ESC environment. Each history entry includes the execution timestamp, outcome (success or failure), and any error details. This is useful for monitoring the reliability of automated operations like secret rotation.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param scheduleID The schedule ID
+ @return ApiListEnvironmentScheduleHistoryRequest
+*/
+func (a *EscAPIService) ListEnvironmentScheduleHistory(ctx context.Context, orgName string, projectName string, envName string, scheduleID string) ApiListEnvironmentScheduleHistoryRequest {
+	return ApiListEnvironmentScheduleHistoryRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		scheduleID: scheduleID,
+	}
+}
+
+// Execute executes the request
+//  @return ListScheduledActionHistoryResponse
+func (a *EscAPIService) ListEnvironmentScheduleHistoryExecute(r ApiListEnvironmentScheduleHistoryRequest) (*ListScheduledActionHistoryResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListScheduledActionHistoryResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListEnvironmentScheduleHistory")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}/history"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"scheduleID"+"}", url.PathEscape(parameterValueToString(r.scheduleID, "scheduleID")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListEnvironmentSecretRotationHistoryRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+}
+
+func (r ApiListEnvironmentSecretRotationHistoryRequest) Execute() (*ListEnvironmentSecretRotationHistoryResponse, *http.Response, error) {
+	return r.ApiService.ListEnvironmentSecretRotationHistoryExecute(r)
+}
+
+/*
+ListEnvironmentSecretRotationHistory ListEnvironmentSecretRotationHistory
+
+Returns the secret rotation history for a Pulumi ESC environment. Each entry represents a rotation event where secrets defined with fn::rotate were cycled to new values in their external systems. The response includes timestamps, outcomes, and the rotators involved. Requires the secret rotation feature to be enabled for the organization.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiListEnvironmentSecretRotationHistoryRequest
+*/
+func (a *EscAPIService) ListEnvironmentSecretRotationHistory(ctx context.Context, orgName string, projectName string, envName string) ApiListEnvironmentSecretRotationHistoryRequest {
+	return ApiListEnvironmentSecretRotationHistoryRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return ListEnvironmentSecretRotationHistoryResponse
+func (a *EscAPIService) ListEnvironmentSecretRotationHistoryExecute(r ApiListEnvironmentSecretRotationHistoryRequest) (*ListEnvironmentSecretRotationHistoryResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListEnvironmentSecretRotationHistoryResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListEnvironmentSecretRotationHistory")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/rotate/history"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -3143,35 +6558,35 @@ type ApiListEnvironmentTagsRequest struct {
 	orgName string
 	projectName string
 	envName string
-	after *string
-	count *int32
+	after *int64
+	count *int64
 }
 
-// after tag for pagination
-func (r ApiListEnvironmentTagsRequest) After(after string) ApiListEnvironmentTagsRequest {
+// Only return results after this value
+func (r ApiListEnvironmentTagsRequest) After(after int64) ApiListEnvironmentTagsRequest {
 	r.after = &after
 	return r
 }
 
-// limit of tags to return
-func (r ApiListEnvironmentTagsRequest) Count(count int32) ApiListEnvironmentTagsRequest {
+// Maximum number of results to return
+func (r ApiListEnvironmentTagsRequest) Count(count int64) ApiListEnvironmentTagsRequest {
 	r.count = &count
 	return r
 }
 
-func (r ApiListEnvironmentTagsRequest) Execute() (*ListEnvironmentTags, *http.Response, error) {
+func (r ApiListEnvironmentTagsRequest) Execute() (*ListEnvironmentTagsResponse, *http.Response, error) {
 	return r.ApiService.ListEnvironmentTagsExecute(r)
 }
 
 /*
-ListEnvironmentTags List environment tags
+ListEnvironmentTags ListEnvironmentTags
 
-List environment tags
+Returns a paginated list of user-defined tags for a Pulumi ESC environment. Tags are key-value pairs used for organizing and categorizing environments. Use the after parameter for cursor-based pagination and count to limit the number of results returned.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
  @return ApiListEnvironmentTagsRequest
 */
 func (a *EscAPIService) ListEnvironmentTags(ctx context.Context, orgName string, projectName string, envName string) ApiListEnvironmentTagsRequest {
@@ -3185,13 +6600,13 @@ func (a *EscAPIService) ListEnvironmentTags(ctx context.Context, orgName string,
 }
 
 // Execute executes the request
-//  @return ListEnvironmentTags
-func (a *EscAPIService) ListEnvironmentTagsExecute(r ApiListEnvironmentTagsRequest) (*ListEnvironmentTags, *http.Response, error) {
+//  @return ListEnvironmentTagsResponse
+func (a *EscAPIService) ListEnvironmentTagsExecute(r ApiListEnvironmentTagsRequest) (*ListEnvironmentTagsResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *ListEnvironmentTags
+		localVarReturnValue  *ListEnvironmentTagsResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListEnvironmentTags")
@@ -3207,24 +6622,6 @@ func (a *EscAPIService) ListEnvironmentTagsExecute(r ApiListEnvironmentTagsReque
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
 	if r.after != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "after", r.after, "")
@@ -3287,47 +6684,6 @@ func (a *EscAPIService) ListEnvironmentTagsExecute(r ApiListEnvironmentTagsReque
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -3348,25 +6704,39 @@ type ApiListEnvironmentsRequest struct {
 	ApiService *EscAPIService
 	orgName string
 	continuationToken *string
+	maxResults *int64
+	roleID *string
 }
 
-// continuation Token from previous query to fetch next page of results
+// Continuation token for paginated results
 func (r ApiListEnvironmentsRequest) ContinuationToken(continuationToken string) ApiListEnvironmentsRequest {
 	r.continuationToken = &continuationToken
 	return r
 }
 
-func (r ApiListEnvironmentsRequest) Execute() (*OrgEnvironments, *http.Response, error) {
+// Maximum number of results for pagination
+func (r ApiListEnvironmentsRequest) MaxResults(maxResults int64) ApiListEnvironmentsRequest {
+	r.maxResults = &maxResults
+	return r
+}
+
+// The custom role to use for listing environments
+func (r ApiListEnvironmentsRequest) RoleID(roleID string) ApiListEnvironmentsRequest {
+	r.roleID = &roleID
+	return r
+}
+
+func (r ApiListEnvironmentsRequest) Execute() (*ListEnvironmentsResponse, *http.Response, error) {
 	return r.ApiService.ListEnvironmentsExecute(r)
 }
 
 /*
-ListEnvironments List environments in the organization
+ListEnvironments ListOrgEnvironments
 
-List environments in the organization available to the current user
+Returns a paginated list of all Pulumi ESC environments within a specific organization. Each entry includes the project, environment name, and creation/modification timestamps. Results are scoped to the organization specified in the URL path. Use continuationToken for pagination through large result sets.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
+ @param orgName The organization name
  @return ApiListEnvironmentsRequest
 */
 func (a *EscAPIService) ListEnvironments(ctx context.Context, orgName string) ApiListEnvironmentsRequest {
@@ -3378,13 +6748,13 @@ func (a *EscAPIService) ListEnvironments(ctx context.Context, orgName string) Ap
 }
 
 // Execute executes the request
-//  @return OrgEnvironments
-func (a *EscAPIService) ListEnvironmentsExecute(r ApiListEnvironmentsRequest) (*OrgEnvironments, *http.Response, error) {
+//  @return ListEnvironmentsResponse
+func (a *EscAPIService) ListEnvironmentsExecute(r ApiListEnvironmentsRequest) (*ListEnvironmentsResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *OrgEnvironments
+		localVarReturnValue  *ListEnvironmentsResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListEnvironments")
@@ -3398,15 +6768,15 @@ func (a *EscAPIService) ListEnvironmentsExecute(r ApiListEnvironmentsRequest) (*
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
 
 	if r.continuationToken != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "continuationToken", r.continuationToken, "")
+	}
+	if r.maxResults != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "maxResults", r.maxResults, "")
+	}
+	if r.roleID != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "roleID", r.roleID, "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3463,47 +6833,669 @@ func (a *EscAPIService) ListEnvironmentsExecute(r ApiListEnvironmentsRequest) (*
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListEnvironmentsEscRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	continuationToken *string
+	organization *string
+}
+
+// Continuation token for paginated results
+func (r ApiListEnvironmentsEscRequest) ContinuationToken(continuationToken string) ApiListEnvironmentsEscRequest {
+	r.continuationToken = &continuationToken
+	return r
+}
+
+// Filter results to this organization name
+func (r ApiListEnvironmentsEscRequest) Organization(organization string) ApiListEnvironmentsEscRequest {
+	r.organization = &organization
+	return r
+}
+
+func (r ApiListEnvironmentsEscRequest) Execute() (*ListEnvironmentsResponse, *http.Response, error) {
+	return r.ApiService.ListEnvironmentsEscExecute(r)
+}
+
+/*
+ListEnvironmentsEsc ListEnvironments
+
+Returns a paginated list of all Pulumi ESC environments accessible to the authenticated user across all organizations they belong to. Each entry includes the organization, project, environment name, and creation/modification timestamps. Use the organization query parameter to filter results to a specific organization. Use continuationToken for pagination through large result sets.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListEnvironmentsEscRequest
+*/
+func (a *EscAPIService) ListEnvironmentsEsc(ctx context.Context) ApiListEnvironmentsEscRequest {
+	return ApiListEnvironmentsEscRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return ListEnvironmentsResponse
+func (a *EscAPIService) ListEnvironmentsEscExecute(r ApiListEnvironmentsEscRequest) (*ListEnvironmentsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListEnvironmentsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListEnvironmentsEsc")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.continuationToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "continuationToken", r.continuationToken, "")
+	}
+	if r.organization != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "organization", r.organization, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListProvidersRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName *string
+}
+
+// Filter providers available to this organization
+func (r ApiListProvidersRequest) OrgName(orgName string) ApiListProvidersRequest {
+	r.orgName = &orgName
+	return r
+}
+
+func (r ApiListProvidersRequest) Execute() (*ListProvidersResponse, *http.Response, error) {
+	return r.ApiService.ListProvidersExecute(r)
+}
+
+/*
+ListProviders ListProviders
+
+Returns a list of all available Pulumi ESC providers. Providers are integrations that dynamically retrieve configuration and secrets from external sources (e.g., AWS, Azure, Google Cloud, HashiCorp Vault, 1Password) via the fn::open function in environment definitions. Optionally filter by organization using the orgName query parameter to see only providers available to that organization.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListProvidersRequest
+*/
+func (a *EscAPIService) ListProviders(ctx context.Context) ApiListProvidersRequest {
+	return ApiListProvidersRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return ListProvidersResponse
+func (a *EscAPIService) ListProvidersExecute(r ApiListProvidersRequest) (*ListProvidersResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListProvidersResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListProviders")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/providers"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.orgName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "orgName", r.orgName, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListRevisionTagsEscEnvironmentsVersions2Request struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	version string
+	after *string
+	count *int64
+}
+
+// Only return results after this value
+func (r ApiListRevisionTagsEscEnvironmentsVersions2Request) After(after string) ApiListRevisionTagsEscEnvironmentsVersions2Request {
+	r.after = &after
+	return r
+}
+
+// Maximum number of results to return
+func (r ApiListRevisionTagsEscEnvironmentsVersions2Request) Count(count int64) ApiListRevisionTagsEscEnvironmentsVersions2Request {
+	r.count = &count
+	return r
+}
+
+func (r ApiListRevisionTagsEscEnvironmentsVersions2Request) Execute() (*ListEnvironmentRevisionTagsResponse, *http.Response, error) {
+	return r.ApiService.ListRevisionTagsEscEnvironmentsVersions2Execute(r)
+}
+
+/*
+ListRevisionTagsEscEnvironmentsVersions2 ListRevisionTags
+
+Returns a paginated list of revision tags for a Pulumi ESC environment. Revision tags are named references pointing to specific revision numbers (e.g., 'latest', 'prod', 'stable'). They can be used in environment imports and Pulumi stack configuration to pin to a specific version. Use the after parameter for cursor-based pagination and count to limit results.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param version The revision version number
+ @return ApiListRevisionTagsEscEnvironmentsVersions2Request
+*/
+func (a *EscAPIService) ListRevisionTagsEscEnvironmentsVersions2(ctx context.Context, orgName string, projectName string, envName string, version string) ApiListRevisionTagsEscEnvironmentsVersions2Request {
+	return ApiListRevisionTagsEscEnvironmentsVersions2Request{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		version: version,
+	}
+}
+
+// Execute executes the request
+//  @return ListEnvironmentRevisionTagsResponse
+func (a *EscAPIService) ListRevisionTagsEscEnvironmentsVersions2Execute(r ApiListRevisionTagsEscEnvironmentsVersions2Request) (*ListEnvironmentRevisionTagsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListEnvironmentRevisionTagsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListRevisionTagsEscEnvironmentsVersions2")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/{version}/tags"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"version"+"}", url.PathEscape(parameterValueToString(r.version, "version")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.after != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "after", r.after, "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "count", r.count, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListRotatorsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName *string
+}
+
+// Filter rotators available to this organization
+func (r ApiListRotatorsRequest) OrgName(orgName string) ApiListRotatorsRequest {
+	r.orgName = &orgName
+	return r
+}
+
+func (r ApiListRotatorsRequest) Execute() (*ListRotatorsResponse, *http.Response, error) {
+	return r.ApiService.ListRotatorsExecute(r)
+}
+
+/*
+ListRotators ListRotators
+
+Returns a list of all available Pulumi ESC secret rotators. Rotators are integrations that automatically rotate secrets in external systems via the fn::rotate function in environment definitions. Optionally filter by organization using the orgName query parameter to see only rotators available to that organization.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListRotatorsRequest
+*/
+func (a *EscAPIService) ListRotators(ctx context.Context) ApiListRotatorsRequest {
+	return ApiListRotatorsRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return ListRotatorsResponse
+func (a *EscAPIService) ListRotatorsExecute(r ApiListRotatorsRequest) (*ListRotatorsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListRotatorsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListRotators")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/rotators"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.orgName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "orgName", r.orgName, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListWebhooksRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+}
+
+func (r ApiListWebhooksRequest) Execute() ([]WebhookResponse, *http.Response, error) {
+	return r.ApiService.ListWebhooksExecute(r)
+}
+
+/*
+ListWebhooks ListWebhooks
+
+Returns a list of all webhooks configured for a Pulumi ESC environment. Each webhook entry includes its name, destination URL, event filters, format, and active status. Webhooks enable external services to be notified of environment events such as updates and opens.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiListWebhooksRequest
+*/
+func (a *EscAPIService) ListWebhooks(ctx context.Context, orgName string, projectName string, envName string) ApiListWebhooksRequest {
+	return ApiListWebhooksRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return []WebhookResponse
+func (a *EscAPIService) ListWebhooksExecute(r ApiListWebhooksRequest) ([]WebhookResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  []WebhookResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ListWebhooks")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/hooks"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -3528,25 +7520,25 @@ type ApiOpenEnvironmentRequest struct {
 	duration *string
 }
 
-// open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+// The session duration, using Go time units: ns, us, ms, s, m, h (e.g. &#39;2h&#39;)
 func (r ApiOpenEnvironmentRequest) Duration(duration string) ApiOpenEnvironmentRequest {
 	r.duration = &duration
 	return r
 }
 
-func (r ApiOpenEnvironmentRequest) Execute() (*OpenEnvironment, *http.Response, error) {
+func (r ApiOpenEnvironmentRequest) Execute() (*OpenEnvironmentResponse, *http.Response, error) {
 	return r.ApiService.OpenEnvironmentExecute(r)
 }
 
 /*
-OpenEnvironment Open an environment session
+OpenEnvironment OpenEnvironment
 
-Opens a session the given environment for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
+Opens a Pulumi ESC environment, fully resolving all dynamic values, provider integrations (fn::open), interpolation expressions, and secrets. This initiates an access session that evaluates the complete environment definition including all imports. The duration parameter specifies how long the session remains valid using Go duration format (e.g., '2h45m', '300ms'). Returns an OpenEnvironmentResponse containing the session ID and any diagnostics. Use the session ID with ReadOpenEnvironment to retrieve the resolved values.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
  @return ApiOpenEnvironmentRequest
 */
 func (a *EscAPIService) OpenEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiOpenEnvironmentRequest {
@@ -3560,13 +7552,13 @@ func (a *EscAPIService) OpenEnvironment(ctx context.Context, orgName string, pro
 }
 
 // Execute executes the request
-//  @return OpenEnvironment
-func (a *EscAPIService) OpenEnvironmentExecute(r ApiOpenEnvironmentRequest) (*OpenEnvironment, *http.Response, error) {
+//  @return OpenEnvironmentResponse
+func (a *EscAPIService) OpenEnvironmentExecute(r ApiOpenEnvironmentRequest) (*OpenEnvironmentResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *OpenEnvironment
+		localVarReturnValue  *OpenEnvironmentResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.OpenEnvironment")
@@ -3582,30 +7574,9 @@ func (a *EscAPIService) OpenEnvironmentExecute(r ApiOpenEnvironmentRequest) (*Op
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
 	if r.duration != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "duration", r.duration, "")
-	} else {
-		var defaultValue string = "1h"
-		r.duration = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3662,58 +7633,6 @@ func (a *EscAPIService) OpenEnvironmentExecute(r ApiOpenEnvironmentRequest) (*Op
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v EnvironmentDiagnostics
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -3739,26 +7658,26 @@ type ApiOpenEnvironmentAtVersionRequest struct {
 	duration *string
 }
 
-// open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+// The session duration, using Go time units: ns, us, ms, s, m, h (e.g. &#39;2h&#39;)
 func (r ApiOpenEnvironmentAtVersionRequest) Duration(duration string) ApiOpenEnvironmentAtVersionRequest {
 	r.duration = &duration
 	return r
 }
 
-func (r ApiOpenEnvironmentAtVersionRequest) Execute() (*OpenEnvironment, *http.Response, error) {
+func (r ApiOpenEnvironmentAtVersionRequest) Execute() (*OpenEnvironmentResponse, *http.Response, error) {
 	return r.ApiService.OpenEnvironmentAtVersionExecute(r)
 }
 
 /*
-OpenEnvironmentAtVersion Open an environment session at a specific version
+OpenEnvironmentAtVersion OpenEnvironment
 
-Opens a session the given environment at a specific version for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
+Opens a Pulumi ESC environment, fully resolving all dynamic values, provider integrations (fn::open), interpolation expressions, and secrets. This initiates an access session that evaluates the complete environment definition including all imports. The duration parameter specifies how long the session remains valid using Go duration format (e.g., '2h45m', '300ms'). Returns an OpenEnvironmentResponse containing the session ID and any diagnostics. Use the session ID with ReadOpenEnvironment to retrieve the resolved values.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @param version Revision or tag
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param version The revision version number
  @return ApiOpenEnvironmentAtVersionRequest
 */
 func (a *EscAPIService) OpenEnvironmentAtVersion(ctx context.Context, orgName string, projectName string, envName string, version string) ApiOpenEnvironmentAtVersionRequest {
@@ -3773,13 +7692,13 @@ func (a *EscAPIService) OpenEnvironmentAtVersion(ctx context.Context, orgName st
 }
 
 // Execute executes the request
-//  @return OpenEnvironment
-func (a *EscAPIService) OpenEnvironmentAtVersionExecute(r ApiOpenEnvironmentAtVersionRequest) (*OpenEnvironment, *http.Response, error) {
+//  @return OpenEnvironmentResponse
+func (a *EscAPIService) OpenEnvironmentAtVersionExecute(r ApiOpenEnvironmentAtVersionRequest) (*OpenEnvironmentResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *OpenEnvironment
+		localVarReturnValue  *OpenEnvironmentResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.OpenEnvironmentAtVersion")
@@ -3796,30 +7715,9 @@ func (a *EscAPIService) OpenEnvironmentAtVersionExecute(r ApiOpenEnvironmentAtVe
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
 	if r.duration != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "duration", r.duration, "")
-	} else {
-		var defaultValue string = "1h"
-		r.duration = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3876,58 +7774,1066 @@ func (a *EscAPIService) OpenEnvironmentAtVersionExecute(r ApiOpenEnvironmentAtVe
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v EnvironmentDiagnostics
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiOpenEnvironmentDraftRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	changeRequestID string
+	duration *string
+	revision *int64
+}
+
+// The session duration, using Go time units: ns, us, ms, s, m, h (e.g. &#39;2h&#39;)
+func (r ApiOpenEnvironmentDraftRequest) Duration(duration string) ApiOpenEnvironmentDraftRequest {
+	r.duration = &duration
+	return r
+}
+
+// The environment revision number to target
+func (r ApiOpenEnvironmentDraftRequest) Revision(revision int64) ApiOpenEnvironmentDraftRequest {
+	r.revision = &revision
+	return r
+}
+
+func (r ApiOpenEnvironmentDraftRequest) Execute() (*OpenEnvironmentResponse, *http.Response, error) {
+	return r.ApiService.OpenEnvironmentDraftExecute(r)
+}
+
+/*
+OpenEnvironmentDraft OpenEnvironmentDraft
+
+Opens a draft version of a Pulumi ESC environment, fully resolving all dynamic values, provider integrations, and secrets for the proposed changes. The duration parameter specifies how long the open session remains valid using Go duration format (e.g., '2h', '30m'). An optional revision parameter can target a specific base revision. Returns an OpenEnvironmentResponse containing the session ID for subsequent reads. Requires the Approvals feature.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param changeRequestID The change request ID
+ @return ApiOpenEnvironmentDraftRequest
+*/
+func (a *EscAPIService) OpenEnvironmentDraft(ctx context.Context, orgName string, projectName string, envName string, changeRequestID string) ApiOpenEnvironmentDraftRequest {
+	return ApiOpenEnvironmentDraftRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		changeRequestID: changeRequestID,
+	}
+}
+
+// Execute executes the request
+//  @return OpenEnvironmentResponse
+func (a *EscAPIService) OpenEnvironmentDraftExecute(r ApiOpenEnvironmentDraftRequest) (*OpenEnvironmentResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *OpenEnvironmentResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.OpenEnvironmentDraft")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/drafts/{changeRequestID}/open"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"changeRequestID"+"}", url.PathEscape(parameterValueToString(r.changeRequestID, "changeRequestID")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.duration != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "duration", r.duration, "")
+	}
+	if r.revision != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "revision", r.revision, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiOpenYAMLRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	duration *string
+}
+
+// The session duration, using Go time units: ns, us, ms, s, m, h (e.g. &#39;2h&#39;)
+func (r ApiOpenYAMLRequest) Duration(duration string) ApiOpenYAMLRequest {
+	r.duration = &duration
+	return r
+}
+
+func (r ApiOpenYAMLRequest) Execute() (*OpenEnvironmentResponse, *http.Response, error) {
+	return r.ApiService.OpenYAMLExecute(r)
+}
+
+/*
+OpenYAML OpenYAML
+
+Opens an anonymous Pulumi ESC environment from a raw YAML definition provided in the request body, fully resolving all dynamic values, provider integrations, and secrets. Unlike OpenEnvironment, this does not require a pre-existing environment to be stored. The duration parameter specifies how long the session remains valid using Go duration format. Returns an OpenEnvironmentResponse containing the session ID. Use the session ID with ReadAnonymousOpenEnvironment to retrieve the resolved values.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiOpenYAMLRequest
+*/
+func (a *EscAPIService) OpenYAML(ctx context.Context, orgName string) ApiOpenYAMLRequest {
+	return ApiOpenYAMLRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+//  @return OpenEnvironmentResponse
+func (a *EscAPIService) OpenYAMLExecute(r ApiOpenYAMLRequest) (*OpenEnvironmentResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *OpenEnvironmentResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.OpenYAML")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/yaml/open"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.duration != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "duration", r.duration, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiPatchEnvironmentSettingsRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	patchEnvironmentSettingsRequest *PatchEnvironmentSettingsRequest
+}
+
+func (r ApiPatchEnvironmentSettingsRequest) PatchEnvironmentSettingsRequest(patchEnvironmentSettingsRequest PatchEnvironmentSettingsRequest) ApiPatchEnvironmentSettingsRequest {
+	r.patchEnvironmentSettingsRequest = &patchEnvironmentSettingsRequest
+	return r
+}
+
+func (r ApiPatchEnvironmentSettingsRequest) Execute() (*http.Response, error) {
+	return r.ApiService.PatchEnvironmentSettingsExecute(r)
+}
+
+/*
+PatchEnvironmentSettings PatchEnvironmentSettings
+
+Updates settings for a Pulumi ESC environment using a partial update (patch) approach. Currently supports toggling deletion protection via the deletionProtected field. When deletionProtected is set to true, the environment cannot be deleted until the setting is explicitly disabled. Only the fields included in the request body are modified; omitted fields retain their current values.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiPatchEnvironmentSettingsRequest
+*/
+func (a *EscAPIService) PatchEnvironmentSettings(ctx context.Context, orgName string, projectName string, envName string) ApiPatchEnvironmentSettingsRequest {
+	return ApiPatchEnvironmentSettingsRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+func (a *EscAPIService) PatchEnvironmentSettingsExecute(r ApiPatchEnvironmentSettingsRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPatch
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.PatchEnvironmentSettings")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/settings"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.patchEnvironmentSettingsRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiPauseEnvironmentScheduleRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	scheduleID string
+}
+
+func (r ApiPauseEnvironmentScheduleRequest) Execute() (*http.Response, error) {
+	return r.ApiService.PauseEnvironmentScheduleExecute(r)
+}
+
+/*
+PauseEnvironmentSchedule PauseEnvironmentSchedule
+
+Pauses a scheduled action on a Pulumi ESC environment, preventing any future executions until the schedule is resumed. The schedule's configuration is preserved and can be reactivated via the ResumeEnvironmentSchedule endpoint. This is useful for temporarily disabling automated operations like secret rotation without deleting the schedule.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param scheduleID The schedule ID
+ @return ApiPauseEnvironmentScheduleRequest
+*/
+func (a *EscAPIService) PauseEnvironmentSchedule(ctx context.Context, orgName string, projectName string, envName string, scheduleID string) ApiPauseEnvironmentScheduleRequest {
+	return ApiPauseEnvironmentScheduleRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		scheduleID: scheduleID,
+	}
+}
+
+// Execute executes the request
+func (a *EscAPIService) PauseEnvironmentScheduleExecute(r ApiPauseEnvironmentScheduleRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.PauseEnvironmentSchedule")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}/pause"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"scheduleID"+"}", url.PathEscape(parameterValueToString(r.scheduleID, "scheduleID")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiPingWebhookRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	hookName string
+}
+
+func (r ApiPingWebhookRequest) Execute() (*WebhookDelivery, *http.Response, error) {
+	return r.ApiService.PingWebhookExecute(r)
+}
+
+/*
+PingWebhook PingWebhook
+
+Sends a test ping event to a webhook on a Pulumi ESC environment to verify that the webhook endpoint is reachable and functioning correctly. This bypasses the normal message queue and issues the request directly to the webhook URL. Returns the WebhookDelivery record containing the HTTP status code and response from the target endpoint.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param hookName The webhook name
+ @return ApiPingWebhookRequest
+*/
+func (a *EscAPIService) PingWebhook(ctx context.Context, orgName string, projectName string, envName string, hookName string) ApiPingWebhookRequest {
+	return ApiPingWebhookRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		hookName: hookName,
+	}
+}
+
+// Execute executes the request
+//  @return WebhookDelivery
+func (a *EscAPIService) PingWebhookExecute(r ApiPingWebhookRequest) (*WebhookDelivery, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *WebhookDelivery
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.PingWebhook")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}/ping"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"hookName"+"}", url.PathEscape(parameterValueToString(r.hookName, "hookName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiReadAnonymousOpenEnvironmentRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	openSessionID string
+	property *string
+}
+
+// A dot-separated path to a specific property to retrieve from the environment
+func (r ApiReadAnonymousOpenEnvironmentRequest) Property(property string) ApiReadAnonymousOpenEnvironmentRequest {
+	r.property = &property
+	return r
+}
+
+func (r ApiReadAnonymousOpenEnvironmentRequest) Execute() (map[string]interface{}, *http.Response, error) {
+	return r.ApiService.ReadAnonymousOpenEnvironmentExecute(r)
+}
+
+/*
+ReadAnonymousOpenEnvironment ReadAnonymousOpenEnvironment
+
+Reads the fully resolved values from an anonymous open environment session that was created via the OpenYAML endpoint. The openSessionID path parameter must match a valid, non-expired session. The optional property query parameter accepts a dot-separated path to retrieve a specific nested value instead of the entire resolved environment (e.g., 'aws.credentials.accessKeyId'). The response contains the resolved configuration values with secrets decrypted.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param openSessionID The session ID returned from the open environment operation
+ @return ApiReadAnonymousOpenEnvironmentRequest
+*/
+func (a *EscAPIService) ReadAnonymousOpenEnvironment(ctx context.Context, orgName string, openSessionID string) ApiReadAnonymousOpenEnvironmentRequest {
+	return ApiReadAnonymousOpenEnvironmentRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		openSessionID: openSessionID,
+	}
+}
+
+// Execute executes the request
+//  @return map[string]interface{}
+func (a *EscAPIService) ReadAnonymousOpenEnvironmentExecute(r ApiReadAnonymousOpenEnvironmentRequest) (map[string]interface{}, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  map[string]interface{}
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ReadAnonymousOpenEnvironment")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/yaml/open/{openSessionID}"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"openSessionID"+"}", url.PathEscape(parameterValueToString(r.openSessionID, "openSessionID")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.property != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "property", r.property, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiReadEnvironmentDraftRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	changeRequestID string
+	revision *int64
+}
+
+// The environment revision number to target
+func (r ApiReadEnvironmentDraftRequest) Revision(revision int64) ApiReadEnvironmentDraftRequest {
+	r.revision = &revision
+	return r
+}
+
+func (r ApiReadEnvironmentDraftRequest) Execute() (string, *http.Response, error) {
+	return r.ApiService.ReadEnvironmentDraftExecute(r)
+}
+
+/*
+ReadEnvironmentDraft ReadEnvironmentDraft
+
+Reads the YAML definition for a draft version of a Pulumi ESC environment. Drafts are proposed changes created as part of the approvals workflow. The draft is identified by the changeRequestID path parameter. An optional revision query parameter can target a specific base revision. The response is returned in application/x-yaml format. Requires the Approvals feature to be enabled.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param changeRequestID The change request ID
+ @return ApiReadEnvironmentDraftRequest
+*/
+func (a *EscAPIService) ReadEnvironmentDraft(ctx context.Context, orgName string, projectName string, envName string, changeRequestID string) ApiReadEnvironmentDraftRequest {
+	return ApiReadEnvironmentDraftRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		changeRequestID: changeRequestID,
+	}
+}
+
+// Execute executes the request
+//  @return string
+func (a *EscAPIService) ReadEnvironmentDraftExecute(r ApiReadEnvironmentDraftRequest) (string, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  string
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ReadEnvironmentDraft")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/drafts/{changeRequestID}"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"changeRequestID"+"}", url.PathEscape(parameterValueToString(r.changeRequestID, "changeRequestID")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.revision != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "revision", r.revision, "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/x-yaml"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiReadEnvironmentScheduleRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	scheduleID string
+}
+
+func (r ApiReadEnvironmentScheduleRequest) Execute() (*ScheduledAction, *http.Response, error) {
+	return r.ApiService.ReadEnvironmentScheduleExecute(r)
+}
+
+/*
+ReadEnvironmentSchedule ReadEnvironmentSchedule
+
+Returns the details of a specific scheduled action for a Pulumi ESC environment. The schedule is identified by the scheduleID path parameter. The response includes the schedule's timing configuration (cron expression or one-time), the action to perform, and the current status (active or paused).
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param scheduleID The schedule ID
+ @return ApiReadEnvironmentScheduleRequest
+*/
+func (a *EscAPIService) ReadEnvironmentSchedule(ctx context.Context, orgName string, projectName string, envName string, scheduleID string) ApiReadEnvironmentScheduleRequest {
+	return ApiReadEnvironmentScheduleRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		scheduleID: scheduleID,
+	}
+}
+
+// Execute executes the request
+//  @return ScheduledAction
+func (a *EscAPIService) ReadEnvironmentScheduleExecute(r ApiReadEnvironmentScheduleRequest) (*ScheduledAction, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ScheduledAction
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ReadEnvironmentSchedule")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"scheduleID"+"}", url.PathEscape(parameterValueToString(r.scheduleID, "scheduleID")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -3950,22 +8856,29 @@ type ApiReadOpenEnvironmentRequest struct {
 	projectName string
 	envName string
 	openSessionID string
+	property *string
 }
 
-func (r ApiReadOpenEnvironmentRequest) Execute() (*Environment, *http.Response, error) {
+// A dot-separated path to a specific property to retrieve from the environment
+func (r ApiReadOpenEnvironmentRequest) Property(property string) ApiReadOpenEnvironmentRequest {
+	r.property = &property
+	return r
+}
+
+func (r ApiReadOpenEnvironmentRequest) Execute() (*EscEnvironment, *http.Response, error) {
 	return r.ApiService.ReadOpenEnvironmentExecute(r)
 }
 
 /*
-ReadOpenEnvironment Read an open environment
+ReadOpenEnvironment ReadOpenEnvironment
 
-Reads and decrypts secrets including retrieving dynamic secrets from providers.
+Reads the fully resolved values from an open environment session that was created via the OpenEnvironment endpoint. The openSessionID path parameter must match a valid, non-expired session. The optional property query parameter accepts a dot-separated path to retrieve a specific nested value instead of the entire resolved environment (e.g., 'aws.credentials.accessKeyId'). The response contains all resolved configuration values with secrets decrypted and provider-sourced values fully evaluated.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @param openSessionID Open session ID returned from environment open
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param openSessionID The session ID returned from the open environment operation
  @return ApiReadOpenEnvironmentRequest
 */
 func (a *EscAPIService) ReadOpenEnvironment(ctx context.Context, orgName string, projectName string, envName string, openSessionID string) ApiReadOpenEnvironmentRequest {
@@ -3980,13 +8893,13 @@ func (a *EscAPIService) ReadOpenEnvironment(ctx context.Context, orgName string,
 }
 
 // Execute executes the request
-//  @return Environment
-func (a *EscAPIService) ReadOpenEnvironmentExecute(r ApiReadOpenEnvironmentRequest) (*Environment, *http.Response, error) {
+//  @return EscEnvironment
+func (a *EscAPIService) ReadOpenEnvironmentExecute(r ApiReadOpenEnvironmentRequest) (*EscEnvironment, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *Environment
+		localVarReturnValue  *EscEnvironment
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ReadOpenEnvironment")
@@ -4003,25 +8916,10 @@ func (a *EscAPIService) ReadOpenEnvironmentExecute(r ApiReadOpenEnvironmentReque
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 
+	if r.property != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "property", r.property, "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -4077,47 +8975,6 @@ func (a *EscAPIService) ReadOpenEnvironmentExecute(r ApiReadOpenEnvironmentReque
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -4149,20 +9006,20 @@ func (r ApiReadOpenEnvironmentPropertyRequest) Property(property string) ApiRead
 	return r
 }
 
-func (r ApiReadOpenEnvironmentPropertyRequest) Execute() (*Value, *http.Response, error) {
+func (r ApiReadOpenEnvironmentPropertyRequest) Execute() (*EscValue, *http.Response, error) {
 	return r.ApiService.ReadOpenEnvironmentPropertyExecute(r)
 }
 
 /*
-ReadOpenEnvironmentProperty Read an open environment
+ReadOpenEnvironmentProperty Read an open environment property
 
-Reads and decrypts secrets including retrieving dynamic secrets from providers.
+Reads and decrypts a specific property including retrieving dynamic secrets from providers.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @param openSessionID Open session ID returned from environment open
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param openSessionID The session ID returned from the open environment operation
  @return ApiReadOpenEnvironmentPropertyRequest
 */
 func (a *EscAPIService) ReadOpenEnvironmentProperty(ctx context.Context, orgName string, projectName string, envName string, openSessionID string) ApiReadOpenEnvironmentPropertyRequest {
@@ -4177,13 +9034,13 @@ func (a *EscAPIService) ReadOpenEnvironmentProperty(ctx context.Context, orgName
 }
 
 // Execute executes the request
-//  @return Value
-func (a *EscAPIService) ReadOpenEnvironmentPropertyExecute(r ApiReadOpenEnvironmentPropertyRequest) (*Value, *http.Response, error) {
+//  @return EscValue
+func (a *EscAPIService) ReadOpenEnvironmentPropertyExecute(r ApiReadOpenEnvironmentPropertyRequest) (*EscValue, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *Value
+		localVarReturnValue  *EscValue
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ReadOpenEnvironmentProperty")
@@ -4200,24 +9057,6 @@ func (a *EscAPIService) ReadOpenEnvironmentPropertyExecute(r ApiReadOpenEnvironm
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
 	if r.property == nil {
 		return localVarReturnValue, nil, reportError("property is required and must be specified")
 	}
@@ -4278,47 +9117,6 @@ func (a *EscAPIService) ReadOpenEnvironmentPropertyExecute(r ApiReadOpenEnvironm
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -4334,95 +9132,79 @@ func (a *EscAPIService) ReadOpenEnvironmentPropertyExecute(r ApiReadOpenEnvironm
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiUpdateEnvironmentRevisionTagRequest struct {
+type ApiReadOpenEnvironmentRequestRequest struct {
 	ctx context.Context
 	ApiService *EscAPIService
 	orgName string
 	projectName string
 	envName string
-	tagName string
-	updateEnvironmentRevisionTag *UpdateEnvironmentRevisionTag
+	changeRequestID string
+	revision *int64
 }
 
-// Update environment revision tag
-func (r ApiUpdateEnvironmentRevisionTagRequest) UpdateEnvironmentRevisionTag(updateEnvironmentRevisionTag UpdateEnvironmentRevisionTag) ApiUpdateEnvironmentRevisionTagRequest {
-	r.updateEnvironmentRevisionTag = &updateEnvironmentRevisionTag
+// The environment revision number to target
+func (r ApiReadOpenEnvironmentRequestRequest) Revision(revision int64) ApiReadOpenEnvironmentRequestRequest {
+	r.revision = &revision
 	return r
 }
 
-func (r ApiUpdateEnvironmentRevisionTagRequest) Execute() (*http.Response, error) {
-	return r.ApiService.UpdateEnvironmentRevisionTagExecute(r)
+func (r ApiReadOpenEnvironmentRequestRequest) Execute() (*CreateEnvironmentOpenRequest, *http.Response, error) {
+	return r.ApiService.ReadOpenEnvironmentRequestExecute(r)
 }
 
 /*
-UpdateEnvironmentRevisionTag Update environment revision tag
+ReadOpenEnvironmentRequest ReadOpenEnvironmentRequest
 
-Update environment revision tag
+Reads the details of an open environment request that was created as part of the gated opens approval workflow. The request is identified by the changeRequestID path parameter. The response includes the request's status, the requesting user, and approval details. An optional revision query parameter can target a specific environment revision. Requires the Approvals feature to be enabled.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @param tagName Tag name
- @return ApiUpdateEnvironmentRevisionTagRequest
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param changeRequestID The change request ID
+ @return ApiReadOpenEnvironmentRequestRequest
 */
-func (a *EscAPIService) UpdateEnvironmentRevisionTag(ctx context.Context, orgName string, projectName string, envName string, tagName string) ApiUpdateEnvironmentRevisionTagRequest {
-	return ApiUpdateEnvironmentRevisionTagRequest{
+func (a *EscAPIService) ReadOpenEnvironmentRequest(ctx context.Context, orgName string, projectName string, envName string, changeRequestID string) ApiReadOpenEnvironmentRequestRequest {
+	return ApiReadOpenEnvironmentRequestRequest{
 		ApiService: a,
 		ctx: ctx,
 		orgName: orgName,
 		projectName: projectName,
 		envName: envName,
-		tagName: tagName,
+		changeRequestID: changeRequestID,
 	}
 }
 
 // Execute executes the request
-func (a *EscAPIService) UpdateEnvironmentRevisionTagExecute(r ApiUpdateEnvironmentRevisionTagRequest) (*http.Response, error) {
+//  @return CreateEnvironmentOpenRequest
+func (a *EscAPIService) ReadOpenEnvironmentRequestExecute(r ApiReadOpenEnvironmentRequestRequest) (*CreateEnvironmentOpenRequest, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
+		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
+		localVarReturnValue  *CreateEnvironmentOpenRequest
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.UpdateEnvironmentRevisionTag")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ReadOpenEnvironmentRequest")
 	if err != nil {
-		return nil, &GenericOpenAPIError{error: err.Error()}
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}"
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/open/request/{changeRequestID}"
 	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"tagName"+"}", url.PathEscape(parameterValueToString(r.tagName, "tagName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"changeRequestID"+"}", url.PathEscape(parameterValueToString(r.changeRequestID, "changeRequestID")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return nil, reportError("envName must have less than 100 elements")
-	}
-	if r.updateEnvironmentRevisionTag == nil {
-		return nil, reportError("updateEnvironmentRevisionTag is required and must be specified")
-	}
 
+	if r.revision != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "revision", r.revision, "")
+	}
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -4440,8 +9222,266 @@ func (a *EscAPIService) UpdateEnvironmentRevisionTagExecute(r ApiUpdateEnvironme
 	}
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiRedeliverWebhookEventRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	hookName string
+	event string
+}
+
+func (r ApiRedeliverWebhookEventRequest) Execute() (*WebhookDelivery, *http.Response, error) {
+	return r.ApiService.RedeliverWebhookEventExecute(r)
+}
+
+/*
+RedeliverWebhookEvent RedeliverWebhookEvent
+
+Triggers the Pulumi Service to redeliver a specific event to a webhook on a Pulumi ESC environment. This is useful for resending events that the webhook endpoint failed to process on the initial delivery attempt (e.g., due to temporary downtime or errors). The event is identified by its delivery event ID in the URL path. Returns the new WebhookDelivery record for the redelivery.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param hookName The webhook name
+ @param event The webhook delivery event ID to redeliver
+ @return ApiRedeliverWebhookEventRequest
+*/
+func (a *EscAPIService) RedeliverWebhookEvent(ctx context.Context, orgName string, projectName string, envName string, hookName string, event string) ApiRedeliverWebhookEventRequest {
+	return ApiRedeliverWebhookEventRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		hookName: hookName,
+		event: event,
+	}
+}
+
+// Execute executes the request
+//  @return WebhookDelivery
+func (a *EscAPIService) RedeliverWebhookEventExecute(r ApiRedeliverWebhookEventRequest) (*WebhookDelivery, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *WebhookDelivery
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.RedeliverWebhookEvent")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}/deliveries/{event}/redeliver"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"hookName"+"}", url.PathEscape(parameterValueToString(r.hookName, "hookName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"event"+"}", url.PathEscape(parameterValueToString(r.event, "event")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiRestoreEnvironmentRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	restoreEnvironmentRequest *RestoreEnvironmentRequest
+}
+
+func (r ApiRestoreEnvironmentRequest) RestoreEnvironmentRequest(restoreEnvironmentRequest RestoreEnvironmentRequest) ApiRestoreEnvironmentRequest {
+	r.restoreEnvironmentRequest = &restoreEnvironmentRequest
+	return r
+}
+
+func (r ApiRestoreEnvironmentRequest) Execute() (*http.Response, error) {
+	return r.ApiService.RestoreEnvironmentExecute(r)
+}
+
+/*
+RestoreEnvironment RestoreEnvironment
+
+Restores a previously deleted Pulumi ESC environment within an organization. The request body specifies the environment to restore by its project and name. The environment must have been deleted within the retention window and not yet permanently purged. Returns 204 on success with no response body. Returns 404 if the deleted environment cannot be found.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @return ApiRestoreEnvironmentRequest
+*/
+func (a *EscAPIService) RestoreEnvironment(ctx context.Context, orgName string) ApiRestoreEnvironmentRequest {
+	return ApiRestoreEnvironmentRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+	}
+}
+
+// Execute executes the request
+func (a *EscAPIService) RestoreEnvironmentExecute(r ApiRestoreEnvironmentRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPut
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.RestoreEnvironment")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/restore"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
 	// body params
-	localVarPostBody = r.updateEnvironmentRevisionTag
+	localVarPostBody = r.restoreEnvironmentRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -4478,62 +9518,791 @@ func (a *EscAPIService) UpdateEnvironmentRevisionTagExecute(r ApiUpdateEnvironme
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
 
 	return localVarHTTPResponse, nil
+}
+
+type ApiResumeEnvironmentScheduleRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	scheduleID string
+}
+
+func (r ApiResumeEnvironmentScheduleRequest) Execute() (*http.Response, error) {
+	return r.ApiService.ResumeEnvironmentScheduleExecute(r)
+}
+
+/*
+ResumeEnvironmentSchedule ResumeEnvironmentSchedule
+
+Resumes a previously paused scheduled action on a Pulumi ESC environment, re-enabling future executions. The schedule will continue from its next scheduled time according to its configured timing (cron expression or one-time schedule). The schedule is identified by the scheduleID path parameter.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param scheduleID The schedule ID
+ @return ApiResumeEnvironmentScheduleRequest
+*/
+func (a *EscAPIService) ResumeEnvironmentSchedule(ctx context.Context, orgName string, projectName string, envName string, scheduleID string) ApiResumeEnvironmentScheduleRequest {
+	return ApiResumeEnvironmentScheduleRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		scheduleID: scheduleID,
+	}
+}
+
+// Execute executes the request
+func (a *EscAPIService) ResumeEnvironmentScheduleExecute(r ApiResumeEnvironmentScheduleRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.ResumeEnvironmentSchedule")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}/resume"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"scheduleID"+"}", url.PathEscape(parameterValueToString(r.scheduleID, "scheduleID")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiRetractEnvironmentRevisionRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	version string
+	retractEnvironmentRevisionRequest *RetractEnvironmentRevisionRequest
+}
+
+func (r ApiRetractEnvironmentRevisionRequest) RetractEnvironmentRevisionRequest(retractEnvironmentRevisionRequest RetractEnvironmentRevisionRequest) ApiRetractEnvironmentRevisionRequest {
+	r.retractEnvironmentRevisionRequest = &retractEnvironmentRevisionRequest
+	return r
+}
+
+func (r ApiRetractEnvironmentRevisionRequest) Execute() (*http.Response, error) {
+	return r.ApiService.RetractEnvironmentRevisionExecute(r)
+}
+
+/*
+RetractEnvironmentRevision RetractEnvironmentRevision
+
+Retracts a specific revision of a Pulumi ESC environment, marking it as withdrawn. A retracted revision remains in the history but is no longer considered a valid version for use. The request body may include a reason for the retraction. The revision is identified by the version path parameter. Returns 204 on success with no response body.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param version The revision version number
+ @return ApiRetractEnvironmentRevisionRequest
+*/
+func (a *EscAPIService) RetractEnvironmentRevision(ctx context.Context, orgName string, projectName string, envName string, version string) ApiRetractEnvironmentRevisionRequest {
+	return ApiRetractEnvironmentRevisionRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		version: version,
+	}
+}
+
+// Execute executes the request
+func (a *EscAPIService) RetractEnvironmentRevisionExecute(r ApiRetractEnvironmentRevisionRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.RetractEnvironmentRevision")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/{version}/retract"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"version"+"}", url.PathEscape(parameterValueToString(r.version, "version")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.retractEnvironmentRevisionRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiRotateEnvironmentRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	rotateEnvironmentRequest *RotateEnvironmentRequest
+}
+
+func (r ApiRotateEnvironmentRequest) RotateEnvironmentRequest(rotateEnvironmentRequest RotateEnvironmentRequest) ApiRotateEnvironmentRequest {
+	r.rotateEnvironmentRequest = &rotateEnvironmentRequest
+	return r
+}
+
+func (r ApiRotateEnvironmentRequest) Execute() (*RotateEnvironmentResponse, *http.Response, error) {
+	return r.ApiService.RotateEnvironmentExecute(r)
+}
+
+/*
+RotateEnvironment RotateEnvironment
+
+Triggers secret rotation for a Pulumi ESC environment. This evaluates all fn::rotate declarations in the environment definition and rotates the corresponding secrets in their external systems (e.g., rotating database passwords, API keys, or cloud credentials). Requires the secret rotation feature to be enabled for the organization. Returns 409 if the environment has been modified since it was last read.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @return ApiRotateEnvironmentRequest
+*/
+func (a *EscAPIService) RotateEnvironment(ctx context.Context, orgName string, projectName string, envName string) ApiRotateEnvironmentRequest {
+	return ApiRotateEnvironmentRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+	}
+}
+
+// Execute executes the request
+//  @return RotateEnvironmentResponse
+func (a *EscAPIService) RotateEnvironmentExecute(r ApiRotateEnvironmentRequest) (*RotateEnvironmentResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *RotateEnvironmentResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.RotateEnvironment")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/rotate"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.rotateEnvironmentRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateEnvironmentDraftRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	changeRequestID string
+}
+
+func (r ApiUpdateEnvironmentDraftRequest) Execute() (*ChangeRequestRef, *http.Response, error) {
+	return r.ApiService.UpdateEnvironmentDraftExecute(r)
+}
+
+/*
+UpdateEnvironmentDraft UpdateEnvironmentDraft
+
+Updates the YAML definition of an existing draft change request for a Pulumi ESC environment. The draft is identified by the changeRequestID path parameter. The request body contains the updated YAML definition. Returns a ChangeRequestRef on success. Requires the Approvals feature to be enabled for the organization.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param changeRequestID The change request ID
+ @return ApiUpdateEnvironmentDraftRequest
+*/
+func (a *EscAPIService) UpdateEnvironmentDraft(ctx context.Context, orgName string, projectName string, envName string, changeRequestID string) ApiUpdateEnvironmentDraftRequest {
+	return ApiUpdateEnvironmentDraftRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		changeRequestID: changeRequestID,
+	}
+}
+
+// Execute executes the request
+//  @return ChangeRequestRef
+func (a *EscAPIService) UpdateEnvironmentDraftExecute(r ApiUpdateEnvironmentDraftRequest) (*ChangeRequestRef, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPatch
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ChangeRequestRef
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.UpdateEnvironmentDraft")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/drafts/{changeRequestID}"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"changeRequestID"+"}", url.PathEscape(parameterValueToString(r.changeRequestID, "changeRequestID")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateEnvironmentRevisionTagRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	tagName string
+	updateEnvironmentRevisionTagRequest *UpdateEnvironmentRevisionTagRequest
+}
+
+func (r ApiUpdateEnvironmentRevisionTagRequest) UpdateEnvironmentRevisionTagRequest(updateEnvironmentRevisionTagRequest UpdateEnvironmentRevisionTagRequest) ApiUpdateEnvironmentRevisionTagRequest {
+	r.updateEnvironmentRevisionTagRequest = &updateEnvironmentRevisionTagRequest
+	return r
+}
+
+func (r ApiUpdateEnvironmentRevisionTagRequest) Execute() (*http.Response, error) {
+	return r.ApiService.UpdateEnvironmentRevisionTagExecute(r)
+}
+
+/*
+UpdateEnvironmentRevisionTag UpdateRevisionTag
+
+Updates an existing revision tag for a Pulumi ESC environment to point to a different revision number. The tag is identified by its name in the URL path. The request body specifies the new revision number. This allows advancing or rolling back a named reference (e.g., moving the 'prod' tag to a newer or older revision). Returns 204 on success with no response body.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param tagName The revision tag name
+ @return ApiUpdateEnvironmentRevisionTagRequest
+*/
+func (a *EscAPIService) UpdateEnvironmentRevisionTag(ctx context.Context, orgName string, projectName string, envName string, tagName string) ApiUpdateEnvironmentRevisionTagRequest {
+	return ApiUpdateEnvironmentRevisionTagRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		tagName: tagName,
+	}
+}
+
+// Execute executes the request
+func (a *EscAPIService) UpdateEnvironmentRevisionTagExecute(r ApiUpdateEnvironmentRevisionTagRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPatch
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.UpdateEnvironmentRevisionTag")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"tagName"+"}", url.PathEscape(parameterValueToString(r.tagName, "tagName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.updateEnvironmentRevisionTagRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiUpdateEnvironmentScheduleRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	scheduleID string
+	createEnvironmentScheduleRequest *CreateEnvironmentScheduleRequest
+}
+
+func (r ApiUpdateEnvironmentScheduleRequest) CreateEnvironmentScheduleRequest(createEnvironmentScheduleRequest CreateEnvironmentScheduleRequest) ApiUpdateEnvironmentScheduleRequest {
+	r.createEnvironmentScheduleRequest = &createEnvironmentScheduleRequest
+	return r
+}
+
+func (r ApiUpdateEnvironmentScheduleRequest) Execute() (*ScheduledAction, *http.Response, error) {
+	return r.ApiService.UpdateEnvironmentScheduleExecute(r)
+}
+
+/*
+UpdateEnvironmentSchedule UpdateEnvironmentSchedule
+
+Updates the configuration of a scheduled action for a Pulumi ESC environment. The schedule is identified by the scheduleID path parameter. The request body specifies the updated timing and action configuration. Changes take effect for future executions only; any currently running execution is not affected. Returns the updated ScheduledAction on success.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param scheduleID The schedule ID
+ @return ApiUpdateEnvironmentScheduleRequest
+*/
+func (a *EscAPIService) UpdateEnvironmentSchedule(ctx context.Context, orgName string, projectName string, envName string, scheduleID string) ApiUpdateEnvironmentScheduleRequest {
+	return ApiUpdateEnvironmentScheduleRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		scheduleID: scheduleID,
+	}
+}
+
+// Execute executes the request
+//  @return ScheduledAction
+func (a *EscAPIService) UpdateEnvironmentScheduleExecute(r ApiUpdateEnvironmentScheduleRequest) (*ScheduledAction, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPatch
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ScheduledAction
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.UpdateEnvironmentSchedule")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"scheduleID"+"}", url.PathEscape(parameterValueToString(r.scheduleID, "scheduleID")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.createEnvironmentScheduleRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 type ApiUpdateEnvironmentTagRequest struct {
@@ -4543,12 +10312,11 @@ type ApiUpdateEnvironmentTagRequest struct {
 	projectName string
 	envName string
 	tagName string
-	updateEnvironmentTag *UpdateEnvironmentTag
+	updateEnvironmentTagRequest *UpdateEnvironmentTagRequest
 }
 
-// Update environment tag
-func (r ApiUpdateEnvironmentTagRequest) UpdateEnvironmentTag(updateEnvironmentTag UpdateEnvironmentTag) ApiUpdateEnvironmentTagRequest {
-	r.updateEnvironmentTag = &updateEnvironmentTag
+func (r ApiUpdateEnvironmentTagRequest) UpdateEnvironmentTagRequest(updateEnvironmentTagRequest UpdateEnvironmentTagRequest) ApiUpdateEnvironmentTagRequest {
+	r.updateEnvironmentTagRequest = &updateEnvironmentTagRequest
 	return r
 }
 
@@ -4557,15 +10325,15 @@ func (r ApiUpdateEnvironmentTagRequest) Execute() (*EnvironmentTag, *http.Respon
 }
 
 /*
-UpdateEnvironmentTag Update an environment tag
+UpdateEnvironmentTag UpdateEnvironmentTag
 
-Update an environment tag
+Modifies the value of an existing user-defined tag on a Pulumi ESC environment. The tag is identified by its name in the URL path. The request body contains the new value for the tag. Returns the updated EnvironmentTag on success. Returns 404 if the tag does not exist on the environment.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
- @param tagName Tag name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param tagName The environment tag name
  @return ApiUpdateEnvironmentTagRequest
 */
 func (a *EscAPIService) UpdateEnvironmentTag(ctx context.Context, orgName string, projectName string, envName string, tagName string) ApiUpdateEnvironmentTagRequest {
@@ -4603,27 +10371,6 @@ func (a *EscAPIService) UpdateEnvironmentTagExecute(r ApiUpdateEnvironmentTagReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
-	if r.updateEnvironmentTag == nil {
-		return localVarReturnValue, nil, reportError("updateEnvironmentTag is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -4645,7 +10392,7 @@ func (a *EscAPIService) UpdateEnvironmentTagExecute(r ApiUpdateEnvironmentTagReq
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
 	// body params
-	localVarPostBody = r.updateEnvironmentTag
+	localVarPostBody = r.updateEnvironmentTagRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -4682,58 +10429,6 @@ func (a *EscAPIService) UpdateEnvironmentTagExecute(r ApiUpdateEnvironmentTagReq
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -4758,25 +10453,24 @@ type ApiUpdateEnvironmentYamlRequest struct {
 	body *string
 }
 
-// Environment Yaml content
 func (r ApiUpdateEnvironmentYamlRequest) Body(body string) ApiUpdateEnvironmentYamlRequest {
 	r.body = &body
 	return r
 }
 
-func (r ApiUpdateEnvironmentYamlRequest) Execute() (*EnvironmentDiagnostics, *http.Response, error) {
+func (r ApiUpdateEnvironmentYamlRequest) Execute() (*UpdateEnvironmentResponse, *http.Response, error) {
 	return r.ApiService.UpdateEnvironmentYamlExecute(r)
 }
 
 /*
-UpdateEnvironmentYaml Update an existing environment with Yaml file
+UpdateEnvironmentYaml UpdateEnvironment
 
-Validates and updates the given environment's definition.
+Validates and updates the YAML definition of a Pulumi ESC environment. The request body must contain the complete environment definition in application/x-yaml format, including imports, values, provider configurations, and function invocations. Each successful update creates a new immutable revision in the environment's version history. Supports optimistic concurrency control via ETag/If-Match headers; returns 409 if the environment has been modified since it was last read.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param orgName Organization name
- @param projectName Project name
- @param envName Environment name
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
  @return ApiUpdateEnvironmentYamlRequest
 */
 func (a *EscAPIService) UpdateEnvironmentYaml(ctx context.Context, orgName string, projectName string, envName string) ApiUpdateEnvironmentYamlRequest {
@@ -4790,13 +10484,13 @@ func (a *EscAPIService) UpdateEnvironmentYaml(ctx context.Context, orgName strin
 }
 
 // Execute executes the request
-//  @return EnvironmentDiagnostics
-func (a *EscAPIService) UpdateEnvironmentYamlExecute(r ApiUpdateEnvironmentYamlRequest) (*EnvironmentDiagnostics, *http.Response, error) {
+//  @return UpdateEnvironmentResponse
+func (a *EscAPIService) UpdateEnvironmentYamlExecute(r ApiUpdateEnvironmentYamlRequest) (*UpdateEnvironmentResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPatch
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *EnvironmentDiagnostics
+		localVarReturnValue  *UpdateEnvironmentResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.UpdateEnvironmentYaml")
@@ -4812,27 +10506,6 @@ func (a *EscAPIService) UpdateEnvironmentYamlExecute(r ApiUpdateEnvironmentYamlR
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if strlen(r.orgName) < 3 {
-		return localVarReturnValue, nil, reportError("orgName must have at least 3 elements")
-	}
-	if strlen(r.orgName) > 40 {
-		return localVarReturnValue, nil, reportError("orgName must have less than 40 elements")
-	}
-	if strlen(r.projectName) < 1 {
-		return localVarReturnValue, nil, reportError("projectName must have at least 1 elements")
-	}
-	if strlen(r.projectName) > 100 {
-		return localVarReturnValue, nil, reportError("projectName must have less than 100 elements")
-	}
-	if strlen(r.envName) < 1 {
-		return localVarReturnValue, nil, reportError("envName must have at least 1 elements")
-	}
-	if strlen(r.envName) > 100 {
-		return localVarReturnValue, nil, reportError("envName must have less than 100 elements")
-	}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/x-yaml"}
@@ -4891,69 +10564,284 @@ func (a *EscAPIService) UpdateEnvironmentYamlExecute(r ApiUpdateEnvironmentYamlR
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v EnvironmentDiagnostics
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateOpenEnvironmentRequestRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	changeRequestID string
+	createEnvironmentOpenRequest *CreateEnvironmentOpenRequest
+}
+
+func (r ApiUpdateOpenEnvironmentRequestRequest) CreateEnvironmentOpenRequest(createEnvironmentOpenRequest CreateEnvironmentOpenRequest) ApiUpdateOpenEnvironmentRequestRequest {
+	r.createEnvironmentOpenRequest = &createEnvironmentOpenRequest
+	return r
+}
+
+func (r ApiUpdateOpenEnvironmentRequestRequest) Execute() (*ChangeRequestRef, *http.Response, error) {
+	return r.ApiService.UpdateOpenEnvironmentRequestExecute(r)
+}
+
+/*
+UpdateOpenEnvironmentRequest UpdateOpenEnvironmentRequest
+
+Updates an existing open environment request that was created as part of the gated opens approval workflow. The request is identified by the changeRequestID path parameter. The request body contains the updated open request details, such as approval status. Returns a ChangeRequestRef on success. Requires the Approvals feature to be enabled for the organization.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param changeRequestID The change request ID
+ @return ApiUpdateOpenEnvironmentRequestRequest
+*/
+func (a *EscAPIService) UpdateOpenEnvironmentRequest(ctx context.Context, orgName string, projectName string, envName string, changeRequestID string) ApiUpdateOpenEnvironmentRequestRequest {
+	return ApiUpdateOpenEnvironmentRequestRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		changeRequestID: changeRequestID,
+	}
+}
+
+// Execute executes the request
+//  @return ChangeRequestRef
+func (a *EscAPIService) UpdateOpenEnvironmentRequestExecute(r ApiUpdateOpenEnvironmentRequestRequest) (*ChangeRequestRef, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPut
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ChangeRequestRef
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.UpdateOpenEnvironmentRequest")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/open/request/{changeRequestID}"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"changeRequestID"+"}", url.PathEscape(parameterValueToString(r.changeRequestID, "changeRequestID")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.createEnvironmentOpenRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 404 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 409 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
 		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateWebhookRequest struct {
+	ctx context.Context
+	ApiService *EscAPIService
+	orgName string
+	projectName string
+	envName string
+	hookName string
+	webhook *Webhook
+}
+
+func (r ApiUpdateWebhookRequest) Webhook(webhook Webhook) ApiUpdateWebhookRequest {
+	r.webhook = &webhook
+	return r
+}
+
+func (r ApiUpdateWebhookRequest) Execute() (*WebhookResponse, *http.Response, error) {
+	return r.ApiService.UpdateWebhookExecute(r)
+}
+
+/*
+UpdateWebhook UpdateWebhook
+
+Updates the configuration of an existing webhook on a Pulumi ESC environment. The webhook is identified by its name in the URL path. The request body contains the updated webhook configuration including destination URL, event filters, format, and active status. Returns the updated WebhookResponse on success. Returns 400 if an invalid format is specified.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param orgName The organization name
+ @param projectName The project name
+ @param envName The environment name
+ @param hookName The webhook name
+ @return ApiUpdateWebhookRequest
+*/
+func (a *EscAPIService) UpdateWebhook(ctx context.Context, orgName string, projectName string, envName string, hookName string) ApiUpdateWebhookRequest {
+	return ApiUpdateWebhookRequest{
+		ApiService: a,
+		ctx: ctx,
+		orgName: orgName,
+		projectName: projectName,
+		envName: envName,
+		hookName: hookName,
+	}
+}
+
+// Execute executes the request
+//  @return WebhookResponse
+func (a *EscAPIService) UpdateWebhookExecute(r ApiUpdateWebhookRequest) (*WebhookResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPatch
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *WebhookResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EscAPIService.UpdateWebhook")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"orgName"+"}", url.PathEscape(parameterValueToString(r.orgName, "orgName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"projectName"+"}", url.PathEscape(parameterValueToString(r.projectName, "projectName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"envName"+"}", url.PathEscape(parameterValueToString(r.envName, "envName")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"hookName"+"}", url.PathEscape(parameterValueToString(r.hookName, "hookName")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Pulumi-Source", "esc-sdk", "")
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "User-Agent", userAgent, "")
+	// body params
+	localVarPostBody = r.webhook
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["Authorization"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-			var v Error
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 

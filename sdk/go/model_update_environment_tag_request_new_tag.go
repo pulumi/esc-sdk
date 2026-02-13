@@ -13,29 +13,25 @@ package esc_sdk
 
 import (
 	"encoding/json"
-	"bytes"
-	"fmt"
 )
 
 // checks if the UpdateEnvironmentTagRequestNewTag type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateEnvironmentTagRequestNewTag{}
 
-// UpdateEnvironmentTagRequestNewTag struct for UpdateEnvironmentTagRequestNewTag
+// UpdateEnvironmentTagRequestNewTag The new tag name and value to set when updating an environment tag.
 type UpdateEnvironmentTagRequestNewTag struct {
-	Name string `json:"name"`
-	Value string `json:"value"`
+	// The new tag name.
+	Name *string `json:"name,omitempty"`
+	// The new tag value.
+	Value *string `json:"value,omitempty"`
 }
-
-type _UpdateEnvironmentTagRequestNewTag UpdateEnvironmentTagRequestNewTag
 
 // NewUpdateEnvironmentTagRequestNewTag instantiates a new UpdateEnvironmentTagRequestNewTag object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpdateEnvironmentTagRequestNewTag(name string, value string) *UpdateEnvironmentTagRequestNewTag {
+func NewUpdateEnvironmentTagRequestNewTag() *UpdateEnvironmentTagRequestNewTag {
 	this := UpdateEnvironmentTagRequestNewTag{}
-	this.Name = name
-	this.Value = value
 	return &this
 }
 
@@ -47,52 +43,68 @@ func NewUpdateEnvironmentTagRequestNewTagWithDefaults() *UpdateEnvironmentTagReq
 	return &this
 }
 
-// GetName returns the Name field value
+// GetName returns the Name field value if set, zero value otherwise.
 func (o *UpdateEnvironmentTagRequestNewTag) GetName() string {
-	if o == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
-
-	return o.Name
+	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UpdateEnvironmentTagRequestNewTag) GetNameOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return &o.Name, true
+	return o.Name, true
 }
 
-// SetName sets field value
+// HasName returns a boolean if a field has been set.
+func (o *UpdateEnvironmentTagRequestNewTag) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
 func (o *UpdateEnvironmentTagRequestNewTag) SetName(v string) {
-	o.Name = v
+	o.Name = &v
 }
 
-// GetValue returns the Value field value
+// GetValue returns the Value field value if set, zero value otherwise.
 func (o *UpdateEnvironmentTagRequestNewTag) GetValue() string {
-	if o == nil {
+	if o == nil || IsNil(o.Value) {
 		var ret string
 		return ret
 	}
-
-	return o.Value
+	return *o.Value
 }
 
-// GetValueOk returns a tuple with the Value field value
+// GetValueOk returns a tuple with the Value field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UpdateEnvironmentTagRequestNewTag) GetValueOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Value) {
 		return nil, false
 	}
-	return &o.Value, true
+	return o.Value, true
 }
 
-// SetValue sets field value
+// HasValue returns a boolean if a field has been set.
+func (o *UpdateEnvironmentTagRequestNewTag) HasValue() bool {
+	if o != nil && !IsNil(o.Value) {
+		return true
+	}
+
+	return false
+}
+
+// SetValue gets a reference to the given string and assigns it to the Value field.
 func (o *UpdateEnvironmentTagRequestNewTag) SetValue(v string) {
-	o.Value = v
+	o.Value = &v
 }
 
 func (o UpdateEnvironmentTagRequestNewTag) MarshalJSON() ([]byte, error) {
@@ -105,47 +117,13 @@ func (o UpdateEnvironmentTagRequestNewTag) MarshalJSON() ([]byte, error) {
 
 func (o UpdateEnvironmentTagRequestNewTag) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["name"] = o.Name
-	toSerialize["value"] = o.Value
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.Value) {
+		toSerialize["value"] = o.Value
+	}
 	return toSerialize, nil
-}
-
-func (o *UpdateEnvironmentTagRequestNewTag) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"name",
-		"value",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err;
-	}
-
-	for _, requiredProperty := range(requiredProperties) {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varUpdateEnvironmentTagRequestNewTag := _UpdateEnvironmentTagRequestNewTag{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varUpdateEnvironmentTagRequestNewTag)
-
-	if err != nil {
-		return err
-	}
-
-	*o = UpdateEnvironmentTagRequestNewTag(varUpdateEnvironmentTagRequestNewTag)
-
-	return err
 }
 
 type NullableUpdateEnvironmentTagRequestNewTag struct {

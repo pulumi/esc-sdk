@@ -28,216 +28,673 @@ import type { RequestArgs } from './base';
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base';
 
 /**
- * 
+ * Request to initiate AWS SSO flow
  * @export
- * @interface Access
+ * @interface AWSSSOInitiateRequest
  */
-export interface Access {
+export interface AWSSSOInitiateRequest {
     /**
-     * 
-     * @type {Range}
-     * @memberof Access
-     */
-    'receiver'?: Range;
-    /**
-     * 
-     * @type {Array<Accessor>}
-     * @memberof Access
-     */
-    'accessors'?: Array<Accessor>;
-}
-/**
- * 
- * @export
- * @interface Accessor
- */
-export interface Accessor {
-    /**
-     * 
-     * @type {number}
-     * @memberof Accessor
-     */
-    'index'?: number;
-    /**
-     * 
+     * The AWS SSO Region
      * @type {string}
-     * @memberof Accessor
+     * @memberof AWSSSOInitiateRequest
      */
-    'key': string;
+    'region': string;
     /**
-     * 
-     * @type {Range}
-     * @memberof Accessor
+     * The AWS SSO Start URL
+     * @type {string}
+     * @memberof AWSSSOInitiateRequest
      */
-    'range': Range;
+    'startUrl': string;
+}
+/**
+ * Response of the initialization of the AWS SSO flow
+ * @export
+ * @interface AWSSSOInitiateResponse
+ */
+export interface AWSSSOInitiateResponse {
+    /**
+     * The auth session id
+     * @type {string}
+     * @memberof AWSSSOInitiateResponse
+     */
+    'sessionId': string;
+    /**
+     * The AWS SSO Verification URL
+     * @type {string}
+     * @memberof AWSSSOInitiateResponse
+     */
+    'url': string;
+    /**
+     * The AWS SSO User Code to verify
+     * @type {string}
+     * @memberof AWSSSOInitiateResponse
+     */
+    'userCode': string;
+}
+/**
+ * Request to setup AWS from AWS SSO
+ * @export
+ * @interface AWSSSOSetupRequest
+ */
+export interface AWSSSOSetupRequest {
+    /**
+     * The AWS account id
+     * @type {string}
+     * @memberof AWSSSOSetupRequest
+     */
+    'accountId': string;
+    /**
+     * The AWS account role name
+     * @type {string}
+     * @memberof AWSSSOSetupRequest
+     */
+    'accountRoleName': string;
+    /**
+     * Name of IAM Role for OIDC
+     * @type {string}
+     * @memberof AWSSSOSetupRequest
+     */
+    'oidcRoleName': string;
+    /**
+     * ARN of the IAM policy to attach to the role
+     * @type {string}
+     * @memberof AWSSSOSetupRequest
+     */
+    'policyArn': string;
+    /**
+     * The AWS SSO Region
+     * @type {string}
+     * @memberof AWSSSOSetupRequest
+     */
+    'region': string;
+    /**
+     * The auth session id
+     * @type {string}
+     * @memberof AWSSSOSetupRequest
+     */
+    'sessionId': string;
+}
+/**
+ * Request to setup AWS OIDC infrastructure using static credentials
+ * @export
+ * @interface AWSSetupRequest
+ */
+export interface AWSSetupRequest {
+    /**
+     * AWS Access Key ID
+     * @type {string}
+     * @memberof AWSSetupRequest
+     */
+    'accessKeyId': string;
+    /**
+     * Name of IAM Role for OIDC
+     * @type {string}
+     * @memberof AWSSetupRequest
+     */
+    'oidcRoleName': string;
+    /**
+     * ARN of the IAM policy to attach to the role
+     * @type {string}
+     * @memberof AWSSetupRequest
+     */
+    'policyArn': string;
+    /**
+     * AWS Secret Access Key
+     * @type {string}
+     * @memberof AWSSetupRequest
+     */
+    'secretAccessKey': string;
+    /**
+     * AWS Session Token (for temporary credentials)
+     * @type {string}
+     * @memberof AWSSetupRequest
+     */
+    'sessionToken': string;
+}
+/**
+ * Azure environment configuration information
+ * @export
+ * @interface AzureEnvironmentInfo
+ */
+export interface AzureEnvironmentInfo {
+    /**
+     * ESC environment name
+     * @type {string}
+     * @memberof AzureEnvironmentInfo
+     */
+    'environmentName': string;
+    /**
+     * ESC project name
+     * @type {string}
+     * @memberof AzureEnvironmentInfo
+     */
+    'projectName': string;
+    /**
+     * Azure role ID
+     * @type {string}
+     * @memberof AzureEnvironmentInfo
+     */
+    'roleID': string;
+    /**
+     * Azure subscription ID
+     * @type {string}
+     * @memberof AzureEnvironmentInfo
+     */
+    'subscriptionID': string;
+}
+/**
+ * Azure provider options
+ * @export
+ * @interface AzureOptions
+ */
+export interface AzureOptions {
+    /**
+     * Azure API name (e.g., \'management\', \'graph\')
+     * @type {string}
+     * @memberof AzureOptions
+     */
+    'apiName'?: string;
+    /**
+     * Azure tenant ID
+     * @type {string}
+     * @memberof AzureOptions
+     */
+    'tenantId'?: string;
+}
+/**
+ * Request to setup Azure infrastructure and ESC environments
+ * @export
+ * @interface AzureSetupRequest
+ */
+export interface AzureSetupRequest {
+    /**
+     * ARM (Azure Resource Manager) OAuth session ID
+     * @type {string}
+     * @memberof AzureSetupRequest
+     */
+    'armSessionId': string;
+    /**
+     * List of Azure environment configurations to create
+     * @type {Array<AzureEnvironmentInfo>}
+     * @memberof AzureSetupRequest
+     */
+    'azureEnvironmentInfos': Array<AzureEnvironmentInfo>;
+    /**
+     * Microsoft Graph OAuth session ID
+     * @type {string}
+     * @memberof AzureSetupRequest
+     */
+    'graphSessionId': string;
+}
+/**
+ * Represents change request ref.
+ * @export
+ * @interface ChangeRequestRef
+ */
+export interface ChangeRequestRef {
+    /**
+     * The change request identifier
+     * @type {string}
+     * @memberof ChangeRequestRef
+     */
+    'changeRequestId'?: string;
+    /**
+     * The latest revision number
+     * @type {number}
+     * @memberof ChangeRequestRef
+     */
+    'latestRevisionNumber'?: number;
 }
 /**
  * 
  * @export
- * @interface CheckEnvironment
+ * @interface CheckEnvironmentResponse
  */
-export interface CheckEnvironment {
+export interface CheckEnvironmentResponse {
     /**
      * 
-     * @type {{ [key: string]: Expr; }}
-     * @memberof CheckEnvironment
+     * @type {EscEvaluatedExecutionContext}
+     * @memberof CheckEnvironmentResponse
      */
-    'exprs'?: { [key: string]: Expr; };
+    'executionContext'?: EscEvaluatedExecutionContext;
     /**
-     * 
-     * @type {{ [key: string]: Value; }}
-     * @memberof CheckEnvironment
+     * Exprs contains the AST for each expression in the environment definition.
+     * @type {{ [key: string]: EscExpr; }}
+     * @memberof CheckEnvironmentResponse
      */
-    'properties'?: { [key: string]: Value; };
+    'exprs'?: { [key: string]: EscExpr; };
     /**
-     * 
+     * Properties contains the detailed values produced by the environment.
+     * @type {{ [key: string]: EscValue; }}
+     * @memberof CheckEnvironmentResponse
+     */
+    'properties'?: { [key: string]: EscValue; };
+    /**
+     * Schema contains the schema for Properties.
      * @type {any}
-     * @memberof CheckEnvironment
+     * @memberof CheckEnvironmentResponse
      */
     'schema'?: any;
     /**
-     * 
-     * @type {EvaluatedExecutionContext}
-     * @memberof CheckEnvironment
-     */
-    'executionContext'?: EvaluatedExecutionContext;
-    /**
-     * 
+     * List of diagnostics
      * @type {Array<EnvironmentDiagnostic>}
-     * @memberof CheckEnvironment
+     * @memberof CheckEnvironmentResponse
      */
     'diagnostics'?: Array<EnvironmentDiagnostic>;
+    /**
+     * 
+     * @type {EnvironmentFunctionSummary}
+     * @memberof CheckEnvironmentResponse
+     */
+    'environmentFunctionSummary': EnvironmentFunctionSummary;
 }
 /**
- * 
+ * Request body for cloning an ESC environment to a new environment.
  * @export
- * @interface CloneEnvironment
+ * @interface CloneEnvironmentRequest
  */
-export interface CloneEnvironment {
+export interface CloneEnvironmentRequest {
     /**
-     * 
+     * Name for the newly cloned environment.
      * @type {string}
-     * @memberof CloneEnvironment
-     */
-    'project': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CloneEnvironment
+     * @memberof CloneEnvironmentRequest
      */
     'name': string;
     /**
-     * 
+     * Whether to copy access control settings from the source environment.
      * @type {boolean}
-     * @memberof CloneEnvironment
+     * @memberof CloneEnvironmentRequest
      */
     'preserveAccess'?: boolean;
     /**
-     * 
+     * Whether to copy environment-level tags from the source environment.
      * @type {boolean}
-     * @memberof CloneEnvironment
+     * @memberof CloneEnvironmentRequest
      */
     'preserveEnvironmentTags'?: boolean;
     /**
-     * 
+     * Whether to copy the revision history from the source environment.
      * @type {boolean}
-     * @memberof CloneEnvironment
+     * @memberof CloneEnvironmentRequest
      */
     'preserveHistory'?: boolean;
     /**
-     * 
+     * Whether to copy revision-level tags from the source environment.
      * @type {boolean}
-     * @memberof CloneEnvironment
+     * @memberof CloneEnvironmentRequest
      */
     'preserveRevisionTags'?: boolean;
+    /**
+     * Target project for the cloned environment. If omitted, uses the source project.
+     * @type {string}
+     * @memberof CloneEnvironmentRequest
+     */
+    'project'?: string;
+    /**
+     * Specific version of the source environment to clone. If omitted, clones the latest version.
+     * @type {number}
+     * @memberof CloneEnvironmentRequest
+     */
+    'version'?: number;
 }
 /**
- * 
+ * Cloud account information
  * @export
- * @interface CreateEnvironment
+ * @interface CloudAccount
  */
-export interface CreateEnvironment {
+export interface CloudAccount {
+    /**
+     * Account/subscription ID
+     * @type {string}
+     * @memberof CloudAccount
+     */
+    'id': string;
+    /**
+     * Account/subscription name
+     * @type {string}
+     * @memberof CloudAccount
+     */
+    'name': string;
+    /**
+     * Project number (for Azure)
+     * @type {number}
+     * @memberof CloudAccount
+     */
+    'number'?: number;
+    /**
+     * Roles
+     * @type {Array<string>}
+     * @memberof CloudAccount
+     */
+    'roles'?: Array<string>;
+}
+/**
+ * CloudSetupProvider configuration
+ * @export
+ * @interface CloudSetupProvider
+ */
+export interface CloudSetupProvider {
     /**
      * 
+     * @type {AzureOptions}
+     * @memberof CloudSetupProvider
+     */
+    'azure'?: AzureOptions;
+    /**
+     * CloudSetupProvider name (e.g., \'azure\', \'gcp\')
      * @type {string}
-     * @memberof CreateEnvironment
+     * @memberof CloudSetupProvider
+     */
+    'name': string;
+}
+/**
+ * A cloud resource that was created or managed during setup
+ * @export
+ * @interface CloudSetupResource
+ */
+export interface CloudSetupResource {
+    /**
+     * Error message if the resource operation failed
+     * @type {string}
+     * @memberof CloudSetupResource
+     */
+    'error'?: string;
+    /**
+     * Unique identifier of the resource
+     * @type {string}
+     * @memberof CloudSetupResource
+     */
+    'id': string;
+    /**
+     * Name of the resource
+     * @type {string}
+     * @memberof CloudSetupResource
+     */
+    'name': string;
+    /**
+     * Additional properties of the resource
+     * @type {{ [key: string]: string; }}
+     * @memberof CloudSetupResource
+     */
+    'properties'?: { [key: string]: string; };
+    /**
+     * Status of the resource operation
+     * @type {string}
+     * @memberof CloudSetupResource
+     */
+    'status': string;
+    /**
+     * Type of the resource
+     * @type {string}
+     * @memberof CloudSetupResource
+     */
+    'type': string;
+}
+/**
+ * Result of a cloud setup operation
+ * @export
+ * @interface CloudSetupResult
+ */
+export interface CloudSetupResult {
+    /**
+     * Optional message about the setup operation
+     * @type {string}
+     * @memberof CloudSetupResult
+     */
+    'message'?: string;
+    /**
+     * List of resources created or managed during setup
+     * @type {Array<CloudSetupResource>}
+     * @memberof CloudSetupResult
+     */
+    'resources': Array<CloudSetupResource>;
+    /**
+     * Whether the setup operation was successful
+     * @type {boolean}
+     * @memberof CloudSetupResult
+     */
+    'success': boolean;
+}
+/**
+ * Request to complete OAuth flow by exchanging authorization code for access token
+ * @export
+ * @interface CompleteOAuthRequest
+ */
+export interface CompleteOAuthRequest {
+    /**
+     * Authorization code returned from OAuth provider
+     * @type {string}
+     * @memberof CompleteOAuthRequest
+     */
+    'code': string;
+    /**
+     * 
+     * @type {CloudSetupProvider}
+     * @memberof CompleteOAuthRequest
+     */
+    'provider': CloudSetupProvider;
+    /**
+     * Session identifier from OAuth initiation
+     * @type {string}
+     * @memberof CompleteOAuthRequest
+     */
+    'sessionID': string;
+}
+/**
+ * CreateEnvironmentOpenRequest is used to create an environment open request
+ * @export
+ * @interface CreateEnvironmentOpenRequest
+ */
+export interface CreateEnvironmentOpenRequest {
+    /**
+     * Total duration that the resulting grant can be used to access the environment open endpoint (after first open)
+     * @type {number}
+     * @memberof CreateEnvironmentOpenRequest
+     */
+    'accessDurationSeconds': number;
+    /**
+     * Time from application of the request until the resulting grant expires
+     * @type {number}
+     * @memberof CreateEnvironmentOpenRequest
+     */
+    'grantExpirationSeconds': number;
+}
+/**
+ * Response body for create environment open request.
+ * @export
+ * @interface CreateEnvironmentOpenRequestResponse
+ */
+export interface CreateEnvironmentOpenRequestResponse {
+    /**
+     * List of change requests
+     * @type {Array<CreateEnvironmentOpenRequestResult>}
+     * @memberof CreateEnvironmentOpenRequestResponse
+     */
+    'changeRequests': Array<CreateEnvironmentOpenRequestResult>;
+}
+/**
+ * Result of create environment open request.
+ * @export
+ * @interface CreateEnvironmentOpenRequestResult
+ */
+export interface CreateEnvironmentOpenRequestResult {
+    /**
+     * The change request identifier
+     * @type {string}
+     * @memberof CreateEnvironmentOpenRequestResult
+     */
+    'changeRequestId': string;
+    /**
+     * The environment name
+     * @type {string}
+     * @memberof CreateEnvironmentOpenRequestResult
+     */
+    'environmentName': string;
+    /**
+     * The entity tag for concurrency control
+     * @type {string}
+     * @memberof CreateEnvironmentOpenRequestResult
+     */
+    'etag': string;
+    /**
+     * The latest revision number
+     * @type {number}
+     * @memberof CreateEnvironmentOpenRequestResult
+     */
+    'latestRevisionNumber': number;
+    /**
+     * The project name
+     * @type {string}
+     * @memberof CreateEnvironmentOpenRequestResult
+     */
+    'projectName': string;
+}
+/**
+ * Request body for create environment.
+ * @export
+ * @interface CreateEnvironmentRequest
+ */
+export interface CreateEnvironmentRequest {
+    /**
+     * The name
+     * @type {string}
+     * @memberof CreateEnvironmentRequest
+     */
+    'name': string;
+    /**
+     * The project
+     * @type {string}
+     * @memberof CreateEnvironmentRequest
      */
     'project': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateEnvironment
-     */
-    'name': string;
 }
 /**
- * 
+ * Request body for create environment revision tag.
  * @export
- * @interface CreateEnvironmentRevisionTag
+ * @interface CreateEnvironmentRevisionTagRequest
  */
-export interface CreateEnvironmentRevisionTag {
+export interface CreateEnvironmentRevisionTagRequest {
     /**
-     * 
+     * The name
      * @type {string}
-     * @memberof CreateEnvironmentRevisionTag
+     * @memberof CreateEnvironmentRevisionTagRequest
      */
     'name': string;
     /**
-     * 
+     * The revision
      * @type {number}
-     * @memberof CreateEnvironmentRevisionTag
+     * @memberof CreateEnvironmentRevisionTagRequest
      */
-    'revision': number;
+    'revision'?: number;
 }
 /**
- * 
+ * CreateEnvironmentScheduleRequest is an API request model to create all types of environment schedules.
  * @export
- * @interface CreateEnvironmentTag
+ * @interface CreateEnvironmentScheduleRequest
  */
-export interface CreateEnvironmentTag {
+export interface CreateEnvironmentScheduleRequest {
+    /**
+     * The schedule cron
+     * @type {string}
+     * @memberof CreateEnvironmentScheduleRequest
+     */
+    'scheduleCron'?: string;
+    /**
+     * The schedule once
+     * @type {string}
+     * @memberof CreateEnvironmentScheduleRequest
+     */
+    'scheduleOnce'?: string;
     /**
      * 
+     * @type {CreateEnvironmentSecretRotationScheduleRequest}
+     * @memberof CreateEnvironmentScheduleRequest
+     */
+    'secretRotationRequest'?: CreateEnvironmentSecretRotationScheduleRequest;
+}
+/**
+ * CreateEnvironmentSecretRotationScheduleRequest defines the request payload that is expected when creating a new environment secret rotation schedule.
+ * @export
+ * @interface CreateEnvironmentSecretRotationScheduleRequest
+ */
+export interface CreateEnvironmentSecretRotationScheduleRequest {
+    /**
+     * Environment Path specifies a path to a rotated secret to be updated Leave the field blank to rotate ALL rotated secrets in an environment
      * @type {string}
-     * @memberof CreateEnvironmentTag
+     * @memberof CreateEnvironmentSecretRotationScheduleRequest
+     */
+    'environmentPath': string;
+}
+/**
+ * Request body for create environment tag.
+ * @export
+ * @interface CreateEnvironmentTagRequest
+ */
+export interface CreateEnvironmentTagRequest {
+    /**
+     * The name
+     * @type {string}
+     * @memberof CreateEnvironmentTagRequest
      */
     'name': string;
     /**
-     * 
+     * The value
      * @type {string}
-     * @memberof CreateEnvironmentTag
+     * @memberof CreateEnvironmentTagRequest
      */
     'value': string;
 }
 /**
- * 
+ * DecryptEnvironmentSecretsRequest defines the request body for decrypting secret values.
  * @export
- * @interface Environment
+ * @interface DecryptEnvironmentSecretsRequest
  */
-export interface Environment {
+export interface DecryptEnvironmentSecretsRequest {
     /**
-     * 
-     * @type {{ [key: string]: Expr; }}
-     * @memberof Environment
+     * The list of encrypted ciphertext values to decrypt.
+     * @type {Array<string>}
+     * @memberof DecryptEnvironmentSecretsRequest
      */
-    'exprs'?: { [key: string]: Expr; };
+    'ciphertexts': Array<string>;
+}
+/**
+ * DecryptEnvironmentSecretsResponse defines the response body for multiple decrypted values.
+ * @export
+ * @interface DecryptEnvironmentSecretsResponse
+ */
+export interface DecryptEnvironmentSecretsResponse {
     /**
-     * 
-     * @type {{ [key: string]: Value; }}
-     * @memberof Environment
+     * The list of decrypted plaintext values.
+     * @type {Array<string>}
+     * @memberof DecryptEnvironmentSecretsResponse
      */
-    'properties'?: { [key: string]: Value; };
+    'plaintexts': Array<string>;
+}
+/**
+ * EncryptEnvironmentSecretsRequest defines the request body for encrypting secret values.
+ * @export
+ * @interface EncryptEnvironmentSecretsRequest
+ */
+export interface EncryptEnvironmentSecretsRequest {
     /**
-     * 
-     * @type {any}
-     * @memberof Environment
+     * The list of plaintext values to encrypt.
+     * @type {Array<string>}
+     * @memberof EncryptEnvironmentSecretsRequest
      */
-    'schema'?: any;
+    'plaintexts': Array<string>;
+}
+/**
+ * EncryptEnvironmentSecretsResponse defines the response body for multiple encrypted values.
+ * @export
+ * @interface EncryptEnvironmentSecretsResponse
+ */
+export interface EncryptEnvironmentSecretsResponse {
     /**
-     * 
-     * @type {EvaluatedExecutionContext}
-     * @memberof Environment
+     * The encrypted values, in order of the plaintexts from the request.
+     * @type {Array<string>}
+     * @memberof EncryptEnvironmentSecretsResponse
      */
-    'executionContext'?: EvaluatedExecutionContext;
+    'ciphertexts': Array<string>;
 }
 /**
  * 
@@ -268,12 +725,6 @@ export interface EnvironmentDefinitionValues {
 
     /**
      * 
-     * @type {{ [key: string]: any; }}
-     * @memberof EnvironmentDefinitionValues
-     */
-    'pulumiConfig'?: { [key: string]: any; };
-    /**
-     * 
      * @type {{ [key: string]: string; }}
      * @memberof EnvironmentDefinitionValues
      */
@@ -284,349 +735,1268 @@ export interface EnvironmentDefinitionValues {
      * @memberof EnvironmentDefinitionValues
      */
     'files'?: { [key: string]: string; };
+    /**
+     * 
+     * @type {{ [key: string]: any; }}
+     * @memberof EnvironmentDefinitionValues
+     */
+    'pulumiConfig'?: { [key: string]: any; };
 }
 /**
- * 
+ * EnvironmentDiagnostic represents a diagnostic message associated with an environment definition.
  * @export
  * @interface EnvironmentDiagnostic
  */
 export interface EnvironmentDiagnostic {
-    [key: string]: object | any;
-
     /**
-     * 
-     * @type {string}
-     * @memberof EnvironmentDiagnostic
-     */
-    'summary': string;
-    /**
-     * 
+     * The path within the environment definition where the diagnostic occurred.
      * @type {string}
      * @memberof EnvironmentDiagnostic
      */
     'path'?: string;
     /**
      * 
-     * @type {Range}
+     * @type {EscRange}
      * @memberof EnvironmentDiagnostic
      */
-    'range'?: Range;
+    'range'?: EscRange;
+    /**
+     * A summary of the diagnostic message.
+     * @type {string}
+     * @memberof EnvironmentDiagnostic
+     */
+    'summary'?: string;
 }
 /**
- * 
+ * EnvironmentDiagnosticsResponse contains a list of diagnostics from an environment operation.
  * @export
- * @interface EnvironmentDiagnostics
+ * @interface EnvironmentDiagnosticsResponse
  */
-export interface EnvironmentDiagnostics {
+export interface EnvironmentDiagnosticsResponse {
     /**
-     * 
+     * The list of diagnostics produced by the environment operation.
      * @type {Array<EnvironmentDiagnostic>}
-     * @memberof EnvironmentDiagnostics
+     * @memberof EnvironmentDiagnosticsResponse
      */
     'diagnostics'?: Array<EnvironmentDiagnostic>;
 }
 /**
+ * EnvironmentFunctionSummary summarizes the functions used in an environment, including counts and rotation paths.
+ * @export
+ * @interface EnvironmentFunctionSummary
+ */
+export interface EnvironmentFunctionSummary {
+    /**
+     * A map of function names to the number of times they are used.
+     * @type {{ [key: string]: number; }}
+     * @memberof EnvironmentFunctionSummary
+     */
+    'funcCounts': { [key: string]: number; };
+    /**
+     * The list of paths that have rotation configured.
+     * @type {Array<string>}
+     * @memberof EnvironmentFunctionSummary
+     */
+    'rotationPaths': Array<string> | null;
+}
+/**
+ * An EnvironmentImportReferrer represents an `import` reference from another environment.
+ * @export
+ * @interface EnvironmentImportReferrer
+ */
+export interface EnvironmentImportReferrer {
+    /**
+     * The name of the referring environment.
+     * @type {string}
+     * @memberof EnvironmentImportReferrer
+     */
+    'name': string;
+    /**
+     * The project name of the referring environment.
+     * @type {string}
+     * @memberof EnvironmentImportReferrer
+     */
+    'project': string;
+    /**
+     * The revision number of the referring environment.
+     * @type {number}
+     * @memberof EnvironmentImportReferrer
+     */
+    'revision': number;
+}
+/**
+ * An EnvironmentInsightsAccountReferrer represents a reference from an Insights account.
+ * @export
+ * @interface EnvironmentInsightsAccountReferrer
+ */
+export interface EnvironmentInsightsAccountReferrer {
+    /**
+     * The name of the Insights account that references the environment.
+     * @type {string}
+     * @memberof EnvironmentInsightsAccountReferrer
+     */
+    'accountName': string;
+}
+/**
+ * EnvironmentLinks contains hypermedia links related to an environment resource.
+ * @export
+ * @interface EnvironmentLinks
+ */
+export interface EnvironmentLinks {
+    /**
+     * The URL for this environment resource.
+     * @type {string}
+     * @memberof EnvironmentLinks
+     */
+    'self'?: string;
+}
+/**
+ * EnvironmentMetadata contains read-only metadata about a Pulumi environment.
+ * @export
+ * @interface EnvironmentMetadata
+ */
+export interface EnvironmentMetadata {
+    /**
+     * 
+     * @type {ChangeRequestRef}
+     * @memberof EnvironmentMetadata
+     */
+    'activeChangeRequest'?: ChangeRequestRef;
+    /**
+     * GatedActions indicates which actions on this environment require change request approval.
+     * @type {Array<string>}
+     * @memberof EnvironmentMetadata
+     */
+    'gatedActions'?: Array<string>;
+    /**
+     * Environment metadata follows other Pulumi Cloud \"Metadata\" fields and contains read-only information about the environment
+     * @type {string}
+     * @memberof EnvironmentMetadata
+     */
+    'id': string;
+    /**
+     * OpenRequestNeeded indicates whether an open request is currently needed in order to open the environment.
+     * @type {boolean}
+     * @memberof EnvironmentMetadata
+     */
+    'openRequestNeeded'?: boolean;
+}
+/**
+ * An EnvironmentReferrer represents an entity that refers to an environment.
+ * @export
+ * @interface EnvironmentReferrer
+ */
+export interface EnvironmentReferrer {
+    /**
+     * 
+     * @type {EnvironmentImportReferrer}
+     * @memberof EnvironmentReferrer
+     */
+    'environment'?: EnvironmentImportReferrer;
+    /**
+     * 
+     * @type {EnvironmentInsightsAccountReferrer}
+     * @memberof EnvironmentReferrer
+     */
+    'insightsAccount'?: EnvironmentInsightsAccountReferrer;
+    /**
+     * 
+     * @type {EnvironmentStackReferrer}
+     * @memberof EnvironmentReferrer
+     */
+    'stack'?: EnvironmentStackReferrer;
+}
+/**
+ * EnvironmentReferrerMetadata contains counts of different types of entities that reference an environment.
+ * @export
+ * @interface EnvironmentReferrerMetadata
+ */
+export interface EnvironmentReferrerMetadata {
+    /**
+     * The number of environments that reference this environment.
+     * @type {number}
+     * @memberof EnvironmentReferrerMetadata
+     */
+    'environmentReferrerCount': number;
+    /**
+     * The number of Insights accounts that reference this environment.
+     * @type {number}
+     * @memberof EnvironmentReferrerMetadata
+     */
+    'insightsAccountReferrerCount': number;
+    /**
+     * The number of stacks that reference this environment.
+     * @type {number}
+     * @memberof EnvironmentReferrerMetadata
+     */
+    'stackReferrerCount': number;
+}
+/**
  * 
+ * @export
+ * @interface EnvironmentResponse
+ */
+export interface EnvironmentResponse {
+    /**
+     * 
+     * @type {EscEvaluatedExecutionContext}
+     * @memberof EnvironmentResponse
+     */
+    'executionContext'?: EscEvaluatedExecutionContext;
+    /**
+     * Exprs contains the AST for each expression in the environment definition.
+     * @type {{ [key: string]: EscExpr; }}
+     * @memberof EnvironmentResponse
+     */
+    'exprs'?: { [key: string]: EscExpr; };
+    /**
+     * Properties contains the detailed values produced by the environment.
+     * @type {{ [key: string]: EscValue; }}
+     * @memberof EnvironmentResponse
+     */
+    'properties'?: { [key: string]: EscValue; };
+    /**
+     * Schema contains the schema for Properties.
+     * @type {any}
+     * @memberof EnvironmentResponse
+     */
+    'schema'?: any;
+    /**
+     * The list of diagnostics produced during environment evaluation.
+     * @type {Array<EnvironmentDiagnostic>}
+     * @memberof EnvironmentResponse
+     */
+    'diagnostics'?: Array<EnvironmentDiagnostic>;
+    /**
+     * 
+     * @type {EnvironmentFunctionSummary}
+     * @memberof EnvironmentResponse
+     */
+    'environmentFunctionSummary': EnvironmentFunctionSummary;
+}
+/**
+ * EnvironmentRevision represents a specific revision of an environment definition.
  * @export
  * @interface EnvironmentRevision
  */
 export interface EnvironmentRevision {
     /**
-     * 
+     * The timestamp when the revision was created.
+     * @type {string}
+     * @memberof EnvironmentRevision
+     */
+    'created': string;
+    /**
+     * The login name of the user who created the revision.
+     * @type {string}
+     * @memberof EnvironmentRevision
+     */
+    'creatorLogin'?: string;
+    /**
+     * The display name of the user who created the revision.
+     * @type {string}
+     * @memberof EnvironmentRevision
+     */
+    'creatorName'?: string;
+    /**
+     * A monotonically increasing integer identifying this revision.
      * @type {number}
      * @memberof EnvironmentRevision
      */
     'number': number;
     /**
      * 
-     * @type {string}
+     * @type {EnvironmentRevisionRetracted}
      * @memberof EnvironmentRevision
      */
-    'creatorLogin'?: string;
+    'retracted'?: EnvironmentRevisionRetracted;
     /**
      * 
-     * @type {string}
+     * @type {EnvironmentRevisionChangeRequest}
      * @memberof EnvironmentRevision
      */
-    'created'?: string;
+    'sourceChangeRequest'?: EnvironmentRevisionChangeRequest;
     /**
-     * 
-     * @type {string}
-     * @memberof EnvironmentRevision
-     */
-    'creatorName'?: string;
-    /**
-     * 
+     * The tags associated with this revision.
      * @type {Array<string>}
      * @memberof EnvironmentRevision
      */
     'tags'?: Array<string>;
 }
 /**
- * 
+ * EnvironmentRevisionChangeRequest represents a change request associated with an environment revision.
+ * @export
+ * @interface EnvironmentRevisionChangeRequest
+ */
+export interface EnvironmentRevisionChangeRequest {
+    /**
+     * A description of the change request.
+     * @type {string}
+     * @memberof EnvironmentRevisionChangeRequest
+     */
+    'description': string;
+    /**
+     * The unique identifier of the change request.
+     * @type {string}
+     * @memberof EnvironmentRevisionChangeRequest
+     */
+    'id': string;
+}
+/**
+ * EnvironmentRevisionRetracted contains information about a retracted environment revision.
+ * @export
+ * @interface EnvironmentRevisionRetracted
+ */
+export interface EnvironmentRevisionRetracted {
+    /**
+     * The timestamp when the revision was retracted.
+     * @type {string}
+     * @memberof EnvironmentRevisionRetracted
+     */
+    'at': string;
+    /**
+     * The login name of the user who retracted the revision.
+     * @type {string}
+     * @memberof EnvironmentRevisionRetracted
+     */
+    'byLogin'?: string;
+    /**
+     * The display name of the user who retracted the revision.
+     * @type {string}
+     * @memberof EnvironmentRevisionRetracted
+     */
+    'byName'?: string;
+    /**
+     * The reason the revision was retracted.
+     * @type {string}
+     * @memberof EnvironmentRevisionRetracted
+     */
+    'reason'?: string;
+    /**
+     * The revision number that replaced this retracted revision.
+     * @type {number}
+     * @memberof EnvironmentRevisionRetracted
+     */
+    'replacement': number;
+}
+/**
+ * EnvironmentRevisionTag represents a named tag pointing to a specific environment revision.
  * @export
  * @interface EnvironmentRevisionTag
  */
 export interface EnvironmentRevisionTag {
     /**
-     * 
-     * @type {number}
-     * @memberof EnvironmentRevisionTag
-     */
-    'revision': number;
-    /**
-     * 
+     * The timestamp when the tag was created.
      * @type {string}
      * @memberof EnvironmentRevisionTag
      */
-    'name': string;
+    'created': string;
     /**
-     * 
-     * @type {string}
-     * @memberof EnvironmentRevisionTag
-     */
-    'created'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof EnvironmentRevisionTag
-     */
-    'modified'?: string;
-    /**
-     * 
+     * The login name of the user who last edited the tag.
      * @type {string}
      * @memberof EnvironmentRevisionTag
      */
     'editorLogin'?: string;
     /**
-     * 
+     * The display name of the user who last edited the tag.
      * @type {string}
      * @memberof EnvironmentRevisionTag
      */
     'editorName'?: string;
-}
-/**
- * 
- * @export
- * @interface EnvironmentRevisionTags
- */
-export interface EnvironmentRevisionTags {
     /**
-     * 
-     * @type {Array<EnvironmentRevisionTag>}
-     * @memberof EnvironmentRevisionTags
-     */
-    'tags'?: Array<EnvironmentRevisionTag>;
-    /**
-     * 
+     * The timestamp when the tag was last modified.
      * @type {string}
-     * @memberof EnvironmentRevisionTags
+     * @memberof EnvironmentRevisionTag
      */
-    'nextToken'?: string;
+    'modified': string;
+    /**
+     * The name of the tag.
+     * @type {string}
+     * @memberof EnvironmentRevisionTag
+     */
+    'name': string;
+    /**
+     * The revision number this tag points to.
+     * @type {number}
+     * @memberof EnvironmentRevisionTag
+     */
+    'revision': number;
 }
 /**
- * 
+ * EnvironmentSettings contains settings that control the behavior of an environment.
+ * @export
+ * @interface EnvironmentSettings
+ */
+export interface EnvironmentSettings {
+    /**
+     * Whether the environment is protected from deletion.
+     * @type {boolean}
+     * @memberof EnvironmentSettings
+     */
+    'deletionProtected': boolean;
+}
+/**
+ * An EnvironmentStackReferrer represents a reference from an IaC stack.
+ * @export
+ * @interface EnvironmentStackReferrer
+ */
+export interface EnvironmentStackReferrer {
+    /**
+     * The project name of the referring stack.
+     * @type {string}
+     * @memberof EnvironmentStackReferrer
+     */
+    'project': string;
+    /**
+     * The name of the referring stack.
+     * @type {string}
+     * @memberof EnvironmentStackReferrer
+     */
+    'stack': string;
+    /**
+     * The version of the stack update that references this environment.
+     * @type {number}
+     * @memberof EnvironmentStackReferrer
+     */
+    'version': number;
+}
+/**
+ * EnvironmentTag represents a key-value tag associated with an environment.
  * @export
  * @interface EnvironmentTag
  */
 export interface EnvironmentTag {
     /**
-     * 
-     * @type {string}
-     * @memberof EnvironmentTag
-     */
-    'name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof EnvironmentTag
-     */
-    'value'?: string;
-    /**
-     * 
+     * The timestamp when the tag was created.
      * @type {string}
      * @memberof EnvironmentTag
      */
     'created': string;
     /**
-     * 
-     * @type {string}
-     * @memberof EnvironmentTag
-     */
-    'modified': string;
-    /**
-     * 
+     * The login name of the user who last edited the tag.
      * @type {string}
      * @memberof EnvironmentTag
      */
     'editorLogin': string;
     /**
-     * 
+     * The display name of the user who last edited the tag.
      * @type {string}
      * @memberof EnvironmentTag
      */
     'editorName': string;
-}
-/**
- * 
- * @export
- * @interface EvaluatedExecutionContext
- */
-export interface EvaluatedExecutionContext {
     /**
-     * 
-     * @type {{ [key: string]: Value; }}
-     * @memberof EvaluatedExecutionContext
-     */
-    'properties'?: { [key: string]: Value; };
-    /**
-     * 
-     * @type {any}
-     * @memberof EvaluatedExecutionContext
-     */
-    'schema'?: any;
-}
-/**
- * 
- * @export
- * @interface Expr
- */
-export interface Expr {
-    /**
-     * 
-     * @type {Range}
-     * @memberof Expr
-     */
-    'range'?: Range;
-    /**
-     * 
-     * @type {Expr}
-     * @memberof Expr
-     */
-    'base'?: Expr;
-    /**
-     * 
-     * @type {any}
-     * @memberof Expr
-     */
-    'schema'?: any;
-    /**
-     * 
-     * @type {{ [key: string]: Range; }}
-     * @memberof Expr
-     */
-    'keyRanges'?: { [key: string]: Range; };
-    /**
-     * 
-     * @type {any}
-     * @memberof Expr
-     */
-    'literal'?: any;
-    /**
-     * 
-     * @type {Array<Interpolation>}
-     * @memberof Expr
-     */
-    'interpolate'?: Array<Interpolation>;
-    /**
-     * 
-     * @type {Array<PropertyAccessor>}
-     * @memberof Expr
-     */
-    'symbol'?: Array<PropertyAccessor>;
-    /**
-     * 
-     * @type {Array<Access>}
-     * @memberof Expr
-     */
-    'access'?: Array<Access>;
-    /**
-     * 
-     * @type {Array<Expr>}
-     * @memberof Expr
-     */
-    'list'?: Array<Expr>;
-    /**
-     * 
-     * @type {{ [key: string]: Expr; }}
-     * @memberof Expr
-     */
-    'object'?: { [key: string]: Expr; };
-    /**
-     * 
-     * @type {ExprBuiltin}
-     * @memberof Expr
-     */
-    'builtin'?: ExprBuiltin;
-}
-/**
- * 
- * @export
- * @interface ExprBuiltin
- */
-export interface ExprBuiltin {
-    /**
-     * 
+     * The timestamp when the tag was last modified.
      * @type {string}
-     * @memberof ExprBuiltin
+     * @memberof EnvironmentTag
+     */
+    'modified': string;
+    /**
+     * The name of the tag.
+     * @type {string}
+     * @memberof EnvironmentTag
+     */
+    'name': string;
+    /**
+     * The value of the tag.
+     * @type {string}
+     * @memberof EnvironmentTag
+     */
+    'value': string;
+}
+/**
+ * An AccessExpr represents a property access with a receiving value.
+ * @export
+ * @interface EscAccessExpr
+ */
+export interface EscAccessExpr {
+    /**
+     * The accessors to evaluate.
+     * @type {Array<EscAccessor>}
+     * @memberof EscAccessExpr
+     */
+    'accessors': Array<EscAccessor>;
+    /**
+     * 
+     * @type {EscRange}
+     * @memberof EscAccessExpr
+     */
+    'receiver': EscRange;
+}
+/**
+ * An Accessor is an element index or property name.
+ * @export
+ * @interface EscAccessor
+ */
+export interface EscAccessor {
+    /**
+     * The integer index of the element to access. Mutually exclusive with Key.
+     * @type {number}
+     * @memberof EscAccessor
+     */
+    'index'?: number;
+    /**
+     * The key of the property to access. Mutually exclusive with Index.
+     * @type {string}
+     * @memberof EscAccessor
+     */
+    'key'?: string;
+    /**
+     * 
+     * @type {EscRange}
+     * @memberof EscAccessor
+     */
+    'range'?: EscRange;
+}
+/**
+ * A BuiltinExpr is a call to a builtin function.
+ * @export
+ * @interface EscBuiltinExpr
+ */
+export interface EscBuiltinExpr {
+    /**
+     * 
+     * @type {EscExpr}
+     * @memberof EscBuiltinExpr
+     */
+    'arg': EscExpr;
+    /**
+     * The schema for the function argument.
+     * @type {any}
+     * @memberof EscBuiltinExpr
+     */
+    'argSchema': any;
+    /**
+     * The name of the builtin function.
+     * @type {string}
+     * @memberof EscBuiltinExpr
      */
     'name': string;
     /**
      * 
-     * @type {Range}
-     * @memberof ExprBuiltin
+     * @type {EscRange}
+     * @memberof EscBuiltinExpr
      */
-    'nameRange'?: Range;
-    /**
-     * 
-     * @type {any}
-     * @memberof ExprBuiltin
-     */
-    'argSchema'?: any;
-    /**
-     * 
-     * @type {Expr}
-     * @memberof ExprBuiltin
-     */
-    'arg'?: Expr;
+    'nameRange': EscRange;
 }
 /**
- * 
+ * An Environment contains the result of evaluating an environment definition.
  * @export
- * @interface Interpolation
+ * @interface EscEnvironment
  */
-export interface Interpolation {
+export interface EscEnvironment {
     /**
      * 
+     * @type {EscEvaluatedExecutionContext}
+     * @memberof EscEnvironment
+     */
+    'executionContext'?: EscEvaluatedExecutionContext;
+    /**
+     * Exprs contains the AST for each expression in the environment definition.
+     * @type {{ [key: string]: EscExpr; }}
+     * @memberof EscEnvironment
+     */
+    'exprs'?: { [key: string]: EscExpr; };
+    /**
+     * Properties contains the detailed values produced by the environment.
+     * @type {{ [key: string]: EscValue; }}
+     * @memberof EscEnvironment
+     */
+    'properties'?: { [key: string]: EscValue; };
+    /**
+     * Schema contains the schema for Properties.
+     * @type {any}
+     * @memberof EscEnvironment
+     */
+    'schema'?: any;
+}
+/**
+ * An EvaluatedExecutionContext contains the result of evaluating an execution context passed to the root environment.
+ * @export
+ * @interface EscEvaluatedExecutionContext
+ */
+export interface EscEvaluatedExecutionContext {
+    /**
+     * Properties contains the detailed values produced by the execution context.
+     * @type {{ [key: string]: EscValue; }}
+     * @memberof EscEvaluatedExecutionContext
+     */
+    'properties'?: { [key: string]: EscValue; };
+    /**
+     * Schema contains the schema for Properties.
+     * @type {any}
+     * @memberof EscEvaluatedExecutionContext
+     */
+    'schema'?: any;
+}
+/**
+ * An Expr holds information about an expression in an environment definition.
+ * @export
+ * @interface EscExpr
+ */
+export interface EscExpr {
+    /**
+     * 
+     * @type {EscAccessExpr}
+     * @memberof EscExpr
+     */
+    'access'?: EscAccessExpr;
+    /**
+     * 
+     * @type {EscExpr}
+     * @memberof EscExpr
+     */
+    'base'?: EscExpr;
+    /**
+     * 
+     * @type {EscBuiltinExpr}
+     * @memberof EscExpr
+     */
+    'builtin'?: EscBuiltinExpr;
+    /**
+     * The interpolations, if this is a string interpolation expression.
+     * @type {Array<EscInterpolation>}
+     * @memberof EscExpr
+     */
+    'interpolate'?: Array<EscInterpolation>;
+    /**
+     * Ranges for the object\'s keys, if this is an object expression.
+     * @type {{ [key: string]: EscRange; }}
+     * @memberof EscExpr
+     */
+    'keyRanges'?: { [key: string]: EscRange; };
+    /**
+     * The list elements, if this is a list expression.
+     * @type {Array<EscExpr>}
+     * @memberof EscExpr
+     */
+    'list'?: Array<EscExpr>;
+    /**
+     * The literal value, if this is a literal expression (nil, bool, json.Number, or string)
+     * @type {any}
+     * @memberof EscExpr
+     */
+    'literal'?: any;
+    /**
+     * The object properties, if this is an object expression.
+     * @type {{ [key: string]: EscExpr; }}
+     * @memberof EscExpr
+     */
+    'object'?: { [key: string]: EscExpr; };
+    /**
+     * 
+     * @type {EscRange}
+     * @memberof EscExpr
+     */
+    'range': EscRange;
+    /**
+     * The schema of the expression\'s result.
+     * @type {any}
+     * @memberof EscExpr
+     */
+    'schema'?: any;
+    /**
+     * The property accessors, if this is a symbol expression.
+     * @type {Array<EscPropertyAccessor>}
+     * @memberof EscExpr
+     */
+    'symbol'?: Array<EscPropertyAccessor>;
+}
+/**
+ * An Interpolation holds information about a part of an interpolated string expression.
+ * @export
+ * @interface EscInterpolation
+ */
+export interface EscInterpolation {
+    /**
+     * The text of the expression. Precedes the stringified Value in the output.
      * @type {string}
-     * @memberof Interpolation
+     * @memberof EscInterpolation
      */
     'text'?: string;
     /**
-     * 
-     * @type {Array<PropertyAccessor>}
-     * @memberof Interpolation
+     * The value to interpolate.
+     * @type {Array<EscPropertyAccessor>}
+     * @memberof EscInterpolation
      */
-    'value'?: Array<PropertyAccessor>;
+    'value'?: Array<EscPropertyAccessor>;
+}
+/**
+ * A Pos defines a position within an environment definition.
+ * @export
+ * @interface EscPos
+ */
+export interface EscPos {
+    /**
+     * Byte is the byte offset into the file where the indicated position begins.
+     * @type {number}
+     * @memberof EscPos
+     */
+    'byte': number;
+    /**
+     * Column is the source code column where this position points. Columns are counted in visual cells starting at 1, and are incremented roughly per grapheme cluster encountered.
+     * @type {number}
+     * @memberof EscPos
+     */
+    'column': number;
+    /**
+     * Line is the source code line where this position points. Lines are counted starting at 1 and incremented for each newline character encountered.
+     * @type {number}
+     * @memberof EscPos
+     */
+    'line': number;
 }
 /**
  * 
  * @export
- * @interface ListEnvironmentTags
+ * @interface EscPropertyAccessor
  */
-export interface ListEnvironmentTags {
+export interface EscPropertyAccessor {
     /**
-     * 
-     * @type {{ [key: string]: EnvironmentTag; }}
-     * @memberof ListEnvironmentTags
+     * The integer index of the element to access. Mutually exclusive with Key.
+     * @type {number}
+     * @memberof EscPropertyAccessor
      */
-    'tags': { [key: string]: EnvironmentTag; };
+    'index'?: number;
+    /**
+     * The key of the property to access. Mutually exclusive with Index.
+     * @type {string}
+     * @memberof EscPropertyAccessor
+     */
+    'key'?: string;
     /**
      * 
+     * @type {EscRange}
+     * @memberof EscPropertyAccessor
+     */
+    'range'?: EscRange;
+    /**
+     * 
+     * @type {EscRange}
+     * @memberof EscPropertyAccessor
+     */
+    'value': EscRange;
+}
+/**
+ * A Range defines a range within an environment definition.
+ * @export
+ * @interface EscRange
+ */
+export interface EscRange {
+    /**
+     * 
+     * @type {EscPos}
+     * @memberof EscRange
+     */
+    'begin': EscPos;
+    /**
+     * 
+     * @type {EscPos}
+     * @memberof EscRange
+     */
+    'end': EscPos;
+    /**
+     * The name of the environment.
      * @type {string}
-     * @memberof ListEnvironmentTags
+     * @memberof EscRange
+     */
+    'environment'?: string;
+}
+/**
+ * EscSchemaSchema represents a JSON Schema used to describe the shape of environment values.
+ * @export
+ * @interface EscSchemaSchema
+ */
+export interface EscSchemaSchema {
+    /**
+     * Schema definitions that can be referenced by $ref.
+     * @type {{ [key: string]: any; }}
+     * @memberof EscSchemaSchema
+     */
+    '_defs'?: { [key: string]: any; };
+    /**
+     * A JSON reference to a schema definition.
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    '_ref'?: string;
+    /**
+     * The schema for additional object properties.
+     * @type {any}
+     * @memberof EscSchemaSchema
+     */
+    'additionalProperties'?: any;
+    /**
+     * A list of schemas, any of which the value must match.
+     * @type {Array<any>}
+     * @memberof EscSchemaSchema
+     */
+    'anyOf'?: Array<any>;
+    /**
+     * A constant value the instance must equal.
+     * @type {any}
+     * @memberof EscSchemaSchema
+     */
+    'const'?: any;
+    /**
+     * The default value for the schema.
+     * @type {any}
+     * @memberof EscSchemaSchema
+     */
+    'default'?: any;
+    /**
+     * A map of property names to lists of properties they depend on.
+     * @type {{ [key: string]: Array<string>; }}
+     * @memberof EscSchemaSchema
+     */
+    'dependentRequired'?: { [key: string]: Array<string>; };
+    /**
+     * Whether the schema is deprecated.
+     * @type {boolean}
+     * @memberof EscSchemaSchema
+     */
+    'deprecated'?: boolean;
+    /**
+     * A human-readable explanation of the schema\'s purpose (JSON Schema annotation).
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'description'?: string;
+    /**
+     * A list of allowed values.
+     * @type {Array<any>}
+     * @memberof EscSchemaSchema
+     */
+    'enum'?: Array<any>;
+    /**
+     * Example values for the schema.
+     * @type {Array<any>}
+     * @memberof EscSchemaSchema
+     */
+    'examples'?: Array<any>;
+    /**
+     * The maximum allowed value (exclusive).
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'exclusiveMaximum'?: string;
+    /**
+     * The minimum allowed value (exclusive).
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'exclusiveMinimum'?: string;
+    /**
+     * The schema for array items.
+     * @type {any}
+     * @memberof EscSchemaSchema
+     */
+    'items'?: any;
+    /**
+     * The maximum number of items in an array.
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'maxItems'?: string;
+    /**
+     * The maximum allowed string length.
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'maxLength'?: string;
+    /**
+     * The maximum number of properties in an object.
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'maxProperties'?: string;
+    /**
+     * The maximum allowed value (inclusive).
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'maximum'?: string;
+    /**
+     * The minimum number of items in an array.
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'minItems'?: string;
+    /**
+     * The minimum allowed string length.
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'minLength'?: string;
+    /**
+     * The minimum number of properties in an object.
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'minProperties'?: string;
+    /**
+     * The minimum allowed value (inclusive).
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'minimum'?: string;
+    /**
+     * The value must be a multiple of this number.
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'multipleOf'?: string;
+    /**
+     * A list of schemas, exactly one of which the value must match.
+     * @type {Array<any>}
+     * @memberof EscSchemaSchema
+     */
+    'oneOf'?: Array<any>;
+    /**
+     * A regular expression pattern the string must match.
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'pattern'?: string;
+    /**
+     * Schemas for the leading items in an array.
+     * @type {Array<any>}
+     * @memberof EscSchemaSchema
+     */
+    'prefixItems'?: Array<any>;
+    /**
+     * Schemas for named object properties.
+     * @type {{ [key: string]: any; }}
+     * @memberof EscSchemaSchema
+     */
+    'properties'?: { [key: string]: any; };
+    /**
+     * The list of required property names.
+     * @type {Array<string>}
+     * @memberof EscSchemaSchema
+     */
+    'required'?: Array<string>;
+    /**
+     * Pulumi ESC extension: property paths within this schema that support rotation-only updates.
+     * @type {Array<string>}
+     * @memberof EscSchemaSchema
+     */
+    'rotateOnly'?: Array<string>;
+    /**
+     * Pulumi ESC extension: if true, the value should be treated as sensitive and masked in output.
+     * @type {boolean}
+     * @memberof EscSchemaSchema
+     */
+    'secret'?: boolean;
+    /**
+     * A short human-readable label for the schema (JSON Schema annotation).
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'title'?: string;
+    /**
+     * The type of the schema (e.g. string, number, object, array, boolean).
+     * @type {string}
+     * @memberof EscSchemaSchema
+     */
+    'type': string;
+    /**
+     * Whether array items must be unique.
+     * @type {boolean}
+     * @memberof EscSchemaSchema
+     */
+    'uniqueItems'?: boolean;
+}
+/**
+ * Trace holds information about the expression and base of a value.
+ * @export
+ * @interface EscTrace
+ */
+export interface EscTrace {
+    /**
+     * 
+     * @type {EscValue}
+     * @memberof EscTrace
+     */
+    'base'?: EscValue;
+    /**
+     * 
+     * @type {EscRange}
+     * @memberof EscTrace
+     */
+    'def': EscRange;
+}
+/**
+ * A Value is the result of evaluating an expression within an environment definition.
+ * @export
+ * @interface EscValue
+ */
+export interface EscValue {
+    /**
+     * Secret is true if this value is secret.
+     * @type {boolean}
+     * @memberof EscValue
+     */
+    'secret'?: boolean;
+    /**
+     * 
+     * @type {EscTrace}
+     * @memberof EscValue
+     */
+    'trace': EscTrace;
+    /**
+     * Unknown is true if this value is unknown.
+     * @type {boolean}
+     * @memberof EscValue
+     */
+    'unknown'?: boolean;
+    /**
+     * Value holds the concrete representation of the value. May be nil, bool, json.Number, string, []Value, or map[string]Value.
+     * @type {any}
+     * @memberof EscValue
+     */
+    'value'?: any;
+}
+/**
+ * GCP environment configuration information
+ * @export
+ * @interface GCPEnvironmentInfo
+ */
+export interface GCPEnvironmentInfo {
+    /**
+     * ESC environment name
+     * @type {string}
+     * @memberof GCPEnvironmentInfo
+     */
+    'environmentName': string;
+    /**
+     * GCP project ID
+     * @type {string}
+     * @memberof GCPEnvironmentInfo
+     */
+    'gcpProjectID': string;
+    /**
+     * GCP role ID
+     * @type {string}
+     * @memberof GCPEnvironmentInfo
+     */
+    'gcpRoleID': string;
+    /**
+     * GCP service account name
+     * @type {string}
+     * @memberof GCPEnvironmentInfo
+     */
+    'gcpServiceAccountName': string;
+    /**
+     * ESC project name
+     * @type {string}
+     * @memberof GCPEnvironmentInfo
+     */
+    'projectName': string;
+}
+/**
+ * Request to setup GCP OIDC infrastructure
+ * @export
+ * @interface GCPSetupRequest
+ */
+export interface GCPSetupRequest {
+    /**
+     * 
+     * @type {GCPEnvironmentInfo}
+     * @memberof GCPSetupRequest
+     */
+    'gcpEnvironmentInfo': GCPEnvironmentInfo;
+    /**
+     * GCP OAuth session ID
+     * @type {string}
+     * @memberof GCPSetupRequest
+     */
+    'oauthSessionId': string;
+}
+/**
+ * Request to initiate OAuth flow for cloud provider authentication
+ * @export
+ * @interface InitiateOAuthRequest
+ */
+export interface InitiateOAuthRequest {
+    /**
+     * 
+     * @type {CloudSetupProvider}
+     * @memberof InitiateOAuthRequest
+     */
+    'provider': CloudSetupProvider;
+}
+/**
+ * Response from OAuth initiation containing authorization URL and session details
+ * @export
+ * @interface InitiateOAuthResponse
+ */
+export interface InitiateOAuthResponse {
+    /**
+     * Session identifier for tracking the OAuth flow
+     * @type {string}
+     * @memberof InitiateOAuthResponse
+     */
+    'sessionID': string;
+    /**
+     * Authorization URL to redirect user to
+     * @type {string}
+     * @memberof InitiateOAuthResponse
+     */
+    'url': string;
+}
+/**
+ * Response containing list of cloud accounts
+ * @export
+ * @interface ListCloudAccountsResponse
+ */
+export interface ListCloudAccountsResponse {
+    /**
+     * List of cloud accounts/subscriptions
+     * @type {Array<CloudAccount>}
+     * @memberof ListCloudAccountsResponse
+     */
+    'accounts': Array<CloudAccount>;
+}
+/**
+ * Response containing a list of entities that reference an environment.
+ * @export
+ * @interface ListEnvironmentReferrersResponse
+ */
+export interface ListEnvironmentReferrersResponse {
+    /**
+     * Continuation token for pagination
+     * @type {string}
+     * @memberof ListEnvironmentReferrersResponse
+     */
+    'continuationToken'?: string;
+    /**
+     * Map of referrer types to their referrer details
+     * @type {{ [key: string]: Array<EnvironmentReferrer>; }}
+     * @memberof ListEnvironmentReferrersResponse
+     */
+    'referrers': { [key: string]: Array<EnvironmentReferrer>; };
+}
+/**
+ * Response containing a list of environment revision tags.
+ * @export
+ * @interface ListEnvironmentRevisionTagsResponse
+ */
+export interface ListEnvironmentRevisionTagsResponse {
+    /**
+     * Token for fetching the next page of results
+     * @type {string}
+     * @memberof ListEnvironmentRevisionTagsResponse
      */
     'nextToken': string;
+    /**
+     * The list of revision tags
+     * @type {Array<EnvironmentRevisionTag>}
+     * @memberof ListEnvironmentRevisionTagsResponse
+     */
+    'tags': Array<EnvironmentRevisionTag>;
+}
+/**
+ * Response containing a list of secret rotation history events for an environment.
+ * @export
+ * @interface ListEnvironmentSecretRotationHistoryResponse
+ */
+export interface ListEnvironmentSecretRotationHistoryResponse {
+    /**
+     * The list of secret rotation events
+     * @type {Array<SecretRotationEvent>}
+     * @memberof ListEnvironmentSecretRotationHistoryResponse
+     */
+    'events': Array<SecretRotationEvent>;
+}
+/**
+ * Response containing a map of environment tags.
+ * @export
+ * @interface ListEnvironmentTagsResponse
+ */
+export interface ListEnvironmentTagsResponse {
+    /**
+     * Token for fetching the next page of results
+     * @type {string}
+     * @memberof ListEnvironmentTagsResponse
+     */
+    'nextToken': string;
+    /**
+     * Map of tag names to their tag details
+     * @type {{ [key: string]: EnvironmentTag; }}
+     * @memberof ListEnvironmentTagsResponse
+     */
+    'tags': { [key: string]: EnvironmentTag; };
+}
+/**
+ * Response containing a list of environments for an organization.
+ * @export
+ * @interface ListEnvironmentsResponse
+ */
+export interface ListEnvironmentsResponse {
+    /**
+     * The list of environments
+     * @type {Array<OrgEnvironment>}
+     * @memberof ListEnvironmentsResponse
+     */
+    'environments': Array<OrgEnvironment>;
+    /**
+     * Token for fetching the next page of results
+     * @type {string}
+     * @memberof ListEnvironmentsResponse
+     */
+    'nextToken'?: string;
+}
+/**
+ * Response containing a list of available providers.
+ * @export
+ * @interface ListProvidersResponse
+ */
+export interface ListProvidersResponse {
+    /**
+     * The list of provider names
+     * @type {Array<string>}
+     * @memberof ListProvidersResponse
+     */
+    'providers': Array<string>;
+}
+/**
+ * Response containing a list of available secret rotators.
+ * @export
+ * @interface ListRotatorsResponse
+ */
+export interface ListRotatorsResponse {
+    /**
+     * The list of rotator names
+     * @type {Array<string>}
+     * @memberof ListRotatorsResponse
+     */
+    'rotators': Array<string>;
+}
+/**
+ * ListScheduledActionHistoryResponse is the API response when a scheduled action history is listed.
+ * @export
+ * @interface ListScheduledActionHistoryResponse
+ */
+export interface ListScheduledActionHistoryResponse {
+    /**
+     * The list of scheduled action history events
+     * @type {Array<ScheduledActionHistoryEvent>}
+     * @memberof ListScheduledActionHistoryResponse
+     */
+    'scheduleHistoryEvents': Array<ScheduledActionHistoryEvent>;
+}
+/**
+ * ListScheduledActionsResponse is the API response when scheduled deployments are listed.
+ * @export
+ * @interface ListScheduledActionsResponse
+ */
+export interface ListScheduledActionsResponse {
+    /**
+     * The list of scheduled actions
+     * @type {Array<ScheduledAction>}
+     * @memberof ListScheduledActionsResponse
+     */
+    'schedules': Array<ScheduledAction>;
 }
 /**
  * 
@@ -636,174 +2006,152 @@ export interface ListEnvironmentTags {
 export interface ModelError {
     /**
      * 
-     * @type {string}
-     * @memberof ModelError
-     */
-    'message': string;
-    /**
-     * 
      * @type {number}
      * @memberof ModelError
      */
     'code': number;
-}
-/**
- * 
- * @export
- * @interface OpenEnvironment
- */
-export interface OpenEnvironment {
-    /**
-     * Open environment session identifier
-     * @type {string}
-     * @memberof OpenEnvironment
-     */
-    'id': string;
     /**
      * 
-     * @type {EnvironmentDiagnostics}
-     * @memberof OpenEnvironment
+     * @type {string}
+     * @memberof ModelError
      */
-    'diagnostics'?: EnvironmentDiagnostics;
+    'message': string;
 }
 /**
- * 
+ * Response body after opening an environment session.
+ * @export
+ * @interface OpenEnvironmentResponse
+ */
+export interface OpenEnvironmentResponse {
+    /**
+     * Any diagnostics generated when opening the environment.
+     * @type {Array<EnvironmentDiagnostic>}
+     * @memberof OpenEnvironmentResponse
+     */
+    'diagnostics'?: Array<EnvironmentDiagnostic>;
+    /**
+     * The unique identifier of the opened environment session.
+     * @type {string}
+     * @memberof OpenEnvironmentResponse
+     */
+    'id': string;
+}
+/**
+ * OrgEnvironment represents an environment within an organization.
  * @export
  * @interface OrgEnvironment
  */
 export interface OrgEnvironment {
-    [key: string]: object | any;
-
     /**
-     * 
-     * @type {string}
-     * @memberof OrgEnvironment
-     */
-    'organization'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof OrgEnvironment
-     */
-    'project': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof OrgEnvironment
-     */
-    'name': string;
-    /**
-     * 
+     * The ISO 8601 timestamp when the environment was created.
      * @type {string}
      * @memberof OrgEnvironment
      */
     'created': string;
     /**
+     * The ISO 8601 timestamp when the environment was soft-deleted, or null if not deleted.
+     * @type {string}
+     * @memberof OrgEnvironment
+     */
+    'deletedAt'?: string;
+    /**
+     * The unique identifier of the environment.
+     * @type {string}
+     * @memberof OrgEnvironment
+     */
+    'id': string;
+    /**
      * 
+     * @type {EnvironmentLinks}
+     * @memberof OrgEnvironment
+     */
+    'links'?: EnvironmentLinks;
+    /**
+     * The ISO 8601 timestamp when the environment was last modified.
      * @type {string}
      * @memberof OrgEnvironment
      */
     'modified': string;
-}
-/**
- * 
- * @export
- * @interface OrgEnvironments
- */
-export interface OrgEnvironments {
     /**
-     * 
-     * @type {Array<OrgEnvironment>}
-     * @memberof OrgEnvironments
-     */
-    'environments'?: Array<OrgEnvironment>;
-    /**
-     * 
+     * The name of the environment.
      * @type {string}
-     * @memberof OrgEnvironments
+     * @memberof OrgEnvironment
      */
-    'nextToken'?: string;
-}
-/**
- * 
- * @export
- * @interface Pos
- */
-export interface Pos {
+    'name'?: string;
     /**
-     * Line is the source code line where this position points. Lines are counted starting at 1 and incremented for each newline character encountered.
-     * @type {number}
-     * @memberof Pos
-     */
-    'line': number;
-    /**
-     * Column is the source code column where this position points. Columns are counted in visual cells starting at 1, and are incremented roughly per grapheme cluster encountered.
-     * @type {number}
-     * @memberof Pos
-     */
-    'column': number;
-    /**
-     * Byte is the byte offset into the file where the indicated position begins.
-     * @type {number}
-     * @memberof Pos
-     */
-    'byte': number;
-}
-/**
- * 
- * @export
- * @interface PropertyAccessor
- */
-export interface PropertyAccessor {
-    /**
-     * 
-     * @type {number}
-     * @memberof PropertyAccessor
-     */
-    'index'?: number;
-    /**
-     * 
+     * The login name of the organization that owns this environment.
      * @type {string}
-     * @memberof PropertyAccessor
+     * @memberof OrgEnvironment
      */
-    'key': string;
+    'organization'?: string;
+    /**
+     * The project name that contains this environment, if project-scoped.
+     * @type {string}
+     * @memberof OrgEnvironment
+     */
+    'project'?: string;
     /**
      * 
-     * @type {Range}
-     * @memberof PropertyAccessor
+     * @type {EnvironmentReferrerMetadata}
+     * @memberof OrgEnvironment
      */
-    'range': Range;
+    'referrerMetadata': EnvironmentReferrerMetadata;
     /**
      * 
-     * @type {Range}
-     * @memberof PropertyAccessor
+     * @type {EnvironmentSettings}
+     * @memberof OrgEnvironment
      */
-    'value'?: Range;
+    'settings': EnvironmentSettings;
+    /**
+     * User-defined key-value tags associated with the environment for organization and filtering.
+     * @type {{ [key: string]: string; }}
+     * @memberof OrgEnvironment
+     */
+    'tags': { [key: string]: string; };
 }
 /**
- * 
+ * Request body for partially updating environment settings.
  * @export
- * @interface Range
+ * @interface PatchEnvironmentSettingsRequest
  */
-export interface Range {
+export interface PatchEnvironmentSettingsRequest {
     /**
-     * 
+     * DeletionProtected indicates whether deletion protection should be enabled for this environment. Null means no change.
+     * @type {boolean}
+     * @memberof PatchEnvironmentSettingsRequest
+     */
+    'deletionProtected'?: boolean;
+}
+/**
+ * ProviderSchema describes the input and output schemas for a provider.
+ * @export
+ * @interface ProviderSchema
+ */
+export interface ProviderSchema {
+    /**
+     * A description of the provider.
      * @type {string}
-     * @memberof Range
+     * @memberof ProviderSchema
      */
-    'environment': string;
+    'description': string;
     /**
-     * 
-     * @type {Pos}
-     * @memberof Range
+     * The input schema for the provider.
+     * @type {any}
+     * @memberof ProviderSchema
      */
-    'begin': Pos;
+    'inputs': any;
     /**
-     * 
-     * @type {Pos}
-     * @memberof Range
+     * The name of the provider.
+     * @type {string}
+     * @memberof ProviderSchema
      */
-    'end': Pos;
+    'name': string;
+    /**
+     * The output schema for the provider.
+     * @type {any}
+     * @memberof ProviderSchema
+     */
+    'outputs': any;
 }
 /**
  * 
@@ -821,116 +2169,621 @@ export interface Reference {
 /**
  * 
  * @export
- * @interface Trace
+ * @interface RestoreEnvironmentRequest
  */
-export interface Trace {
+export interface RestoreEnvironmentRequest {
     /**
-     * 
-     * @type {Range}
-     * @memberof Trace
-     */
-    'def'?: Range;
-    /**
-     * 
-     * @type {Value}
-     * @memberof Trace
-     */
-    'base'?: Value;
-}
-/**
- * 
- * @export
- * @interface UpdateEnvironmentRevisionTag
- */
-export interface UpdateEnvironmentRevisionTag {
-    /**
-     * 
-     * @type {number}
-     * @memberof UpdateEnvironmentRevisionTag
-     */
-    'revision': number;
-}
-/**
- * 
- * @export
- * @interface UpdateEnvironmentTag
- */
-export interface UpdateEnvironmentTag {
-    /**
-     * 
-     * @type {UpdateEnvironmentTagCurrentTag}
-     * @memberof UpdateEnvironmentTag
-     */
-    'currentTag': UpdateEnvironmentTagCurrentTag;
-    /**
-     * 
-     * @type {UpdateEnvironmentTagNewTag}
-     * @memberof UpdateEnvironmentTag
-     */
-    'newTag': UpdateEnvironmentTagNewTag;
-}
-/**
- * 
- * @export
- * @interface UpdateEnvironmentTagCurrentTag
- */
-export interface UpdateEnvironmentTagCurrentTag {
-    /**
-     * 
+     * The name
      * @type {string}
-     * @memberof UpdateEnvironmentTagCurrentTag
-     */
-    'value': string;
-}
-/**
- * 
- * @export
- * @interface UpdateEnvironmentTagNewTag
- */
-export interface UpdateEnvironmentTagNewTag {
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateEnvironmentTagNewTag
+     * @memberof RestoreEnvironmentRequest
      */
     'name': string;
     /**
-     * 
+     * The project
      * @type {string}
-     * @memberof UpdateEnvironmentTagNewTag
+     * @memberof RestoreEnvironmentRequest
      */
-    'value': string;
+    'project': string;
+    /**
+     * The ISO 8601 timestamp of the environment\'s deletion, used to identify which deleted version to restore.
+     * @type {string}
+     * @memberof RestoreEnvironmentRequest
+     */
+    'deletionTimestamp': string;
+}
+/**
+ * Request to retract a specific revision of an environment.
+ * @export
+ * @interface RetractEnvironmentRevisionRequest
+ */
+export interface RetractEnvironmentRevisionRequest {
+    /**
+     * The reason for retracting the revision.
+     * @type {string}
+     * @memberof RetractEnvironmentRevisionRequest
+     */
+    'reason'?: string;
+    /**
+     * The revision number to use as a replacement, if any.
+     * @type {number}
+     * @memberof RetractEnvironmentRevisionRequest
+     */
+    'replacement'?: number;
+}
+/**
+ * Request to rotate secrets in an environment.
+ * @export
+ * @interface RotateEnvironmentRequest
+ */
+export interface RotateEnvironmentRequest {
+    /**
+     * The paths of the secrets to rotate.
+     * @type {Array<string>}
+     * @memberof RotateEnvironmentRequest
+     */
+    'paths': Array<string>;
+}
+/**
+ * Response from a secret rotation operation on an environment.
+ * @export
+ * @interface RotateEnvironmentResponse
+ */
+export interface RotateEnvironmentResponse {
+    /**
+     * Diagnostics generated during the rotation operation.
+     * @type {Array<EnvironmentDiagnostic>}
+     * @memberof RotateEnvironmentResponse
+     */
+    'diagnostics'?: Array<EnvironmentDiagnostic>;
+    /**
+     * The unique identifier for this rotation operation.
+     * @type {string}
+     * @memberof RotateEnvironmentResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {SecretRotationEvent}
+     * @memberof RotateEnvironmentResponse
+     */
+    'secretRotationEvent': SecretRotationEvent;
+}
+/**
+ * ScheduledAction describes the state of a scheduled action.
+ * @export
+ * @interface ScheduledAction
+ */
+export interface ScheduledAction {
+    /**
+     * The timestamp when this scheduled action was created.
+     * @type {string}
+     * @memberof ScheduledAction
+     */
+    'created': string;
+    /**
+     * The action definition, which varies based on the action kind.
+     * @type {{ [key: string]: object; }}
+     * @memberof ScheduledAction
+     */
+    'definition': { [key: string]: object; };
+    /**
+     * The unique identifier for this scheduled action.
+     * @type {string}
+     * @memberof ScheduledAction
+     */
+    'id': string;
+    /**
+     * The kind of action to be executed.
+     * @type {string}
+     * @memberof ScheduledAction
+     */
+    'kind': ScheduledActionKindEnum;
+    /**
+     * The timestamp of the last execution, if any.
+     * @type {string}
+     * @memberof ScheduledAction
+     */
+    'lastExecuted': string;
+    /**
+     * The timestamp when this scheduled action was last modified.
+     * @type {string}
+     * @memberof ScheduledAction
+     */
+    'modified': string;
+    /**
+     * The timestamp of the next scheduled execution.
+     * @type {string}
+     * @memberof ScheduledAction
+     */
+    'nextExecution': string;
+    /**
+     * The organization ID that owns this scheduled action.
+     * @type {string}
+     * @memberof ScheduledAction
+     */
+    'orgID': string;
+    /**
+     * Whether the scheduled action is currently paused.
+     * @type {boolean}
+     * @memberof ScheduledAction
+     */
+    'paused': boolean;
+    /**
+     * A cron expression defining the recurring schedule.
+     * @type {string}
+     * @memberof ScheduledAction
+     */
+    'scheduleCron'?: string;
+    /**
+     * A timestamp for a one-time scheduled execution.
+     * @type {string}
+     * @memberof ScheduledAction
+     */
+    'scheduleOnce'?: string;
+}
+
+export const ScheduledActionKindEnum = {
+    Deployment: 'deployment',
+    EnvironmentRotation: 'environment_rotation',
+    Scan: 'scan'
+} as const;
+
+export type ScheduledActionKindEnum = typeof ScheduledActionKindEnum[keyof typeof ScheduledActionKindEnum];
+
+/**
+ * ScheduledActionHistoryEvent describes the state of a scheduled deployment history event.
+ * @export
+ * @interface ScheduledActionHistoryEvent
+ */
+export interface ScheduledActionHistoryEvent {
+    /**
+     * The timestamp when the action was executed.
+     * @type {string}
+     * @memberof ScheduledActionHistoryEvent
+     */
+    'executed': string;
+    /**
+     * The unique identifier for this history event.
+     * @type {string}
+     * @memberof ScheduledActionHistoryEvent
+     */
+    'id': string;
+    /**
+     * The result of the execution.
+     * @type {string}
+     * @memberof ScheduledActionHistoryEvent
+     */
+    'result': string;
+    /**
+     * The ID of the scheduled action this event belongs to.
+     * @type {string}
+     * @memberof ScheduledActionHistoryEvent
+     */
+    'scheduledActionID': string;
+    /**
+     * The version of the scheduled action at the time of execution.
+     * @type {number}
+     * @memberof ScheduledActionHistoryEvent
+     */
+    'version': number;
+}
+/**
+ * Represents the state of a single secret rotation within an environment.
+ * @export
+ * @interface SecretRotation
+ */
+export interface SecretRotation {
+    /**
+     * The path of the secret being rotated in the environment.
+     * @type {string}
+     * @memberof SecretRotation
+     */
+    'environmentPath': string;
+    /**
+     * An error message if the rotation failed.
+     * @type {string}
+     * @memberof SecretRotation
+     */
+    'errorMessage'?: string;
+    /**
+     * The unique identifier for this secret rotation.
+     * @type {string}
+     * @memberof SecretRotation
+     */
+    'id': string;
+    /**
+     * The current status of the rotation.
+     * @type {string}
+     * @memberof SecretRotation
+     */
+    'status': string;
+}
+/**
+ * An event representing a secret rotation operation on an environment.
+ * @export
+ * @interface SecretRotationEvent
+ */
+export interface SecretRotationEvent {
+    /**
+     * The timestamp when the rotation completed.
+     * @type {string}
+     * @memberof SecretRotationEvent
+     */
+    'completed'?: string;
+    /**
+     * The timestamp when this rotation event was created.
+     * @type {string}
+     * @memberof SecretRotationEvent
+     */
+    'created': string;
+    /**
+     * The ID of the environment being rotated.
+     * @type {string}
+     * @memberof SecretRotationEvent
+     */
+    'environmentId': string;
+    /**
+     * An error message if the rotation failed.
+     * @type {string}
+     * @memberof SecretRotationEvent
+     */
+    'errorMessage'?: string;
+    /**
+     * The unique identifier for this rotation event.
+     * @type {string}
+     * @memberof SecretRotationEvent
+     */
+    'id': string;
+    /**
+     * The environment revision after the rotation, if completed.
+     * @type {number}
+     * @memberof SecretRotationEvent
+     */
+    'postRotationRevision'?: number;
+    /**
+     * The environment revision before the rotation.
+     * @type {number}
+     * @memberof SecretRotationEvent
+     */
+    'preRotationRevision': number;
+    /**
+     * The individual secret rotations within this event.
+     * @type {Array<SecretRotation>}
+     * @memberof SecretRotationEvent
+     */
+    'rotations': Array<SecretRotation>;
+    /**
+     * The ID of the scheduled action that triggered this rotation, if any.
+     * @type {string}
+     * @memberof SecretRotationEvent
+     */
+    'scheduledActionID'?: string;
+    /**
+     * The current status of the rotation event.
+     * @type {string}
+     * @memberof SecretRotationEvent
+     */
+    'status': string;
+    /**
+     * The ID of the user who initiated the rotation.
+     * @type {string}
+     * @memberof SecretRotationEvent
+     */
+    'userID': string;
 }
 /**
  * 
  * @export
- * @interface Value
+ * @interface UpdateEnvironmentResponse
  */
-export interface Value {
+export interface UpdateEnvironmentResponse {
     /**
-     * 
-     * @type {any}
-     * @memberof Value
+     * The list of diagnostics produced by the environment operation.
+     * @type {Array<EnvironmentDiagnostic>}
+     * @memberof UpdateEnvironmentResponse
      */
-    'value': any;
+    'diagnostics'?: Array<EnvironmentDiagnostic>;
+}
+/**
+ * Request to update an environment revision tag.
+ * @export
+ * @interface UpdateEnvironmentRevisionTagRequest
+ */
+export interface UpdateEnvironmentRevisionTagRequest {
+    /**
+     * The revision number to associate with the tag.
+     * @type {number}
+     * @memberof UpdateEnvironmentRevisionTagRequest
+     */
+    'revision'?: number;
+}
+/**
+ * Request to update an environment tag.
+ * @export
+ * @interface UpdateEnvironmentTagRequest
+ */
+export interface UpdateEnvironmentTagRequest {
     /**
      * 
+     * @type {UpdateEnvironmentTagRequestCurrentTag}
+     * @memberof UpdateEnvironmentTagRequest
+     */
+    'currentTag': UpdateEnvironmentTagRequestCurrentTag;
+    /**
+     * 
+     * @type {UpdateEnvironmentTagRequestNewTag}
+     * @memberof UpdateEnvironmentTagRequest
+     */
+    'newTag': UpdateEnvironmentTagRequestNewTag;
+}
+/**
+ * The current tag value to match when updating an environment tag.
+ * @export
+ * @interface UpdateEnvironmentTagRequestCurrentTag
+ */
+export interface UpdateEnvironmentTagRequestCurrentTag {
+    /**
+     * The current tag value.
+     * @type {string}
+     * @memberof UpdateEnvironmentTagRequestCurrentTag
+     */
+    'value': string;
+}
+/**
+ * The new tag name and value to set when updating an environment tag.
+ * @export
+ * @interface UpdateEnvironmentTagRequestNewTag
+ */
+export interface UpdateEnvironmentTagRequestNewTag {
+    /**
+     * The new tag name.
+     * @type {string}
+     * @memberof UpdateEnvironmentTagRequestNewTag
+     */
+    'name'?: string;
+    /**
+     * The new tag value.
+     * @type {string}
+     * @memberof UpdateEnvironmentTagRequestNewTag
+     */
+    'value'?: string;
+}
+/**
+ * Webhook describes a webhook registered with the Pulumi Service. It may be registered to either an Organization, Stack or Environment.
+ * @export
+ * @interface Webhook
+ */
+export interface Webhook {
+    /**
+     * Whether the webhook is active and will receive deliveries.
      * @type {boolean}
-     * @memberof Value
+     * @memberof Webhook
      */
-    'secret'?: boolean;
+    'active': boolean;
     /**
-     * 
+     * The human-readable display name shown in the UI.
+     * @type {string}
+     * @memberof Webhook
+     */
+    'displayName': string;
+    /**
+     * The environment name. Set when the webhook is scoped to a specific environment.
+     * @type {string}
+     * @memberof Webhook
+     */
+    'envName'?: string;
+    /**
+     * Specific event types this webhook subscribes to. If empty, all events are delivered.
+     * @type {Array<string>}
+     * @memberof Webhook
+     */
+    'filters'?: Array<string>;
+    /**
+     * The format of the webhook payload (e.g., \'raw\', \'slack\', \'ms_teams\').
+     * @type {string}
+     * @memberof Webhook
+     */
+    'format'?: string;
+    /**
+     * Event groups this webhook subscribes to (e.g., \'stacks\', \'deployments\').
+     * @type {Array<string>}
+     * @memberof Webhook
+     */
+    'groups'?: Array<string>;
+    /**
+     * The unique identifier name for the webhook within its scope.
+     * @type {string}
+     * @memberof Webhook
+     */
+    'name': string;
+    /**
+     * The organization that owns this webhook.
+     * @type {string}
+     * @memberof Webhook
+     */
+    'organizationName': string;
+    /**
+     * The URL to which webhook payloads are delivered.
+     * @type {string}
+     * @memberof Webhook
+     */
+    'payloadUrl': string;
+    /**
+     * The project name. Set when the webhook is scoped to a specific stack.
+     * @type {string}
+     * @memberof Webhook
+     */
+    'projectName'?: string;
+    /**
+     * Secret will be omitted when returned from the service.
+     * @type {string}
+     * @memberof Webhook
+     */
+    'secret'?: string;
+    /**
+     * The stack name. Set when the webhook is scoped to a specific stack.
+     * @type {string}
+     * @memberof Webhook
+     */
+    'stackName'?: string;
+}
+/**
+ * WebhookDelivery is a result of a webhook that was sent. i.e. the Pulumi-side logs for the end-users webhook. It merges both model.WebhookEvent and model.WebhookDelivery.
+ * @export
+ * @interface WebhookDelivery
+ */
+export interface WebhookDelivery {
+    /**
+     * The duration of the delivery request in milliseconds.
+     * @type {number}
+     * @memberof WebhookDelivery
+     */
+    'duration': number;
+    /**
+     * The unique identifier of the delivery.
+     * @type {string}
+     * @memberof WebhookDelivery
+     */
+    'id': string;
+    /**
+     * The kind of webhook event.
+     * @type {string}
+     * @memberof WebhookDelivery
+     */
+    'kind': string;
+    /**
+     * The JSON payload that was sent.
+     * @type {string}
+     * @memberof WebhookDelivery
+     */
+    'payload': string;
+    /**
+     * The HTTP headers sent with the request.
+     * @type {string}
+     * @memberof WebhookDelivery
+     */
+    'requestHeaders': string;
+    /**
+     * The URL the webhook was delivered to.
+     * @type {string}
+     * @memberof WebhookDelivery
+     */
+    'requestUrl': string;
+    /**
+     * The HTTP response body.
+     * @type {string}
+     * @memberof WebhookDelivery
+     */
+    'responseBody': string;
+    /**
+     * The HTTP response status code.
+     * @type {number}
+     * @memberof WebhookDelivery
+     */
+    'responseCode': number;
+    /**
+     * The HTTP response headers.
+     * @type {string}
+     * @memberof WebhookDelivery
+     */
+    'responseHeaders': string;
+    /**
+     * The time the delivery was sent, as a Unix epoch timestamp.
+     * @type {number}
+     * @memberof WebhookDelivery
+     */
+    'timestamp': number;
+}
+/**
+ * 
+ * @export
+ * @interface WebhookResponse
+ */
+export interface WebhookResponse {
+    /**
+     * Whether the webhook is active and will receive deliveries.
      * @type {boolean}
-     * @memberof Value
+     * @memberof WebhookResponse
      */
-    'unknown'?: boolean;
+    'active': boolean;
     /**
-     * 
-     * @type {Trace}
-     * @memberof Value
+     * The human-readable display name shown in the UI.
+     * @type {string}
+     * @memberof WebhookResponse
      */
-    'trace': Trace;
+    'displayName': string;
+    /**
+     * The environment name. Set when the webhook is scoped to a specific environment.
+     * @type {string}
+     * @memberof WebhookResponse
+     */
+    'envName'?: string;
+    /**
+     * Specific event types this webhook subscribes to. If empty, all events are delivered.
+     * @type {Array<string>}
+     * @memberof WebhookResponse
+     */
+    'filters'?: Array<string>;
+    /**
+     * The format of the webhook payload (e.g., \'raw\', \'slack\', \'ms_teams\').
+     * @type {string}
+     * @memberof WebhookResponse
+     */
+    'format'?: string;
+    /**
+     * Event groups this webhook subscribes to (e.g., \'stacks\', \'deployments\').
+     * @type {Array<string>}
+     * @memberof WebhookResponse
+     */
+    'groups'?: Array<string>;
+    /**
+     * The unique identifier name for the webhook within its scope.
+     * @type {string}
+     * @memberof WebhookResponse
+     */
+    'name': string;
+    /**
+     * The organization that owns this webhook.
+     * @type {string}
+     * @memberof WebhookResponse
+     */
+    'organizationName': string;
+    /**
+     * The URL to which webhook payloads are delivered.
+     * @type {string}
+     * @memberof WebhookResponse
+     */
+    'payloadUrl': string;
+    /**
+     * The project name. Set when the webhook is scoped to a specific stack.
+     * @type {string}
+     * @memberof WebhookResponse
+     */
+    'projectName'?: string;
+    /**
+     * Secret will be omitted when returned from the service.
+     * @type {string}
+     * @memberof WebhookResponse
+     */
+    'secret'?: string;
+    /**
+     * The stack name. Set when the webhook is scoped to a specific stack.
+     * @type {string}
+     * @memberof WebhookResponse
+     */
+    'stackName'?: string;
+    /**
+     * HasSecret is true if the webhook has a secret. This is used to determine whether to show that there is a secret in the UI.
+     * @type {boolean}
+     * @memberof WebhookResponse
+     */
+    'hasSecretValue': boolean;
+    /**
+     * SecretCiphertext is the ciphertext value of the webhook\'s secret. It\'s used to check whether the secret was changed by the PSP
+     * @type {string}
+     * @memberof WebhookResponse
+     */
+    'secretCiphertext': string;
 }
 
 /**
@@ -940,14 +2793,388 @@ export interface Value {
 export const EscApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * Checks an environment definition for errors
-         * @summary Checks an environment definition for errors
-         * @param {string} orgName Organization name
-         * @param {string} body Environment Yaml content
+         * Initiates the AWS SSO flow
+         * @summary AWSSSOInitiate
+         * @param {string} orgName The organization name
+         * @param {AWSSSOInitiateRequest} [aWSSSOInitiateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        checkEnvironmentYaml: async (orgName: string, body: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        aWSSSOInitiate: async (orgName: string, aWSSSOInitiateRequest?: AWSSSOInitiateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('aWSSSOInitiate', 'orgName', orgName)
+            const localVarPath = `/cloudsetup/{orgName}/aws/sso/initiate`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(aWSSSOInitiateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Lists AWS accounts accessible with the provided session
+         * @summary AWSSSOListAccounts
+         * @param {string} orgName The organization name
+         * @param {string} [region] The AWS region
+         * @param {string} [sessionId] The SSO session identifier
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aWSSSOListAccounts: async (orgName: string, region?: string, sessionId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('aWSSSOListAccounts', 'orgName', orgName)
+            const localVarPath = `/cloudsetup/{orgName}/aws/sso/accounts`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (region !== undefined) {
+                localVarQueryParameter['region'] = region;
+            }
+
+            if (sessionId !== undefined) {
+                localVarQueryParameter['sessionId'] = sessionId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Sets up AWS infrastructure and ESC environments using AWS SSO
+         * @summary AWSSSOSetup
+         * @param {string} orgName The organization name
+         * @param {AWSSSOSetupRequest} [aWSSSOSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aWSSSOSetup: async (orgName: string, aWSSSOSetupRequest?: AWSSSOSetupRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('aWSSSOSetup', 'orgName', orgName)
+            const localVarPath = `/cloudsetup/{orgName}/aws/sso/setup`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(aWSSSOSetupRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Sets up AWS infrastructure using provided static credentials
+         * @summary AWSSetup
+         * @param {string} orgName The organization name
+         * @param {AWSSetupRequest} [aWSSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aWSSetup: async (orgName: string, aWSSetupRequest?: AWSSetupRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('aWSSetup', 'orgName', orgName)
+            const localVarPath = `/cloudsetup/{orgName}/aws/setup`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(aWSSetupRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Lists Azure subscriptions accessible with the provided ARM session
+         * @summary AzureListAccounts
+         * @param {string} orgName The organization name
+         * @param {string} [armSessionId] The Azure ARM session identifier
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        azureListAccounts: async (orgName: string, armSessionId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('azureListAccounts', 'orgName', orgName)
+            const localVarPath = `/cloudsetup/{orgName}/oauth/azure/accounts`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (armSessionId !== undefined) {
+                localVarQueryParameter['armSessionId'] = armSessionId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Sets up Azure infrastructure and ESC environments using OAuth credentials
+         * @summary AzureSetup
+         * @param {string} orgName The organization name
+         * @param {AzureSetupRequest} [azureSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        azureSetup: async (orgName: string, azureSetupRequest?: AzureSetupRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('azureSetup', 'orgName', orgName)
+            const localVarPath = `/cloudsetup/{orgName}/oauth/azure/setup`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(azureSetupRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
+         * @summary CheckEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {boolean} [showSecrets] Whether to show secret values in plaintext
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkEnvironment: async (orgName: string, projectName: string, envName: string, showSecrets?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('checkEnvironment', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('checkEnvironment', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('checkEnvironment', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/check`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (showSecrets !== undefined) {
+                localVarQueryParameter['showSecrets'] = showSecrets;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
+         * @summary CheckEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {boolean} [showSecrets] Whether to show secret values in plaintext
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkEnvironmentEscEnvironmentsVersions: async (orgName: string, projectName: string, envName: string, version: string, showSecrets?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('checkEnvironmentEscEnvironmentsVersions', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('checkEnvironmentEscEnvironmentsVersions', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('checkEnvironmentEscEnvironmentsVersions', 'envName', envName)
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('checkEnvironmentEscEnvironmentsVersions', 'version', version)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/{version}/check`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (showSecrets !== undefined) {
+                localVarQueryParameter['showSecrets'] = showSecrets;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Checks a raw YAML environment definition for errors without creating or modifying any environment. The YAML definition is provided in the request body and validated for correctness, including imports, provider configurations, function invocations, and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. This is useful for validating environment definitions before applying them.
+         * @summary CheckYAML
+         * @param {string} orgName The organization name
+         * @param {string} body Environment Yaml content
+         * @param {boolean} [showSecrets] Whether to show secret values in plaintext
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkEnvironmentYaml: async (orgName: string, body: string, showSecrets?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('checkEnvironmentYaml', 'orgName', orgName)
             // verify required parameter 'body' is not null or undefined
@@ -968,6 +3195,10 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             // authentication Authorization required
             await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
 
+            if (showSecrets !== undefined) {
+                localVarQueryParameter['showSecrets'] = showSecrets;
+            }
+
 
     
             localVarHeaderParameter['Content-Type'] = 'application/x-yaml';
@@ -985,24 +3216,22 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Clones an environment
-         * @summary Clones an environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {CloneEnvironment} cloneEnvironment Clone environment
+         * Creates a duplicate of a Pulumi ESC environment in a new project and/or under a new name. The request body specifies the destination project and environment name, along with options to control what is preserved during the clone: preserveAccess retains permission settings, preserveHistory retains the full revision history, preserveEnvironmentTags retains environment-level tags, and preserveRevisionTags retains version-specific tags. Environments cannot be renamed directly, so cloning is the mechanism for moving or renaming environments.
+         * @summary CloneEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CloneEnvironmentRequest} [cloneEnvironmentRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cloneEnvironment: async (orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        cloneEnvironment: async (orgName: string, projectName: string, envName: string, cloneEnvironmentRequest?: CloneEnvironmentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('cloneEnvironment', 'orgName', orgName)
             // verify required parameter 'projectName' is not null or undefined
             assertParamExists('cloneEnvironment', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('cloneEnvironment', 'envName', envName)
-            // verify required parameter 'cloneEnvironment' is not null or undefined
-            assertParamExists('cloneEnvironment', 'cloneEnvironment', cloneEnvironment)
             const localVarPath = `/environments/{orgName}/{projectName}/{envName}/clone`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
                 .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
@@ -1030,7 +3259,7 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(cloneEnvironment, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(cloneEnvironmentRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1038,18 +3267,59 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Creates an environment in the given org with the given name.
-         * @summary Create a new environment
-         * @param {string} orgName Organization name
-         * @param {CreateEnvironment} createEnvironment Create Environment
+         * Completes OAuth flow by exchanging authorization code for access token
+         * @summary CompleteOAuth
+         * @param {string} orgName The organization name
+         * @param {CompleteOAuthRequest} [completeOAuthRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createEnvironment: async (orgName: string, createEnvironment: CreateEnvironment, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        completeOAuth: async (orgName: string, completeOAuthRequest?: CompleteOAuthRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('completeOAuth', 'orgName', orgName)
+            const localVarPath = `/cloudsetup/{orgName}/oauth/complete`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(completeOAuthRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Creates a new Pulumi ESC (Environments, Secrets, and Configuration) environment within the specified organization. The request body must include the project name and the environment name. Environment names must be unique within a project and may only contain alphanumeric characters, hyphens, underscores, and periods. The newly created environment starts with an empty YAML definition that can be updated via the UpdateEnvironment endpoint.
+         * @summary CreateEnvironment
+         * @param {string} orgName The organization name
+         * @param {CreateEnvironmentRequest} [createEnvironmentRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironment: async (orgName: string, createEnvironmentRequest?: CreateEnvironmentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('createEnvironment', 'orgName', orgName)
-            // verify required parameter 'createEnvironment' is not null or undefined
-            assertParamExists('createEnvironment', 'createEnvironment', createEnvironment)
             const localVarPath = `/environments/{orgName}`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1075,7 +3345,7 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironment, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironmentRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1083,24 +3353,69 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Create environment revision tag
-         * @summary Create environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {CreateEnvironmentRevisionTag} createEnvironmentRevisionTag Create environment revision tag
+         * Creates a new draft change request for a Pulumi ESC environment. Drafts allow proposing changes to an environment definition that can be reviewed and approved before being applied. This is part of the approvals workflow for environments. Returns a ChangeRequestRef containing the draft identifier. Requires the Approvals feature to be enabled for the organization.
+         * @summary CreateEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createEnvironmentRevisionTag: async (orgName: string, projectName: string, envName: string, createEnvironmentRevisionTag: CreateEnvironmentRevisionTag, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createEnvironmentDraft: async (orgName: string, projectName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('createEnvironmentDraft', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('createEnvironmentDraft', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('createEnvironmentDraft', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/drafts`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Creates a new revision tag for a Pulumi ESC environment. Revision tags are named references that point to specific revision numbers, similar to Git tags. They allow pinning a stable reference to a known-good version of an environment. Tagged versions can be used in imports and Pulumi stack configuration (e.g., myproject/env@prod) to ensure stable references unaffected by subsequent changes. The built-in \'latest\' tag always points to the most recent revision.
+         * @summary CreateRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentRevisionTagRequest} [createEnvironmentRevisionTagRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironmentRevisionTag: async (orgName: string, projectName: string, envName: string, createEnvironmentRevisionTagRequest?: CreateEnvironmentRevisionTagRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('createEnvironmentRevisionTag', 'orgName', orgName)
             // verify required parameter 'projectName' is not null or undefined
             assertParamExists('createEnvironmentRevisionTag', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('createEnvironmentRevisionTag', 'envName', envName)
-            // verify required parameter 'createEnvironmentRevisionTag' is not null or undefined
-            assertParamExists('createEnvironmentRevisionTag', 'createEnvironmentRevisionTag', createEnvironmentRevisionTag)
             const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/tags`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
                 .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
@@ -1128,7 +3443,7 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironmentRevisionTag, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironmentRevisionTagRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1136,24 +3451,73 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Create environment tag
-         * @summary Create environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {CreateEnvironmentTag} createEnvironmentTag Create environment tag
+         * Creates a new scheduled action for a Pulumi ESC environment. Schedules can be used to automate recurring operations on environments, such as secret rotation. The request body specifies the schedule timing and the action to perform. Returns the created ScheduledAction on success. Requires the secret rotation feature to be enabled for the organization.
+         * @summary CreateEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentScheduleRequest} [createEnvironmentScheduleRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createEnvironmentTag: async (orgName: string, projectName: string, envName: string, createEnvironmentTag: CreateEnvironmentTag, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createEnvironmentSchedule: async (orgName: string, projectName: string, envName: string, createEnvironmentScheduleRequest?: CreateEnvironmentScheduleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('createEnvironmentSchedule', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('createEnvironmentSchedule', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('createEnvironmentSchedule', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/schedules`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironmentScheduleRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Adds a new user-defined tag to a Pulumi ESC environment. Tags are key-value pairs that provide contextual metadata for organizing and searching environments (e.g., region=us-east-1, team=platform). The tag name and value are provided in the request body. Returns the created EnvironmentTag on success. Returns 409 if a tag with the same name already exists on the environment.
+         * @summary CreateEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentTagRequest} [createEnvironmentTagRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironmentTag: async (orgName: string, projectName: string, envName: string, createEnvironmentTagRequest?: CreateEnvironmentTagRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('createEnvironmentTag', 'orgName', orgName)
             // verify required parameter 'projectName' is not null or undefined
             assertParamExists('createEnvironmentTag', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('createEnvironmentTag', 'envName', envName)
-            // verify required parameter 'createEnvironmentTag' is not null or undefined
-            assertParamExists('createEnvironmentTag', 'createEnvironmentTag', createEnvironmentTag)
             const localVarPath = `/environments/{orgName}/{projectName}/{envName}/tags`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
                 .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
@@ -1181,7 +3545,7 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironmentTag, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironmentTagRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1189,11 +3553,113 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Reads the definition for the given environment with static secrets in plaintext
-         * @summary Reads the definition for the given environment with static secrets in plaintext
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Creates an open request for a Pulumi ESC environment that has gated opens enabled. When an environment has open gates configured, opening the environment requires an approval workflow. This endpoint initiates that process by creating an open request, and also creates corresponding open requests for each imported environment that has open gates. Requires the Approvals feature to be enabled for the organization. Returns 400 if the environment does not have gated opens.
+         * @summary CreateOpenEnvironmentRequest
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentOpenRequest} [createEnvironmentOpenRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createOpenEnvironmentRequest: async (orgName: string, projectName: string, envName: string, createEnvironmentOpenRequest?: CreateEnvironmentOpenRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('createOpenEnvironmentRequest', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('createOpenEnvironmentRequest', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('createOpenEnvironmentRequest', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/open/request`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironmentOpenRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Creates a new webhook for a Pulumi ESC environment. Webhooks allow external services to be notified when environment events occur, such as updates or opens. The request body specifies the webhook configuration including the destination URL, event filters, and format. Returns 400 if the organization name in the request body does not match the URL path parameter. Returns 409 if a webhook with the same name already exists.
+         * @summary CreateWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {Webhook} [webhook] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createWebhook: async (orgName: string, projectName: string, envName: string, webhook?: Webhook, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('createWebhook', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('createWebhook', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('createWebhook', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/hooks`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(webhook, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Reads the YAML definition for a Pulumi ESC environment with all static secrets decrypted and shown in plaintext. Unlike the standard ReadEnvironment endpoint which returns secrets in their encrypted form, this endpoint resolves fn::secret values to their plaintext representations. The response is returned in application/x-yaml format. This does not resolve dynamic provider values (fn::open); use OpenEnvironment for full resolution. Requires environment open permission.
+         * @summary DecryptEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1236,11 +3702,113 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Delete an environment
-         * @summary Delete an environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Reads the YAML definition for a Pulumi ESC environment with all static secrets decrypted and shown in plaintext. Unlike the standard ReadEnvironment endpoint which returns secrets in their encrypted form, this endpoint resolves fn::secret values to their plaintext representations. The response is returned in application/x-yaml format. This does not resolve dynamic provider values (fn::open); use OpenEnvironment for full resolution. Requires environment open permission.
+         * @summary DecryptEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        decryptEnvironmentEscEnvironmentsVersions: async (orgName: string, projectName: string, envName: string, version: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('decryptEnvironmentEscEnvironmentsVersions', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('decryptEnvironmentEscEnvironmentsVersions', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('decryptEnvironmentEscEnvironmentsVersions', 'envName', envName)
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('decryptEnvironmentEscEnvironmentsVersions', 'version', version)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/{version}/decrypt`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Decrypts encrypted secret values in a Pulumi ESC environment definition. Takes an environment definition containing encrypted secrets and returns the same definition with those values decrypted to plaintext. This is useful for inspecting or migrating environment definitions that contain fn::secret values. Requires environment open permission. Returns 413 if the request content exceeds the maximum allowed size.
+         * @summary DecryptEnvironmentSecrets
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {DecryptEnvironmentSecretsRequest} [decryptEnvironmentSecretsRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        decryptEnvironmentSecrets: async (orgName: string, projectName: string, envName: string, decryptEnvironmentSecretsRequest?: DecryptEnvironmentSecretsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('decryptEnvironmentSecrets', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('decryptEnvironmentSecrets', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('decryptEnvironmentSecrets', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/decrypt-secrets`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(decryptEnvironmentSecretsRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Permanently deletes a Pulumi ESC environment and all of its revision history, tags, and associated configuration. This operation is blocked if deletion protection is enabled on the environment (see PatchEnvironmentSettings). Enterprise and Business Critical edition organizations may be able to restore deleted environments within a retention window. Returns 409 if the environment is deletion-protected or has been modified since it was last read.
+         * @summary DeleteEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1283,12 +3851,12 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Delete environment revision tag
-         * @summary Delete environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Deletes a named revision tag from a Pulumi ESC environment. The tag is identified by its name in the URL path. After deletion, any imports or stack configurations referencing this tag will fail to resolve. The built-in \'latest\' tag cannot be deleted. Returns 204 on success with no response body.
+         * @summary DeleteRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The revision tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1334,12 +3902,63 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Delete environment tag
-         * @summary Delete environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Permanently deletes a scheduled action from a Pulumi ESC environment. This removes the schedule and cancels any future executions. The schedule is identified by its scheduleID. Requires the secret rotation feature to be enabled for the organization.
+         * @summary DeleteEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEnvironmentSchedule: async (orgName: string, projectName: string, envName: string, scheduleID: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('deleteEnvironmentSchedule', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('deleteEnvironmentSchedule', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('deleteEnvironmentSchedule', 'envName', envName)
+            // verify required parameter 'scheduleID' is not null or undefined
+            assertParamExists('deleteEnvironmentSchedule', 'scheduleID', scheduleID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"scheduleID"}}`, encodeURIComponent(String(scheduleID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Removes a user-defined tag from a Pulumi ESC environment. The tag is identified by its name in the URL path. Returns 204 on success with no response body. Returns 404 if the tag does not exist on the environment.
+         * @summary DeleteEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The environment tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1385,11 +4004,200 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Read an environment
-         * @summary Read an environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Deletes a webhook from a Pulumi ESC environment. The webhook is identified by its name in the URL path. After deletion, the external service will no longer receive notifications for environment events. Returns 204 on success with no response body.
+         * @summary DeleteWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteWebhook: async (orgName: string, projectName: string, envName: string, hookName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('deleteWebhook', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('deleteWebhook', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('deleteWebhook', 'envName', envName)
+            // verify required parameter 'hookName' is not null or undefined
+            assertParamExists('deleteWebhook', 'hookName', hookName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"hookName"}}`, encodeURIComponent(String(hookName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Encrypts plaintext secret values in a Pulumi ESC environment definition. Takes an environment definition containing plaintext secrets and returns the same definition with those values encrypted using the environment\'s encryption key. This is useful for preparing environment definitions that contain sensitive values before storing or updating them. Returns 413 if the request content exceeds the maximum allowed size.
+         * @summary EncryptEnvironmentSecrets
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {EncryptEnvironmentSecretsRequest} [encryptEnvironmentSecretsRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        encryptEnvironmentSecrets: async (orgName: string, projectName: string, envName: string, encryptEnvironmentSecretsRequest?: EncryptEnvironmentSecretsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('encryptEnvironmentSecrets', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('encryptEnvironmentSecrets', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('encryptEnvironmentSecrets', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/encrypt-secrets`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(encryptEnvironmentSecretsRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Lists GCP projects accessible with the provided oauth session
+         * @summary GCPListAccounts
+         * @param {string} orgName The organization name
+         * @param {string} [oauthSessionId] The OAuth session identifier
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gCPListAccounts: async (orgName: string, oauthSessionId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('gCPListAccounts', 'orgName', orgName)
+            const localVarPath = `/cloudsetup/{orgName}/oauth/gcp/accounts`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (oauthSessionId !== undefined) {
+                localVarQueryParameter['oauthSessionId'] = oauthSessionId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Sets up GCP infrastructure using OAuth credentials
+         * @summary GCPSetup
+         * @param {string} orgName The organization name
+         * @param {GCPSetupRequest} [gCPSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gCPSetup: async (orgName: string, gCPSetupRequest?: GCPSetupRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('gCPSetup', 'orgName', orgName)
+            const localVarPath = `/cloudsetup/{orgName}/oauth/gcp/setup`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(gCPSetupRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns the YAML definition of a Pulumi ESC environment. The response is in application/x-yaml format and includes the environment\'s imports, values, provider configurations, and function invocations. Secrets remain in their encrypted form (use DecryptEnvironment to see plaintext secrets, or OpenEnvironment to fully resolve all dynamic values). When a version path parameter is provided, returns the definition for that specific revision.
+         * @summary ReadEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1432,12 +4240,12 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Read an environmentat a specific revision or tag
-         * @summary Read an environment at a specific version
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} version Revision or tag
+         * Returns the YAML definition of a Pulumi ESC environment. The response is in application/x-yaml format and includes the environment\'s imports, values, provider configurations, and function invocations. Secrets remain in their encrypted form (use DecryptEnvironment to see plaintext secrets, or OpenEnvironment to fully resolve all dynamic values). When a version path parameter is provided, returns the definition for that specific revision.
+         * @summary ReadEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1483,11 +4291,11 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Returns the ETag for the given environment if it exists.
-         * @summary Return an Environment ETag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Returns the ETag header for a Pulumi ESC environment without returning the full definition body. This is used for lightweight existence checks and for obtaining the current ETag value for optimistic concurrency control. The ETag should be included in subsequent update requests via the If-Match header to prevent concurrent modification conflicts. Returns 404 if the environment does not exist.
+         * @summary HeadEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1530,12 +4338,59 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Read environment revision tag
-         * @summary Read environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Returns metadata for a Pulumi ESC environment, including the calling user\'s effective permission level (read, open, write, admin), creation and modification timestamps, the environment\'s project, and other administrative information. This is useful for determining what actions the current user can perform on the environment before attempting those operations.
+         * @summary GetEnvironmentMetadata
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnvironmentMetadata: async (orgName: string, projectName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('getEnvironmentMetadata', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('getEnvironmentMetadata', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('getEnvironmentMetadata', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/metadata`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns the details of a specific revision tag for a Pulumi ESC environment. The tag is identified by its name in the URL path. The response includes the tag name and the revision number it points to. Returns 404 if the tag does not exist.
+         * @summary ReadRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The revision tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1581,12 +4436,59 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Read an environment tag
-         * @summary Read an environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Returns the current settings for a Pulumi ESC environment, including whether deletion protection is enabled. Deletion protection prevents the environment from being deleted until the setting is explicitly disabled. Settings can be modified via the PatchEnvironmentSettings endpoint.
+         * @summary GetEnvironmentSettings
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnvironmentSettings: async (orgName: string, projectName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('getEnvironmentSettings', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('getEnvironmentSettings', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('getEnvironmentSettings', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/settings`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a single user-defined tag for a Pulumi ESC environment, identified by the tag name in the URL path. The response includes the tag name, value, and metadata. Returns 404 if the tag does not exist on the environment.
+         * @summary GetEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The environment tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1632,13 +4534,457 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * List environment revisions
-         * @summary List environment revisions
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} [after] after tag for pagination
-         * @param {number} [count] limit of tags to return
+         * Returns the JSON schema for a Pulumi ESC provider. Providers are integrations that dynamically retrieve configuration and secrets from external sources such as AWS, Azure, Google Cloud, HashiCorp Vault, and others via fn::open. The schema describes the provider\'s input parameters, output structure, and configuration options. The provider is identified by name in the URL path.
+         * @summary GetProviderSchema
+         * @param {string} providerName The provider name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProviderSchema: async (providerName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'providerName' is not null or undefined
+            assertParamExists('getProviderSchema', 'providerName', providerName)
+            const localVarPath = `/providers/{providerName}/schema`
+                .replace(`{${"providerName"}}`, encodeURIComponent(String(providerName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns the JSON schema for a Pulumi ESC secret rotator. Rotators are integrations that automatically rotate secrets in external systems via fn::rotate. The schema describes the rotator\'s input parameters, output structure, and configuration options. The rotator is identified by name in the URL path.
+         * @summary GetRotatorSchema
+         * @param {string} rotatorName The rotator name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRotatorSchema: async (rotatorName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'rotatorName' is not null or undefined
+            assertParamExists('getRotatorSchema', 'rotatorName', rotatorName)
+            const localVarPath = `/rotators/{rotatorName}/schema`
+                .replace(`{${"rotatorName"}}`, encodeURIComponent(String(rotatorName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns the configuration and status of a single webhook for a Pulumi ESC environment. The webhook is identified by its name in the URL path. The response includes the webhook\'s destination URL, event filters, format, and active status. Returns 404 if the webhook does not exist.
+         * @summary GetWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWebhook: async (orgName: string, projectName: string, envName: string, hookName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('getWebhook', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('getWebhook', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('getWebhook', 'envName', envName)
+            // verify required parameter 'hookName' is not null or undefined
+            assertParamExists('getWebhook', 'hookName', hookName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"hookName"}}`, encodeURIComponent(String(hookName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a list of recent delivery attempts for a specific webhook on a Pulumi ESC environment. Each delivery record includes the HTTP status code, response body, timestamp, and whether the delivery was successful. This is useful for debugging webhook integration issues and verifying that events are being received.
+         * @summary GetWebhookDeliveries
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWebhookDeliveries: async (orgName: string, projectName: string, envName: string, hookName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('getWebhookDeliveries', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('getWebhookDeliveries', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('getWebhookDeliveries', 'envName', envName)
+            // verify required parameter 'hookName' is not null or undefined
+            assertParamExists('getWebhookDeliveries', 'hookName', hookName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}/deliveries`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"hookName"}}`, encodeURIComponent(String(hookName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Initiates OAuth flow for a given cloud provider
+         * @summary InitiateOAuth
+         * @param {string} orgName The organization name
+         * @param {InitiateOAuthRequest} [initiateOAuthRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        initiateOAuth: async (orgName: string, initiateOAuthRequest?: InitiateOAuthRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('initiateOAuth', 'orgName', orgName)
+            const localVarPath = `/cloudsetup/{orgName}/oauth/initiate`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(initiateOAuthRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a map of all unique tag names and their distinct values across all Pulumi ESC environments in the organization. The response is a map where each key is a tag name and the value is a list of all distinct values for that tag across all environments. This is useful for building tag-based filtering or discovery UIs.
+         * @summary ListAllEnvironmentTags
+         * @param {string} orgName The organization name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listAllEnvironmentTags: async (orgName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listAllEnvironmentTags', 'orgName', orgName)
+            const localVarPath = `/environments/{orgName}/tags`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a paginated list of soft-deleted Pulumi ESC environments within an organization that are still within the retention window and eligible for restoration. Use the continuationToken query parameter for pagination. Deleted environments can be restored via the RestoreEnvironment endpoint.
+         * @summary ListDeletedEnvironments
+         * @param {string} orgName The organization name
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listDeletedEnvironments: async (orgName: string, continuationToken?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listDeletedEnvironments', 'orgName', orgName)
+            const localVarPath = `/environments/{orgName}/restore`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (continuationToken !== undefined) {
+                localVarQueryParameter['continuationToken'] = continuationToken;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+         * @summary ListEnvironmentReferrers
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {boolean} [allRevisions] Whether to include all revisions
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {number} [count] Maximum number of results to return
+         * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentReferrers: async (orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listEnvironmentReferrers', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('listEnvironmentReferrers', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('listEnvironmentReferrers', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/referrers`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (allRevisions !== undefined) {
+                localVarQueryParameter['allRevisions'] = allRevisions;
+            }
+
+            if (continuationToken !== undefined) {
+                localVarQueryParameter['continuationToken'] = continuationToken;
+            }
+
+            if (count !== undefined) {
+                localVarQueryParameter['count'] = count;
+            }
+
+            if (latestStackVersionOnly !== undefined) {
+                localVarQueryParameter['latestStackVersionOnly'] = latestStackVersionOnly;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+         * @summary ListEnvironmentReferrers
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {boolean} [allRevisions] Whether to include all revisions
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {number} [count] Maximum number of results to return
+         * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentReferrersEscEnvironmentsVersions: async (orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listEnvironmentReferrersEscEnvironmentsVersions', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('listEnvironmentReferrersEscEnvironmentsVersions', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('listEnvironmentReferrersEscEnvironmentsVersions', 'envName', envName)
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('listEnvironmentReferrersEscEnvironmentsVersions', 'version', version)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/{version}/referrers`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (allRevisions !== undefined) {
+                localVarQueryParameter['allRevisions'] = allRevisions;
+            }
+
+            if (continuationToken !== undefined) {
+                localVarQueryParameter['continuationToken'] = continuationToken;
+            }
+
+            if (count !== undefined) {
+                localVarQueryParameter['count'] = count;
+            }
+
+            if (latestStackVersionOnly !== undefined) {
+                localVarQueryParameter['latestStackVersionOnly'] = latestStackVersionOnly;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a paginated list of revision tags for a Pulumi ESC environment. Revision tags are named references pointing to specific revision numbers (e.g., \'latest\', \'prod\', \'stable\'). They can be used in environment imports and Pulumi stack configuration to pin to a specific version. Use the after parameter for cursor-based pagination and count to limit results.
+         * @summary ListRevisionTags
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} [after] Only return results after this value
+         * @param {number} [count] Maximum number of results to return
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1689,13 +5035,13 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * List environment revisions
-         * @summary List environment revisions
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {number} [before] before revision number for pagination
-         * @param {number} [count] limit of revisions to return
+         * Returns a paginated list of revisions for a Pulumi ESC environment. Each revision represents an immutable snapshot of the environment definition created when the environment is updated. The response includes revision numbers, timestamps, and the identity of the user who made each change. Use the before parameter to fetch revisions before a specific revision number, and count to limit the number of results returned.
+         * @summary ListEnvironmentRevisions
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {number} [before] Only return results before this revision
+         * @param {number} [count] Maximum number of results to return
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1746,17 +5092,162 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * List environment tags
-         * @summary List environment tags
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} [after] after tag for pagination
-         * @param {number} [count] limit of tags to return
+         * Returns all scheduled actions configured for a Pulumi ESC environment. Schedules automate recurring operations such as secret rotation. The response includes each schedule\'s timing configuration, action type, and current status (active or paused).
+         * @summary ListEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listEnvironmentTags: async (orgName: string, projectName: string, envName: string, after?: string, count?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        listEnvironmentSchedule: async (orgName: string, projectName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listEnvironmentSchedule', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('listEnvironmentSchedule', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('listEnvironmentSchedule', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/schedules`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns the execution history for a specific scheduled action on a Pulumi ESC environment. Each history entry includes the execution timestamp, outcome (success or failure), and any error details. This is useful for monitoring the reliability of automated operations like secret rotation.
+         * @summary ListEnvironmentScheduleHistory
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentScheduleHistory: async (orgName: string, projectName: string, envName: string, scheduleID: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listEnvironmentScheduleHistory', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('listEnvironmentScheduleHistory', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('listEnvironmentScheduleHistory', 'envName', envName)
+            // verify required parameter 'scheduleID' is not null or undefined
+            assertParamExists('listEnvironmentScheduleHistory', 'scheduleID', scheduleID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}/history`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"scheduleID"}}`, encodeURIComponent(String(scheduleID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns the secret rotation history for a Pulumi ESC environment. Each entry represents a rotation event where secrets defined with fn::rotate were cycled to new values in their external systems. The response includes timestamps, outcomes, and the rotators involved. Requires the secret rotation feature to be enabled for the organization.
+         * @summary ListEnvironmentSecretRotationHistory
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentSecretRotationHistory: async (orgName: string, projectName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listEnvironmentSecretRotationHistory', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('listEnvironmentSecretRotationHistory', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('listEnvironmentSecretRotationHistory', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/rotate/history`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a paginated list of user-defined tags for a Pulumi ESC environment. Tags are key-value pairs used for organizing and categorizing environments. Use the after parameter for cursor-based pagination and count to limit the number of results returned.
+         * @summary ListEnvironmentTags
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {number} [after] Only return results after this value
+         * @param {number} [count] Maximum number of results to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentTags: async (orgName: string, projectName: string, envName: string, after?: number, count?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('listEnvironmentTags', 'orgName', orgName)
             // verify required parameter 'projectName' is not null or undefined
@@ -1803,14 +5294,16 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * List environments in the organization available to the current user
-         * @summary List environments in the organization
-         * @param {string} orgName Organization name
-         * @param {string} [continuationToken] continuation Token from previous query to fetch next page of results
+         * Returns a paginated list of all Pulumi ESC environments within a specific organization. Each entry includes the project, environment name, and creation/modification timestamps. Results are scoped to the organization specified in the URL path. Use continuationToken for pagination through large result sets.
+         * @summary ListOrgEnvironments
+         * @param {string} orgName The organization name
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {number} [maxResults] Maximum number of results for pagination
+         * @param {string} [roleID] The custom role to use for listing environments
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listEnvironments: async (orgName: string, continuationToken?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        listEnvironments: async (orgName: string, continuationToken?: string, maxResults?: number, roleID?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('listEnvironments', 'orgName', orgName)
             const localVarPath = `/environments/{orgName}`
@@ -1833,6 +5326,14 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
                 localVarQueryParameter['continuationToken'] = continuationToken;
             }
 
+            if (maxResults !== undefined) {
+                localVarQueryParameter['maxResults'] = maxResults;
+            }
+
+            if (roleID !== undefined) {
+                localVarQueryParameter['roleID'] = roleID;
+            }
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -1847,12 +5348,245 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Opens a session the given environment for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
-         * @summary Open an environment session
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+         * Returns a paginated list of all Pulumi ESC environments accessible to the authenticated user across all organizations they belong to. Each entry includes the organization, project, environment name, and creation/modification timestamps. Use the organization query parameter to filter results to a specific organization. Use continuationToken for pagination through large result sets.
+         * @summary ListEnvironments
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {string} [organization] Filter results to this organization name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentsEsc: async (continuationToken?: string, organization?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/environments`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (continuationToken !== undefined) {
+                localVarQueryParameter['continuationToken'] = continuationToken;
+            }
+
+            if (organization !== undefined) {
+                localVarQueryParameter['organization'] = organization;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a list of all available Pulumi ESC providers. Providers are integrations that dynamically retrieve configuration and secrets from external sources (e.g., AWS, Azure, Google Cloud, HashiCorp Vault, 1Password) via the fn::open function in environment definitions. Optionally filter by organization using the orgName query parameter to see only providers available to that organization.
+         * @summary ListProviders
+         * @param {string} [orgName] Filter providers available to this organization
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listProviders: async (orgName?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/providers`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (orgName !== undefined) {
+                localVarQueryParameter['orgName'] = orgName;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a paginated list of revision tags for a Pulumi ESC environment. Revision tags are named references pointing to specific revision numbers (e.g., \'latest\', \'prod\', \'stable\'). They can be used in environment imports and Pulumi stack configuration to pin to a specific version. Use the after parameter for cursor-based pagination and count to limit results.
+         * @summary ListRevisionTags
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {string} [after] Only return results after this value
+         * @param {number} [count] Maximum number of results to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listRevisionTagsEscEnvironmentsVersions2: async (orgName: string, projectName: string, envName: string, version: string, after?: string, count?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listRevisionTagsEscEnvironmentsVersions2', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('listRevisionTagsEscEnvironmentsVersions2', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('listRevisionTagsEscEnvironmentsVersions2', 'envName', envName)
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('listRevisionTagsEscEnvironmentsVersions2', 'version', version)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/{version}/tags`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (after !== undefined) {
+                localVarQueryParameter['after'] = after;
+            }
+
+            if (count !== undefined) {
+                localVarQueryParameter['count'] = count;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a list of all available Pulumi ESC secret rotators. Rotators are integrations that automatically rotate secrets in external systems via the fn::rotate function in environment definitions. Optionally filter by organization using the orgName query parameter to see only rotators available to that organization.
+         * @summary ListRotators
+         * @param {string} [orgName] Filter rotators available to this organization
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listRotators: async (orgName?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/rotators`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (orgName !== undefined) {
+                localVarQueryParameter['orgName'] = orgName;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns a list of all webhooks configured for a Pulumi ESC environment. Each webhook entry includes its name, destination URL, event filters, format, and active status. Webhooks enable external services to be notified of environment events such as updates and opens.
+         * @summary ListWebhooks
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listWebhooks: async (orgName: string, projectName: string, envName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('listWebhooks', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('listWebhooks', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('listWebhooks', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/hooks`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Opens a Pulumi ESC environment, fully resolving all dynamic values, provider integrations (fn::open), interpolation expressions, and secrets. This initiates an access session that evaluates the complete environment definition including all imports. The duration parameter specifies how long the session remains valid using Go duration format (e.g., \'2h45m\', \'300ms\'). Returns an OpenEnvironmentResponse containing the session ID and any diagnostics. Use the session ID with ReadOpenEnvironment to retrieve the resolved values.
+         * @summary OpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1899,13 +5633,13 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Opens a session the given environment at a specific version for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
-         * @summary Open an environment session at a specific version
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} version Revision or tag
-         * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+         * Opens a Pulumi ESC environment, fully resolving all dynamic values, provider integrations (fn::open), interpolation expressions, and secrets. This initiates an access session that evaluates the complete environment definition including all imports. The duration parameter specifies how long the session remains valid using Go duration format (e.g., \'2h45m\', \'300ms\'). Returns an OpenEnvironmentResponse containing the session ID and any diagnostics. Use the session ID with ReadOpenEnvironment to retrieve the resolved values.
+         * @summary OpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1955,29 +5689,391 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Reads and decrypts secrets including retrieving dynamic secrets from providers.
-         * @summary Read an open environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} openSessionID Open session ID returned from environment open
+         * Opens a draft version of a Pulumi ESC environment, fully resolving all dynamic values, provider integrations, and secrets for the proposed changes. The duration parameter specifies how long the open session remains valid using Go duration format (e.g., \'2h\', \'30m\'). An optional revision parameter can target a specific base revision. Returns an OpenEnvironmentResponse containing the session ID for subsequent reads. Requires the Approvals feature.
+         * @summary OpenEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
+         * @param {number} [revision] The environment revision number to target
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readOpenEnvironment: async (orgName: string, projectName: string, envName: string, openSessionID: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        openEnvironmentDraft: async (orgName: string, projectName: string, envName: string, changeRequestID: string, duration?: string, revision?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
-            assertParamExists('readOpenEnvironment', 'orgName', orgName)
+            assertParamExists('openEnvironmentDraft', 'orgName', orgName)
             // verify required parameter 'projectName' is not null or undefined
-            assertParamExists('readOpenEnvironment', 'projectName', projectName)
+            assertParamExists('openEnvironmentDraft', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
-            assertParamExists('readOpenEnvironment', 'envName', envName)
-            // verify required parameter 'openSessionID' is not null or undefined
-            assertParamExists('readOpenEnvironment', 'openSessionID', openSessionID)
-            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/open/{openSessionID}`
+            assertParamExists('openEnvironmentDraft', 'envName', envName)
+            // verify required parameter 'changeRequestID' is not null or undefined
+            assertParamExists('openEnvironmentDraft', 'changeRequestID', changeRequestID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/drafts/{changeRequestID}/open`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
                 .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
                 .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"changeRequestID"}}`, encodeURIComponent(String(changeRequestID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (duration !== undefined) {
+                localVarQueryParameter['duration'] = duration;
+            }
+
+            if (revision !== undefined) {
+                localVarQueryParameter['revision'] = revision;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Opens an anonymous Pulumi ESC environment from a raw YAML definition provided in the request body, fully resolving all dynamic values, provider integrations, and secrets. Unlike OpenEnvironment, this does not require a pre-existing environment to be stored. The duration parameter specifies how long the session remains valid using Go duration format. Returns an OpenEnvironmentResponse containing the session ID. Use the session ID with ReadAnonymousOpenEnvironment to retrieve the resolved values.
+         * @summary OpenYAML
+         * @param {string} orgName The organization name
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        openYAML: async (orgName: string, duration?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('openYAML', 'orgName', orgName)
+            const localVarPath = `/environments/{orgName}/yaml/open`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (duration !== undefined) {
+                localVarQueryParameter['duration'] = duration;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Updates settings for a Pulumi ESC environment using a partial update (patch) approach. Currently supports toggling deletion protection via the deletionProtected field. When deletionProtected is set to true, the environment cannot be deleted until the setting is explicitly disabled. Only the fields included in the request body are modified; omitted fields retain their current values.
+         * @summary PatchEnvironmentSettings
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {PatchEnvironmentSettingsRequest} [patchEnvironmentSettingsRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        patchEnvironmentSettings: async (orgName: string, projectName: string, envName: string, patchEnvironmentSettingsRequest?: PatchEnvironmentSettingsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('patchEnvironmentSettings', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('patchEnvironmentSettings', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('patchEnvironmentSettings', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/settings`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchEnvironmentSettingsRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Pauses a scheduled action on a Pulumi ESC environment, preventing any future executions until the schedule is resumed. The schedule\'s configuration is preserved and can be reactivated via the ResumeEnvironmentSchedule endpoint. This is useful for temporarily disabling automated operations like secret rotation without deleting the schedule.
+         * @summary PauseEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        pauseEnvironmentSchedule: async (orgName: string, projectName: string, envName: string, scheduleID: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('pauseEnvironmentSchedule', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('pauseEnvironmentSchedule', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('pauseEnvironmentSchedule', 'envName', envName)
+            // verify required parameter 'scheduleID' is not null or undefined
+            assertParamExists('pauseEnvironmentSchedule', 'scheduleID', scheduleID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}/pause`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"scheduleID"}}`, encodeURIComponent(String(scheduleID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Sends a test ping event to a webhook on a Pulumi ESC environment to verify that the webhook endpoint is reachable and functioning correctly. This bypasses the normal message queue and issues the request directly to the webhook URL. Returns the WebhookDelivery record containing the HTTP status code and response from the target endpoint.
+         * @summary PingWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        pingWebhook: async (orgName: string, projectName: string, envName: string, hookName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('pingWebhook', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('pingWebhook', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('pingWebhook', 'envName', envName)
+            // verify required parameter 'hookName' is not null or undefined
+            assertParamExists('pingWebhook', 'hookName', hookName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}/ping`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"hookName"}}`, encodeURIComponent(String(hookName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Reads the fully resolved values from an anonymous open environment session that was created via the OpenYAML endpoint. The openSessionID path parameter must match a valid, non-expired session. The optional property query parameter accepts a dot-separated path to retrieve a specific nested value instead of the entire resolved environment (e.g., \'aws.credentials.accessKeyId\'). The response contains the resolved configuration values with secrets decrypted.
+         * @summary ReadAnonymousOpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} openSessionID The session ID returned from the open environment operation
+         * @param {string} [property] A dot-separated path to a specific property to retrieve from the environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readAnonymousOpenEnvironment: async (orgName: string, openSessionID: string, property?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('readAnonymousOpenEnvironment', 'orgName', orgName)
+            // verify required parameter 'openSessionID' is not null or undefined
+            assertParamExists('readAnonymousOpenEnvironment', 'openSessionID', openSessionID)
+            const localVarPath = `/environments/{orgName}/yaml/open/{openSessionID}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
                 .replace(`{${"openSessionID"}}`, encodeURIComponent(String(openSessionID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (property !== undefined) {
+                localVarQueryParameter['property'] = property;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Reads the YAML definition for a draft version of a Pulumi ESC environment. Drafts are proposed changes created as part of the approvals workflow. The draft is identified by the changeRequestID path parameter. An optional revision query parameter can target a specific base revision. The response is returned in application/x-yaml format. Requires the Approvals feature to be enabled.
+         * @summary ReadEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {number} [revision] The environment revision number to target
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readEnvironmentDraft: async (orgName: string, projectName: string, envName: string, changeRequestID: string, revision?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('readEnvironmentDraft', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('readEnvironmentDraft', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('readEnvironmentDraft', 'envName', envName)
+            // verify required parameter 'changeRequestID' is not null or undefined
+            assertParamExists('readEnvironmentDraft', 'changeRequestID', changeRequestID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/drafts/{changeRequestID}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"changeRequestID"}}`, encodeURIComponent(String(changeRequestID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (revision !== undefined) {
+                localVarQueryParameter['revision'] = revision;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns the details of a specific scheduled action for a Pulumi ESC environment. The schedule is identified by the scheduleID path parameter. The response includes the schedule\'s timing configuration (cron expression or one-time), the action to perform, and the current status (active or paused).
+         * @summary ReadEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readEnvironmentSchedule: async (orgName: string, projectName: string, envName: string, scheduleID: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('readEnvironmentSchedule', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('readEnvironmentSchedule', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('readEnvironmentSchedule', 'envName', envName)
+            // verify required parameter 'scheduleID' is not null or undefined
+            assertParamExists('readEnvironmentSchedule', 'scheduleID', scheduleID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"scheduleID"}}`, encodeURIComponent(String(scheduleID)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -2006,12 +6102,68 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Reads and decrypts secrets including retrieving dynamic secrets from providers.
-         * @summary Read an open environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} openSessionID Open session ID returned from environment open
+         * Reads the fully resolved values from an open environment session that was created via the OpenEnvironment endpoint. The openSessionID path parameter must match a valid, non-expired session. The optional property query parameter accepts a dot-separated path to retrieve a specific nested value instead of the entire resolved environment (e.g., \'aws.credentials.accessKeyId\'). The response contains all resolved configuration values with secrets decrypted and provider-sourced values fully evaluated.
+         * @summary ReadOpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} openSessionID The session ID returned from the open environment operation
+         * @param {string} [property] A dot-separated path to a specific property to retrieve from the environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readOpenEnvironment: async (orgName: string, projectName: string, envName: string, openSessionID: string, property?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('readOpenEnvironment', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('readOpenEnvironment', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('readOpenEnvironment', 'envName', envName)
+            // verify required parameter 'openSessionID' is not null or undefined
+            assertParamExists('readOpenEnvironment', 'openSessionID', openSessionID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/open/{openSessionID}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"openSessionID"}}`, encodeURIComponent(String(openSessionID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (property !== undefined) {
+                localVarQueryParameter['property'] = property;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Reads and decrypts a specific property including retrieving dynamic secrets from providers.
+         * @summary Read an open environment property
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} openSessionID The session ID returned from the open environment operation
          * @param {string} property Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2064,17 +6216,379 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Update environment revision tag
-         * @summary Update environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
-         * @param {UpdateEnvironmentRevisionTag} updateEnvironmentRevisionTag Update environment revision tag
+         * Reads the details of an open environment request that was created as part of the gated opens approval workflow. The request is identified by the changeRequestID path parameter. The response includes the request\'s status, the requesting user, and approval details. An optional revision query parameter can target a specific environment revision. Requires the Approvals feature to be enabled.
+         * @summary ReadOpenEnvironmentRequest
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {number} [revision] The environment revision number to target
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateEnvironmentRevisionTag: async (orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTag: UpdateEnvironmentRevisionTag, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        readOpenEnvironmentRequest: async (orgName: string, projectName: string, envName: string, changeRequestID: string, revision?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('readOpenEnvironmentRequest', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('readOpenEnvironmentRequest', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('readOpenEnvironmentRequest', 'envName', envName)
+            // verify required parameter 'changeRequestID' is not null or undefined
+            assertParamExists('readOpenEnvironmentRequest', 'changeRequestID', changeRequestID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/open/request/{changeRequestID}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"changeRequestID"}}`, encodeURIComponent(String(changeRequestID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (revision !== undefined) {
+                localVarQueryParameter['revision'] = revision;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Triggers the Pulumi Service to redeliver a specific event to a webhook on a Pulumi ESC environment. This is useful for resending events that the webhook endpoint failed to process on the initial delivery attempt (e.g., due to temporary downtime or errors). The event is identified by its delivery event ID in the URL path. Returns the new WebhookDelivery record for the redelivery.
+         * @summary RedeliverWebhookEvent
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {string} event The webhook delivery event ID to redeliver
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        redeliverWebhookEvent: async (orgName: string, projectName: string, envName: string, hookName: string, event: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('redeliverWebhookEvent', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('redeliverWebhookEvent', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('redeliverWebhookEvent', 'envName', envName)
+            // verify required parameter 'hookName' is not null or undefined
+            assertParamExists('redeliverWebhookEvent', 'hookName', hookName)
+            // verify required parameter 'event' is not null or undefined
+            assertParamExists('redeliverWebhookEvent', 'event', event)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}/deliveries/{event}/redeliver`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"hookName"}}`, encodeURIComponent(String(hookName)))
+                .replace(`{${"event"}}`, encodeURIComponent(String(event)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Restores a previously deleted Pulumi ESC environment within an organization. The request body specifies the environment to restore by its project and name. The environment must have been deleted within the retention window and not yet permanently purged. Returns 204 on success with no response body. Returns 404 if the deleted environment cannot be found.
+         * @summary RestoreEnvironment
+         * @param {string} orgName The organization name
+         * @param {RestoreEnvironmentRequest} [restoreEnvironmentRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        restoreEnvironment: async (orgName: string, restoreEnvironmentRequest?: RestoreEnvironmentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('restoreEnvironment', 'orgName', orgName)
+            const localVarPath = `/environments/{orgName}/restore`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(restoreEnvironmentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Resumes a previously paused scheduled action on a Pulumi ESC environment, re-enabling future executions. The schedule will continue from its next scheduled time according to its configured timing (cron expression or one-time schedule). The schedule is identified by the scheduleID path parameter.
+         * @summary ResumeEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resumeEnvironmentSchedule: async (orgName: string, projectName: string, envName: string, scheduleID: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('resumeEnvironmentSchedule', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('resumeEnvironmentSchedule', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('resumeEnvironmentSchedule', 'envName', envName)
+            // verify required parameter 'scheduleID' is not null or undefined
+            assertParamExists('resumeEnvironmentSchedule', 'scheduleID', scheduleID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}/resume`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"scheduleID"}}`, encodeURIComponent(String(scheduleID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Retracts a specific revision of a Pulumi ESC environment, marking it as withdrawn. A retracted revision remains in the history but is no longer considered a valid version for use. The request body may include a reason for the retraction. The revision is identified by the version path parameter. Returns 204 on success with no response body.
+         * @summary RetractEnvironmentRevision
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {RetractEnvironmentRevisionRequest} [retractEnvironmentRevisionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        retractEnvironmentRevision: async (orgName: string, projectName: string, envName: string, version: string, retractEnvironmentRevisionRequest?: RetractEnvironmentRevisionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('retractEnvironmentRevision', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('retractEnvironmentRevision', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('retractEnvironmentRevision', 'envName', envName)
+            // verify required parameter 'version' is not null or undefined
+            assertParamExists('retractEnvironmentRevision', 'version', version)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/{version}/retract`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"version"}}`, encodeURIComponent(String(version)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(retractEnvironmentRevisionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Triggers secret rotation for a Pulumi ESC environment. This evaluates all fn::rotate declarations in the environment definition and rotates the corresponding secrets in their external systems (e.g., rotating database passwords, API keys, or cloud credentials). Requires the secret rotation feature to be enabled for the organization. Returns 409 if the environment has been modified since it was last read.
+         * @summary RotateEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {RotateEnvironmentRequest} [rotateEnvironmentRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        rotateEnvironment: async (orgName: string, projectName: string, envName: string, rotateEnvironmentRequest?: RotateEnvironmentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('rotateEnvironment', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('rotateEnvironment', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('rotateEnvironment', 'envName', envName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/rotate`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(rotateEnvironmentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Updates the YAML definition of an existing draft change request for a Pulumi ESC environment. The draft is identified by the changeRequestID path parameter. The request body contains the updated YAML definition. Returns a ChangeRequestRef on success. Requires the Approvals feature to be enabled for the organization.
+         * @summary UpdateEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentDraft: async (orgName: string, projectName: string, envName: string, changeRequestID: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('updateEnvironmentDraft', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('updateEnvironmentDraft', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('updateEnvironmentDraft', 'envName', envName)
+            // verify required parameter 'changeRequestID' is not null or undefined
+            assertParamExists('updateEnvironmentDraft', 'changeRequestID', changeRequestID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/drafts/{changeRequestID}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"changeRequestID"}}`, encodeURIComponent(String(changeRequestID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Updates an existing revision tag for a Pulumi ESC environment to point to a different revision number. The tag is identified by its name in the URL path. The request body specifies the new revision number. This allows advancing or rolling back a named reference (e.g., moving the \'prod\' tag to a newer or older revision). Returns 204 on success with no response body.
+         * @summary UpdateRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The revision tag name
+         * @param {UpdateEnvironmentRevisionTagRequest} [updateEnvironmentRevisionTagRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentRevisionTag: async (orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTagRequest?: UpdateEnvironmentRevisionTagRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('updateEnvironmentRevisionTag', 'orgName', orgName)
             // verify required parameter 'projectName' is not null or undefined
@@ -2083,8 +6597,6 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             assertParamExists('updateEnvironmentRevisionTag', 'envName', envName)
             // verify required parameter 'tagName' is not null or undefined
             assertParamExists('updateEnvironmentRevisionTag', 'tagName', tagName)
-            // verify required parameter 'updateEnvironmentRevisionTag' is not null or undefined
-            assertParamExists('updateEnvironmentRevisionTag', 'updateEnvironmentRevisionTag', updateEnvironmentRevisionTag)
             const localVarPath = `/environments/{orgName}/{projectName}/{envName}/versions/tags/{tagName}`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
                 .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
@@ -2113,7 +6625,7 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(updateEnvironmentRevisionTag, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(updateEnvironmentRevisionTagRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2121,17 +6633,72 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Update an environment tag
-         * @summary Update an environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
-         * @param {UpdateEnvironmentTag} updateEnvironmentTag Update environment tag
+         * Updates the configuration of a scheduled action for a Pulumi ESC environment. The schedule is identified by the scheduleID path parameter. The request body specifies the updated timing and action configuration. Changes take effect for future executions only; any currently running execution is not affected. Returns the updated ScheduledAction on success.
+         * @summary UpdateEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {CreateEnvironmentScheduleRequest} [createEnvironmentScheduleRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateEnvironmentTag: async (orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTag: UpdateEnvironmentTag, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateEnvironmentSchedule: async (orgName: string, projectName: string, envName: string, scheduleID: string, createEnvironmentScheduleRequest?: CreateEnvironmentScheduleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('updateEnvironmentSchedule', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('updateEnvironmentSchedule', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('updateEnvironmentSchedule', 'envName', envName)
+            // verify required parameter 'scheduleID' is not null or undefined
+            assertParamExists('updateEnvironmentSchedule', 'scheduleID', scheduleID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/schedules/{scheduleID}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"scheduleID"}}`, encodeURIComponent(String(scheduleID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironmentScheduleRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Modifies the value of an existing user-defined tag on a Pulumi ESC environment. The tag is identified by its name in the URL path. The request body contains the new value for the tag. Returns the updated EnvironmentTag on success. Returns 404 if the tag does not exist on the environment.
+         * @summary UpdateEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The environment tag name
+         * @param {UpdateEnvironmentTagRequest} [updateEnvironmentTagRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentTag: async (orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTagRequest?: UpdateEnvironmentTagRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('updateEnvironmentTag', 'orgName', orgName)
             // verify required parameter 'projectName' is not null or undefined
@@ -2140,8 +6707,6 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             assertParamExists('updateEnvironmentTag', 'envName', envName)
             // verify required parameter 'tagName' is not null or undefined
             assertParamExists('updateEnvironmentTag', 'tagName', tagName)
-            // verify required parameter 'updateEnvironmentTag' is not null or undefined
-            assertParamExists('updateEnvironmentTag', 'updateEnvironmentTag', updateEnvironmentTag)
             const localVarPath = `/environments/{orgName}/{projectName}/{envName}/tags/{tagName}`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
                 .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
@@ -2170,7 +6735,7 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             localVarHeaderParameter['User-Agent'] = userAgent;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(updateEnvironmentTag, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(updateEnvironmentTagRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2178,24 +6743,22 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
             };
         },
         /**
-         * Validates and updates the given environment\'s definition.
-         * @summary Update an existing environment with Yaml file
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} body Environment Yaml content
+         * Validates and updates the YAML definition of a Pulumi ESC environment. The request body must contain the complete environment definition in application/x-yaml format, including imports, values, provider configurations, and function invocations. Each successful update creates a new immutable revision in the environment\'s version history. Supports optimistic concurrency control via ETag/If-Match headers; returns 409 if the environment has been modified since it was last read.
+         * @summary UpdateEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateEnvironmentYaml: async (orgName: string, projectName: string, envName: string, body: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateEnvironmentYaml: async (orgName: string, projectName: string, envName: string, body?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgName' is not null or undefined
             assertParamExists('updateEnvironmentYaml', 'orgName', orgName)
             // verify required parameter 'projectName' is not null or undefined
             assertParamExists('updateEnvironmentYaml', 'projectName', projectName)
             // verify required parameter 'envName' is not null or undefined
             assertParamExists('updateEnvironmentYaml', 'envName', envName)
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('updateEnvironmentYaml', 'body', body)
             const localVarPath = `/environments/{orgName}/{projectName}/{envName}`
                 .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
                 .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
@@ -2230,6 +6793,116 @@ export const EscApiAxiosParamCreator = function (configuration?: Configuration) 
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Updates an existing open environment request that was created as part of the gated opens approval workflow. The request is identified by the changeRequestID path parameter. The request body contains the updated open request details, such as approval status. Returns a ChangeRequestRef on success. Requires the Approvals feature to be enabled for the organization.
+         * @summary UpdateOpenEnvironmentRequest
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {CreateEnvironmentOpenRequest} [createEnvironmentOpenRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateOpenEnvironmentRequest: async (orgName: string, projectName: string, envName: string, changeRequestID: string, createEnvironmentOpenRequest?: CreateEnvironmentOpenRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('updateOpenEnvironmentRequest', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('updateOpenEnvironmentRequest', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('updateOpenEnvironmentRequest', 'envName', envName)
+            // verify required parameter 'changeRequestID' is not null or undefined
+            assertParamExists('updateOpenEnvironmentRequest', 'changeRequestID', changeRequestID)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/open/request/{changeRequestID}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"changeRequestID"}}`, encodeURIComponent(String(changeRequestID)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createEnvironmentOpenRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Updates the configuration of an existing webhook on a Pulumi ESC environment. The webhook is identified by its name in the URL path. The request body contains the updated webhook configuration including destination URL, event filters, format, and active status. Returns the updated WebhookResponse on success. Returns 400 if an invalid format is specified.
+         * @summary UpdateWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {Webhook} [webhook] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateWebhook: async (orgName: string, projectName: string, envName: string, hookName: string, webhook?: Webhook, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgName' is not null or undefined
+            assertParamExists('updateWebhook', 'orgName', orgName)
+            // verify required parameter 'projectName' is not null or undefined
+            assertParamExists('updateWebhook', 'projectName', projectName)
+            // verify required parameter 'envName' is not null or undefined
+            assertParamExists('updateWebhook', 'envName', envName)
+            // verify required parameter 'hookName' is not null or undefined
+            assertParamExists('updateWebhook', 'hookName', hookName)
+            const localVarPath = `/environments/{orgName}/{projectName}/{envName}/hooks/{hookName}`
+                .replace(`{${"orgName"}}`, encodeURIComponent(String(orgName)))
+                .replace(`{${"projectName"}}`, encodeURIComponent(String(projectName)))
+                .replace(`{${"envName"}}`, encodeURIComponent(String(envName)))
+                .replace(`{${"hookName"}}`, encodeURIComponent(String(hookName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Authorization required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            localVarHeaderParameter['X-Pulumi-Source'] = 'esc-sdk';
+            localVarHeaderParameter['User-Agent'] = userAgent;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(webhook, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -2241,118 +6914,346 @@ export const EscApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = EscApiAxiosParamCreator(configuration)
     return {
         /**
-         * Checks an environment definition for errors
-         * @summary Checks an environment definition for errors
-         * @param {string} orgName Organization name
-         * @param {string} body Environment Yaml content
+         * Initiates the AWS SSO flow
+         * @summary AWSSSOInitiate
+         * @param {string} orgName The organization name
+         * @param {AWSSSOInitiateRequest} [aWSSSOInitiateRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async checkEnvironmentYaml(orgName: string, body: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CheckEnvironment>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.checkEnvironmentYaml(orgName, body, options);
+        async aWSSSOInitiate(orgName: string, aWSSSOInitiateRequest?: AWSSSOInitiateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AWSSSOInitiateResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aWSSSOInitiate(orgName, aWSSSOInitiateRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.aWSSSOInitiate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Lists AWS accounts accessible with the provided session
+         * @summary AWSSSOListAccounts
+         * @param {string} orgName The organization name
+         * @param {string} [region] The AWS region
+         * @param {string} [sessionId] The SSO session identifier
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aWSSSOListAccounts(orgName: string, region?: string, sessionId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListCloudAccountsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aWSSSOListAccounts(orgName, region, sessionId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.aWSSSOListAccounts']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Sets up AWS infrastructure and ESC environments using AWS SSO
+         * @summary AWSSSOSetup
+         * @param {string} orgName The organization name
+         * @param {AWSSSOSetupRequest} [aWSSSOSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aWSSSOSetup(orgName: string, aWSSSOSetupRequest?: AWSSSOSetupRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CloudSetupResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aWSSSOSetup(orgName, aWSSSOSetupRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.aWSSSOSetup']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Sets up AWS infrastructure using provided static credentials
+         * @summary AWSSetup
+         * @param {string} orgName The organization name
+         * @param {AWSSetupRequest} [aWSSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aWSSetup(orgName: string, aWSSetupRequest?: AWSSetupRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CloudSetupResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aWSSetup(orgName, aWSSetupRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.aWSSetup']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Lists Azure subscriptions accessible with the provided ARM session
+         * @summary AzureListAccounts
+         * @param {string} orgName The organization name
+         * @param {string} [armSessionId] The Azure ARM session identifier
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async azureListAccounts(orgName: string, armSessionId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListCloudAccountsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.azureListAccounts(orgName, armSessionId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.azureListAccounts']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Sets up Azure infrastructure and ESC environments using OAuth credentials
+         * @summary AzureSetup
+         * @param {string} orgName The organization name
+         * @param {AzureSetupRequest} [azureSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async azureSetup(orgName: string, azureSetupRequest?: AzureSetupRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CloudSetupResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.azureSetup(orgName, azureSetupRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.azureSetup']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
+         * @summary CheckEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {boolean} [showSecrets] Whether to show secret values in plaintext
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async checkEnvironment(orgName: string, projectName: string, envName: string, showSecrets?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CheckEnvironmentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.checkEnvironment(orgName, projectName, envName, showSecrets, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.checkEnvironment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
+         * @summary CheckEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {boolean} [showSecrets] Whether to show secret values in plaintext
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async checkEnvironmentEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, showSecrets?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CheckEnvironmentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.checkEnvironmentEscEnvironmentsVersions(orgName, projectName, envName, version, showSecrets, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.checkEnvironmentEscEnvironmentsVersions']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Checks a raw YAML environment definition for errors without creating or modifying any environment. The YAML definition is provided in the request body and validated for correctness, including imports, provider configurations, function invocations, and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. This is useful for validating environment definitions before applying them.
+         * @summary CheckYAML
+         * @param {string} orgName The organization name
+         * @param {string} body Environment Yaml content
+         * @param {boolean} [showSecrets] Whether to show secret values in plaintext
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async checkEnvironmentYaml(orgName: string, body: string, showSecrets?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.checkEnvironmentYaml(orgName, body, showSecrets, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.checkEnvironmentYaml']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Clones an environment
-         * @summary Clones an environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {CloneEnvironment} cloneEnvironment Clone environment
+         * Creates a duplicate of a Pulumi ESC environment in a new project and/or under a new name. The request body specifies the destination project and environment name, along with options to control what is preserved during the clone: preserveAccess retains permission settings, preserveHistory retains the full revision history, preserveEnvironmentTags retains environment-level tags, and preserveRevisionTags retains version-specific tags. Environments cannot be renamed directly, so cloning is the mechanism for moving or renaming environments.
+         * @summary CloneEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CloneEnvironmentRequest} [cloneEnvironmentRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.cloneEnvironment(orgName, projectName, envName, cloneEnvironment, options);
+        async cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironmentRequest?: CloneEnvironmentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.cloneEnvironment(orgName, projectName, envName, cloneEnvironmentRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.cloneEnvironment']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Creates an environment in the given org with the given name.
-         * @summary Create a new environment
-         * @param {string} orgName Organization name
-         * @param {CreateEnvironment} createEnvironment Create Environment
+         * Completes OAuth flow by exchanging authorization code for access token
+         * @summary CompleteOAuth
+         * @param {string} orgName The organization name
+         * @param {CompleteOAuthRequest} [completeOAuthRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Error>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironment(orgName, createEnvironment, options);
+        async completeOAuth(orgName: string, completeOAuthRequest?: CompleteOAuthRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.completeOAuth(orgName, completeOAuthRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.completeOAuth']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Creates a new Pulumi ESC (Environments, Secrets, and Configuration) environment within the specified organization. The request body must include the project name and the environment name. Environment names must be unique within a project and may only contain alphanumeric characters, hyphens, underscores, and periods. The newly created environment starts with an empty YAML definition that can be updated via the UpdateEnvironment endpoint.
+         * @summary CreateEnvironment
+         * @param {string} orgName The organization name
+         * @param {CreateEnvironmentRequest} [createEnvironmentRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createEnvironment(orgName: string, createEnvironmentRequest?: CreateEnvironmentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironment(orgName, createEnvironmentRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.createEnvironment']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Create environment revision tag
-         * @summary Create environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {CreateEnvironmentRevisionTag} createEnvironmentRevisionTag Create environment revision tag
+         * Creates a new draft change request for a Pulumi ESC environment. Drafts allow proposing changes to an environment definition that can be reviewed and approved before being applied. This is part of the approvals workflow for environments. Returns a ChangeRequestRef containing the draft identifier. Requires the Approvals feature to be enabled for the organization.
+         * @summary CreateEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, createEnvironmentRevisionTag: CreateEnvironmentRevisionTag, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironmentRevisionTag(orgName, projectName, envName, createEnvironmentRevisionTag, options);
+        async createEnvironmentDraft(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ChangeRequestRef>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironmentDraft(orgName, projectName, envName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.createEnvironmentDraft']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Creates a new revision tag for a Pulumi ESC environment. Revision tags are named references that point to specific revision numbers, similar to Git tags. They allow pinning a stable reference to a known-good version of an environment. Tagged versions can be used in imports and Pulumi stack configuration (e.g., myproject/env@prod) to ensure stable references unaffected by subsequent changes. The built-in \'latest\' tag always points to the most recent revision.
+         * @summary CreateRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentRevisionTagRequest} [createEnvironmentRevisionTagRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, createEnvironmentRevisionTagRequest?: CreateEnvironmentRevisionTagRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironmentRevisionTag(orgName, projectName, envName, createEnvironmentRevisionTagRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.createEnvironmentRevisionTag']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Create environment tag
-         * @summary Create environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {CreateEnvironmentTag} createEnvironmentTag Create environment tag
+         * Creates a new scheduled action for a Pulumi ESC environment. Schedules can be used to automate recurring operations on environments, such as secret rotation. The request body specifies the schedule timing and the action to perform. Returns the created ScheduledAction on success. Requires the secret rotation feature to be enabled for the organization.
+         * @summary CreateEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentScheduleRequest} [createEnvironmentScheduleRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createEnvironmentTag(orgName: string, projectName: string, envName: string, createEnvironmentTag: CreateEnvironmentTag, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentTag>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironmentTag(orgName, projectName, envName, createEnvironmentTag, options);
+        async createEnvironmentSchedule(orgName: string, projectName: string, envName: string, createEnvironmentScheduleRequest?: CreateEnvironmentScheduleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduledAction>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironmentSchedule(orgName, projectName, envName, createEnvironmentScheduleRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.createEnvironmentSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Adds a new user-defined tag to a Pulumi ESC environment. Tags are key-value pairs that provide contextual metadata for organizing and searching environments (e.g., region=us-east-1, team=platform). The tag name and value are provided in the request body. Returns the created EnvironmentTag on success. Returns 409 if a tag with the same name already exists on the environment.
+         * @summary CreateEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentTagRequest} [createEnvironmentTagRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createEnvironmentTag(orgName: string, projectName: string, envName: string, createEnvironmentTagRequest?: CreateEnvironmentTagRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentTag>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createEnvironmentTag(orgName, projectName, envName, createEnvironmentTagRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.createEnvironmentTag']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Reads the definition for the given environment with static secrets in plaintext
-         * @summary Reads the definition for the given environment with static secrets in plaintext
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Creates an open request for a Pulumi ESC environment that has gated opens enabled. When an environment has open gates configured, opening the environment requires an approval workflow. This endpoint initiates that process by creating an open request, and also creates corresponding open requests for each imported environment that has open gates. Requires the Approvals feature to be enabled for the organization. Returns 400 if the environment does not have gated opens.
+         * @summary CreateOpenEnvironmentRequest
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentOpenRequest} [createEnvironmentOpenRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async decryptEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDefinition>> {
+        async createOpenEnvironmentRequest(orgName: string, projectName: string, envName: string, createEnvironmentOpenRequest?: CreateEnvironmentOpenRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateEnvironmentOpenRequestResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createOpenEnvironmentRequest(orgName, projectName, envName, createEnvironmentOpenRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.createOpenEnvironmentRequest']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Creates a new webhook for a Pulumi ESC environment. Webhooks allow external services to be notified when environment events occur, such as updates or opens. The request body specifies the webhook configuration including the destination URL, event filters, and format. Returns 400 if the organization name in the request body does not match the URL path parameter. Returns 409 if a webhook with the same name already exists.
+         * @summary CreateWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {Webhook} [webhook] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createWebhook(orgName: string, projectName: string, envName: string, webhook?: Webhook, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WebhookResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createWebhook(orgName, projectName, envName, webhook, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.createWebhook']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Reads the YAML definition for a Pulumi ESC environment with all static secrets decrypted and shown in plaintext. Unlike the standard ReadEnvironment endpoint which returns secrets in their encrypted form, this endpoint resolves fn::secret values to their plaintext representations. The response is returned in application/x-yaml format. This does not resolve dynamic provider values (fn::open); use OpenEnvironment for full resolution. Requires environment open permission.
+         * @summary DecryptEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async decryptEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.decryptEnvironment(orgName, projectName, envName, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.decryptEnvironment']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Delete an environment
-         * @summary Delete an environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Reads the YAML definition for a Pulumi ESC environment with all static secrets decrypted and shown in plaintext. Unlike the standard ReadEnvironment endpoint which returns secrets in their encrypted form, this endpoint resolves fn::secret values to their plaintext representations. The response is returned in application/x-yaml format. This does not resolve dynamic provider values (fn::open); use OpenEnvironment for full resolution. Requires environment open permission.
+         * @summary DecryptEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Error>> {
+        async decryptEnvironmentEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.decryptEnvironmentEscEnvironmentsVersions(orgName, projectName, envName, version, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.decryptEnvironmentEscEnvironmentsVersions']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Decrypts encrypted secret values in a Pulumi ESC environment definition. Takes an environment definition containing encrypted secrets and returns the same definition with those values decrypted to plaintext. This is useful for inspecting or migrating environment definitions that contain fn::secret values. Requires environment open permission. Returns 413 if the request content exceeds the maximum allowed size.
+         * @summary DecryptEnvironmentSecrets
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {DecryptEnvironmentSecretsRequest} [decryptEnvironmentSecretsRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async decryptEnvironmentSecrets(orgName: string, projectName: string, envName: string, decryptEnvironmentSecretsRequest?: DecryptEnvironmentSecretsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DecryptEnvironmentSecretsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.decryptEnvironmentSecrets(orgName, projectName, envName, decryptEnvironmentSecretsRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.decryptEnvironmentSecrets']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Permanently deletes a Pulumi ESC environment and all of its revision history, tags, and associated configuration. This operation is blocked if deletion protection is enabled on the environment (see PatchEnvironmentSettings). Enterprise and Business Critical edition organizations may be able to restore deleted environments within a retention window. Returns 409 if the environment is deletion-protected or has been modified since it was last read.
+         * @summary DeleteEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteEnvironment(orgName, projectName, envName, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.deleteEnvironment']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Delete environment revision tag
-         * @summary Delete environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Deletes a named revision tag from a Pulumi ESC environment. The tag is identified by its name in the URL path. After deletion, any imports or stack configurations referencing this tag will fail to resolve. The built-in \'latest\' tag cannot be deleted. Returns 204 on success with no response body.
+         * @summary DeleteRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The revision tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2363,12 +7264,28 @@ export const EscApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Delete environment tag
-         * @summary Delete environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Permanently deletes a scheduled action from a Pulumi ESC environment. This removes the schedule and cancels any future executions. The schedule is identified by its scheduleID. Requires the secret rotation feature to be enabled for the organization.
+         * @summary DeleteEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteEnvironmentSchedule(orgName, projectName, envName, scheduleID, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.deleteEnvironmentSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Removes a user-defined tag from a Pulumi ESC environment. The tag is identified by its name in the URL path. Returns 204 on success with no response body. Returns 404 if the tag does not exist on the environment.
+         * @summary DeleteEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The environment tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2379,58 +7296,133 @@ export const EscApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Read an environment
-         * @summary Read an environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Deletes a webhook from a Pulumi ESC environment. The webhook is identified by its name in the URL path. After deletion, the external service will no longer receive notifications for environment events. Returns 204 on success with no response body.
+         * @summary DeleteWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDefinition>> {
+        async deleteWebhook(orgName: string, projectName: string, envName: string, hookName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteWebhook(orgName, projectName, envName, hookName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.deleteWebhook']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Encrypts plaintext secret values in a Pulumi ESC environment definition. Takes an environment definition containing plaintext secrets and returns the same definition with those values encrypted using the environment\'s encryption key. This is useful for preparing environment definitions that contain sensitive values before storing or updating them. Returns 413 if the request content exceeds the maximum allowed size.
+         * @summary EncryptEnvironmentSecrets
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {EncryptEnvironmentSecretsRequest} [encryptEnvironmentSecretsRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async encryptEnvironmentSecrets(orgName: string, projectName: string, envName: string, encryptEnvironmentSecretsRequest?: EncryptEnvironmentSecretsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EncryptEnvironmentSecretsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.encryptEnvironmentSecrets(orgName, projectName, envName, encryptEnvironmentSecretsRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.encryptEnvironmentSecrets']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Lists GCP projects accessible with the provided oauth session
+         * @summary GCPListAccounts
+         * @param {string} orgName The organization name
+         * @param {string} [oauthSessionId] The OAuth session identifier
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gCPListAccounts(orgName: string, oauthSessionId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListCloudAccountsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gCPListAccounts(orgName, oauthSessionId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.gCPListAccounts']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Sets up GCP infrastructure using OAuth credentials
+         * @summary GCPSetup
+         * @param {string} orgName The organization name
+         * @param {GCPSetupRequest} [gCPSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gCPSetup(orgName: string, gCPSetupRequest?: GCPSetupRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CloudSetupResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gCPSetup(orgName, gCPSetupRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.gCPSetup']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns the YAML definition of a Pulumi ESC environment. The response is in application/x-yaml format and includes the environment\'s imports, values, provider configurations, and function invocations. Secrets remain in their encrypted form (use DecryptEnvironment to see plaintext secrets, or OpenEnvironment to fully resolve all dynamic values). When a version path parameter is provided, returns the definition for that specific revision.
+         * @summary ReadEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEnvironment(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironment(orgName, projectName, envName, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.getEnvironment']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Read an environmentat a specific revision or tag
-         * @summary Read an environment at a specific version
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} version Revision or tag
+         * Returns the YAML definition of a Pulumi ESC environment. The response is in application/x-yaml format and includes the environment\'s imports, values, provider configurations, and function invocations. Secrets remain in their encrypted form (use DecryptEnvironment to see plaintext secrets, or OpenEnvironment to fully resolve all dynamic values). When a version path parameter is provided, returns the definition for that specific revision.
+         * @summary ReadEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDefinition>> {
+        async getEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironmentAtVersion(orgName, projectName, envName, version, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.getEnvironmentAtVersion']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Returns the ETag for the given environment if it exists.
-         * @summary Return an Environment ETag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Returns the ETag header for a Pulumi ESC environment without returning the full definition body. This is used for lightweight existence checks and for obtaining the current ETag value for optimistic concurrency control. The ETag should be included in subsequent update requests via the If-Match header to prevent concurrent modification conflicts. Returns 404 if the environment does not exist.
+         * @summary HeadEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getEnvironmentETag(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async getEnvironmentETag(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironmentETag(orgName, projectName, envName, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.getEnvironmentETag']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Read environment revision tag
-         * @summary Read environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Returns metadata for a Pulumi ESC environment, including the calling user\'s effective permission level (read, open, write, admin), creation and modification timestamps, the environment\'s project, and other administrative information. This is useful for determining what actions the current user can perform on the environment before attempting those operations.
+         * @summary GetEnvironmentMetadata
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEnvironmentMetadata(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentMetadata>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironmentMetadata(orgName, projectName, envName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.getEnvironmentMetadata']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns the details of a specific revision tag for a Pulumi ESC environment. The tag is identified by its name in the URL path. The response includes the tag name and the revision number it points to. Returns 404 if the tag does not exist.
+         * @summary ReadRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The revision tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2441,12 +7433,27 @@ export const EscApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Read an environment tag
-         * @summary Read an environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Returns the current settings for a Pulumi ESC environment, including whether deletion protection is enabled. Deletion protection prevents the environment from being deleted until the setting is explicitly disabled. Settings can be modified via the PatchEnvironmentSettings endpoint.
+         * @summary GetEnvironmentSettings
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEnvironmentSettings(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentSettings>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEnvironmentSettings(orgName, projectName, envName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.getEnvironmentSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a single user-defined tag for a Pulumi ESC environment, identified by the tag name in the URL path. The response includes the tag name, value, and metadata. Returns 404 if the tag does not exist on the environment.
+         * @summary GetEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The environment tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2457,30 +7464,168 @@ export const EscApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * List environment revisions
-         * @summary List environment revisions
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} [after] after tag for pagination
-         * @param {number} [count] limit of tags to return
+         * Returns the JSON schema for a Pulumi ESC provider. Providers are integrations that dynamically retrieve configuration and secrets from external sources such as AWS, Azure, Google Cloud, HashiCorp Vault, and others via fn::open. The schema describes the provider\'s input parameters, output structure, and configuration options. The provider is identified by name in the URL path.
+         * @summary GetProviderSchema
+         * @param {string} providerName The provider name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listEnvironmentRevisionTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentRevisionTags>> {
+        async getProviderSchema(providerName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProviderSchema>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProviderSchema(providerName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.getProviderSchema']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns the JSON schema for a Pulumi ESC secret rotator. Rotators are integrations that automatically rotate secrets in external systems via fn::rotate. The schema describes the rotator\'s input parameters, output structure, and configuration options. The rotator is identified by name in the URL path.
+         * @summary GetRotatorSchema
+         * @param {string} rotatorName The rotator name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRotatorSchema(rotatorName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProviderSchema>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRotatorSchema(rotatorName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.getRotatorSchema']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns the configuration and status of a single webhook for a Pulumi ESC environment. The webhook is identified by its name in the URL path. The response includes the webhook\'s destination URL, event filters, format, and active status. Returns 404 if the webhook does not exist.
+         * @summary GetWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getWebhook(orgName: string, projectName: string, envName: string, hookName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WebhookResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getWebhook(orgName, projectName, envName, hookName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.getWebhook']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a list of recent delivery attempts for a specific webhook on a Pulumi ESC environment. Each delivery record includes the HTTP status code, response body, timestamp, and whether the delivery was successful. This is useful for debugging webhook integration issues and verifying that events are being received.
+         * @summary GetWebhookDeliveries
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getWebhookDeliveries(orgName: string, projectName: string, envName: string, hookName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<WebhookDelivery>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getWebhookDeliveries(orgName, projectName, envName, hookName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.getWebhookDeliveries']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Initiates OAuth flow for a given cloud provider
+         * @summary InitiateOAuth
+         * @param {string} orgName The organization name
+         * @param {InitiateOAuthRequest} [initiateOAuthRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async initiateOAuth(orgName: string, initiateOAuthRequest?: InitiateOAuthRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InitiateOAuthResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.initiateOAuth(orgName, initiateOAuthRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.initiateOAuth']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a map of all unique tag names and their distinct values across all Pulumi ESC environments in the organization. The response is a map where each key is a tag name and the value is a list of all distinct values for that tag across all environments. This is useful for building tag-based filtering or discovery UIs.
+         * @summary ListAllEnvironmentTags
+         * @param {string} orgName The organization name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listAllEnvironmentTags(orgName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: Array<string>; }>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listAllEnvironmentTags(orgName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listAllEnvironmentTags']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a paginated list of soft-deleted Pulumi ESC environments within an organization that are still within the retention window and eligible for restoration. Use the continuationToken query parameter for pagination. Deleted environments can be restored via the RestoreEnvironment endpoint.
+         * @summary ListDeletedEnvironments
+         * @param {string} orgName The organization name
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listDeletedEnvironments(orgName: string, continuationToken?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listDeletedEnvironments(orgName, continuationToken, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listDeletedEnvironments']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+         * @summary ListEnvironmentReferrers
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {boolean} [allRevisions] Whether to include all revisions
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {number} [count] Maximum number of results to return
+         * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listEnvironmentReferrers(orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentReferrersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentReferrers(orgName, projectName, envName, allRevisions, continuationToken, count, latestStackVersionOnly, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentReferrers']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+         * @summary ListEnvironmentReferrers
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {boolean} [allRevisions] Whether to include all revisions
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {number} [count] Maximum number of results to return
+         * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listEnvironmentReferrersEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentReferrersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentReferrersEscEnvironmentsVersions(orgName, projectName, envName, version, allRevisions, continuationToken, count, latestStackVersionOnly, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentReferrersEscEnvironmentsVersions']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a paginated list of revision tags for a Pulumi ESC environment. Revision tags are named references pointing to specific revision numbers (e.g., \'latest\', \'prod\', \'stable\'). They can be used in environment imports and Pulumi stack configuration to pin to a specific version. Use the after parameter for cursor-based pagination and count to limit results.
+         * @summary ListRevisionTags
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} [after] Only return results after this value
+         * @param {number} [count] Maximum number of results to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listEnvironmentRevisionTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentRevisionTagsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentRevisionTags(orgName, projectName, envName, after, count, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentRevisionTags']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * List environment revisions
-         * @summary List environment revisions
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {number} [before] before revision number for pagination
-         * @param {number} [count] limit of revisions to return
+         * Returns a paginated list of revisions for a Pulumi ESC environment. Each revision represents an immutable snapshot of the environment definition created when the environment is updated. The response includes revision numbers, timestamps, and the identity of the user who made each change. Use the before parameter to fetch revisions before a specific revision number, and count to limit the number of results returned.
+         * @summary ListEnvironmentRevisions
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {number} [before] Only return results before this revision
+         * @param {number} [count] Maximum number of results to return
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2491,150 +7636,564 @@ export const EscApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * List environment tags
-         * @summary List environment tags
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} [after] after tag for pagination
-         * @param {number} [count] limit of tags to return
+         * Returns all scheduled actions configured for a Pulumi ESC environment. Schedules automate recurring operations such as secret rotation. The response includes each schedule\'s timing configuration, action type, and current status (active or paused).
+         * @summary ListEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listEnvironmentTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentTags>> {
+        async listEnvironmentSchedule(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListScheduledActionsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentSchedule(orgName, projectName, envName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns the execution history for a specific scheduled action on a Pulumi ESC environment. Each history entry includes the execution timestamp, outcome (success or failure), and any error details. This is useful for monitoring the reliability of automated operations like secret rotation.
+         * @summary ListEnvironmentScheduleHistory
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listEnvironmentScheduleHistory(orgName: string, projectName: string, envName: string, scheduleID: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListScheduledActionHistoryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentScheduleHistory(orgName, projectName, envName, scheduleID, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentScheduleHistory']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns the secret rotation history for a Pulumi ESC environment. Each entry represents a rotation event where secrets defined with fn::rotate were cycled to new values in their external systems. The response includes timestamps, outcomes, and the rotators involved. Requires the secret rotation feature to be enabled for the organization.
+         * @summary ListEnvironmentSecretRotationHistory
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listEnvironmentSecretRotationHistory(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentSecretRotationHistoryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentSecretRotationHistory(orgName, projectName, envName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentSecretRotationHistory']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a paginated list of user-defined tags for a Pulumi ESC environment. Tags are key-value pairs used for organizing and categorizing environments. Use the after parameter for cursor-based pagination and count to limit the number of results returned.
+         * @summary ListEnvironmentTags
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {number} [after] Only return results after this value
+         * @param {number} [count] Maximum number of results to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listEnvironmentTags(orgName: string, projectName: string, envName: string, after?: number, count?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentTagsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentTags(orgName, projectName, envName, after, count, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentTags']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * List environments in the organization available to the current user
-         * @summary List environments in the organization
-         * @param {string} orgName Organization name
-         * @param {string} [continuationToken] continuation Token from previous query to fetch next page of results
+         * Returns a paginated list of all Pulumi ESC environments within a specific organization. Each entry includes the project, environment name, and creation/modification timestamps. Results are scoped to the organization specified in the URL path. Use continuationToken for pagination through large result sets.
+         * @summary ListOrgEnvironments
+         * @param {string} orgName The organization name
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {number} [maxResults] Maximum number of results for pagination
+         * @param {string} [roleID] The custom role to use for listing environments
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listEnvironments(orgName: string, continuationToken?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OrgEnvironments>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironments(orgName, continuationToken, options);
+        async listEnvironments(orgName: string, continuationToken?: string, maxResults?: number, roleID?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironments(orgName, continuationToken, maxResults, roleID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironments']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Opens a session the given environment for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
-         * @summary Open an environment session
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+         * Returns a paginated list of all Pulumi ESC environments accessible to the authenticated user across all organizations they belong to. Each entry includes the organization, project, environment name, and creation/modification timestamps. Use the organization query parameter to filter results to a specific organization. Use continuationToken for pagination through large result sets.
+         * @summary ListEnvironments
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {string} [organization] Filter results to this organization name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async openEnvironment(orgName: string, projectName: string, envName: string, duration?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenEnvironment>> {
+        async listEnvironmentsEsc(continuationToken?: string, organization?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listEnvironmentsEsc(continuationToken, organization, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listEnvironmentsEsc']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a list of all available Pulumi ESC providers. Providers are integrations that dynamically retrieve configuration and secrets from external sources (e.g., AWS, Azure, Google Cloud, HashiCorp Vault, 1Password) via the fn::open function in environment definitions. Optionally filter by organization using the orgName query parameter to see only providers available to that organization.
+         * @summary ListProviders
+         * @param {string} [orgName] Filter providers available to this organization
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listProviders(orgName?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListProvidersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listProviders(orgName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listProviders']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a paginated list of revision tags for a Pulumi ESC environment. Revision tags are named references pointing to specific revision numbers (e.g., \'latest\', \'prod\', \'stable\'). They can be used in environment imports and Pulumi stack configuration to pin to a specific version. Use the after parameter for cursor-based pagination and count to limit results.
+         * @summary ListRevisionTags
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {string} [after] Only return results after this value
+         * @param {number} [count] Maximum number of results to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listRevisionTagsEscEnvironmentsVersions2(orgName: string, projectName: string, envName: string, version: string, after?: string, count?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListEnvironmentRevisionTagsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listRevisionTagsEscEnvironmentsVersions2(orgName, projectName, envName, version, after, count, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listRevisionTagsEscEnvironmentsVersions2']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a list of all available Pulumi ESC secret rotators. Rotators are integrations that automatically rotate secrets in external systems via the fn::rotate function in environment definitions. Optionally filter by organization using the orgName query parameter to see only rotators available to that organization.
+         * @summary ListRotators
+         * @param {string} [orgName] Filter rotators available to this organization
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listRotators(orgName?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListRotatorsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listRotators(orgName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listRotators']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns a list of all webhooks configured for a Pulumi ESC environment. Each webhook entry includes its name, destination URL, event filters, format, and active status. Webhooks enable external services to be notified of environment events such as updates and opens.
+         * @summary ListWebhooks
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listWebhooks(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<WebhookResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listWebhooks(orgName, projectName, envName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.listWebhooks']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Opens a Pulumi ESC environment, fully resolving all dynamic values, provider integrations (fn::open), interpolation expressions, and secrets. This initiates an access session that evaluates the complete environment definition including all imports. The duration parameter specifies how long the session remains valid using Go duration format (e.g., \'2h45m\', \'300ms\'). Returns an OpenEnvironmentResponse containing the session ID and any diagnostics. Use the session ID with ReadOpenEnvironment to retrieve the resolved values.
+         * @summary OpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async openEnvironment(orgName: string, projectName: string, envName: string, duration?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenEnvironmentResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.openEnvironment(orgName, projectName, envName, duration, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.openEnvironment']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Opens a session the given environment at a specific version for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
-         * @summary Open an environment session at a specific version
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} version Revision or tag
-         * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+         * Opens a Pulumi ESC environment, fully resolving all dynamic values, provider integrations (fn::open), interpolation expressions, and secrets. This initiates an access session that evaluates the complete environment definition including all imports. The duration parameter specifies how long the session remains valid using Go duration format (e.g., \'2h45m\', \'300ms\'). Returns an OpenEnvironmentResponse containing the session ID and any diagnostics. Use the session ID with ReadOpenEnvironment to retrieve the resolved values.
+         * @summary OpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async openEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, duration?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenEnvironment>> {
+        async openEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, duration?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenEnvironmentResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.openEnvironmentAtVersion(orgName, projectName, envName, version, duration, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.openEnvironmentAtVersion']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Reads and decrypts secrets including retrieving dynamic secrets from providers.
-         * @summary Read an open environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} openSessionID Open session ID returned from environment open
+         * Opens a draft version of a Pulumi ESC environment, fully resolving all dynamic values, provider integrations, and secrets for the proposed changes. The duration parameter specifies how long the open session remains valid using Go duration format (e.g., \'2h\', \'30m\'). An optional revision parameter can target a specific base revision. Returns an OpenEnvironmentResponse containing the session ID for subsequent reads. Requires the Approvals feature.
+         * @summary OpenEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
+         * @param {number} [revision] The environment revision number to target
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async readOpenEnvironment(orgName: string, projectName: string, envName: string, openSessionID: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Environment>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.readOpenEnvironment(orgName, projectName, envName, openSessionID, options);
+        async openEnvironmentDraft(orgName: string, projectName: string, envName: string, changeRequestID: string, duration?: string, revision?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenEnvironmentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.openEnvironmentDraft(orgName, projectName, envName, changeRequestID, duration, revision, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.openEnvironmentDraft']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Opens an anonymous Pulumi ESC environment from a raw YAML definition provided in the request body, fully resolving all dynamic values, provider integrations, and secrets. Unlike OpenEnvironment, this does not require a pre-existing environment to be stored. The duration parameter specifies how long the session remains valid using Go duration format. Returns an OpenEnvironmentResponse containing the session ID. Use the session ID with ReadAnonymousOpenEnvironment to retrieve the resolved values.
+         * @summary OpenYAML
+         * @param {string} orgName The organization name
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async openYAML(orgName: string, duration?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenEnvironmentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.openYAML(orgName, duration, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.openYAML']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updates settings for a Pulumi ESC environment using a partial update (patch) approach. Currently supports toggling deletion protection via the deletionProtected field. When deletionProtected is set to true, the environment cannot be deleted until the setting is explicitly disabled. Only the fields included in the request body are modified; omitted fields retain their current values.
+         * @summary PatchEnvironmentSettings
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {PatchEnvironmentSettingsRequest} [patchEnvironmentSettingsRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async patchEnvironmentSettings(orgName: string, projectName: string, envName: string, patchEnvironmentSettingsRequest?: PatchEnvironmentSettingsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.patchEnvironmentSettings(orgName, projectName, envName, patchEnvironmentSettingsRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.patchEnvironmentSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Pauses a scheduled action on a Pulumi ESC environment, preventing any future executions until the schedule is resumed. The schedule\'s configuration is preserved and can be reactivated via the ResumeEnvironmentSchedule endpoint. This is useful for temporarily disabling automated operations like secret rotation without deleting the schedule.
+         * @summary PauseEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async pauseEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.pauseEnvironmentSchedule(orgName, projectName, envName, scheduleID, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.pauseEnvironmentSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Sends a test ping event to a webhook on a Pulumi ESC environment to verify that the webhook endpoint is reachable and functioning correctly. This bypasses the normal message queue and issues the request directly to the webhook URL. Returns the WebhookDelivery record containing the HTTP status code and response from the target endpoint.
+         * @summary PingWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async pingWebhook(orgName: string, projectName: string, envName: string, hookName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WebhookDelivery>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.pingWebhook(orgName, projectName, envName, hookName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.pingWebhook']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Reads the fully resolved values from an anonymous open environment session that was created via the OpenYAML endpoint. The openSessionID path parameter must match a valid, non-expired session. The optional property query parameter accepts a dot-separated path to retrieve a specific nested value instead of the entire resolved environment (e.g., \'aws.credentials.accessKeyId\'). The response contains the resolved configuration values with secrets decrypted.
+         * @summary ReadAnonymousOpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} openSessionID The session ID returned from the open environment operation
+         * @param {string} [property] A dot-separated path to a specific property to retrieve from the environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async readAnonymousOpenEnvironment(orgName: string, openSessionID: string, property?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readAnonymousOpenEnvironment(orgName, openSessionID, property, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.readAnonymousOpenEnvironment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Reads the YAML definition for a draft version of a Pulumi ESC environment. Drafts are proposed changes created as part of the approvals workflow. The draft is identified by the changeRequestID path parameter. An optional revision query parameter can target a specific base revision. The response is returned in application/x-yaml format. Requires the Approvals feature to be enabled.
+         * @summary ReadEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {number} [revision] The environment revision number to target
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async readEnvironmentDraft(orgName: string, projectName: string, envName: string, changeRequestID: string, revision?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readEnvironmentDraft(orgName, projectName, envName, changeRequestID, revision, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.readEnvironmentDraft']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns the details of a specific scheduled action for a Pulumi ESC environment. The schedule is identified by the scheduleID path parameter. The response includes the schedule\'s timing configuration (cron expression or one-time), the action to perform, and the current status (active or paused).
+         * @summary ReadEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async readEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduledAction>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readEnvironmentSchedule(orgName, projectName, envName, scheduleID, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.readEnvironmentSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Reads the fully resolved values from an open environment session that was created via the OpenEnvironment endpoint. The openSessionID path parameter must match a valid, non-expired session. The optional property query parameter accepts a dot-separated path to retrieve a specific nested value instead of the entire resolved environment (e.g., \'aws.credentials.accessKeyId\'). The response contains all resolved configuration values with secrets decrypted and provider-sourced values fully evaluated.
+         * @summary ReadOpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} openSessionID The session ID returned from the open environment operation
+         * @param {string} [property] A dot-separated path to a specific property to retrieve from the environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async readOpenEnvironment(orgName: string, projectName: string, envName: string, openSessionID: string, property?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EscEnvironment>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readOpenEnvironment(orgName, projectName, envName, openSessionID, property, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.readOpenEnvironment']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Reads and decrypts secrets including retrieving dynamic secrets from providers.
-         * @summary Read an open environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} openSessionID Open session ID returned from environment open
+         * Reads and decrypts a specific property including retrieving dynamic secrets from providers.
+         * @summary Read an open environment property
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} openSessionID The session ID returned from the open environment operation
          * @param {string} property Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async readOpenEnvironmentProperty(orgName: string, projectName: string, envName: string, openSessionID: string, property: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Value>> {
+        async readOpenEnvironmentProperty(orgName: string, projectName: string, envName: string, openSessionID: string, property: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EscValue>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.readOpenEnvironmentProperty(orgName, projectName, envName, openSessionID, property, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.readOpenEnvironmentProperty']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Update environment revision tag
-         * @summary Update environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
-         * @param {UpdateEnvironmentRevisionTag} updateEnvironmentRevisionTag Update environment revision tag
+         * Reads the details of an open environment request that was created as part of the gated opens approval workflow. The request is identified by the changeRequestID path parameter. The response includes the request\'s status, the requesting user, and approval details. An optional revision query parameter can target a specific environment revision. Requires the Approvals feature to be enabled.
+         * @summary ReadOpenEnvironmentRequest
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {number} [revision] The environment revision number to target
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTag: UpdateEnvironmentRevisionTag, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnvironmentRevisionTag(orgName, projectName, envName, tagName, updateEnvironmentRevisionTag, options);
+        async readOpenEnvironmentRequest(orgName: string, projectName: string, envName: string, changeRequestID: string, revision?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateEnvironmentOpenRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readOpenEnvironmentRequest(orgName, projectName, envName, changeRequestID, revision, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.readOpenEnvironmentRequest']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Triggers the Pulumi Service to redeliver a specific event to a webhook on a Pulumi ESC environment. This is useful for resending events that the webhook endpoint failed to process on the initial delivery attempt (e.g., due to temporary downtime or errors). The event is identified by its delivery event ID in the URL path. Returns the new WebhookDelivery record for the redelivery.
+         * @summary RedeliverWebhookEvent
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {string} event The webhook delivery event ID to redeliver
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async redeliverWebhookEvent(orgName: string, projectName: string, envName: string, hookName: string, event: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WebhookDelivery>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.redeliverWebhookEvent(orgName, projectName, envName, hookName, event, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.redeliverWebhookEvent']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Restores a previously deleted Pulumi ESC environment within an organization. The request body specifies the environment to restore by its project and name. The environment must have been deleted within the retention window and not yet permanently purged. Returns 204 on success with no response body. Returns 404 if the deleted environment cannot be found.
+         * @summary RestoreEnvironment
+         * @param {string} orgName The organization name
+         * @param {RestoreEnvironmentRequest} [restoreEnvironmentRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async restoreEnvironment(orgName: string, restoreEnvironmentRequest?: RestoreEnvironmentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.restoreEnvironment(orgName, restoreEnvironmentRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.restoreEnvironment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Resumes a previously paused scheduled action on a Pulumi ESC environment, re-enabling future executions. The schedule will continue from its next scheduled time according to its configured timing (cron expression or one-time schedule). The schedule is identified by the scheduleID path parameter.
+         * @summary ResumeEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async resumeEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.resumeEnvironmentSchedule(orgName, projectName, envName, scheduleID, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.resumeEnvironmentSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Retracts a specific revision of a Pulumi ESC environment, marking it as withdrawn. A retracted revision remains in the history but is no longer considered a valid version for use. The request body may include a reason for the retraction. The revision is identified by the version path parameter. Returns 204 on success with no response body.
+         * @summary RetractEnvironmentRevision
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {RetractEnvironmentRevisionRequest} [retractEnvironmentRevisionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async retractEnvironmentRevision(orgName: string, projectName: string, envName: string, version: string, retractEnvironmentRevisionRequest?: RetractEnvironmentRevisionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.retractEnvironmentRevision(orgName, projectName, envName, version, retractEnvironmentRevisionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.retractEnvironmentRevision']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Triggers secret rotation for a Pulumi ESC environment. This evaluates all fn::rotate declarations in the environment definition and rotates the corresponding secrets in their external systems (e.g., rotating database passwords, API keys, or cloud credentials). Requires the secret rotation feature to be enabled for the organization. Returns 409 if the environment has been modified since it was last read.
+         * @summary RotateEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {RotateEnvironmentRequest} [rotateEnvironmentRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async rotateEnvironment(orgName: string, projectName: string, envName: string, rotateEnvironmentRequest?: RotateEnvironmentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RotateEnvironmentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.rotateEnvironment(orgName, projectName, envName, rotateEnvironmentRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.rotateEnvironment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updates the YAML definition of an existing draft change request for a Pulumi ESC environment. The draft is identified by the changeRequestID path parameter. The request body contains the updated YAML definition. Returns a ChangeRequestRef on success. Requires the Approvals feature to be enabled for the organization.
+         * @summary UpdateEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateEnvironmentDraft(orgName: string, projectName: string, envName: string, changeRequestID: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ChangeRequestRef>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnvironmentDraft(orgName, projectName, envName, changeRequestID, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.updateEnvironmentDraft']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updates an existing revision tag for a Pulumi ESC environment to point to a different revision number. The tag is identified by its name in the URL path. The request body specifies the new revision number. This allows advancing or rolling back a named reference (e.g., moving the \'prod\' tag to a newer or older revision). Returns 204 on success with no response body.
+         * @summary UpdateRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The revision tag name
+         * @param {UpdateEnvironmentRevisionTagRequest} [updateEnvironmentRevisionTagRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTagRequest?: UpdateEnvironmentRevisionTagRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnvironmentRevisionTag(orgName, projectName, envName, tagName, updateEnvironmentRevisionTagRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.updateEnvironmentRevisionTag']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Update an environment tag
-         * @summary Update an environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
-         * @param {UpdateEnvironmentTag} updateEnvironmentTag Update environment tag
+         * Updates the configuration of a scheduled action for a Pulumi ESC environment. The schedule is identified by the scheduleID path parameter. The request body specifies the updated timing and action configuration. Changes take effect for future executions only; any currently running execution is not affected. Returns the updated ScheduledAction on success.
+         * @summary UpdateEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {CreateEnvironmentScheduleRequest} [createEnvironmentScheduleRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTag: UpdateEnvironmentTag, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentTag>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnvironmentTag(orgName, projectName, envName, tagName, updateEnvironmentTag, options);
+        async updateEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, createEnvironmentScheduleRequest?: CreateEnvironmentScheduleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduledAction>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnvironmentSchedule(orgName, projectName, envName, scheduleID, createEnvironmentScheduleRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.updateEnvironmentSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Modifies the value of an existing user-defined tag on a Pulumi ESC environment. The tag is identified by its name in the URL path. The request body contains the new value for the tag. Returns the updated EnvironmentTag on success. Returns 404 if the tag does not exist on the environment.
+         * @summary UpdateEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The environment tag name
+         * @param {UpdateEnvironmentTagRequest} [updateEnvironmentTagRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTagRequest?: UpdateEnvironmentTagRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentTag>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnvironmentTag(orgName, projectName, envName, tagName, updateEnvironmentTagRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.updateEnvironmentTag']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Validates and updates the given environment\'s definition.
-         * @summary Update an existing environment with Yaml file
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} body Environment Yaml content
+         * Validates and updates the YAML definition of a Pulumi ESC environment. The request body must contain the complete environment definition in application/x-yaml format, including imports, values, provider configurations, and function invocations. Each successful update creates a new immutable revision in the environment\'s version history. Supports optimistic concurrency control via ETag/If-Match headers; returns 409 if the environment has been modified since it was last read.
+         * @summary UpdateEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateEnvironmentYaml(orgName: string, projectName: string, envName: string, body: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentDiagnostics>> {
+        async updateEnvironmentYaml(orgName: string, projectName: string, envName: string, body?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateEnvironmentResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateEnvironmentYaml(orgName, projectName, envName, body, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EscApi.updateEnvironmentYaml']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updates an existing open environment request that was created as part of the gated opens approval workflow. The request is identified by the changeRequestID path parameter. The request body contains the updated open request details, such as approval status. Returns a ChangeRequestRef on success. Requires the Approvals feature to be enabled for the organization.
+         * @summary UpdateOpenEnvironmentRequest
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {CreateEnvironmentOpenRequest} [createEnvironmentOpenRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateOpenEnvironmentRequest(orgName: string, projectName: string, envName: string, changeRequestID: string, createEnvironmentOpenRequest?: CreateEnvironmentOpenRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ChangeRequestRef>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateOpenEnvironmentRequest(orgName, projectName, envName, changeRequestID, createEnvironmentOpenRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.updateOpenEnvironmentRequest']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updates the configuration of an existing webhook on a Pulumi ESC environment. The webhook is identified by its name in the URL path. The request body contains the updated webhook configuration including destination URL, event filters, format, and active status. Returns the updated WebhookResponse on success. Returns 400 if an invalid format is specified.
+         * @summary UpdateWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {Webhook} [webhook] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateWebhook(orgName: string, projectName: string, envName: string, hookName: string, webhook?: Webhook, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WebhookResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateWebhook(orgName, projectName, envName, hookName, webhook, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EscApi.updateWebhook']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -2648,97 +8207,280 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
     const localVarFp = EscApiFp(configuration)
     return {
         /**
-         * Checks an environment definition for errors
-         * @summary Checks an environment definition for errors
-         * @param {string} orgName Organization name
+         * Initiates the AWS SSO flow
+         * @summary AWSSSOInitiate
+         * @param {string} orgName The organization name
+         * @param {AWSSSOInitiateRequest} [aWSSSOInitiateRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aWSSSOInitiate(orgName: string, aWSSSOInitiateRequest?: AWSSSOInitiateRequest, options?: any): AxiosPromise<AWSSSOInitiateResponse> {
+            return localVarFp.aWSSSOInitiate(orgName, aWSSSOInitiateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Lists AWS accounts accessible with the provided session
+         * @summary AWSSSOListAccounts
+         * @param {string} orgName The organization name
+         * @param {string} [region] The AWS region
+         * @param {string} [sessionId] The SSO session identifier
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aWSSSOListAccounts(orgName: string, region?: string, sessionId?: string, options?: any): AxiosPromise<ListCloudAccountsResponse> {
+            return localVarFp.aWSSSOListAccounts(orgName, region, sessionId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Sets up AWS infrastructure and ESC environments using AWS SSO
+         * @summary AWSSSOSetup
+         * @param {string} orgName The organization name
+         * @param {AWSSSOSetupRequest} [aWSSSOSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aWSSSOSetup(orgName: string, aWSSSOSetupRequest?: AWSSSOSetupRequest, options?: any): AxiosPromise<CloudSetupResult> {
+            return localVarFp.aWSSSOSetup(orgName, aWSSSOSetupRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Sets up AWS infrastructure using provided static credentials
+         * @summary AWSSetup
+         * @param {string} orgName The organization name
+         * @param {AWSSetupRequest} [aWSSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aWSSetup(orgName: string, aWSSetupRequest?: AWSSetupRequest, options?: any): AxiosPromise<CloudSetupResult> {
+            return localVarFp.aWSSetup(orgName, aWSSetupRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Lists Azure subscriptions accessible with the provided ARM session
+         * @summary AzureListAccounts
+         * @param {string} orgName The organization name
+         * @param {string} [armSessionId] The Azure ARM session identifier
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        azureListAccounts(orgName: string, armSessionId?: string, options?: any): AxiosPromise<ListCloudAccountsResponse> {
+            return localVarFp.azureListAccounts(orgName, armSessionId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Sets up Azure infrastructure and ESC environments using OAuth credentials
+         * @summary AzureSetup
+         * @param {string} orgName The organization name
+         * @param {AzureSetupRequest} [azureSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        azureSetup(orgName: string, azureSetupRequest?: AzureSetupRequest, options?: any): AxiosPromise<CloudSetupResult> {
+            return localVarFp.azureSetup(orgName, azureSetupRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
+         * @summary CheckEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {boolean} [showSecrets] Whether to show secret values in plaintext
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkEnvironment(orgName: string, projectName: string, envName: string, showSecrets?: boolean, options?: any): AxiosPromise<CheckEnvironmentResponse> {
+            return localVarFp.checkEnvironment(orgName, projectName, envName, showSecrets, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
+         * @summary CheckEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {boolean} [showSecrets] Whether to show secret values in plaintext
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkEnvironmentEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, showSecrets?: boolean, options?: any): AxiosPromise<CheckEnvironmentResponse> {
+            return localVarFp.checkEnvironmentEscEnvironmentsVersions(orgName, projectName, envName, version, showSecrets, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Checks a raw YAML environment definition for errors without creating or modifying any environment. The YAML definition is provided in the request body and validated for correctness, including imports, provider configurations, function invocations, and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. This is useful for validating environment definitions before applying them.
+         * @summary CheckYAML
+         * @param {string} orgName The organization name
          * @param {string} body Environment Yaml content
+         * @param {boolean} [showSecrets] Whether to show secret values in plaintext
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        checkEnvironmentYaml(orgName: string, body: string, options?: any): AxiosPromise<CheckEnvironment> {
-            return localVarFp.checkEnvironmentYaml(orgName, body, options).then((request) => request(axios, basePath));
+        checkEnvironmentYaml(orgName: string, body: string, showSecrets?: boolean, options?: any): AxiosPromise<EnvironmentResponse> {
+            return localVarFp.checkEnvironmentYaml(orgName, body, showSecrets, options).then((request) => request(axios, basePath));
         },
         /**
-         * Clones an environment
-         * @summary Clones an environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {CloneEnvironment} cloneEnvironment Clone environment
+         * Creates a duplicate of a Pulumi ESC environment in a new project and/or under a new name. The request body specifies the destination project and environment name, along with options to control what is preserved during the clone: preserveAccess retains permission settings, preserveHistory retains the full revision history, preserveEnvironmentTags retains environment-level tags, and preserveRevisionTags retains version-specific tags. Environments cannot be renamed directly, so cloning is the mechanism for moving or renaming environments.
+         * @summary CloneEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CloneEnvironmentRequest} [cloneEnvironmentRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options?: any): AxiosPromise<void> {
-            return localVarFp.cloneEnvironment(orgName, projectName, envName, cloneEnvironment, options).then((request) => request(axios, basePath));
+        cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironmentRequest?: CloneEnvironmentRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.cloneEnvironment(orgName, projectName, envName, cloneEnvironmentRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * Creates an environment in the given org with the given name.
-         * @summary Create a new environment
-         * @param {string} orgName Organization name
-         * @param {CreateEnvironment} createEnvironment Create Environment
+         * Completes OAuth flow by exchanging authorization code for access token
+         * @summary CompleteOAuth
+         * @param {string} orgName The organization name
+         * @param {CompleteOAuthRequest} [completeOAuthRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: any): AxiosPromise<Error> {
-            return localVarFp.createEnvironment(orgName, createEnvironment, options).then((request) => request(axios, basePath));
+        completeOAuth(orgName: string, completeOAuthRequest?: CompleteOAuthRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.completeOAuth(orgName, completeOAuthRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * Create environment revision tag
-         * @summary Create environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {CreateEnvironmentRevisionTag} createEnvironmentRevisionTag Create environment revision tag
+         * Creates a new Pulumi ESC (Environments, Secrets, and Configuration) environment within the specified organization. The request body must include the project name and the environment name. Environment names must be unique within a project and may only contain alphanumeric characters, hyphens, underscores, and periods. The newly created environment starts with an empty YAML definition that can be updated via the UpdateEnvironment endpoint.
+         * @summary CreateEnvironment
+         * @param {string} orgName The organization name
+         * @param {CreateEnvironmentRequest} [createEnvironmentRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, createEnvironmentRevisionTag: CreateEnvironmentRevisionTag, options?: any): AxiosPromise<void> {
-            return localVarFp.createEnvironmentRevisionTag(orgName, projectName, envName, createEnvironmentRevisionTag, options).then((request) => request(axios, basePath));
+        createEnvironment(orgName: string, createEnvironmentRequest?: CreateEnvironmentRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.createEnvironment(orgName, createEnvironmentRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * Create environment tag
-         * @summary Create environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {CreateEnvironmentTag} createEnvironmentTag Create environment tag
+         * Creates a new draft change request for a Pulumi ESC environment. Drafts allow proposing changes to an environment definition that can be reviewed and approved before being applied. This is part of the approvals workflow for environments. Returns a ChangeRequestRef containing the draft identifier. Requires the Approvals feature to be enabled for the organization.
+         * @summary CreateEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createEnvironmentTag(orgName: string, projectName: string, envName: string, createEnvironmentTag: CreateEnvironmentTag, options?: any): AxiosPromise<EnvironmentTag> {
-            return localVarFp.createEnvironmentTag(orgName, projectName, envName, createEnvironmentTag, options).then((request) => request(axios, basePath));
+        createEnvironmentDraft(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<ChangeRequestRef> {
+            return localVarFp.createEnvironmentDraft(orgName, projectName, envName, options).then((request) => request(axios, basePath));
         },
         /**
-         * Reads the definition for the given environment with static secrets in plaintext
-         * @summary Reads the definition for the given environment with static secrets in plaintext
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Creates a new revision tag for a Pulumi ESC environment. Revision tags are named references that point to specific revision numbers, similar to Git tags. They allow pinning a stable reference to a known-good version of an environment. Tagged versions can be used in imports and Pulumi stack configuration (e.g., myproject/env@prod) to ensure stable references unaffected by subsequent changes. The built-in \'latest\' tag always points to the most recent revision.
+         * @summary CreateRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentRevisionTagRequest} [createEnvironmentRevisionTagRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        decryptEnvironment(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<EnvironmentDefinition> {
+        createEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, createEnvironmentRevisionTagRequest?: CreateEnvironmentRevisionTagRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.createEnvironmentRevisionTag(orgName, projectName, envName, createEnvironmentRevisionTagRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Creates a new scheduled action for a Pulumi ESC environment. Schedules can be used to automate recurring operations on environments, such as secret rotation. The request body specifies the schedule timing and the action to perform. Returns the created ScheduledAction on success. Requires the secret rotation feature to be enabled for the organization.
+         * @summary CreateEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentScheduleRequest} [createEnvironmentScheduleRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironmentSchedule(orgName: string, projectName: string, envName: string, createEnvironmentScheduleRequest?: CreateEnvironmentScheduleRequest, options?: any): AxiosPromise<ScheduledAction> {
+            return localVarFp.createEnvironmentSchedule(orgName, projectName, envName, createEnvironmentScheduleRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Adds a new user-defined tag to a Pulumi ESC environment. Tags are key-value pairs that provide contextual metadata for organizing and searching environments (e.g., region=us-east-1, team=platform). The tag name and value are provided in the request body. Returns the created EnvironmentTag on success. Returns 409 if a tag with the same name already exists on the environment.
+         * @summary CreateEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentTagRequest} [createEnvironmentTagRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createEnvironmentTag(orgName: string, projectName: string, envName: string, createEnvironmentTagRequest?: CreateEnvironmentTagRequest, options?: any): AxiosPromise<EnvironmentTag> {
+            return localVarFp.createEnvironmentTag(orgName, projectName, envName, createEnvironmentTagRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Creates an open request for a Pulumi ESC environment that has gated opens enabled. When an environment has open gates configured, opening the environment requires an approval workflow. This endpoint initiates that process by creating an open request, and also creates corresponding open requests for each imported environment that has open gates. Requires the Approvals feature to be enabled for the organization. Returns 400 if the environment does not have gated opens.
+         * @summary CreateOpenEnvironmentRequest
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {CreateEnvironmentOpenRequest} [createEnvironmentOpenRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createOpenEnvironmentRequest(orgName: string, projectName: string, envName: string, createEnvironmentOpenRequest?: CreateEnvironmentOpenRequest, options?: any): AxiosPromise<CreateEnvironmentOpenRequestResponse> {
+            return localVarFp.createOpenEnvironmentRequest(orgName, projectName, envName, createEnvironmentOpenRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Creates a new webhook for a Pulumi ESC environment. Webhooks allow external services to be notified when environment events occur, such as updates or opens. The request body specifies the webhook configuration including the destination URL, event filters, and format. Returns 400 if the organization name in the request body does not match the URL path parameter. Returns 409 if a webhook with the same name already exists.
+         * @summary CreateWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {Webhook} [webhook] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createWebhook(orgName: string, projectName: string, envName: string, webhook?: Webhook, options?: any): AxiosPromise<WebhookResponse> {
+            return localVarFp.createWebhook(orgName, projectName, envName, webhook, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Reads the YAML definition for a Pulumi ESC environment with all static secrets decrypted and shown in plaintext. Unlike the standard ReadEnvironment endpoint which returns secrets in their encrypted form, this endpoint resolves fn::secret values to their plaintext representations. The response is returned in application/x-yaml format. This does not resolve dynamic provider values (fn::open); use OpenEnvironment for full resolution. Requires environment open permission.
+         * @summary DecryptEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        decryptEnvironment(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<string> {
             return localVarFp.decryptEnvironment(orgName, projectName, envName, options).then((request) => request(axios, basePath));
         },
         /**
-         * Delete an environment
-         * @summary Delete an environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Reads the YAML definition for a Pulumi ESC environment with all static secrets decrypted and shown in plaintext. Unlike the standard ReadEnvironment endpoint which returns secrets in their encrypted form, this endpoint resolves fn::secret values to their plaintext representations. The response is returned in application/x-yaml format. This does not resolve dynamic provider values (fn::open); use OpenEnvironment for full resolution. Requires environment open permission.
+         * @summary DecryptEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteEnvironment(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<Error> {
+        decryptEnvironmentEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, options?: any): AxiosPromise<string> {
+            return localVarFp.decryptEnvironmentEscEnvironmentsVersions(orgName, projectName, envName, version, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Decrypts encrypted secret values in a Pulumi ESC environment definition. Takes an environment definition containing encrypted secrets and returns the same definition with those values decrypted to plaintext. This is useful for inspecting or migrating environment definitions that contain fn::secret values. Requires environment open permission. Returns 413 if the request content exceeds the maximum allowed size.
+         * @summary DecryptEnvironmentSecrets
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {DecryptEnvironmentSecretsRequest} [decryptEnvironmentSecretsRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        decryptEnvironmentSecrets(orgName: string, projectName: string, envName: string, decryptEnvironmentSecretsRequest?: DecryptEnvironmentSecretsRequest, options?: any): AxiosPromise<DecryptEnvironmentSecretsResponse> {
+            return localVarFp.decryptEnvironmentSecrets(orgName, projectName, envName, decryptEnvironmentSecretsRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Permanently deletes a Pulumi ESC environment and all of its revision history, tags, and associated configuration. This operation is blocked if deletion protection is enabled on the environment (see PatchEnvironmentSettings). Enterprise and Business Critical edition organizations may be able to restore deleted environments within a retention window. Returns 409 if the environment is deletion-protected or has been modified since it was last read.
+         * @summary DeleteEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEnvironment(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<void> {
             return localVarFp.deleteEnvironment(orgName, projectName, envName, options).then((request) => request(axios, basePath));
         },
         /**
-         * Delete environment revision tag
-         * @summary Delete environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Deletes a named revision tag from a Pulumi ESC environment. The tag is identified by its name in the URL path. After deletion, any imports or stack configurations referencing this tag will fail to resolve. The built-in \'latest\' tag cannot be deleted. Returns 204 on success with no response body.
+         * @summary DeleteRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The revision tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2746,12 +8488,25 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
             return localVarFp.deleteEnvironmentRevisionTag(orgName, projectName, envName, tagName, options).then((request) => request(axios, basePath));
         },
         /**
-         * Delete environment tag
-         * @summary Delete environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Permanently deletes a scheduled action from a Pulumi ESC environment. This removes the schedule and cancels any future executions. The schedule is identified by its scheduleID. Requires the secret rotation feature to be enabled for the organization.
+         * @summary DeleteEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteEnvironmentSchedule(orgName, projectName, envName, scheduleID, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Removes a user-defined tag from a Pulumi ESC environment. The tag is identified by its name in the URL path. Returns 204 on success with no response body. Returns 404 if the tag does not exist on the environment.
+         * @summary DeleteEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The environment tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2759,49 +8514,109 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
             return localVarFp.deleteEnvironmentTag(orgName, projectName, envName, tagName, options).then((request) => request(axios, basePath));
         },
         /**
-         * Read an environment
-         * @summary Read an environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Deletes a webhook from a Pulumi ESC environment. The webhook is identified by its name in the URL path. After deletion, the external service will no longer receive notifications for environment events. Returns 204 on success with no response body.
+         * @summary DeleteWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEnvironment(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<EnvironmentDefinition> {
+        deleteWebhook(orgName: string, projectName: string, envName: string, hookName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteWebhook(orgName, projectName, envName, hookName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Encrypts plaintext secret values in a Pulumi ESC environment definition. Takes an environment definition containing plaintext secrets and returns the same definition with those values encrypted using the environment\'s encryption key. This is useful for preparing environment definitions that contain sensitive values before storing or updating them. Returns 413 if the request content exceeds the maximum allowed size.
+         * @summary EncryptEnvironmentSecrets
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {EncryptEnvironmentSecretsRequest} [encryptEnvironmentSecretsRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        encryptEnvironmentSecrets(orgName: string, projectName: string, envName: string, encryptEnvironmentSecretsRequest?: EncryptEnvironmentSecretsRequest, options?: any): AxiosPromise<EncryptEnvironmentSecretsResponse> {
+            return localVarFp.encryptEnvironmentSecrets(orgName, projectName, envName, encryptEnvironmentSecretsRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Lists GCP projects accessible with the provided oauth session
+         * @summary GCPListAccounts
+         * @param {string} orgName The organization name
+         * @param {string} [oauthSessionId] The OAuth session identifier
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gCPListAccounts(orgName: string, oauthSessionId?: string, options?: any): AxiosPromise<ListCloudAccountsResponse> {
+            return localVarFp.gCPListAccounts(orgName, oauthSessionId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Sets up GCP infrastructure using OAuth credentials
+         * @summary GCPSetup
+         * @param {string} orgName The organization name
+         * @param {GCPSetupRequest} [gCPSetupRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gCPSetup(orgName: string, gCPSetupRequest?: GCPSetupRequest, options?: any): AxiosPromise<CloudSetupResult> {
+            return localVarFp.gCPSetup(orgName, gCPSetupRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns the YAML definition of a Pulumi ESC environment. The response is in application/x-yaml format and includes the environment\'s imports, values, provider configurations, and function invocations. Secrets remain in their encrypted form (use DecryptEnvironment to see plaintext secrets, or OpenEnvironment to fully resolve all dynamic values). When a version path parameter is provided, returns the definition for that specific revision.
+         * @summary ReadEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnvironment(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<string> {
             return localVarFp.getEnvironment(orgName, projectName, envName, options).then((request) => request(axios, basePath));
         },
         /**
-         * Read an environmentat a specific revision or tag
-         * @summary Read an environment at a specific version
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} version Revision or tag
+         * Returns the YAML definition of a Pulumi ESC environment. The response is in application/x-yaml format and includes the environment\'s imports, values, provider configurations, and function invocations. Secrets remain in their encrypted form (use DecryptEnvironment to see plaintext secrets, or OpenEnvironment to fully resolve all dynamic values). When a version path parameter is provided, returns the definition for that specific revision.
+         * @summary ReadEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, options?: any): AxiosPromise<EnvironmentDefinition> {
+        getEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, options?: any): AxiosPromise<string> {
             return localVarFp.getEnvironmentAtVersion(orgName, projectName, envName, version, options).then((request) => request(axios, basePath));
         },
         /**
-         * Returns the ETag for the given environment if it exists.
-         * @summary Return an Environment ETag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
+         * Returns the ETag header for a Pulumi ESC environment without returning the full definition body. This is used for lightweight existence checks and for obtaining the current ETag value for optimistic concurrency control. The ETag should be included in subsequent update requests via the If-Match header to prevent concurrent modification conflicts. Returns 404 if the environment does not exist.
+         * @summary HeadEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEnvironmentETag(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<void> {
+        getEnvironmentETag(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<object> {
             return localVarFp.getEnvironmentETag(orgName, projectName, envName, options).then((request) => request(axios, basePath));
         },
         /**
-         * Read environment revision tag
-         * @summary Read environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Returns metadata for a Pulumi ESC environment, including the calling user\'s effective permission level (read, open, write, admin), creation and modification timestamps, the environment\'s project, and other administrative information. This is useful for determining what actions the current user can perform on the environment before attempting those operations.
+         * @summary GetEnvironmentMetadata
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnvironmentMetadata(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<EnvironmentMetadata> {
+            return localVarFp.getEnvironmentMetadata(orgName, projectName, envName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns the details of a specific revision tag for a Pulumi ESC environment. The tag is identified by its name in the URL path. The response includes the tag name and the revision number it points to. Returns 404 if the tag does not exist.
+         * @summary ReadRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The revision tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2809,12 +8624,24 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
             return localVarFp.getEnvironmentRevisionTag(orgName, projectName, envName, tagName, options).then((request) => request(axios, basePath));
         },
         /**
-         * Read an environment tag
-         * @summary Read an environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
+         * Returns the current settings for a Pulumi ESC environment, including whether deletion protection is enabled. Deletion protection prevents the environment from being deleted until the setting is explicitly disabled. Settings can be modified via the PatchEnvironmentSettings endpoint.
+         * @summary GetEnvironmentSettings
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEnvironmentSettings(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<EnvironmentSettings> {
+            return localVarFp.getEnvironmentSettings(orgName, projectName, envName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a single user-defined tag for a Pulumi ESC environment, identified by the tag name in the URL path. The response includes the tag name, value, and metadata. Returns 404 if the tag does not exist on the environment.
+         * @summary GetEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The environment tag name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2822,27 +8649,138 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
             return localVarFp.getEnvironmentTag(orgName, projectName, envName, tagName, options).then((request) => request(axios, basePath));
         },
         /**
-         * List environment revisions
-         * @summary List environment revisions
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} [after] after tag for pagination
-         * @param {number} [count] limit of tags to return
+         * Returns the JSON schema for a Pulumi ESC provider. Providers are integrations that dynamically retrieve configuration and secrets from external sources such as AWS, Azure, Google Cloud, HashiCorp Vault, and others via fn::open. The schema describes the provider\'s input parameters, output structure, and configuration options. The provider is identified by name in the URL path.
+         * @summary GetProviderSchema
+         * @param {string} providerName The provider name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listEnvironmentRevisionTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: any): AxiosPromise<EnvironmentRevisionTags> {
+        getProviderSchema(providerName: string, options?: any): AxiosPromise<ProviderSchema> {
+            return localVarFp.getProviderSchema(providerName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns the JSON schema for a Pulumi ESC secret rotator. Rotators are integrations that automatically rotate secrets in external systems via fn::rotate. The schema describes the rotator\'s input parameters, output structure, and configuration options. The rotator is identified by name in the URL path.
+         * @summary GetRotatorSchema
+         * @param {string} rotatorName The rotator name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRotatorSchema(rotatorName: string, options?: any): AxiosPromise<ProviderSchema> {
+            return localVarFp.getRotatorSchema(rotatorName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns the configuration and status of a single webhook for a Pulumi ESC environment. The webhook is identified by its name in the URL path. The response includes the webhook\'s destination URL, event filters, format, and active status. Returns 404 if the webhook does not exist.
+         * @summary GetWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWebhook(orgName: string, projectName: string, envName: string, hookName: string, options?: any): AxiosPromise<WebhookResponse> {
+            return localVarFp.getWebhook(orgName, projectName, envName, hookName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a list of recent delivery attempts for a specific webhook on a Pulumi ESC environment. Each delivery record includes the HTTP status code, response body, timestamp, and whether the delivery was successful. This is useful for debugging webhook integration issues and verifying that events are being received.
+         * @summary GetWebhookDeliveries
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWebhookDeliveries(orgName: string, projectName: string, envName: string, hookName: string, options?: any): AxiosPromise<Array<WebhookDelivery>> {
+            return localVarFp.getWebhookDeliveries(orgName, projectName, envName, hookName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Initiates OAuth flow for a given cloud provider
+         * @summary InitiateOAuth
+         * @param {string} orgName The organization name
+         * @param {InitiateOAuthRequest} [initiateOAuthRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        initiateOAuth(orgName: string, initiateOAuthRequest?: InitiateOAuthRequest, options?: any): AxiosPromise<InitiateOAuthResponse> {
+            return localVarFp.initiateOAuth(orgName, initiateOAuthRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a map of all unique tag names and their distinct values across all Pulumi ESC environments in the organization. The response is a map where each key is a tag name and the value is a list of all distinct values for that tag across all environments. This is useful for building tag-based filtering or discovery UIs.
+         * @summary ListAllEnvironmentTags
+         * @param {string} orgName The organization name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listAllEnvironmentTags(orgName: string, options?: any): AxiosPromise<{ [key: string]: Array<string>; }> {
+            return localVarFp.listAllEnvironmentTags(orgName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a paginated list of soft-deleted Pulumi ESC environments within an organization that are still within the retention window and eligible for restoration. Use the continuationToken query parameter for pagination. Deleted environments can be restored via the RestoreEnvironment endpoint.
+         * @summary ListDeletedEnvironments
+         * @param {string} orgName The organization name
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listDeletedEnvironments(orgName: string, continuationToken?: string, options?: any): AxiosPromise<ListEnvironmentsResponse> {
+            return localVarFp.listDeletedEnvironments(orgName, continuationToken, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+         * @summary ListEnvironmentReferrers
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {boolean} [allRevisions] Whether to include all revisions
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {number} [count] Maximum number of results to return
+         * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentReferrers(orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: any): AxiosPromise<ListEnvironmentReferrersResponse> {
+            return localVarFp.listEnvironmentReferrers(orgName, projectName, envName, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+         * @summary ListEnvironmentReferrers
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {boolean} [allRevisions] Whether to include all revisions
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {number} [count] Maximum number of results to return
+         * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentReferrersEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: any): AxiosPromise<ListEnvironmentReferrersResponse> {
+            return localVarFp.listEnvironmentReferrersEscEnvironmentsVersions(orgName, projectName, envName, version, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a paginated list of revision tags for a Pulumi ESC environment. Revision tags are named references pointing to specific revision numbers (e.g., \'latest\', \'prod\', \'stable\'). They can be used in environment imports and Pulumi stack configuration to pin to a specific version. Use the after parameter for cursor-based pagination and count to limit results.
+         * @summary ListRevisionTags
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} [after] Only return results after this value
+         * @param {number} [count] Maximum number of results to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentRevisionTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: any): AxiosPromise<ListEnvironmentRevisionTagsResponse> {
             return localVarFp.listEnvironmentRevisionTags(orgName, projectName, envName, after, count, options).then((request) => request(axios, basePath));
         },
         /**
-         * List environment revisions
-         * @summary List environment revisions
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {number} [before] before revision number for pagination
-         * @param {number} [count] limit of revisions to return
+         * Returns a paginated list of revisions for a Pulumi ESC environment. Each revision represents an immutable snapshot of the environment definition created when the environment is updated. The response includes revision numbers, timestamps, and the identity of the user who made each change. Use the before parameter to fetch revisions before a specific revision number, and count to limit the number of results returned.
+         * @summary ListEnvironmentRevisions
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {number} [before] Only return results before this revision
+         * @param {number} [count] Maximum number of results to return
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2850,124 +8788,460 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
             return localVarFp.listEnvironmentRevisions(orgName, projectName, envName, before, count, options).then((request) => request(axios, basePath));
         },
         /**
-         * List environment tags
-         * @summary List environment tags
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} [after] after tag for pagination
-         * @param {number} [count] limit of tags to return
+         * Returns all scheduled actions configured for a Pulumi ESC environment. Schedules automate recurring operations such as secret rotation. The response includes each schedule\'s timing configuration, action type, and current status (active or paused).
+         * @summary ListEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listEnvironmentTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: any): AxiosPromise<ListEnvironmentTags> {
+        listEnvironmentSchedule(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<ListScheduledActionsResponse> {
+            return localVarFp.listEnvironmentSchedule(orgName, projectName, envName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns the execution history for a specific scheduled action on a Pulumi ESC environment. Each history entry includes the execution timestamp, outcome (success or failure), and any error details. This is useful for monitoring the reliability of automated operations like secret rotation.
+         * @summary ListEnvironmentScheduleHistory
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentScheduleHistory(orgName: string, projectName: string, envName: string, scheduleID: string, options?: any): AxiosPromise<ListScheduledActionHistoryResponse> {
+            return localVarFp.listEnvironmentScheduleHistory(orgName, projectName, envName, scheduleID, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns the secret rotation history for a Pulumi ESC environment. Each entry represents a rotation event where secrets defined with fn::rotate were cycled to new values in their external systems. The response includes timestamps, outcomes, and the rotators involved. Requires the secret rotation feature to be enabled for the organization.
+         * @summary ListEnvironmentSecretRotationHistory
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentSecretRotationHistory(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<ListEnvironmentSecretRotationHistoryResponse> {
+            return localVarFp.listEnvironmentSecretRotationHistory(orgName, projectName, envName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a paginated list of user-defined tags for a Pulumi ESC environment. Tags are key-value pairs used for organizing and categorizing environments. Use the after parameter for cursor-based pagination and count to limit the number of results returned.
+         * @summary ListEnvironmentTags
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {number} [after] Only return results after this value
+         * @param {number} [count] Maximum number of results to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listEnvironmentTags(orgName: string, projectName: string, envName: string, after?: number, count?: number, options?: any): AxiosPromise<ListEnvironmentTagsResponse> {
             return localVarFp.listEnvironmentTags(orgName, projectName, envName, after, count, options).then((request) => request(axios, basePath));
         },
         /**
-         * List environments in the organization available to the current user
-         * @summary List environments in the organization
-         * @param {string} orgName Organization name
-         * @param {string} [continuationToken] continuation Token from previous query to fetch next page of results
+         * Returns a paginated list of all Pulumi ESC environments within a specific organization. Each entry includes the project, environment name, and creation/modification timestamps. Results are scoped to the organization specified in the URL path. Use continuationToken for pagination through large result sets.
+         * @summary ListOrgEnvironments
+         * @param {string} orgName The organization name
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {number} [maxResults] Maximum number of results for pagination
+         * @param {string} [roleID] The custom role to use for listing environments
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listEnvironments(orgName: string, continuationToken?: string, options?: any): AxiosPromise<OrgEnvironments> {
-            return localVarFp.listEnvironments(orgName, continuationToken, options).then((request) => request(axios, basePath));
+        listEnvironments(orgName: string, continuationToken?: string, maxResults?: number, roleID?: string, options?: any): AxiosPromise<ListEnvironmentsResponse> {
+            return localVarFp.listEnvironments(orgName, continuationToken, maxResults, roleID, options).then((request) => request(axios, basePath));
         },
         /**
-         * Opens a session the given environment for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
-         * @summary Open an environment session
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+         * Returns a paginated list of all Pulumi ESC environments accessible to the authenticated user across all organizations they belong to. Each entry includes the organization, project, environment name, and creation/modification timestamps. Use the organization query parameter to filter results to a specific organization. Use continuationToken for pagination through large result sets.
+         * @summary ListEnvironments
+         * @param {string} [continuationToken] Continuation token for paginated results
+         * @param {string} [organization] Filter results to this organization name
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        openEnvironment(orgName: string, projectName: string, envName: string, duration?: string, options?: any): AxiosPromise<OpenEnvironment> {
+        listEnvironmentsEsc(continuationToken?: string, organization?: string, options?: any): AxiosPromise<ListEnvironmentsResponse> {
+            return localVarFp.listEnvironmentsEsc(continuationToken, organization, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a list of all available Pulumi ESC providers. Providers are integrations that dynamically retrieve configuration and secrets from external sources (e.g., AWS, Azure, Google Cloud, HashiCorp Vault, 1Password) via the fn::open function in environment definitions. Optionally filter by organization using the orgName query parameter to see only providers available to that organization.
+         * @summary ListProviders
+         * @param {string} [orgName] Filter providers available to this organization
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listProviders(orgName?: string, options?: any): AxiosPromise<ListProvidersResponse> {
+            return localVarFp.listProviders(orgName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a paginated list of revision tags for a Pulumi ESC environment. Revision tags are named references pointing to specific revision numbers (e.g., \'latest\', \'prod\', \'stable\'). They can be used in environment imports and Pulumi stack configuration to pin to a specific version. Use the after parameter for cursor-based pagination and count to limit results.
+         * @summary ListRevisionTags
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {string} [after] Only return results after this value
+         * @param {number} [count] Maximum number of results to return
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listRevisionTagsEscEnvironmentsVersions2(orgName: string, projectName: string, envName: string, version: string, after?: string, count?: number, options?: any): AxiosPromise<ListEnvironmentRevisionTagsResponse> {
+            return localVarFp.listRevisionTagsEscEnvironmentsVersions2(orgName, projectName, envName, version, after, count, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a list of all available Pulumi ESC secret rotators. Rotators are integrations that automatically rotate secrets in external systems via the fn::rotate function in environment definitions. Optionally filter by organization using the orgName query parameter to see only rotators available to that organization.
+         * @summary ListRotators
+         * @param {string} [orgName] Filter rotators available to this organization
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listRotators(orgName?: string, options?: any): AxiosPromise<ListRotatorsResponse> {
+            return localVarFp.listRotators(orgName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns a list of all webhooks configured for a Pulumi ESC environment. Each webhook entry includes its name, destination URL, event filters, format, and active status. Webhooks enable external services to be notified of environment events such as updates and opens.
+         * @summary ListWebhooks
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listWebhooks(orgName: string, projectName: string, envName: string, options?: any): AxiosPromise<Array<WebhookResponse>> {
+            return localVarFp.listWebhooks(orgName, projectName, envName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Opens a Pulumi ESC environment, fully resolving all dynamic values, provider integrations (fn::open), interpolation expressions, and secrets. This initiates an access session that evaluates the complete environment definition including all imports. The duration parameter specifies how long the session remains valid using Go duration format (e.g., \'2h45m\', \'300ms\'). Returns an OpenEnvironmentResponse containing the session ID and any diagnostics. Use the session ID with ReadOpenEnvironment to retrieve the resolved values.
+         * @summary OpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        openEnvironment(orgName: string, projectName: string, envName: string, duration?: string, options?: any): AxiosPromise<OpenEnvironmentResponse> {
             return localVarFp.openEnvironment(orgName, projectName, envName, duration, options).then((request) => request(axios, basePath));
         },
         /**
-         * Opens a session the given environment at a specific version for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
-         * @summary Open an environment session at a specific version
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} version Revision or tag
-         * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+         * Opens a Pulumi ESC environment, fully resolving all dynamic values, provider integrations (fn::open), interpolation expressions, and secrets. This initiates an access session that evaluates the complete environment definition including all imports. The duration parameter specifies how long the session remains valid using Go duration format (e.g., \'2h45m\', \'300ms\'). Returns an OpenEnvironmentResponse containing the session ID and any diagnostics. Use the session ID with ReadOpenEnvironment to retrieve the resolved values.
+         * @summary OpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        openEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, duration?: string, options?: any): AxiosPromise<OpenEnvironment> {
+        openEnvironmentAtVersion(orgName: string, projectName: string, envName: string, version: string, duration?: string, options?: any): AxiosPromise<OpenEnvironmentResponse> {
             return localVarFp.openEnvironmentAtVersion(orgName, projectName, envName, version, duration, options).then((request) => request(axios, basePath));
         },
         /**
-         * Reads and decrypts secrets including retrieving dynamic secrets from providers.
-         * @summary Read an open environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} openSessionID Open session ID returned from environment open
+         * Opens a draft version of a Pulumi ESC environment, fully resolving all dynamic values, provider integrations, and secrets for the proposed changes. The duration parameter specifies how long the open session remains valid using Go duration format (e.g., \'2h\', \'30m\'). An optional revision parameter can target a specific base revision. Returns an OpenEnvironmentResponse containing the session ID for subsequent reads. Requires the Approvals feature.
+         * @summary OpenEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
+         * @param {number} [revision] The environment revision number to target
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readOpenEnvironment(orgName: string, projectName: string, envName: string, openSessionID: string, options?: any): AxiosPromise<Environment> {
-            return localVarFp.readOpenEnvironment(orgName, projectName, envName, openSessionID, options).then((request) => request(axios, basePath));
+        openEnvironmentDraft(orgName: string, projectName: string, envName: string, changeRequestID: string, duration?: string, revision?: number, options?: any): AxiosPromise<OpenEnvironmentResponse> {
+            return localVarFp.openEnvironmentDraft(orgName, projectName, envName, changeRequestID, duration, revision, options).then((request) => request(axios, basePath));
         },
         /**
-         * Reads and decrypts secrets including retrieving dynamic secrets from providers.
-         * @summary Read an open environment
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} openSessionID Open session ID returned from environment open
+         * Opens an anonymous Pulumi ESC environment from a raw YAML definition provided in the request body, fully resolving all dynamic values, provider integrations, and secrets. Unlike OpenEnvironment, this does not require a pre-existing environment to be stored. The duration parameter specifies how long the session remains valid using Go duration format. Returns an OpenEnvironmentResponse containing the session ID. Use the session ID with ReadAnonymousOpenEnvironment to retrieve the resolved values.
+         * @summary OpenYAML
+         * @param {string} orgName The organization name
+         * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        openYAML(orgName: string, duration?: string, options?: any): AxiosPromise<OpenEnvironmentResponse> {
+            return localVarFp.openYAML(orgName, duration, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates settings for a Pulumi ESC environment using a partial update (patch) approach. Currently supports toggling deletion protection via the deletionProtected field. When deletionProtected is set to true, the environment cannot be deleted until the setting is explicitly disabled. Only the fields included in the request body are modified; omitted fields retain their current values.
+         * @summary PatchEnvironmentSettings
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {PatchEnvironmentSettingsRequest} [patchEnvironmentSettingsRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        patchEnvironmentSettings(orgName: string, projectName: string, envName: string, patchEnvironmentSettingsRequest?: PatchEnvironmentSettingsRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.patchEnvironmentSettings(orgName, projectName, envName, patchEnvironmentSettingsRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Pauses a scheduled action on a Pulumi ESC environment, preventing any future executions until the schedule is resumed. The schedule\'s configuration is preserved and can be reactivated via the ResumeEnvironmentSchedule endpoint. This is useful for temporarily disabling automated operations like secret rotation without deleting the schedule.
+         * @summary PauseEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        pauseEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: any): AxiosPromise<void> {
+            return localVarFp.pauseEnvironmentSchedule(orgName, projectName, envName, scheduleID, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Sends a test ping event to a webhook on a Pulumi ESC environment to verify that the webhook endpoint is reachable and functioning correctly. This bypasses the normal message queue and issues the request directly to the webhook URL. Returns the WebhookDelivery record containing the HTTP status code and response from the target endpoint.
+         * @summary PingWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        pingWebhook(orgName: string, projectName: string, envName: string, hookName: string, options?: any): AxiosPromise<WebhookDelivery> {
+            return localVarFp.pingWebhook(orgName, projectName, envName, hookName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Reads the fully resolved values from an anonymous open environment session that was created via the OpenYAML endpoint. The openSessionID path parameter must match a valid, non-expired session. The optional property query parameter accepts a dot-separated path to retrieve a specific nested value instead of the entire resolved environment (e.g., \'aws.credentials.accessKeyId\'). The response contains the resolved configuration values with secrets decrypted.
+         * @summary ReadAnonymousOpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} openSessionID The session ID returned from the open environment operation
+         * @param {string} [property] A dot-separated path to a specific property to retrieve from the environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readAnonymousOpenEnvironment(orgName: string, openSessionID: string, property?: string, options?: any): AxiosPromise<object> {
+            return localVarFp.readAnonymousOpenEnvironment(orgName, openSessionID, property, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Reads the YAML definition for a draft version of a Pulumi ESC environment. Drafts are proposed changes created as part of the approvals workflow. The draft is identified by the changeRequestID path parameter. An optional revision query parameter can target a specific base revision. The response is returned in application/x-yaml format. Requires the Approvals feature to be enabled.
+         * @summary ReadEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {number} [revision] The environment revision number to target
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readEnvironmentDraft(orgName: string, projectName: string, envName: string, changeRequestID: string, revision?: number, options?: any): AxiosPromise<string> {
+            return localVarFp.readEnvironmentDraft(orgName, projectName, envName, changeRequestID, revision, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns the details of a specific scheduled action for a Pulumi ESC environment. The schedule is identified by the scheduleID path parameter. The response includes the schedule\'s timing configuration (cron expression or one-time), the action to perform, and the current status (active or paused).
+         * @summary ReadEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: any): AxiosPromise<ScheduledAction> {
+            return localVarFp.readEnvironmentSchedule(orgName, projectName, envName, scheduleID, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Reads the fully resolved values from an open environment session that was created via the OpenEnvironment endpoint. The openSessionID path parameter must match a valid, non-expired session. The optional property query parameter accepts a dot-separated path to retrieve a specific nested value instead of the entire resolved environment (e.g., \'aws.credentials.accessKeyId\'). The response contains all resolved configuration values with secrets decrypted and provider-sourced values fully evaluated.
+         * @summary ReadOpenEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} openSessionID The session ID returned from the open environment operation
+         * @param {string} [property] A dot-separated path to a specific property to retrieve from the environment
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readOpenEnvironment(orgName: string, projectName: string, envName: string, openSessionID: string, property?: string, options?: any): AxiosPromise<EscEnvironment> {
+            return localVarFp.readOpenEnvironment(orgName, projectName, envName, openSessionID, property, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Reads and decrypts a specific property including retrieving dynamic secrets from providers.
+         * @summary Read an open environment property
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} openSessionID The session ID returned from the open environment operation
          * @param {string} property Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readOpenEnvironmentProperty(orgName: string, projectName: string, envName: string, openSessionID: string, property: string, options?: any): AxiosPromise<Value> {
+        readOpenEnvironmentProperty(orgName: string, projectName: string, envName: string, openSessionID: string, property: string, options?: any): AxiosPromise<EscValue> {
             return localVarFp.readOpenEnvironmentProperty(orgName, projectName, envName, openSessionID, property, options).then((request) => request(axios, basePath));
         },
         /**
-         * Update environment revision tag
-         * @summary Update environment revision tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
-         * @param {UpdateEnvironmentRevisionTag} updateEnvironmentRevisionTag Update environment revision tag
+         * Reads the details of an open environment request that was created as part of the gated opens approval workflow. The request is identified by the changeRequestID path parameter. The response includes the request\'s status, the requesting user, and approval details. An optional revision query parameter can target a specific environment revision. Requires the Approvals feature to be enabled.
+         * @summary ReadOpenEnvironmentRequest
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {number} [revision] The environment revision number to target
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTag: UpdateEnvironmentRevisionTag, options?: any): AxiosPromise<void> {
-            return localVarFp.updateEnvironmentRevisionTag(orgName, projectName, envName, tagName, updateEnvironmentRevisionTag, options).then((request) => request(axios, basePath));
+        readOpenEnvironmentRequest(orgName: string, projectName: string, envName: string, changeRequestID: string, revision?: number, options?: any): AxiosPromise<CreateEnvironmentOpenRequest> {
+            return localVarFp.readOpenEnvironmentRequest(orgName, projectName, envName, changeRequestID, revision, options).then((request) => request(axios, basePath));
         },
         /**
-         * Update an environment tag
-         * @summary Update an environment tag
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} tagName Tag name
-         * @param {UpdateEnvironmentTag} updateEnvironmentTag Update environment tag
+         * Triggers the Pulumi Service to redeliver a specific event to a webhook on a Pulumi ESC environment. This is useful for resending events that the webhook endpoint failed to process on the initial delivery attempt (e.g., due to temporary downtime or errors). The event is identified by its delivery event ID in the URL path. Returns the new WebhookDelivery record for the redelivery.
+         * @summary RedeliverWebhookEvent
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {string} event The webhook delivery event ID to redeliver
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTag: UpdateEnvironmentTag, options?: any): AxiosPromise<EnvironmentTag> {
-            return localVarFp.updateEnvironmentTag(orgName, projectName, envName, tagName, updateEnvironmentTag, options).then((request) => request(axios, basePath));
+        redeliverWebhookEvent(orgName: string, projectName: string, envName: string, hookName: string, event: string, options?: any): AxiosPromise<WebhookDelivery> {
+            return localVarFp.redeliverWebhookEvent(orgName, projectName, envName, hookName, event, options).then((request) => request(axios, basePath));
         },
         /**
-         * Validates and updates the given environment\'s definition.
-         * @summary Update an existing environment with Yaml file
-         * @param {string} orgName Organization name
-         * @param {string} projectName Project name
-         * @param {string} envName Environment name
-         * @param {string} body Environment Yaml content
+         * Restores a previously deleted Pulumi ESC environment within an organization. The request body specifies the environment to restore by its project and name. The environment must have been deleted within the retention window and not yet permanently purged. Returns 204 on success with no response body. Returns 404 if the deleted environment cannot be found.
+         * @summary RestoreEnvironment
+         * @param {string} orgName The organization name
+         * @param {RestoreEnvironmentRequest} [restoreEnvironmentRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateEnvironmentYaml(orgName: string, projectName: string, envName: string, body: string, options?: any): AxiosPromise<EnvironmentDiagnostics> {
+        restoreEnvironment(orgName: string, restoreEnvironmentRequest?: RestoreEnvironmentRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.restoreEnvironment(orgName, restoreEnvironmentRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Resumes a previously paused scheduled action on a Pulumi ESC environment, re-enabling future executions. The schedule will continue from its next scheduled time according to its configured timing (cron expression or one-time schedule). The schedule is identified by the scheduleID path parameter.
+         * @summary ResumeEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resumeEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: any): AxiosPromise<void> {
+            return localVarFp.resumeEnvironmentSchedule(orgName, projectName, envName, scheduleID, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Retracts a specific revision of a Pulumi ESC environment, marking it as withdrawn. A retracted revision remains in the history but is no longer considered a valid version for use. The request body may include a reason for the retraction. The revision is identified by the version path parameter. Returns 204 on success with no response body.
+         * @summary RetractEnvironmentRevision
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} version The revision version number
+         * @param {RetractEnvironmentRevisionRequest} [retractEnvironmentRevisionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        retractEnvironmentRevision(orgName: string, projectName: string, envName: string, version: string, retractEnvironmentRevisionRequest?: RetractEnvironmentRevisionRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.retractEnvironmentRevision(orgName, projectName, envName, version, retractEnvironmentRevisionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Triggers secret rotation for a Pulumi ESC environment. This evaluates all fn::rotate declarations in the environment definition and rotates the corresponding secrets in their external systems (e.g., rotating database passwords, API keys, or cloud credentials). Requires the secret rotation feature to be enabled for the organization. Returns 409 if the environment has been modified since it was last read.
+         * @summary RotateEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {RotateEnvironmentRequest} [rotateEnvironmentRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        rotateEnvironment(orgName: string, projectName: string, envName: string, rotateEnvironmentRequest?: RotateEnvironmentRequest, options?: any): AxiosPromise<RotateEnvironmentResponse> {
+            return localVarFp.rotateEnvironment(orgName, projectName, envName, rotateEnvironmentRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates the YAML definition of an existing draft change request for a Pulumi ESC environment. The draft is identified by the changeRequestID path parameter. The request body contains the updated YAML definition. Returns a ChangeRequestRef on success. Requires the Approvals feature to be enabled for the organization.
+         * @summary UpdateEnvironmentDraft
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentDraft(orgName: string, projectName: string, envName: string, changeRequestID: string, options?: any): AxiosPromise<ChangeRequestRef> {
+            return localVarFp.updateEnvironmentDraft(orgName, projectName, envName, changeRequestID, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates an existing revision tag for a Pulumi ESC environment to point to a different revision number. The tag is identified by its name in the URL path. The request body specifies the new revision number. This allows advancing or rolling back a named reference (e.g., moving the \'prod\' tag to a newer or older revision). Returns 204 on success with no response body.
+         * @summary UpdateRevisionTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The revision tag name
+         * @param {UpdateEnvironmentRevisionTagRequest} [updateEnvironmentRevisionTagRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTagRequest?: UpdateEnvironmentRevisionTagRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.updateEnvironmentRevisionTag(orgName, projectName, envName, tagName, updateEnvironmentRevisionTagRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates the configuration of a scheduled action for a Pulumi ESC environment. The schedule is identified by the scheduleID path parameter. The request body specifies the updated timing and action configuration. Changes take effect for future executions only; any currently running execution is not affected. Returns the updated ScheduledAction on success.
+         * @summary UpdateEnvironmentSchedule
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} scheduleID The schedule ID
+         * @param {CreateEnvironmentScheduleRequest} [createEnvironmentScheduleRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, createEnvironmentScheduleRequest?: CreateEnvironmentScheduleRequest, options?: any): AxiosPromise<ScheduledAction> {
+            return localVarFp.updateEnvironmentSchedule(orgName, projectName, envName, scheduleID, createEnvironmentScheduleRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Modifies the value of an existing user-defined tag on a Pulumi ESC environment. The tag is identified by its name in the URL path. The request body contains the new value for the tag. Returns the updated EnvironmentTag on success. Returns 404 if the tag does not exist on the environment.
+         * @summary UpdateEnvironmentTag
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} tagName The environment tag name
+         * @param {UpdateEnvironmentTagRequest} [updateEnvironmentTagRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTagRequest?: UpdateEnvironmentTagRequest, options?: any): AxiosPromise<EnvironmentTag> {
+            return localVarFp.updateEnvironmentTag(orgName, projectName, envName, tagName, updateEnvironmentTagRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Validates and updates the YAML definition of a Pulumi ESC environment. The request body must contain the complete environment definition in application/x-yaml format, including imports, values, provider configurations, and function invocations. Each successful update creates a new immutable revision in the environment\'s version history. Supports optimistic concurrency control via ETag/If-Match headers; returns 409 if the environment has been modified since it was last read.
+         * @summary UpdateEnvironment
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEnvironmentYaml(orgName: string, projectName: string, envName: string, body?: string, options?: any): AxiosPromise<UpdateEnvironmentResponse> {
             return localVarFp.updateEnvironmentYaml(orgName, projectName, envName, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates an existing open environment request that was created as part of the gated opens approval workflow. The request is identified by the changeRequestID path parameter. The request body contains the updated open request details, such as approval status. Returns a ChangeRequestRef on success. Requires the Approvals feature to be enabled for the organization.
+         * @summary UpdateOpenEnvironmentRequest
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} changeRequestID The change request ID
+         * @param {CreateEnvironmentOpenRequest} [createEnvironmentOpenRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateOpenEnvironmentRequest(orgName: string, projectName: string, envName: string, changeRequestID: string, createEnvironmentOpenRequest?: CreateEnvironmentOpenRequest, options?: any): AxiosPromise<ChangeRequestRef> {
+            return localVarFp.updateOpenEnvironmentRequest(orgName, projectName, envName, changeRequestID, createEnvironmentOpenRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates the configuration of an existing webhook on a Pulumi ESC environment. The webhook is identified by its name in the URL path. The request body contains the updated webhook configuration including destination URL, event filters, format, and active status. Returns the updated WebhookResponse on success. Returns 400 if an invalid format is specified.
+         * @summary UpdateWebhook
+         * @param {string} orgName The organization name
+         * @param {string} projectName The project name
+         * @param {string} envName The environment name
+         * @param {string} hookName The webhook name
+         * @param {Webhook} [webhook] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateWebhook(orgName: string, projectName: string, envName: string, hookName: string, webhook?: Webhook, options?: any): AxiosPromise<WebhookResponse> {
+            return localVarFp.updateWebhook(orgName, projectName, envName, hookName, webhook, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2980,82 +9254,265 @@ export const EscApiFactory = function (configuration?: Configuration, basePath?:
  */
 export class EscApi extends BaseAPI {
     /**
-     * Checks an environment definition for errors
-     * @summary Checks an environment definition for errors
-     * @param {string} orgName Organization name
+     * Initiates the AWS SSO flow
+     * @summary AWSSSOInitiate
+     * @param {string} orgName The organization name
+     * @param {AWSSSOInitiateRequest} [aWSSSOInitiateRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public aWSSSOInitiate(orgName: string, aWSSSOInitiateRequest?: AWSSSOInitiateRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).aWSSSOInitiate(orgName, aWSSSOInitiateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Lists AWS accounts accessible with the provided session
+     * @summary AWSSSOListAccounts
+     * @param {string} orgName The organization name
+     * @param {string} [region] The AWS region
+     * @param {string} [sessionId] The SSO session identifier
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public aWSSSOListAccounts(orgName: string, region?: string, sessionId?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).aWSSSOListAccounts(orgName, region, sessionId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Sets up AWS infrastructure and ESC environments using AWS SSO
+     * @summary AWSSSOSetup
+     * @param {string} orgName The organization name
+     * @param {AWSSSOSetupRequest} [aWSSSOSetupRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public aWSSSOSetup(orgName: string, aWSSSOSetupRequest?: AWSSSOSetupRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).aWSSSOSetup(orgName, aWSSSOSetupRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Sets up AWS infrastructure using provided static credentials
+     * @summary AWSSetup
+     * @param {string} orgName The organization name
+     * @param {AWSSetupRequest} [aWSSetupRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public aWSSetup(orgName: string, aWSSetupRequest?: AWSSetupRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).aWSSetup(orgName, aWSSetupRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Lists Azure subscriptions accessible with the provided ARM session
+     * @summary AzureListAccounts
+     * @param {string} orgName The organization name
+     * @param {string} [armSessionId] The Azure ARM session identifier
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public azureListAccounts(orgName: string, armSessionId?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).azureListAccounts(orgName, armSessionId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Sets up Azure infrastructure and ESC environments using OAuth credentials
+     * @summary AzureSetup
+     * @param {string} orgName The organization name
+     * @param {AzureSetupRequest} [azureSetupRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public azureSetup(orgName: string, azureSetupRequest?: AzureSetupRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).azureSetup(orgName, azureSetupRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
+     * @summary CheckEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {boolean} [showSecrets] Whether to show secret values in plaintext
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public checkEnvironment(orgName: string, projectName: string, envName: string, showSecrets?: boolean, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).checkEnvironment(orgName, projectName, envName, showSecrets, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Checks a Pulumi ESC environment definition for errors without applying changes. This validates the YAML definition including imports, provider configurations, function invocations (fn::open, fn::secret, etc.), and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. The response includes any diagnostics or validation errors found in the environment definition. Supports optimistic concurrency control via ETag headers.
+     * @summary CheckEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} version The revision version number
+     * @param {boolean} [showSecrets] Whether to show secret values in plaintext
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public checkEnvironmentEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, showSecrets?: boolean, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).checkEnvironmentEscEnvironmentsVersions(orgName, projectName, envName, version, showSecrets, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Checks a raw YAML environment definition for errors without creating or modifying any environment. The YAML definition is provided in the request body and validated for correctness, including imports, provider configurations, function invocations, and interpolation expressions. When the showSecrets query parameter is set to true, secret values are returned in plaintext in the response. This is useful for validating environment definitions before applying them.
+     * @summary CheckYAML
+     * @param {string} orgName The organization name
      * @param {string} body Environment Yaml content
+     * @param {boolean} [showSecrets] Whether to show secret values in plaintext
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public checkEnvironmentYaml(orgName: string, body: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).checkEnvironmentYaml(orgName, body, options).then((request) => request(this.axios, this.basePath));
+    public checkEnvironmentYaml(orgName: string, body: string, showSecrets?: boolean, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).checkEnvironmentYaml(orgName, body, showSecrets, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * Clones an environment
-     * @summary Clones an environment
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {CloneEnvironment} cloneEnvironment Clone environment
+     * Creates a duplicate of a Pulumi ESC environment in a new project and/or under a new name. The request body specifies the destination project and environment name, along with options to control what is preserved during the clone: preserveAccess retains permission settings, preserveHistory retains the full revision history, preserveEnvironmentTags retains environment-level tags, and preserveRevisionTags retains version-specific tags. Environments cannot be renamed directly, so cloning is the mechanism for moving or renaming environments.
+     * @summary CloneEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {CloneEnvironmentRequest} [cloneEnvironmentRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironment: CloneEnvironment, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).cloneEnvironment(orgName, projectName, envName, cloneEnvironment, options).then((request) => request(this.axios, this.basePath));
+    public cloneEnvironment(orgName: string, projectName: string, envName: string, cloneEnvironmentRequest?: CloneEnvironmentRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).cloneEnvironment(orgName, projectName, envName, cloneEnvironmentRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * Creates an environment in the given org with the given name.
-     * @summary Create a new environment
-     * @param {string} orgName Organization name
-     * @param {CreateEnvironment} createEnvironment Create Environment
+     * Completes OAuth flow by exchanging authorization code for access token
+     * @summary CompleteOAuth
+     * @param {string} orgName The organization name
+     * @param {CompleteOAuthRequest} [completeOAuthRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public createEnvironment(orgName: string, createEnvironment: CreateEnvironment, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).createEnvironment(orgName, createEnvironment, options).then((request) => request(this.axios, this.basePath));
+    public completeOAuth(orgName: string, completeOAuthRequest?: CompleteOAuthRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).completeOAuth(orgName, completeOAuthRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * Create environment revision tag
-     * @summary Create environment revision tag
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {CreateEnvironmentRevisionTag} createEnvironmentRevisionTag Create environment revision tag
+     * Creates a new Pulumi ESC (Environments, Secrets, and Configuration) environment within the specified organization. The request body must include the project name and the environment name. Environment names must be unique within a project and may only contain alphanumeric characters, hyphens, underscores, and periods. The newly created environment starts with an empty YAML definition that can be updated via the UpdateEnvironment endpoint.
+     * @summary CreateEnvironment
+     * @param {string} orgName The organization name
+     * @param {CreateEnvironmentRequest} [createEnvironmentRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public createEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, createEnvironmentRevisionTag: CreateEnvironmentRevisionTag, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).createEnvironmentRevisionTag(orgName, projectName, envName, createEnvironmentRevisionTag, options).then((request) => request(this.axios, this.basePath));
+    public createEnvironment(orgName: string, createEnvironmentRequest?: CreateEnvironmentRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).createEnvironment(orgName, createEnvironmentRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * Create environment tag
-     * @summary Create environment tag
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {CreateEnvironmentTag} createEnvironmentTag Create environment tag
+     * Creates a new draft change request for a Pulumi ESC environment. Drafts allow proposing changes to an environment definition that can be reviewed and approved before being applied. This is part of the approvals workflow for environments. Returns a ChangeRequestRef containing the draft identifier. Requires the Approvals feature to be enabled for the organization.
+     * @summary CreateEnvironmentDraft
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public createEnvironmentTag(orgName: string, projectName: string, envName: string, createEnvironmentTag: CreateEnvironmentTag, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).createEnvironmentTag(orgName, projectName, envName, createEnvironmentTag, options).then((request) => request(this.axios, this.basePath));
+    public createEnvironmentDraft(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).createEnvironmentDraft(orgName, projectName, envName, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * Reads the definition for the given environment with static secrets in plaintext
-     * @summary Reads the definition for the given environment with static secrets in plaintext
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
+     * Creates a new revision tag for a Pulumi ESC environment. Revision tags are named references that point to specific revision numbers, similar to Git tags. They allow pinning a stable reference to a known-good version of an environment. Tagged versions can be used in imports and Pulumi stack configuration (e.g., myproject/env@prod) to ensure stable references unaffected by subsequent changes. The built-in \'latest\' tag always points to the most recent revision.
+     * @summary CreateRevisionTag
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {CreateEnvironmentRevisionTagRequest} [createEnvironmentRevisionTagRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public createEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, createEnvironmentRevisionTagRequest?: CreateEnvironmentRevisionTagRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).createEnvironmentRevisionTag(orgName, projectName, envName, createEnvironmentRevisionTagRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Creates a new scheduled action for a Pulumi ESC environment. Schedules can be used to automate recurring operations on environments, such as secret rotation. The request body specifies the schedule timing and the action to perform. Returns the created ScheduledAction on success. Requires the secret rotation feature to be enabled for the organization.
+     * @summary CreateEnvironmentSchedule
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {CreateEnvironmentScheduleRequest} [createEnvironmentScheduleRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public createEnvironmentSchedule(orgName: string, projectName: string, envName: string, createEnvironmentScheduleRequest?: CreateEnvironmentScheduleRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).createEnvironmentSchedule(orgName, projectName, envName, createEnvironmentScheduleRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Adds a new user-defined tag to a Pulumi ESC environment. Tags are key-value pairs that provide contextual metadata for organizing and searching environments (e.g., region=us-east-1, team=platform). The tag name and value are provided in the request body. Returns the created EnvironmentTag on success. Returns 409 if a tag with the same name already exists on the environment.
+     * @summary CreateEnvironmentTag
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {CreateEnvironmentTagRequest} [createEnvironmentTagRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public createEnvironmentTag(orgName: string, projectName: string, envName: string, createEnvironmentTagRequest?: CreateEnvironmentTagRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).createEnvironmentTag(orgName, projectName, envName, createEnvironmentTagRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Creates an open request for a Pulumi ESC environment that has gated opens enabled. When an environment has open gates configured, opening the environment requires an approval workflow. This endpoint initiates that process by creating an open request, and also creates corresponding open requests for each imported environment that has open gates. Requires the Approvals feature to be enabled for the organization. Returns 400 if the environment does not have gated opens.
+     * @summary CreateOpenEnvironmentRequest
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {CreateEnvironmentOpenRequest} [createEnvironmentOpenRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public createOpenEnvironmentRequest(orgName: string, projectName: string, envName: string, createEnvironmentOpenRequest?: CreateEnvironmentOpenRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).createOpenEnvironmentRequest(orgName, projectName, envName, createEnvironmentOpenRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Creates a new webhook for a Pulumi ESC environment. Webhooks allow external services to be notified when environment events occur, such as updates or opens. The request body specifies the webhook configuration including the destination URL, event filters, and format. Returns 400 if the organization name in the request body does not match the URL path parameter. Returns 409 if a webhook with the same name already exists.
+     * @summary CreateWebhook
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {Webhook} [webhook] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public createWebhook(orgName: string, projectName: string, envName: string, webhook?: Webhook, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).createWebhook(orgName, projectName, envName, webhook, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Reads the YAML definition for a Pulumi ESC environment with all static secrets decrypted and shown in plaintext. Unlike the standard ReadEnvironment endpoint which returns secrets in their encrypted form, this endpoint resolves fn::secret values to their plaintext representations. The response is returned in application/x-yaml format. This does not resolve dynamic provider values (fn::open); use OpenEnvironment for full resolution. Requires environment open permission.
+     * @summary DecryptEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3065,11 +9522,41 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Delete an environment
-     * @summary Delete an environment
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
+     * Reads the YAML definition for a Pulumi ESC environment with all static secrets decrypted and shown in plaintext. Unlike the standard ReadEnvironment endpoint which returns secrets in their encrypted form, this endpoint resolves fn::secret values to their plaintext representations. The response is returned in application/x-yaml format. This does not resolve dynamic provider values (fn::open); use OpenEnvironment for full resolution. Requires environment open permission.
+     * @summary DecryptEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} version The revision version number
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public decryptEnvironmentEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).decryptEnvironmentEscEnvironmentsVersions(orgName, projectName, envName, version, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Decrypts encrypted secret values in a Pulumi ESC environment definition. Takes an environment definition containing encrypted secrets and returns the same definition with those values decrypted to plaintext. This is useful for inspecting or migrating environment definitions that contain fn::secret values. Requires environment open permission. Returns 413 if the request content exceeds the maximum allowed size.
+     * @summary DecryptEnvironmentSecrets
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {DecryptEnvironmentSecretsRequest} [decryptEnvironmentSecretsRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public decryptEnvironmentSecrets(orgName: string, projectName: string, envName: string, decryptEnvironmentSecretsRequest?: DecryptEnvironmentSecretsRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).decryptEnvironmentSecrets(orgName, projectName, envName, decryptEnvironmentSecretsRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Permanently deletes a Pulumi ESC environment and all of its revision history, tags, and associated configuration. This operation is blocked if deletion protection is enabled on the environment (see PatchEnvironmentSettings). Enterprise and Business Critical edition organizations may be able to restore deleted environments within a retention window. Returns 409 if the environment is deletion-protected or has been modified since it was last read.
+     * @summary DeleteEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3079,12 +9566,12 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Delete environment revision tag
-     * @summary Delete environment revision tag
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} tagName Tag name
+     * Deletes a named revision tag from a Pulumi ESC environment. The tag is identified by its name in the URL path. After deletion, any imports or stack configurations referencing this tag will fail to resolve. The built-in \'latest\' tag cannot be deleted. Returns 204 on success with no response body.
+     * @summary DeleteRevisionTag
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} tagName The revision tag name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3094,12 +9581,27 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Delete environment tag
-     * @summary Delete environment tag
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} tagName Tag name
+     * Permanently deletes a scheduled action from a Pulumi ESC environment. This removes the schedule and cancels any future executions. The schedule is identified by its scheduleID. Requires the secret rotation feature to be enabled for the organization.
+     * @summary DeleteEnvironmentSchedule
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} scheduleID The schedule ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public deleteEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).deleteEnvironmentSchedule(orgName, projectName, envName, scheduleID, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Removes a user-defined tag from a Pulumi ESC environment. The tag is identified by its name in the URL path. Returns 204 on success with no response body. Returns 404 if the tag does not exist on the environment.
+     * @summary DeleteEnvironmentTag
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} tagName The environment tag name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3109,11 +9611,67 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Read an environment
-     * @summary Read an environment
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
+     * Deletes a webhook from a Pulumi ESC environment. The webhook is identified by its name in the URL path. After deletion, the external service will no longer receive notifications for environment events. Returns 204 on success with no response body.
+     * @summary DeleteWebhook
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} hookName The webhook name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public deleteWebhook(orgName: string, projectName: string, envName: string, hookName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).deleteWebhook(orgName, projectName, envName, hookName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Encrypts plaintext secret values in a Pulumi ESC environment definition. Takes an environment definition containing plaintext secrets and returns the same definition with those values encrypted using the environment\'s encryption key. This is useful for preparing environment definitions that contain sensitive values before storing or updating them. Returns 413 if the request content exceeds the maximum allowed size.
+     * @summary EncryptEnvironmentSecrets
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {EncryptEnvironmentSecretsRequest} [encryptEnvironmentSecretsRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public encryptEnvironmentSecrets(orgName: string, projectName: string, envName: string, encryptEnvironmentSecretsRequest?: EncryptEnvironmentSecretsRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).encryptEnvironmentSecrets(orgName, projectName, envName, encryptEnvironmentSecretsRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Lists GCP projects accessible with the provided oauth session
+     * @summary GCPListAccounts
+     * @param {string} orgName The organization name
+     * @param {string} [oauthSessionId] The OAuth session identifier
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public gCPListAccounts(orgName: string, oauthSessionId?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).gCPListAccounts(orgName, oauthSessionId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Sets up GCP infrastructure using OAuth credentials
+     * @summary GCPSetup
+     * @param {string} orgName The organization name
+     * @param {GCPSetupRequest} [gCPSetupRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public gCPSetup(orgName: string, gCPSetupRequest?: GCPSetupRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).gCPSetup(orgName, gCPSetupRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns the YAML definition of a Pulumi ESC environment. The response is in application/x-yaml format and includes the environment\'s imports, values, provider configurations, and function invocations. Secrets remain in their encrypted form (use DecryptEnvironment to see plaintext secrets, or OpenEnvironment to fully resolve all dynamic values). When a version path parameter is provided, returns the definition for that specific revision.
+     * @summary ReadEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3123,12 +9681,12 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Read an environmentat a specific revision or tag
-     * @summary Read an environment at a specific version
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} version Revision or tag
+     * Returns the YAML definition of a Pulumi ESC environment. The response is in application/x-yaml format and includes the environment\'s imports, values, provider configurations, and function invocations. Secrets remain in their encrypted form (use DecryptEnvironment to see plaintext secrets, or OpenEnvironment to fully resolve all dynamic values). When a version path parameter is provided, returns the definition for that specific revision.
+     * @summary ReadEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} version The revision version number
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3138,11 +9696,11 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Returns the ETag for the given environment if it exists.
-     * @summary Return an Environment ETag
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
+     * Returns the ETag header for a Pulumi ESC environment without returning the full definition body. This is used for lightweight existence checks and for obtaining the current ETag value for optimistic concurrency control. The ETag should be included in subsequent update requests via the If-Match header to prevent concurrent modification conflicts. Returns 404 if the environment does not exist.
+     * @summary HeadEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3152,12 +9710,26 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Read environment revision tag
-     * @summary Read environment revision tag
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} tagName Tag name
+     * Returns metadata for a Pulumi ESC environment, including the calling user\'s effective permission level (read, open, write, admin), creation and modification timestamps, the environment\'s project, and other administrative information. This is useful for determining what actions the current user can perform on the environment before attempting those operations.
+     * @summary GetEnvironmentMetadata
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public getEnvironmentMetadata(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).getEnvironmentMetadata(orgName, projectName, envName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns the details of a specific revision tag for a Pulumi ESC environment. The tag is identified by its name in the URL path. The response includes the tag name and the revision number it points to. Returns 404 if the tag does not exist.
+     * @summary ReadRevisionTag
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} tagName The revision tag name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3167,12 +9739,26 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Read an environment tag
-     * @summary Read an environment tag
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} tagName Tag name
+     * Returns the current settings for a Pulumi ESC environment, including whether deletion protection is enabled. Deletion protection prevents the environment from being deleted until the setting is explicitly disabled. Settings can be modified via the PatchEnvironmentSettings endpoint.
+     * @summary GetEnvironmentSettings
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public getEnvironmentSettings(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).getEnvironmentSettings(orgName, projectName, envName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a single user-defined tag for a Pulumi ESC environment, identified by the tag name in the URL path. The response includes the tag name, value, and metadata. Returns 404 if the tag does not exist on the environment.
+     * @summary GetEnvironmentTag
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} tagName The environment tag name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3182,13 +9768,142 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * List environment revisions
-     * @summary List environment revisions
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} [after] after tag for pagination
-     * @param {number} [count] limit of tags to return
+     * Returns the JSON schema for a Pulumi ESC provider. Providers are integrations that dynamically retrieve configuration and secrets from external sources such as AWS, Azure, Google Cloud, HashiCorp Vault, and others via fn::open. The schema describes the provider\'s input parameters, output structure, and configuration options. The provider is identified by name in the URL path.
+     * @summary GetProviderSchema
+     * @param {string} providerName The provider name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public getProviderSchema(providerName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).getProviderSchema(providerName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns the JSON schema for a Pulumi ESC secret rotator. Rotators are integrations that automatically rotate secrets in external systems via fn::rotate. The schema describes the rotator\'s input parameters, output structure, and configuration options. The rotator is identified by name in the URL path.
+     * @summary GetRotatorSchema
+     * @param {string} rotatorName The rotator name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public getRotatorSchema(rotatorName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).getRotatorSchema(rotatorName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns the configuration and status of a single webhook for a Pulumi ESC environment. The webhook is identified by its name in the URL path. The response includes the webhook\'s destination URL, event filters, format, and active status. Returns 404 if the webhook does not exist.
+     * @summary GetWebhook
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} hookName The webhook name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public getWebhook(orgName: string, projectName: string, envName: string, hookName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).getWebhook(orgName, projectName, envName, hookName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a list of recent delivery attempts for a specific webhook on a Pulumi ESC environment. Each delivery record includes the HTTP status code, response body, timestamp, and whether the delivery was successful. This is useful for debugging webhook integration issues and verifying that events are being received.
+     * @summary GetWebhookDeliveries
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} hookName The webhook name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public getWebhookDeliveries(orgName: string, projectName: string, envName: string, hookName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).getWebhookDeliveries(orgName, projectName, envName, hookName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Initiates OAuth flow for a given cloud provider
+     * @summary InitiateOAuth
+     * @param {string} orgName The organization name
+     * @param {InitiateOAuthRequest} [initiateOAuthRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public initiateOAuth(orgName: string, initiateOAuthRequest?: InitiateOAuthRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).initiateOAuth(orgName, initiateOAuthRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a map of all unique tag names and their distinct values across all Pulumi ESC environments in the organization. The response is a map where each key is a tag name and the value is a list of all distinct values for that tag across all environments. This is useful for building tag-based filtering or discovery UIs.
+     * @summary ListAllEnvironmentTags
+     * @param {string} orgName The organization name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listAllEnvironmentTags(orgName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listAllEnvironmentTags(orgName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a paginated list of soft-deleted Pulumi ESC environments within an organization that are still within the retention window and eligible for restoration. Use the continuationToken query parameter for pagination. Deleted environments can be restored via the RestoreEnvironment endpoint.
+     * @summary ListDeletedEnvironments
+     * @param {string} orgName The organization name
+     * @param {string} [continuationToken] Continuation token for paginated results
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listDeletedEnvironments(orgName: string, continuationToken?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listDeletedEnvironments(orgName, continuationToken, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+     * @summary ListEnvironmentReferrers
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {boolean} [allRevisions] Whether to include all revisions
+     * @param {string} [continuationToken] Continuation token for paginated results
+     * @param {number} [count] Maximum number of results to return
+     * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listEnvironmentReferrers(orgName: string, projectName: string, envName: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironmentReferrers(orgName, projectName, envName, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a paginated list of entities that reference a Pulumi ESC environment, including other environments that import it and Pulumi stacks that use it in their configuration. The count parameter limits results (range 1-500). Set allRevisions to true to include references across all revisions, and latestStackVersionOnly to true to return only the latest stack version for each referring stack. Use continuationToken for pagination.
+     * @summary ListEnvironmentReferrers
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} version The revision version number
+     * @param {boolean} [allRevisions] Whether to include all revisions
+     * @param {string} [continuationToken] Continuation token for paginated results
+     * @param {number} [count] Maximum number of results to return
+     * @param {boolean} [latestStackVersionOnly] Whether to return only the latest stack version
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listEnvironmentReferrersEscEnvironmentsVersions(orgName: string, projectName: string, envName: string, version: string, allRevisions?: boolean, continuationToken?: string, count?: number, latestStackVersionOnly?: boolean, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironmentReferrersEscEnvironmentsVersions(orgName, projectName, envName, version, allRevisions, continuationToken, count, latestStackVersionOnly, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a paginated list of revision tags for a Pulumi ESC environment. Revision tags are named references pointing to specific revision numbers (e.g., \'latest\', \'prod\', \'stable\'). They can be used in environment imports and Pulumi stack configuration to pin to a specific version. Use the after parameter for cursor-based pagination and count to limit results.
+     * @summary ListRevisionTags
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} [after] Only return results after this value
+     * @param {number} [count] Maximum number of results to return
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3198,13 +9913,13 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * List environment revisions
-     * @summary List environment revisions
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {number} [before] before revision number for pagination
-     * @param {number} [count] limit of revisions to return
+     * Returns a paginated list of revisions for a Pulumi ESC environment. Each revision represents an immutable snapshot of the environment definition created when the environment is updated. The response includes revision numbers, timestamps, and the identity of the user who made each change. Use the before parameter to fetch revisions before a specific revision number, and count to limit the number of results returned.
+     * @summary ListEnvironmentRevisions
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {number} [before] Only return results before this revision
+     * @param {number} [count] Maximum number of results to return
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3214,41 +9929,154 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * List environment tags
-     * @summary List environment tags
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} [after] after tag for pagination
-     * @param {number} [count] limit of tags to return
+     * Returns all scheduled actions configured for a Pulumi ESC environment. Schedules automate recurring operations such as secret rotation. The response includes each schedule\'s timing configuration, action type, and current status (active or paused).
+     * @summary ListEnvironmentSchedule
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public listEnvironmentTags(orgName: string, projectName: string, envName: string, after?: string, count?: number, options?: RawAxiosRequestConfig) {
+    public listEnvironmentSchedule(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironmentSchedule(orgName, projectName, envName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns the execution history for a specific scheduled action on a Pulumi ESC environment. Each history entry includes the execution timestamp, outcome (success or failure), and any error details. This is useful for monitoring the reliability of automated operations like secret rotation.
+     * @summary ListEnvironmentScheduleHistory
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} scheduleID The schedule ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listEnvironmentScheduleHistory(orgName: string, projectName: string, envName: string, scheduleID: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironmentScheduleHistory(orgName, projectName, envName, scheduleID, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns the secret rotation history for a Pulumi ESC environment. Each entry represents a rotation event where secrets defined with fn::rotate were cycled to new values in their external systems. The response includes timestamps, outcomes, and the rotators involved. Requires the secret rotation feature to be enabled for the organization.
+     * @summary ListEnvironmentSecretRotationHistory
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listEnvironmentSecretRotationHistory(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironmentSecretRotationHistory(orgName, projectName, envName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a paginated list of user-defined tags for a Pulumi ESC environment. Tags are key-value pairs used for organizing and categorizing environments. Use the after parameter for cursor-based pagination and count to limit the number of results returned.
+     * @summary ListEnvironmentTags
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {number} [after] Only return results after this value
+     * @param {number} [count] Maximum number of results to return
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listEnvironmentTags(orgName: string, projectName: string, envName: string, after?: number, count?: number, options?: RawAxiosRequestConfig) {
         return EscApiFp(this.configuration).listEnvironmentTags(orgName, projectName, envName, after, count, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * List environments in the organization available to the current user
-     * @summary List environments in the organization
-     * @param {string} orgName Organization name
-     * @param {string} [continuationToken] continuation Token from previous query to fetch next page of results
+     * Returns a paginated list of all Pulumi ESC environments within a specific organization. Each entry includes the project, environment name, and creation/modification timestamps. Results are scoped to the organization specified in the URL path. Use continuationToken for pagination through large result sets.
+     * @summary ListOrgEnvironments
+     * @param {string} orgName The organization name
+     * @param {string} [continuationToken] Continuation token for paginated results
+     * @param {number} [maxResults] Maximum number of results for pagination
+     * @param {string} [roleID] The custom role to use for listing environments
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public listEnvironments(orgName: string, continuationToken?: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).listEnvironments(orgName, continuationToken, options).then((request) => request(this.axios, this.basePath));
+    public listEnvironments(orgName: string, continuationToken?: string, maxResults?: number, roleID?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironments(orgName, continuationToken, maxResults, roleID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * Opens a session the given environment for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
-     * @summary Open an environment session
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+     * Returns a paginated list of all Pulumi ESC environments accessible to the authenticated user across all organizations they belong to. Each entry includes the organization, project, environment name, and creation/modification timestamps. Use the organization query parameter to filter results to a specific organization. Use continuationToken for pagination through large result sets.
+     * @summary ListEnvironments
+     * @param {string} [continuationToken] Continuation token for paginated results
+     * @param {string} [organization] Filter results to this organization name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listEnvironmentsEsc(continuationToken?: string, organization?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listEnvironmentsEsc(continuationToken, organization, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a list of all available Pulumi ESC providers. Providers are integrations that dynamically retrieve configuration and secrets from external sources (e.g., AWS, Azure, Google Cloud, HashiCorp Vault, 1Password) via the fn::open function in environment definitions. Optionally filter by organization using the orgName query parameter to see only providers available to that organization.
+     * @summary ListProviders
+     * @param {string} [orgName] Filter providers available to this organization
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listProviders(orgName?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listProviders(orgName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a paginated list of revision tags for a Pulumi ESC environment. Revision tags are named references pointing to specific revision numbers (e.g., \'latest\', \'prod\', \'stable\'). They can be used in environment imports and Pulumi stack configuration to pin to a specific version. Use the after parameter for cursor-based pagination and count to limit results.
+     * @summary ListRevisionTags
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} version The revision version number
+     * @param {string} [after] Only return results after this value
+     * @param {number} [count] Maximum number of results to return
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listRevisionTagsEscEnvironmentsVersions2(orgName: string, projectName: string, envName: string, version: string, after?: string, count?: number, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listRevisionTagsEscEnvironmentsVersions2(orgName, projectName, envName, version, after, count, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a list of all available Pulumi ESC secret rotators. Rotators are integrations that automatically rotate secrets in external systems via the fn::rotate function in environment definitions. Optionally filter by organization using the orgName query parameter to see only rotators available to that organization.
+     * @summary ListRotators
+     * @param {string} [orgName] Filter rotators available to this organization
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listRotators(orgName?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listRotators(orgName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns a list of all webhooks configured for a Pulumi ESC environment. Each webhook entry includes its name, destination URL, event filters, format, and active status. Webhooks enable external services to be notified of environment events such as updates and opens.
+     * @summary ListWebhooks
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public listWebhooks(orgName: string, projectName: string, envName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).listWebhooks(orgName, projectName, envName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Opens a Pulumi ESC environment, fully resolving all dynamic values, provider integrations (fn::open), interpolation expressions, and secrets. This initiates an access session that evaluates the complete environment definition including all imports. The duration parameter specifies how long the session remains valid using Go duration format (e.g., \'2h45m\', \'300ms\'). Returns an OpenEnvironmentResponse containing the session ID and any diagnostics. Use the session ID with ReadOpenEnvironment to retrieve the resolved values.
+     * @summary OpenEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3258,13 +10086,13 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Opens a session the given environment at a specific version for the indicated duration. This returns a session id that can be used to then read values. The default duration is 1 hour.
-     * @summary Open an environment session at a specific version
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} version Revision or tag
-     * @param {string} [duration] open duration - A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as “300ms”, “1.5h” or “2h45m”. Valid time units are “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”.
+     * Opens a Pulumi ESC environment, fully resolving all dynamic values, provider integrations (fn::open), interpolation expressions, and secrets. This initiates an access session that evaluates the complete environment definition including all imports. The duration parameter specifies how long the session remains valid using Go duration format (e.g., \'2h45m\', \'300ms\'). Returns an OpenEnvironmentResponse containing the session ID and any diagnostics. Use the session ID with ReadOpenEnvironment to retrieve the resolved values.
+     * @summary OpenEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} version The revision version number
+     * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
@@ -3274,27 +10102,148 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Reads and decrypts secrets including retrieving dynamic secrets from providers.
-     * @summary Read an open environment
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} openSessionID Open session ID returned from environment open
+     * Opens a draft version of a Pulumi ESC environment, fully resolving all dynamic values, provider integrations, and secrets for the proposed changes. The duration parameter specifies how long the open session remains valid using Go duration format (e.g., \'2h\', \'30m\'). An optional revision parameter can target a specific base revision. Returns an OpenEnvironmentResponse containing the session ID for subsequent reads. Requires the Approvals feature.
+     * @summary OpenEnvironmentDraft
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} changeRequestID The change request ID
+     * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
+     * @param {number} [revision] The environment revision number to target
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public readOpenEnvironment(orgName: string, projectName: string, envName: string, openSessionID: string, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).readOpenEnvironment(orgName, projectName, envName, openSessionID, options).then((request) => request(this.axios, this.basePath));
+    public openEnvironmentDraft(orgName: string, projectName: string, envName: string, changeRequestID: string, duration?: string, revision?: number, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).openEnvironmentDraft(orgName, projectName, envName, changeRequestID, duration, revision, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * Reads and decrypts secrets including retrieving dynamic secrets from providers.
-     * @summary Read an open environment
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} openSessionID Open session ID returned from environment open
+     * Opens an anonymous Pulumi ESC environment from a raw YAML definition provided in the request body, fully resolving all dynamic values, provider integrations, and secrets. Unlike OpenEnvironment, this does not require a pre-existing environment to be stored. The duration parameter specifies how long the session remains valid using Go duration format. Returns an OpenEnvironmentResponse containing the session ID. Use the session ID with ReadAnonymousOpenEnvironment to retrieve the resolved values.
+     * @summary OpenYAML
+     * @param {string} orgName The organization name
+     * @param {string} [duration] The session duration, using Go time units: ns, us, ms, s, m, h (e.g. \&#39;2h\&#39;)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public openYAML(orgName: string, duration?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).openYAML(orgName, duration, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates settings for a Pulumi ESC environment using a partial update (patch) approach. Currently supports toggling deletion protection via the deletionProtected field. When deletionProtected is set to true, the environment cannot be deleted until the setting is explicitly disabled. Only the fields included in the request body are modified; omitted fields retain their current values.
+     * @summary PatchEnvironmentSettings
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {PatchEnvironmentSettingsRequest} [patchEnvironmentSettingsRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public patchEnvironmentSettings(orgName: string, projectName: string, envName: string, patchEnvironmentSettingsRequest?: PatchEnvironmentSettingsRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).patchEnvironmentSettings(orgName, projectName, envName, patchEnvironmentSettingsRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Pauses a scheduled action on a Pulumi ESC environment, preventing any future executions until the schedule is resumed. The schedule\'s configuration is preserved and can be reactivated via the ResumeEnvironmentSchedule endpoint. This is useful for temporarily disabling automated operations like secret rotation without deleting the schedule.
+     * @summary PauseEnvironmentSchedule
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} scheduleID The schedule ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public pauseEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).pauseEnvironmentSchedule(orgName, projectName, envName, scheduleID, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Sends a test ping event to a webhook on a Pulumi ESC environment to verify that the webhook endpoint is reachable and functioning correctly. This bypasses the normal message queue and issues the request directly to the webhook URL. Returns the WebhookDelivery record containing the HTTP status code and response from the target endpoint.
+     * @summary PingWebhook
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} hookName The webhook name
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public pingWebhook(orgName: string, projectName: string, envName: string, hookName: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).pingWebhook(orgName, projectName, envName, hookName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Reads the fully resolved values from an anonymous open environment session that was created via the OpenYAML endpoint. The openSessionID path parameter must match a valid, non-expired session. The optional property query parameter accepts a dot-separated path to retrieve a specific nested value instead of the entire resolved environment (e.g., \'aws.credentials.accessKeyId\'). The response contains the resolved configuration values with secrets decrypted.
+     * @summary ReadAnonymousOpenEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} openSessionID The session ID returned from the open environment operation
+     * @param {string} [property] A dot-separated path to a specific property to retrieve from the environment
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public readAnonymousOpenEnvironment(orgName: string, openSessionID: string, property?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).readAnonymousOpenEnvironment(orgName, openSessionID, property, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Reads the YAML definition for a draft version of a Pulumi ESC environment. Drafts are proposed changes created as part of the approvals workflow. The draft is identified by the changeRequestID path parameter. An optional revision query parameter can target a specific base revision. The response is returned in application/x-yaml format. Requires the Approvals feature to be enabled.
+     * @summary ReadEnvironmentDraft
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} changeRequestID The change request ID
+     * @param {number} [revision] The environment revision number to target
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public readEnvironmentDraft(orgName: string, projectName: string, envName: string, changeRequestID: string, revision?: number, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).readEnvironmentDraft(orgName, projectName, envName, changeRequestID, revision, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns the details of a specific scheduled action for a Pulumi ESC environment. The schedule is identified by the scheduleID path parameter. The response includes the schedule\'s timing configuration (cron expression or one-time), the action to perform, and the current status (active or paused).
+     * @summary ReadEnvironmentSchedule
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} scheduleID The schedule ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public readEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).readEnvironmentSchedule(orgName, projectName, envName, scheduleID, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Reads the fully resolved values from an open environment session that was created via the OpenEnvironment endpoint. The openSessionID path parameter must match a valid, non-expired session. The optional property query parameter accepts a dot-separated path to retrieve a specific nested value instead of the entire resolved environment (e.g., \'aws.credentials.accessKeyId\'). The response contains all resolved configuration values with secrets decrypted and provider-sourced values fully evaluated.
+     * @summary ReadOpenEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} openSessionID The session ID returned from the open environment operation
+     * @param {string} [property] A dot-separated path to a specific property to retrieve from the environment
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public readOpenEnvironment(orgName: string, projectName: string, envName: string, openSessionID: string, property?: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).readOpenEnvironment(orgName, projectName, envName, openSessionID, property, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Reads and decrypts a specific property including retrieving dynamic secrets from providers.
+     * @summary Read an open environment property
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} openSessionID The session ID returned from the open environment operation
      * @param {string} property Path to a specific property using Pulumi path syntax https://www.pulumi.com/docs/concepts/config/#structured-configuration
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3305,50 +10254,204 @@ export class EscApi extends BaseAPI {
     }
 
     /**
-     * Update environment revision tag
-     * @summary Update environment revision tag
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} tagName Tag name
-     * @param {UpdateEnvironmentRevisionTag} updateEnvironmentRevisionTag Update environment revision tag
+     * Reads the details of an open environment request that was created as part of the gated opens approval workflow. The request is identified by the changeRequestID path parameter. The response includes the request\'s status, the requesting user, and approval details. An optional revision query parameter can target a specific environment revision. Requires the Approvals feature to be enabled.
+     * @summary ReadOpenEnvironmentRequest
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} changeRequestID The change request ID
+     * @param {number} [revision] The environment revision number to target
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public updateEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTag: UpdateEnvironmentRevisionTag, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).updateEnvironmentRevisionTag(orgName, projectName, envName, tagName, updateEnvironmentRevisionTag, options).then((request) => request(this.axios, this.basePath));
+    public readOpenEnvironmentRequest(orgName: string, projectName: string, envName: string, changeRequestID: string, revision?: number, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).readOpenEnvironmentRequest(orgName, projectName, envName, changeRequestID, revision, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * Update an environment tag
-     * @summary Update an environment tag
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} tagName Tag name
-     * @param {UpdateEnvironmentTag} updateEnvironmentTag Update environment tag
+     * Triggers the Pulumi Service to redeliver a specific event to a webhook on a Pulumi ESC environment. This is useful for resending events that the webhook endpoint failed to process on the initial delivery attempt (e.g., due to temporary downtime or errors). The event is identified by its delivery event ID in the URL path. Returns the new WebhookDelivery record for the redelivery.
+     * @summary RedeliverWebhookEvent
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} hookName The webhook name
+     * @param {string} event The webhook delivery event ID to redeliver
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public updateEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTag: UpdateEnvironmentTag, options?: RawAxiosRequestConfig) {
-        return EscApiFp(this.configuration).updateEnvironmentTag(orgName, projectName, envName, tagName, updateEnvironmentTag, options).then((request) => request(this.axios, this.basePath));
+    public redeliverWebhookEvent(orgName: string, projectName: string, envName: string, hookName: string, event: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).redeliverWebhookEvent(orgName, projectName, envName, hookName, event, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * Validates and updates the given environment\'s definition.
-     * @summary Update an existing environment with Yaml file
-     * @param {string} orgName Organization name
-     * @param {string} projectName Project name
-     * @param {string} envName Environment name
-     * @param {string} body Environment Yaml content
+     * Restores a previously deleted Pulumi ESC environment within an organization. The request body specifies the environment to restore by its project and name. The environment must have been deleted within the retention window and not yet permanently purged. Returns 204 on success with no response body. Returns 404 if the deleted environment cannot be found.
+     * @summary RestoreEnvironment
+     * @param {string} orgName The organization name
+     * @param {RestoreEnvironmentRequest} [restoreEnvironmentRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EscApi
      */
-    public updateEnvironmentYaml(orgName: string, projectName: string, envName: string, body: string, options?: RawAxiosRequestConfig) {
+    public restoreEnvironment(orgName: string, restoreEnvironmentRequest?: RestoreEnvironmentRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).restoreEnvironment(orgName, restoreEnvironmentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Resumes a previously paused scheduled action on a Pulumi ESC environment, re-enabling future executions. The schedule will continue from its next scheduled time according to its configured timing (cron expression or one-time schedule). The schedule is identified by the scheduleID path parameter.
+     * @summary ResumeEnvironmentSchedule
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} scheduleID The schedule ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public resumeEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).resumeEnvironmentSchedule(orgName, projectName, envName, scheduleID, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Retracts a specific revision of a Pulumi ESC environment, marking it as withdrawn. A retracted revision remains in the history but is no longer considered a valid version for use. The request body may include a reason for the retraction. The revision is identified by the version path parameter. Returns 204 on success with no response body.
+     * @summary RetractEnvironmentRevision
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} version The revision version number
+     * @param {RetractEnvironmentRevisionRequest} [retractEnvironmentRevisionRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public retractEnvironmentRevision(orgName: string, projectName: string, envName: string, version: string, retractEnvironmentRevisionRequest?: RetractEnvironmentRevisionRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).retractEnvironmentRevision(orgName, projectName, envName, version, retractEnvironmentRevisionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Triggers secret rotation for a Pulumi ESC environment. This evaluates all fn::rotate declarations in the environment definition and rotates the corresponding secrets in their external systems (e.g., rotating database passwords, API keys, or cloud credentials). Requires the secret rotation feature to be enabled for the organization. Returns 409 if the environment has been modified since it was last read.
+     * @summary RotateEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {RotateEnvironmentRequest} [rotateEnvironmentRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public rotateEnvironment(orgName: string, projectName: string, envName: string, rotateEnvironmentRequest?: RotateEnvironmentRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).rotateEnvironment(orgName, projectName, envName, rotateEnvironmentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates the YAML definition of an existing draft change request for a Pulumi ESC environment. The draft is identified by the changeRequestID path parameter. The request body contains the updated YAML definition. Returns a ChangeRequestRef on success. Requires the Approvals feature to be enabled for the organization.
+     * @summary UpdateEnvironmentDraft
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} changeRequestID The change request ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public updateEnvironmentDraft(orgName: string, projectName: string, envName: string, changeRequestID: string, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).updateEnvironmentDraft(orgName, projectName, envName, changeRequestID, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates an existing revision tag for a Pulumi ESC environment to point to a different revision number. The tag is identified by its name in the URL path. The request body specifies the new revision number. This allows advancing or rolling back a named reference (e.g., moving the \'prod\' tag to a newer or older revision). Returns 204 on success with no response body.
+     * @summary UpdateRevisionTag
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} tagName The revision tag name
+     * @param {UpdateEnvironmentRevisionTagRequest} [updateEnvironmentRevisionTagRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public updateEnvironmentRevisionTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentRevisionTagRequest?: UpdateEnvironmentRevisionTagRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).updateEnvironmentRevisionTag(orgName, projectName, envName, tagName, updateEnvironmentRevisionTagRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates the configuration of a scheduled action for a Pulumi ESC environment. The schedule is identified by the scheduleID path parameter. The request body specifies the updated timing and action configuration. Changes take effect for future executions only; any currently running execution is not affected. Returns the updated ScheduledAction on success.
+     * @summary UpdateEnvironmentSchedule
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} scheduleID The schedule ID
+     * @param {CreateEnvironmentScheduleRequest} [createEnvironmentScheduleRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public updateEnvironmentSchedule(orgName: string, projectName: string, envName: string, scheduleID: string, createEnvironmentScheduleRequest?: CreateEnvironmentScheduleRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).updateEnvironmentSchedule(orgName, projectName, envName, scheduleID, createEnvironmentScheduleRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Modifies the value of an existing user-defined tag on a Pulumi ESC environment. The tag is identified by its name in the URL path. The request body contains the new value for the tag. Returns the updated EnvironmentTag on success. Returns 404 if the tag does not exist on the environment.
+     * @summary UpdateEnvironmentTag
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} tagName The environment tag name
+     * @param {UpdateEnvironmentTagRequest} [updateEnvironmentTagRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public updateEnvironmentTag(orgName: string, projectName: string, envName: string, tagName: string, updateEnvironmentTagRequest?: UpdateEnvironmentTagRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).updateEnvironmentTag(orgName, projectName, envName, tagName, updateEnvironmentTagRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Validates and updates the YAML definition of a Pulumi ESC environment. The request body must contain the complete environment definition in application/x-yaml format, including imports, values, provider configurations, and function invocations. Each successful update creates a new immutable revision in the environment\'s version history. Supports optimistic concurrency control via ETag/If-Match headers; returns 409 if the environment has been modified since it was last read.
+     * @summary UpdateEnvironment
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} [body] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public updateEnvironmentYaml(orgName: string, projectName: string, envName: string, body?: string, options?: RawAxiosRequestConfig) {
         return EscApiFp(this.configuration).updateEnvironmentYaml(orgName, projectName, envName, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates an existing open environment request that was created as part of the gated opens approval workflow. The request is identified by the changeRequestID path parameter. The request body contains the updated open request details, such as approval status. Returns a ChangeRequestRef on success. Requires the Approvals feature to be enabled for the organization.
+     * @summary UpdateOpenEnvironmentRequest
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} changeRequestID The change request ID
+     * @param {CreateEnvironmentOpenRequest} [createEnvironmentOpenRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public updateOpenEnvironmentRequest(orgName: string, projectName: string, envName: string, changeRequestID: string, createEnvironmentOpenRequest?: CreateEnvironmentOpenRequest, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).updateOpenEnvironmentRequest(orgName, projectName, envName, changeRequestID, createEnvironmentOpenRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates the configuration of an existing webhook on a Pulumi ESC environment. The webhook is identified by its name in the URL path. The request body contains the updated webhook configuration including destination URL, event filters, format, and active status. Returns the updated WebhookResponse on success. Returns 400 if an invalid format is specified.
+     * @summary UpdateWebhook
+     * @param {string} orgName The organization name
+     * @param {string} projectName The project name
+     * @param {string} envName The environment name
+     * @param {string} hookName The webhook name
+     * @param {Webhook} [webhook] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EscApi
+     */
+    public updateWebhook(orgName: string, projectName: string, envName: string, hookName: string, webhook?: Webhook, options?: RawAxiosRequestConfig) {
+        return EscApiFp(this.configuration).updateWebhook(orgName, projectName, envName, hookName, webhook, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

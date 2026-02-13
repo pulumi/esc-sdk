@@ -1,0 +1,27 @@
+name: Check spec freshness
+
+on:
+  pull_request:
+  schedule:
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          cache-dependency-path: tools/filter-spec/go.sum
+      - name: Fetch and filter spec
+        run: cd tools/filter-spec && go run . -input https://api.pulumi.com/api/openapi/pulumi-spec.json -output ../../sdk/swagger.yaml
+      - name: Check for changes
+        run: |
+          if git diff --quiet sdk/swagger.yaml; then
+            echo "Spec is up to date"
+          else
+            echo "::warning::sdk/swagger.yaml is out of date with the centralized spec"
+            git diff --stat sdk/swagger.yaml
+          fi

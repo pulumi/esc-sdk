@@ -743,7 +743,7 @@ class EscApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '204': "Error",
+            '204': None,
             '400': "Error",
             '401': "Error",
             '404': "Error",
@@ -819,7 +819,7 @@ class EscApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '204': "Error",
+            '204': None,
             '400': "Error",
             '401': "Error",
             '404': "Error",
@@ -895,7 +895,7 @@ class EscApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '204': "Error",
+            '204': None,
             '400': "Error",
             '401': "Error",
             '404': "Error",
@@ -2005,7 +2005,7 @@ class EscApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '204': "Error",
+            '204': None,
             '400': "Error",
             '401': "Error",
             '404': "Error",
@@ -2084,7 +2084,7 @@ class EscApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '204': "Error",
+            '204': None,
             '400': "Error",
             '401': "Error",
             '404': "Error",
@@ -2163,7 +2163,7 @@ class EscApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '204': "Error",
+            '204': None,
             '400': "Error",
             '401': "Error",
             '404': "Error",

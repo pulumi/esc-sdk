@@ -8,7 +8,6 @@ Pulumi ESC allows you to compose and manage hierarchical collections of configur
 API version: 0.1.0
 */
 
-
 #nullable enable
 
 using System;
@@ -843,13 +842,13 @@ namespace Pulumi.Esc.Sdk.Api
     /// <summary>
     /// The <see cref="ICreateEnvironmentApiResponse"/>
     /// </summary>
-    public interface ICreateEnvironmentApiResponse : Pulumi.Esc.Sdk.Client.IApiResponse, IOk<Pulumi.Esc.Sdk.Model.Error?>, IBadRequest<Pulumi.Esc.Sdk.Model.Error?>, IUnauthorized<Pulumi.Esc.Sdk.Model.Error?>, INotFound<Pulumi.Esc.Sdk.Model.Error?>, IConflict<Pulumi.Esc.Sdk.Model.Error?>, IInternalServerError<Pulumi.Esc.Sdk.Model.Error?>, IDefault<Pulumi.Esc.Sdk.Model.Error?>
+    public interface ICreateEnvironmentApiResponse : Pulumi.Esc.Sdk.Client.IApiResponse, IBadRequest<Pulumi.Esc.Sdk.Model.Error?>, IUnauthorized<Pulumi.Esc.Sdk.Model.Error?>, INotFound<Pulumi.Esc.Sdk.Model.Error?>, IConflict<Pulumi.Esc.Sdk.Model.Error?>, IInternalServerError<Pulumi.Esc.Sdk.Model.Error?>, IDefault<Pulumi.Esc.Sdk.Model.Error?>
     {
         /// <summary>
-        /// Returns true if the response is 200 Ok
+        /// Returns true if the response is 204 NoContent
         /// </summary>
         /// <returns></returns>
-        bool IsOk { get; }
+        bool IsNoContent { get; }
 
         /// <summary>
         /// Returns true if the response is 400 BadRequest
@@ -1017,13 +1016,13 @@ namespace Pulumi.Esc.Sdk.Api
     /// <summary>
     /// The <see cref="IDeleteEnvironmentApiResponse"/>
     /// </summary>
-    public interface IDeleteEnvironmentApiResponse : Pulumi.Esc.Sdk.Client.IApiResponse, IOk<Pulumi.Esc.Sdk.Model.Error?>, IBadRequest<Pulumi.Esc.Sdk.Model.Error?>, IUnauthorized<Pulumi.Esc.Sdk.Model.Error?>, INotFound<Pulumi.Esc.Sdk.Model.Error?>, IInternalServerError<Pulumi.Esc.Sdk.Model.Error?>, IDefault<Pulumi.Esc.Sdk.Model.Error?>
+    public interface IDeleteEnvironmentApiResponse : Pulumi.Esc.Sdk.Client.IApiResponse, IBadRequest<Pulumi.Esc.Sdk.Model.Error?>, IUnauthorized<Pulumi.Esc.Sdk.Model.Error?>, INotFound<Pulumi.Esc.Sdk.Model.Error?>, IInternalServerError<Pulumi.Esc.Sdk.Model.Error?>, IDefault<Pulumi.Esc.Sdk.Model.Error?>
     {
         /// <summary>
-        /// Returns true if the response is 200 Ok
+        /// Returns true if the response is 204 NoContent
         /// </summary>
         /// <returns></returns>
-        bool IsOk { get; }
+        bool IsNoContent { get; }
 
         /// <summary>
         /// Returns true if the response is 400 BadRequest
@@ -3383,42 +3382,10 @@ namespace Pulumi.Esc.Sdk.Api
             partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
-            /// Returns true if the response is 200 Ok
+            /// Returns true if the response is 204 NoContent
             /// </summary>
             /// <returns></returns>
-            public bool IsOk => 200 == (int)StatusCode;
-
-            /// <summary>
-            /// Deserializes the response if the response is 200 Ok
-            /// </summary>
-            /// <returns></returns>
-            public Pulumi.Esc.Sdk.Model.Error? Ok()
-            {
-                // This logic may be modified with the AsModel.mustache template
-                return IsOk
-                    ? System.Text.Json.JsonSerializer.Deserialize<Pulumi.Esc.Sdk.Model.Error>(RawContent, _jsonSerializerOptions)
-                    : null;
-            }
-
-            /// <summary>
-            /// Returns true if the response is 200 Ok and the deserialized response is not null
-            /// </summary>
-            /// <param name="result"></param>
-            /// <returns></returns>
-            public bool TryOk([NotNullWhen(true)]out Pulumi.Esc.Sdk.Model.Error? result)
-            {
-                result = null;
-
-                try
-                {
-                    result = Ok();
-                } catch (Exception e)
-                {
-                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
-                }
-
-                return result != null;
-            }
+            public bool IsNoContent => 204 == (int)StatusCode;
 
             /// <summary>
             /// Returns true if the response is 400 BadRequest
@@ -3614,7 +3581,7 @@ namespace Pulumi.Esc.Sdk.Api
             /// Returns true if the response is the default response type
             /// </summary>
             /// <returns></returns>
-            public bool IsDefault => !IsOk && !IsBadRequest && !IsUnauthorized && !IsNotFound && !IsConflict && !IsInternalServerError;
+            public bool IsDefault => !IsNoContent && !IsBadRequest && !IsUnauthorized && !IsNotFound && !IsConflict && !IsInternalServerError;
 
             /// <summary>
             /// Deserializes the response if the response is 0 Default
@@ -5192,42 +5159,10 @@ namespace Pulumi.Esc.Sdk.Api
             partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
-            /// Returns true if the response is 200 Ok
+            /// Returns true if the response is 204 NoContent
             /// </summary>
             /// <returns></returns>
-            public bool IsOk => 200 == (int)StatusCode;
-
-            /// <summary>
-            /// Deserializes the response if the response is 200 Ok
-            /// </summary>
-            /// <returns></returns>
-            public Pulumi.Esc.Sdk.Model.Error? Ok()
-            {
-                // This logic may be modified with the AsModel.mustache template
-                return IsOk
-                    ? System.Text.Json.JsonSerializer.Deserialize<Pulumi.Esc.Sdk.Model.Error>(RawContent, _jsonSerializerOptions)
-                    : null;
-            }
-
-            /// <summary>
-            /// Returns true if the response is 200 Ok and the deserialized response is not null
-            /// </summary>
-            /// <param name="result"></param>
-            /// <returns></returns>
-            public bool TryOk([NotNullWhen(true)]out Pulumi.Esc.Sdk.Model.Error? result)
-            {
-                result = null;
-
-                try
-                {
-                    result = Ok();
-                } catch (Exception e)
-                {
-                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
-                }
-
-                return result != null;
-            }
+            public bool IsNoContent => 204 == (int)StatusCode;
 
             /// <summary>
             /// Returns true if the response is 400 BadRequest
@@ -5385,7 +5320,7 @@ namespace Pulumi.Esc.Sdk.Api
             /// Returns true if the response is the default response type
             /// </summary>
             /// <returns></returns>
-            public bool IsDefault => !IsOk && !IsBadRequest && !IsUnauthorized && !IsNotFound && !IsInternalServerError;
+            public bool IsDefault => !IsNoContent && !IsBadRequest && !IsUnauthorized && !IsNotFound && !IsInternalServerError;
 
             /// <summary>
             /// Deserializes the response if the response is 0 Default

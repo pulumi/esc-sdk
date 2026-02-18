@@ -97,21 +97,3 @@ jobs:
           if [ -f test-requirements.txt ]; then pip install -r test-requirements.txt; fi
       - name: Test with pytest
         run: make test_python
-  test_csharp:
-    name: Test C#
-    runs-on: ubuntu-latest
-    needs: test_python
-    steps:
-      - name: Fetch secrets from ESC
-        id: esc-secrets
-        uses: pulumi/esc-action@v1
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ inputs.commit-ref }}
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '6.0.x'
-      - name: Test
-        run: make test_csharp

@@ -39,7 +39,3 @@ sdk/typescript/node_modules/*
 sdk/typescript/bin/*
 sdk/python/bin/*
 sdk/python/go.mod
-
-# C# / .NET
-sdk/csharp/**/bin/
-sdk/csharp/**/obj/

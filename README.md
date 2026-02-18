@@ -75,4 +75,4 @@ var definition = await client.GetEnvironmentAsync("myorg", "myproject", "dev");
 * [TypeScript/JavaScript](https://www.pulumi.com/docs/reference/pkg/nodejs/pulumi/esc-sdk/)
 * [Python](https://www.pulumi.com/docs/reference/pkg/python/pulumi_esc_sdk/)
 * [Go](https://pkg.go.dev/github.com/pulumi/esc-sdk/sdk/go)
-* C# — API docs coming soon
+* C# docs coming soon

@@ -2,6 +2,7 @@
 
 - Add C# SDK with generated client, hand-written wrappers (EscClient, EscAuth, ValueMapper,
   EnvironmentDefinitionSerializer), and xUnit tests
+  [#118](https://github.com/pulumi/esc-sdk/pull/118)
 
 - Support proxy environment variables in Python SDK
   [#108](https://github.com/pulumi/esc-sdk/pull/108)

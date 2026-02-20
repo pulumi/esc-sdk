@@ -30,7 +30,7 @@ namespace Pulumi.Esc.Sdk.Client
         /// <summary>
         /// The User-Agent header value sent with every request.
         /// </summary>
-        public const string UserAgent = "esc-sdk/csharp/0.13.0-dev.0";
+        public const string UserAgent = "esc-sdk/csharp/0.13.1-dev.0";
 
         private readonly IServiceCollection _services;
         private readonly JsonSerializerOptions _jsonOptions = CreateDefaultJsonOptions();

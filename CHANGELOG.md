@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.13.0
+
+### Improvements
+
+- Add C# SDK with generated client, hand-written wrappers (EscClient, EscAuth, ValueMapper,
+  EnvironmentDefinitionSerializer), and xUnit tests
+  [#118](https://github.com/pulumi/esc-sdk/pull/118)
+
 ## 0.12.4
 
 ### Improvements

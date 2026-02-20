@@ -15,7 +15,7 @@
  */
 
 
-const userAgent = 'esc-sdk/ts/0.13.0-dev.0';
+const userAgent = 'esc-sdk/ts/0.13.1-dev.0';
 
 import type { Configuration } from './configuration';
 import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';

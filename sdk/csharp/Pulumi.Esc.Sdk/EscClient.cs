@@ -138,7 +138,7 @@ namespace Pulumi.Esc.Sdk
                 {
                     client.BaseAddress = new Uri(apiUrl);
                     client.DefaultRequestHeaders.Add("X-Pulumi-Source", "esc-sdk");
-                    client.DefaultRequestHeaders.UserAgent.ParseAdd(HostConfiguration.UserAgent);
+                    client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", HostConfiguration.UserAgent);
                 });
             });
 

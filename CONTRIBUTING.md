@@ -64,9 +64,7 @@ To release a new version of the provider, follow steps below:
      ```
      git checkout main
      git pull
-     git tag sdk/vX.XX.XX
      git tag vX.XX.XX
      git push origin vX.XX.XX
-     git push origin sdk/vX.XX.XX
      ```
 - Github Actions will automatically build, test and then publish the new release to all the various package managers

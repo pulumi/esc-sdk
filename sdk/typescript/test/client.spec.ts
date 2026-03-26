@@ -49,10 +49,16 @@ describe("ESC", async () => {
         const cloneName = `${name}-clone`;
         await assert.doesNotReject(client.cloneEnvironment(PULUMI_ORG, PROJECT_NAME, name, cloneProject, cloneName));
 
-        const resp = await client.listEnvironments(PULUMI_ORG);
-        assert.notEqual(resp, undefined);
-        assert(resp!.environments!.some((e) => e.project == PROJECT_NAME && e.name === name));
-        assert(resp!.environments!.some((e) => e.project == cloneProject && e.name === cloneName));
+        let allEnvs: esc.OrgEnvironment[] = [];
+        let token: string | undefined = undefined;
+        do {
+            const page = await client.listEnvironments(PULUMI_ORG, token);
+            assert.notEqual(page, undefined);
+            allEnvs = allEnvs.concat(page!.environments ?? []);
+            token = page?.nextToken;
+        } while (token !== undefined && token !== "");
+        assert(allEnvs.some((e) => e.project == PROJECT_NAME && e.name === name));
+        assert(allEnvs.some((e) => e.project == cloneProject && e.name === cloneName));
 
         let openEmptyEnv = await client.openAndReadEnvironment(PULUMI_ORG, PROJECT_NAME, name);
         assert.deepEqual(openEmptyEnv?.environment, {});

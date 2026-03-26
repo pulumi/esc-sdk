@@ -1,3 +1,5 @@
+// Copyright 2026, Pulumi Corporation.  All rights reserved.
+
 using Pulumi.Esc.Sdk;
 using Pulumi.Esc.Sdk.Model;
 

@@ -1,3 +1,5 @@
+// Copyright 2026, Pulumi Corporation.  All rights reserved.
+
 using Microsoft.Extensions.Configuration;
 
 namespace Pulumi.Esc.Extensions.Configuration;

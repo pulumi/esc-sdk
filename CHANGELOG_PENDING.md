@@ -4,6 +4,10 @@
   EnvironmentDefinitionSerializer), and xUnit tests
   [#118](https://github.com/pulumi/esc-sdk/pull/118)
 
+- Add `Pulumi.Esc.Extensions.Configuration` library integrating Pulumi ESC with .NET's
+  `Microsoft.Extensions.Configuration` system
+  [#128](https://github.com/pulumi/esc-sdk/pull/128)
+
 - Support proxy environment variables in Python SDK
   [#108](https://github.com/pulumi/esc-sdk/pull/108)
 

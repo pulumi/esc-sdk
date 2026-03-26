@@ -67,11 +67,20 @@ func Test_EscClient(t *testing.T) {
 			require.Nil(t, err)
 		})
 
-		envs, err := apiClient.ListEnvironments(auth, orgName, nil)
-		require.Nil(t, err)
+		var allEnvs []OrgEnvironment
+		var token *string
+		for {
+			page, err := apiClient.ListEnvironments(auth, orgName, token)
+			require.Nil(t, err)
+			allEnvs = append(allEnvs, page.Environments...)
+			token = page.NextToken
+			if token == nil || *token == "" {
+				break
+			}
+		}
 
-		requireFindEnvironment(t, envs, PROJECT_NAME, envName)
-		requireFindEnvironment(t, envs, cloneProject, cloneName)
+		requireFindEnvironment(t, allEnvs, PROJECT_NAME, envName)
+		requireFindEnvironment(t, allEnvs, cloneProject, cloneName)
 
 		_, values, err := apiClient.OpenAndReadEnvironment(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
@@ -253,9 +262,9 @@ func assertEnvDef(t *testing.T, env *EnvironmentDefinition, baseEnvName string) 
 	require.Equal(t, "${foo}", envVariables["FOO"])
 }
 
-func requireFindEnvironment(t *testing.T, envs *OrgEnvironments, findProject, findName string) {
+func requireFindEnvironment(t *testing.T, envs []OrgEnvironment, findProject, findName string) {
 	found := false
-	for _, env := range envs.Environments {
+	for _, env := range envs {
 		if env.Project == findProject && env.Name == findName {
 			found = true
 		}

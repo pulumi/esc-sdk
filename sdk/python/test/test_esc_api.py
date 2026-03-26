@@ -38,9 +38,16 @@ class TestEscApi(unittest.TestCase):
         cloneName = f"{self.envName}-clone"
         self.client.clone_environment(self.orgName, PROJECT_NAME, self.envName, cloneProject, cloneName)
 
-        envs = self.client.list_environments(self.orgName)
-        self.assertFindEnv(envs, PROJECT_NAME, self.envName)
-        self.assertFindEnv(envs, cloneProject, cloneName)
+        all_envs = []
+        token = None
+        while True:
+            page = self.client.list_environments(self.orgName, token)
+            all_envs.extend(page.environments)
+            token = page.next_token
+            if not token:
+                break
+        self.assertFindEnv(all_envs, PROJECT_NAME, self.envName)
+        self.assertFindEnv(all_envs, cloneProject, cloneName)
 
         _, _, yaml = self.client.open_and_read_environment(self.orgName, PROJECT_NAME, self.envName)
         self.assertEqual(yaml, "{}\n")
@@ -176,9 +183,8 @@ values:
         self.assertEqual(env.values.environment_variables["FOO"], "${foo}")
 
     def assertFindEnv(self, envs, findProject, findName):
-        self.assertIsNotNone(envs)
-        self.assertGreater(len(envs.environments), 0)
-        for env in envs.environments:
+        self.assertGreater(len(envs), 0)
+        for env in envs:
             if env.project == findProject and env.name == findName:
                 return
 

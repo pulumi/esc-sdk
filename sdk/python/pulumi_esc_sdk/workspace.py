@@ -55,7 +55,7 @@ def get_esc_current_account_name() -> Optional[str]:
     except KeyError:
         return None
     except Exception as e:
-        print(f"An unexpected error occured: {e}")
+        print(f"An unexpected error occurred: {e}")
         return None
 
 def get_stored_credentials() -> Credentials:
@@ -71,9 +71,9 @@ def get_stored_credentials() -> Credentials:
     except FileNotFoundError:
         return None
     except Exception as e:
-        print(f"An unexpected error occured: {e}")
+        print(f"An unexpected error occurred: {e}")
         return None
-    
+
 def get_current_account() -> tuple[Account, str]:
     """
     Gets current account values from credentials file.

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bug Fixes
+
+- Fix typo (occured -> occurred) in Python SDK workspace error messages
+  [#131](https://github.com/pulumi/esc-sdk/pull/131)
+
 ## 0.13.0
 
 ### Improvements

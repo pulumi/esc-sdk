@@ -67,8 +67,7 @@ func Test_EscClient(t *testing.T) {
 			require.Nil(t, err)
 		})
 
-		envs, err := apiClient.ListEnvironments(auth, orgName, nil)
-		require.Nil(t, err)
+		envs := listAllEnvironments(t, apiClient, auth, orgName)
 
 		requireFindEnvironment(t, envs, PROJECT_NAME, envName)
 		requireFindEnvironment(t, envs, cloneProject, cloneName)
@@ -253,9 +252,26 @@ func assertEnvDef(t *testing.T, env *EnvironmentDefinition, baseEnvName string) 
 	require.Equal(t, "${foo}", envVariables["FOO"])
 }
 
-func requireFindEnvironment(t *testing.T, envs *OrgEnvironments, findProject, findName string) {
+func listAllEnvironments(t *testing.T, apiClient *EscClient, auth context.Context, orgName string) []OrgEnvironment {
+	var all []OrgEnvironment
+	var continuationToken *string
+	for {
+		envs, err := apiClient.ListEnvironments(auth, orgName, continuationToken)
+		require.Nil(t, err)
+
+		all = append(all, envs.Environments...)
+
+		continuationToken = envs.NextToken
+		if continuationToken == nil || *continuationToken == "" {
+			break
+		}
+	}
+	return all
+}
+
+func requireFindEnvironment(t *testing.T, envs []OrgEnvironment, findProject, findName string) {
 	found := false
-	for _, env := range envs.Environments {
+	for _, env := range envs {
 		if env.Project == findProject && env.Name == findName {
 			found = true
 		}

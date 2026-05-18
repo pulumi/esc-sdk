@@ -63,10 +63,9 @@ namespace Pulumi.Esc.Sdk.Tests
                 await _client.CreateEnvironmentAsync(_orgName, ProjectName, envName);
                 await _client.CloneEnvironmentAsync(_orgName, ProjectName, envName, CloneProjectName, cloneName);
 
-                // -- List environments --
-                var envs = await ListAllEnvironmentsAsync();
-                AssertFindEnvironment(envs, ProjectName, envName);
-                AssertFindEnvironment(envs, CloneProjectName, cloneName);
+                // -- Verify created and cloned environments are queryable --
+                await _client.GetEnvironmentAsync(_orgName, ProjectName, envName);
+                await _client.GetEnvironmentAsync(_orgName, CloneProjectName, cloneName);
 
                 // -- Open and read (empty env should have no values) --
                 var (_, emptyValues) = await _client.OpenAndReadEnvironmentAsync(_orgName, ProjectName, envName);
@@ -250,27 +249,6 @@ values:
             {
                 // Ignore — cleanup is best-effort
             }
-        }
-
-        private static void AssertFindEnvironment(IEnumerable<OrgEnvironment> envs, string project, string name)
-        {
-            Assert.Contains(envs, e => e.Project == project && e.Name == name);
-        }
-
-        private async Task<List<OrgEnvironment>> ListAllEnvironmentsAsync()
-        {
-            var all = new List<OrgEnvironment>();
-            string? continuationToken = null;
-            do
-            {
-                var envs = await _client.ListEnvironmentsAsync(_orgName, continuationToken);
-                if (envs.Environments != null)
-                {
-                    all.AddRange(envs.Environments);
-                }
-                continuationToken = envs.NextToken;
-            } while (!string.IsNullOrEmpty(continuationToken));
-            return all;
         }
 
         private async Task RemoveAllCSharpTestEnvsAsync()

@@ -67,10 +67,10 @@ func Test_EscClient(t *testing.T) {
 			require.Nil(t, err)
 		})
 
-		envs := listAllEnvironments(t, apiClient, auth, orgName)
-
-		requireFindEnvironment(t, envs, PROJECT_NAME, envName)
-		requireFindEnvironment(t, envs, cloneProject, cloneName)
+		_, _, err = apiClient.GetEnvironment(auth, orgName, PROJECT_NAME, envName)
+		require.Nil(t, err, "created env should exist")
+		_, _, err = apiClient.GetEnvironment(auth, orgName, cloneProject, cloneName)
+		require.Nil(t, err, "cloned env should exist")
 
 		_, values, err := apiClient.OpenAndReadEnvironment(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
@@ -250,34 +250,6 @@ func assertEnvDef(t *testing.T, env *EnvironmentDefinition, baseEnvName string) 
 	require.NotNil(t, env.Values.EnvironmentVariables)
 	envVariables := *env.Values.EnvironmentVariables
 	require.Equal(t, "${foo}", envVariables["FOO"])
-}
-
-func listAllEnvironments(t *testing.T, apiClient *EscClient, auth context.Context, orgName string) []OrgEnvironment {
-	var all []OrgEnvironment
-	var continuationToken *string
-	for {
-		envs, err := apiClient.ListEnvironments(auth, orgName, continuationToken)
-		require.Nil(t, err)
-
-		all = append(all, envs.Environments...)
-
-		continuationToken = envs.NextToken
-		if continuationToken == nil || *continuationToken == "" {
-			break
-		}
-	}
-	return all
-}
-
-func requireFindEnvironment(t *testing.T, envs []OrgEnvironment, findProject, findName string) {
-	found := false
-	for _, env := range envs {
-		if env.Project == findProject && env.Name == findName {
-			found = true
-		}
-	}
-
-	require.True(t, found)
 }
 
 func removeAllGoTestEnvs(t *testing.T, apiClient *EscClient, auth context.Context, orgName string) {

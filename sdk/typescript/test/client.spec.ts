@@ -49,9 +49,14 @@ describe("ESC", async () => {
         const cloneName = `${name}-clone`;
         await assert.doesNotReject(client.cloneEnvironment(PULUMI_ORG, PROJECT_NAME, name, cloneProject, cloneName));
 
-        const allEnvs = await listAllEnvironments(client, PULUMI_ORG);
-        assert(allEnvs.some((e) => e.project == PROJECT_NAME && e.name === name));
-        assert(allEnvs.some((e) => e.project == cloneProject && e.name === cloneName));
+        await assert.doesNotReject(
+            client.getEnvironment(PULUMI_ORG, PROJECT_NAME, name),
+            "created env should exist",
+        );
+        await assert.doesNotReject(
+            client.getEnvironment(PULUMI_ORG, cloneProject, cloneName),
+            "cloned env should exist",
+        );
 
         let openEmptyEnv = await client.openAndReadEnvironment(PULUMI_ORG, PROJECT_NAME, name);
         assert.deepEqual(openEmptyEnv?.environment, {});
@@ -214,20 +219,6 @@ function assertEnvDef(env: esc.EnvironmentDefinitionResponse, baseEnvName: strin
     assert.deepEqual(env.definition?.values?.my_array, [1, 2, 3]);
     assert.equal(env.definition?.values?.pulumiConfig?.foo, "${foo}");
     assert.equal(env.definition?.values?.environmentVariables?.FOO, "${foo}");
-}
-
-async function listAllEnvironments(client: esc.EscApi, orgName: string): Promise<esc.OrgEnvironment[]> {
-    const all: esc.OrgEnvironment[] = [];
-    let continuationToken: string | undefined = undefined;
-    do {
-        const orgs: esc.OrgEnvironments | undefined = await client.listEnvironments(orgName, continuationToken);
-        assert.notEqual(orgs, undefined);
-        if (orgs?.environments) {
-            all.push(...orgs.environments);
-        }
-        continuationToken = orgs?.nextToken;
-    } while (continuationToken !== undefined && continuationToken !== "");
-    return all;
 }
 
 async function removeAllTestEnvs(client: esc.EscApi, orgName: string): Promise<any> {

@@ -38,7 +38,7 @@ class TestEscApi(unittest.TestCase):
         cloneName = f"{self.envName}-clone"
         self.client.clone_environment(self.orgName, PROJECT_NAME, self.envName, cloneProject, cloneName)
 
-        envs = self.client.list_environments(self.orgName)
+        envs = self.list_all_environments()
         self.assertFindEnv(envs, PROJECT_NAME, self.envName)
         self.assertFindEnv(envs, cloneProject, cloneName)
 
@@ -177,12 +177,24 @@ values:
 
     def assertFindEnv(self, envs, findProject, findName):
         self.assertIsNotNone(envs)
-        self.assertGreater(len(envs.environments), 0)
-        for env in envs.environments:
+        self.assertGreater(len(envs), 0)
+        for env in envs:
             if env.project == findProject and env.name == findName:
                 return
 
         self.fail(f"Environment {findProject}/{findName} not found")
+
+    def list_all_environments(self):
+        all_envs = []
+        continuationToken = None
+        while True:
+            envs = self.client.list_environments(self.orgName, continuationToken)
+            if envs.environments:
+                all_envs.extend(envs.environments)
+            continuationToken = envs.next_token
+            if continuationToken is None or continuationToken == "":
+                break
+        return all_envs
 
     def remove_all_python_test_envs(self) -> None:
         continuationToken = None

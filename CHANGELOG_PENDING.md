@@ -12,4 +12,7 @@
 - Fix Python default_client return type annotation
   [#109](https://github.com/pulumi/esc-sdk/pull/109)
 
+- Paginate `listEnvironments` in Go and TypeScript integration tests to avoid flakes when the shared test org exceeds one page
+  [#134](https://github.com/pulumi/esc-sdk/pull/134)
+
 ### Breaking changes

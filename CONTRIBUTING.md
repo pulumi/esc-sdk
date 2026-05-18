@@ -68,3 +68,4 @@ To release a new version of the provider, follow steps below:
      git push origin vX.XX.XX
      ```
 - Github Actions will automatically build, test and then publish the new release to all the various package managers
+- For stable releases, Github Actions will also dispatch the TypeScript, Python, and .NET SDK reference-doc workflows in `pulumi/docs`, which open auto-merged PRs against the docs site. Dispatch failures post to `#docs-ops` in Slack.

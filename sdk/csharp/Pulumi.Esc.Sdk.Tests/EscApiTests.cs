@@ -64,7 +64,7 @@ namespace Pulumi.Esc.Sdk.Tests
                 await _client.CloneEnvironmentAsync(_orgName, ProjectName, envName, CloneProjectName, cloneName);
 
                 // -- List environments --
-                var envs = await _client.ListEnvironmentsAsync(_orgName);
+                var envs = await ListAllEnvironmentsAsync();
                 AssertFindEnvironment(envs, ProjectName, envName);
                 AssertFindEnvironment(envs, CloneProjectName, cloneName);
 
@@ -252,9 +252,25 @@ values:
             }
         }
 
-        private static void AssertFindEnvironment(OrgEnvironments envs, string project, string name)
+        private static void AssertFindEnvironment(IEnumerable<OrgEnvironment> envs, string project, string name)
         {
-            Assert.Contains(envs.Environments!, e => e.Project == project && e.Name == name);
+            Assert.Contains(envs, e => e.Project == project && e.Name == name);
+        }
+
+        private async Task<List<OrgEnvironment>> ListAllEnvironmentsAsync()
+        {
+            var all = new List<OrgEnvironment>();
+            string? continuationToken = null;
+            do
+            {
+                var envs = await _client.ListEnvironmentsAsync(_orgName, continuationToken);
+                if (envs.Environments != null)
+                {
+                    all.AddRange(envs.Environments);
+                }
+                continuationToken = envs.NextToken;
+            } while (!string.IsNullOrEmpty(continuationToken));
+            return all;
         }
 
         private async Task RemoveAllCSharpTestEnvsAsync()

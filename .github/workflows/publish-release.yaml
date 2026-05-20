@@ -12,7 +12,7 @@ env:
   ESC_ACTION_OIDC_ORGANIZATION: pulumi
   ESC_ACTION_OIDC_REQUESTED_TOKEN_TYPE: urn:pulumi:token-type:access_token:organization
   ESC_ACTION_ENVIRONMENT: imports/github-secrets
-  ESC_ACTION_EXPORT_ENVIRONMENT_VARIABLES: GITHUB_TOKEN=PULUMI_BOT_TOKEN
+  ESC_ACTION_EXPORT_ENVIRONMENT_VARIABLES: GITHUB_TOKEN=PULUMI_BOT_TOKEN,SLACK_WEBHOOK_URL
 
 jobs:
   lint:
@@ -55,3 +55,56 @@ jobs:
         with:
           name: ${{ steps.extract_tag.outputs.tag_name }}
           body_path: CHANGELOG_PENDING.md
+
+  dispatch-docs:
+    needs: [publish-sdks]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch secrets from ESC
+        id: esc-secrets
+        uses: pulumi/esc-action@v1
+
+      - name: Compute version
+        id: ver
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch TypeScript docs build
+        id: dispatch-ts
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ steps.esc-secrets.outputs.PULUMI_BOT_TOKEN }}
+        run: |
+          gh workflow run pulumi-esc-sdk-typescript-docs.yml \
+            --repo pulumi/docs --ref master \
+            -f version=${{ steps.ver.outputs.version }}
+
+      - name: Dispatch Python docs build
+        id: dispatch-py
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ steps.esc-secrets.outputs.PULUMI_BOT_TOKEN }}
+        run: |
+          gh workflow run pulumi-esc-sdk-python-docs.yml \
+            --repo pulumi/docs --ref master \
+            -f version=${{ steps.ver.outputs.version }}
+
+      - name: Dispatch .NET docs build
+        id: dispatch-dotnet
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ steps.esc-secrets.outputs.PULUMI_BOT_TOKEN }}
+        run: |
+          gh workflow run pulumi-esc-sdk-dotnet-docs.yml \
+            --repo pulumi/docs --ref master \
+            -f version=${{ steps.ver.outputs.version }}
+
+      - name: Notify docs-ops on dispatch failure
+        if: steps.dispatch-ts.outcome == 'failure' || steps.dispatch-py.outcome == 'failure' || steps.dispatch-dotnet.outcome == 'failure'
+        uses: docker://sholung/action-slack-notify:v2.3.0
+        env:
+          SLACK_CHANNEL: docs-ops
+          SLACK_COLOR: "#F54242"
+          SLACK_MESSAGE: "pulumi/esc-sdk ${{ github.ref_name }} release: failed to dispatch one or more pulumi/docs SDK doc workflows (ts=${{ steps.dispatch-ts.outcome }}, py=${{ steps.dispatch-py.outcome }}, dotnet=${{ steps.dispatch-dotnet.outcome }}). See ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          SLACK_USERNAME: docsbot
+          SLACK_WEBHOOK: ${{ steps.esc-secrets.outputs.SLACK_WEBHOOK_URL }}
+          SLACK_ICON: https://www.pulumi.com/logos/brand/avatar-on-white.png

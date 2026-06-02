@@ -1,6 +1,6 @@
-permissions: write-all # Equivalent to default permissions plus id-token: write
-name: Run Acceptance Tests from PR
-
+name: PR
+permissions:
+  contents: read
 on:
   pull_request:
     paths-ignore:
@@ -8,10 +8,17 @@ on:
       - 'CHANGELOG_PENDING.md'
 
 jobs:
-  lint:
-    uses: ./.github/workflows/stage-lint.yml
-  test:
-    uses: ./.github/workflows/stage-test.yml
-    with:
-      enable-coverage: true
-    secrets: inherit
+  go:
+    name: Build & test Go re-export shim
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.x'
+      - name: Build
+        run: cd sdk && go build ./...
+      - name: Vet
+        run: cd sdk && go vet ./...
+      - name: Test
+        run: cd sdk && go test ./...

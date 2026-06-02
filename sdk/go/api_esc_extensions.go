@@ -10,7 +10,7 @@ import (
 	"net/url"
 	"os"
 
-	esc_workspace "github.com/pulumi/esc/cmd/esc/cli/workspace"
+	esc_workspace "github.com/pulumi/pulumi/pkg/v3/cmd/esc/cli/workspace"
 	"gopkg.in/ghodss/yaml.v1"
 )
 

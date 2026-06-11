@@ -3,9 +3,8 @@
 import assert from "assert";
 import { DefaultClient } from "index";
 import { after, before, describe, it } from "node:test";
-import path from "path";
 
-describe("ESC", async () => {
+describe("ESC default credentials", async () => {
     let tokenBefore: string | undefined
     let backendBefore: string | undefined
     let homeBefore: string | undefined
@@ -16,6 +15,7 @@ describe("ESC", async () => {
         homeBefore = process.env.PULUMI_HOME;
         delete process.env.PULUMI_ACCESS_TOKEN;
         delete process.env.PULUMI_BACKEND_URL;
+        delete process.env.PULUMI_HOME;
     });
 
     after(async () => {
@@ -25,28 +25,27 @@ describe("ESC", async () => {
     });
 
     it("test no creds at all", async () => {
-        process.env.PULUMI_HOME = "/not_real_dir";
+        delete process.env.PULUMI_ACCESS_TOKEN;
+        delete process.env.PULUMI_BACKEND_URL;
         let client = DefaultClient();
         assert.equal(client.config.basePath, undefined);
         assert.equal(client.config.accessToken, undefined);
     });
 
-    it("test just pulumi creds", async () => {
-        process.env.PULUMI_HOME = path.dirname(process.cwd()) + "/test/test_pulumi_home";
+    it("test reads credentials from environment variables", async () => {
+        process.env.PULUMI_ACCESS_TOKEN = "pul-fake-token-env";
+        process.env.PULUMI_BACKEND_URL = "https://api.moolumi.com";
         let client = DefaultClient();
         assert.equal(client.config.basePath, "https://api.moolumi.com/api/esc");
-        assert.equal(client.config.accessToken, "pul-fake-token-moo");
+        assert.equal(client.config.accessToken, "pul-fake-token-env");
     });
 
-    it("test pulumi creds with esc", async () => {
-        process.env.PULUMI_HOME = path.dirname(process.cwd()) + "/test/test_pulumi_home_esc";
-        let client = DefaultClient();
-        assert.equal(client.config.basePath, "https://api.boolumi.com/api/esc");
-        assert.equal(client.config.accessToken, "pul-fake-token-boo");
-    });
-
-    it("test pulumi creds bad format", async () => {
-        process.env.PULUMI_HOME = path.dirname(process.cwd()) + "/test/test_pulumi_home_bad_format";
+    it("test CLI credentials on disk are ignored", async () => {
+        // Even with a populated Pulumi home, default credentials must not be
+        // read from disk; only environment variables are honored.
+        delete process.env.PULUMI_ACCESS_TOKEN;
+        delete process.env.PULUMI_BACKEND_URL;
+        process.env.PULUMI_HOME = "/some/pulumi/home";
         let client = DefaultClient();
         assert.equal(client.config.basePath, undefined);
         assert.equal(client.config.accessToken, undefined);

@@ -23,7 +23,6 @@ import {
 } from "./raw/index";
 import * as yaml from "js-yaml";
 import { AxiosError } from "axios";
-import { getCurrentAccount } from "./workspace";
 
 export {
     Configuration,
@@ -829,12 +828,6 @@ export function DefaultConfiguration(config?: Configuration): Configuration {
     }
     config.accessToken ??= process.env.PULUMI_ACCESS_TOKEN;
     config.basePath ??= process.env.PULUMI_BACKEND_URL;
-
-    if (!config.accessToken || !config.basePath) {
-        const {account, backendUrl} = getCurrentAccount();
-        config.accessToken ??= account?.accessToken;
-        config.basePath ??= backendUrl;
-    }
 
     return config;
 }

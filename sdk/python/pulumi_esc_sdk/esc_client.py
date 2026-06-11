@@ -12,7 +12,6 @@ import inspect
 import yaml
 import os
 from urllib.parse import urlparse, urlunparse
-import pulumi_esc_sdk.workspace as workspace
 
 
 class EscClient:
@@ -483,18 +482,15 @@ def default_config(host=None,
                    ssl_ca_cert=None,
                    ) -> configuration.Configuration:
     """Creates default configuration for EscClient.
+
+    Credentials are read from the PULUMI_ACCESS_TOKEN and PULUMI_BACKEND_URL
+    environment variables. They can also be passed explicitly via the
+    access_token and host arguments.
     """
     if not access_token:
-        access_token = os.getenv("PULUMI_ACCESS_TOKEN")
+        access_token = os.getenv("PULUMI_ACCESS_TOKEN") or None
     if not host:
-        host = os.getenv("PULUMI_BACKEND_URL")
-
-    if not access_token or not host:
-        account, backend_url = workspace.get_current_account()
-        if not access_token:
-            access_token = account.accessToken if account else None
-        if not host:
-            host = backend_url
+        host = os.getenv("PULUMI_BACKEND_URL") or None
 
     return configuration.Configuration(
         host=host,

@@ -21,6 +21,14 @@
   `PULUMI_BACKEND_URL`) or pass credentials explicitly.
   [#137](https://github.com/pulumi/esc-sdk/pull/137)
 
+## 0.13.1
+
+### Bug Fixes
+
+- Include the SDK version in the C# user-agent string
+  [#124](https://github.com/pulumi/esc-sdk/pull/124)
+  [#126](https://github.com/pulumi/esc-sdk/pull/126)
+
 ## 0.13.0
 
 ### Improvements

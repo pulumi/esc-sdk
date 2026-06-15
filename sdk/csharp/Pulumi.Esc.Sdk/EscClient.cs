@@ -108,10 +108,9 @@ namespace Pulumi.Esc.Sdk
 
         /// <summary>
         /// Creates a new <see cref="EscClient"/> with default configuration.
-        /// The access token is resolved from <c>PULUMI_ACCESS_TOKEN</c> environment variable
-        /// or the currently logged-in Pulumi CLI / ESC CLI account.
-        /// The backend URL is resolved from <c>PULUMI_BACKEND_URL</c> environment variable
-        /// or the currently logged-in account URL.
+        /// The access token is resolved from the <c>PULUMI_ACCESS_TOKEN</c> environment variable.
+        /// The backend URL is resolved from the <c>PULUMI_BACKEND_URL</c> environment variable,
+        /// defaulting to https://api.pulumi.com when it is not set.
         /// </summary>
         /// <returns>A new <see cref="EscClient"/> instance.</returns>
         /// <exception cref="InvalidOperationException">If no access token can be found.</exception>

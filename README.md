@@ -56,7 +56,7 @@ dotnet add package Pulumi.Esc.Sdk
 ```csharp
 using Pulumi.Esc.Sdk;
 
-// Create a client using default credentials (PULUMI_ACCESS_TOKEN or CLI login)
+// Create a client using default credentials (PULUMI_ACCESS_TOKEN / PULUMI_BACKEND_URL env vars)
 using var client = EscClient.CreateDefault();
 
 // Or provide credentials explicitly

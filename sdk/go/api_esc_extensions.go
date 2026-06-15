@@ -10,9 +10,12 @@ import (
 	"net/url"
 	"os"
 
-	esc_workspace "github.com/pulumi/esc/cmd/esc/cli/workspace"
 	"gopkg.in/ghodss/yaml.v1"
 )
+
+// DefaultPulumiAPIURL is the default Pulumi Cloud backend URL used when
+// PULUMI_BACKEND_URL is not set.
+const DefaultPulumiAPIURL = "https://api.pulumi.com"
 
 // EscClient is a client for the ESC API.
 // It wraps the raw API client and provides a more convenient interface.
@@ -33,9 +36,8 @@ func NewAuthContext(accessToken string) context.Context {
 	)
 }
 
-// DefaultAuthContext creates a new context, retrieving Pulumi Access Token
-// from either PULUMI_ACCESS_TOKEN environment variable, or from
-// currently logged in account in Pulumi CLI or ESC CLI
+// NewDefaultAuthContext creates a new context, retrieving the Pulumi Access Token
+// from the PULUMI_ACCESS_TOKEN environment variable.
 //
 // This context can be used to authenticate requests to the ESC API.
 func NewDefaultAuthContext() (context.Context, error) {
@@ -44,17 +46,8 @@ func NewDefaultAuthContext() (context.Context, error) {
 		return NewAuthContext(accessToken), nil
 	}
 
-	workspace := esc_workspace.New(esc_workspace.DefaultFS(), esc_workspace.DefaultPulumiWorkspace())
-	account, _, err := workspace.GetCurrentAccount(false)
-	if err != nil {
-		return nil, fmt.Errorf("Error grabbing current account: %w", err)
-	}
-	if account != nil {
-		return NewAuthContext(account.AccessToken), nil
-	}
-
-	return nil, errors.New("no default Pulumi Access Token found. Either export PULUMI_ACCESS_TOKEN " +
-		"environment variable, or login using Pulumi or ESC CLI")
+	return nil, errors.New("no Pulumi Access Token found. Export the PULUMI_ACCESS_TOKEN " +
+		"environment variable")
 }
 
 // NewClient creates a new ESC client with the given configuration.
@@ -87,18 +80,16 @@ func NewCustomBackendConfiguration(customBackendURL url.URL) (*Configuration, er
 }
 
 // NewDefaultClient creates a new ESC client with default configuration.
-// Backend URL is automatically detected from either PULUMI_BACKEND_URL environment variable
-// or currently logged in account in Pulumi CLI or ESC CLI
+// The backend URL is read from the PULUMI_BACKEND_URL environment variable,
+// defaulting to https://api.pulumi.com when it is not set.
 func NewDefaultClient() (*EscClient, error) {
-	workspace := esc_workspace.New(esc_workspace.DefaultFS(), esc_workspace.DefaultPulumiWorkspace())
-	account, _, err := workspace.GetCurrentAccount(false)
-	if err != nil {
-		return nil, fmt.Errorf("Error grabbing current account: %w", err)
+	backendURL := os.Getenv("PULUMI_BACKEND_URL")
+	if backendURL == "" {
+		backendURL = DefaultPulumiAPIURL
 	}
-	customBackendURL := workspace.GetCurrentCloudURL(account)
-	parsedUrl, err := url.Parse(customBackendURL)
+	parsedUrl, err := url.Parse(backendURL)
 	if err != nil {
-		return nil, fmt.Errorf("Error parsing custom backend url: %w", err)
+		return nil, fmt.Errorf("Error parsing backend url: %w", err)
 	}
 	config, err := NewCustomBackendConfiguration(*parsedUrl)
 	if err != nil {

@@ -30,11 +30,11 @@ jobs:
     steps:
       - name: Fetch secrets from ESC
         id: esc-secrets
-        uses: pulumi/esc-action@v1
+        uses: pulumi/esc-action@v2
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org
@@ -65,12 +65,12 @@ jobs:
     steps:
       - name: Fetch secrets from ESC
         id: esc-secrets
-        uses: pulumi/esc-action@v1
+        uses: pulumi/esc-action@v2
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - id: version
         name: Set SDK Version
-        uses: pulumi/provider-version-action@v1
+        uses: pulumi/provider-version-action@v2
 
       - name: Generate SDKs
         uses: ./.github/actions/generate_sdk
@@ -96,16 +96,16 @@ jobs:
     steps:
       - name: Fetch secrets from ESC
         id: esc-secrets
-        uses: pulumi/esc-action@v1
+        uses: pulumi/esc-action@v2
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: 3.11
       - id: version
         name: Set SDK Version
-        uses: pulumi/provider-version-action@v1
+        uses: pulumi/provider-version-action@v2
       - name: Generate SDKs
         uses: ./.github/actions/generate_sdk
         env:
@@ -133,16 +133,16 @@ jobs:
     steps:
       - name: Fetch secrets from ESC
         id: esc-secrets
-        uses: pulumi/esc-action@v1
+        uses: pulumi/esc-action@v2
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '6.0.x'
       - id: version
         name: Set SDK Version
-        uses: pulumi/provider-version-action@v1
+        uses: pulumi/provider-version-action@v2
       - name: Generate SDKs
         uses: ./.github/actions/generate_sdk
         env:

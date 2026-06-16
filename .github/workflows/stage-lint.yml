@@ -13,11 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
       - name: Set up Go 1.23
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
         with:
           go-version: 1.23.x
+          cache-dependency-path: sdk/go.sum
       - run: cd sdk && go mod tidy
       - name: Fail if go mod not tidy
         run: |
@@ -32,17 +33,17 @@ jobs:
       # The action doesn't have an install-only mode,
       # so we'll ask it to print its version only.
       - name: Install golangci-lint
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.0
+          version: v2.1
           working-directory: sdk
   lint_python:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: 3.11
       - name: Install dependencies
@@ -58,27 +59,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
       - name: Install pulumictl
-        uses: jaxxstorm/action-install-gh-release@v1.5.0
+        uses: jaxxstorm/action-install-gh-release@v3.0.0
         with:
           repo: pulumi/pulumictl
       - name: Set up Go 1.23
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
         with:
           go-version: 1.23.x
+          cache-dependency-path: sdk/go.sum
       - name: Lint
         run: make lint-copyright
   check-sdk-generation-clean:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v6
     - name: Generate SDKs
       uses: ./.github/actions/generate_sdk
 
     - name: Check worktree clean
-      uses: pulumi/git-status-check-action@v1
+      uses: pulumi/git-status-check-action@v2
 
     - run: git status --porcelain
       shell: bash

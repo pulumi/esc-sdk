@@ -18,6 +18,7 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: 1.23.x
+          cache-dependency-path: sdk/go.sum
       - run: cd sdk && go mod tidy
       - name: Fail if go mod not tidy
         run: |
@@ -34,7 +35,7 @@ jobs:
       - name: Install golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.0
+          version: v2.1
           working-directory: sdk
   lint_python:
     runs-on: ubuntu-latest
@@ -67,6 +68,7 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: 1.23.x
+          cache-dependency-path: sdk/go.sum
       - name: Lint
         run: make lint-copyright
   check-sdk-generation-clean:

@@ -40,7 +40,7 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go-version }}
-          stable: ${{ matrix.go-stable }}
+          cache-dependency-path: sdk/go.sum
       - name: Test w/coverage
         if: ${{ inputs.enable-coverage }}
         run: make test_go_cover

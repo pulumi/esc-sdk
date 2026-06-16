@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Fetch secrets from ESC
         id: esc-secrets
-        uses: pulumi/esc-action@v2
+        uses: pulumi/esc-action@v3
       - name: Checkout Repo
         uses: actions/checkout@v6
       - name: Setup Node
@@ -65,7 +65,7 @@ jobs:
     steps:
       - name: Fetch secrets from ESC
         id: esc-secrets
-        uses: pulumi/esc-action@v2
+        uses: pulumi/esc-action@v3
       - name: Checkout Repo
         uses: actions/checkout@v6
       - id: version
@@ -96,7 +96,7 @@ jobs:
     steps:
       - name: Fetch secrets from ESC
         id: esc-secrets
-        uses: pulumi/esc-action@v2
+        uses: pulumi/esc-action@v3
       - name: Checkout Repo
         uses: actions/checkout@v6
       - name: Set up Python
@@ -133,7 +133,7 @@ jobs:
     steps:
       - name: Fetch secrets from ESC
         id: esc-secrets
-        uses: pulumi/esc-action@v2
+        uses: pulumi/esc-action@v3
       - name: Checkout Repo
         uses: actions/checkout@v6
       - name: Setup .NET

@@ -38,7 +38,7 @@ jobs:
     steps:
       - name: Fetch secrets from ESC
         id: esc-secrets
-        uses: pulumi/esc-action@v2
+        uses: pulumi/esc-action@v3
       - name: Checkout code
         uses: actions/checkout@v6
 
@@ -62,7 +62,7 @@ jobs:
     steps:
       - name: Fetch secrets from ESC
         id: esc-secrets
-        uses: pulumi/esc-action@v2
+        uses: pulumi/esc-action@v3
 
       - name: Compute version
         id: ver

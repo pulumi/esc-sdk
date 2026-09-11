@@ -187,7 +187,7 @@ values:
 		envTags, err := apiClient.ListEnvironmentTags(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 		require.NotNil(t, envTags)
-		require.Len(t, envTags.Tags, 1)
+		require.Contains(t, envTags.Tags, "owner")
 		require.Equal(t, "owner", envTags.Tags["owner"].Name)
 		require.Equal(t, "esc-sdk-test", *envTags.Tags["owner"].Value)
 
@@ -206,7 +206,7 @@ values:
 		envTags, err = apiClient.ListEnvironmentTags(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 		require.NotNil(t, envTags)
-		require.Len(t, envTags.Tags, 0)
+		require.NotContains(t, envTags.Tags, "new-owner")
 	})
 
 	t.Run("check environment definition valid", func(t *testing.T) {

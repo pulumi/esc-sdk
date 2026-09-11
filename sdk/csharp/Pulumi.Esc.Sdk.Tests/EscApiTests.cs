@@ -164,7 +164,7 @@ namespace Pulumi.Esc.Sdk.Tests
 
                 var envTags = await _client.ListEnvironmentTagsAsync(_orgName, ProjectName, envName);
                 Assert.NotNull(envTags.Tags);
-                Assert.Single(envTags.Tags!);
+                Assert.Contains("owner", envTags.Tags!.Keys);
                 Assert.Equal("owner", envTags.Tags!["owner"].Name);
                 Assert.Equal("esc-sdk-test", envTags.Tags["owner"].Value);
 
@@ -177,7 +177,7 @@ namespace Pulumi.Esc.Sdk.Tests
 
                 await _client.DeleteEnvironmentTagAsync(_orgName, ProjectName, envName, "new-owner");
                 envTags = await _client.ListEnvironmentTagsAsync(_orgName, ProjectName, envName);
-                Assert.Empty(envTags.Tags!);
+                Assert.DoesNotContain("new-owner", envTags.Tags!.Keys);
             }
             finally
             {

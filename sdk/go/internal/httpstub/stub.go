@@ -122,3 +122,26 @@ func RequireRequest(t *testing.T, got Request, method, path string, query url.Va
 func DefaultExecutor(req *http.Request) (*http.Response, error) {
 	return http.DefaultClient.Do(req)
 }
+
+// ServeRoutes starts a server that answers each request with the response
+// registered for its "METHOD /path" and fails the test on any other request.
+func ServeRoutes(t *testing.T, routes map[string]Response) (string, *Recorder) {
+	t.Helper()
+	rec := &Recorder{}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		rec.record(req)
+		response, ok := routes[req.Method+" "+req.URL.EscapedPath()]
+		if !ok {
+			t.Errorf("unexpected request %s %s", req.Method, req.URL.EscapedPath())
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		if response.ContentType != "" {
+			w.Header().Set("Content-Type", response.ContentType)
+		}
+		w.WriteHeader(response.Status)
+		_, _ = io.WriteString(w, response.Body)
+	}))
+	t.Cleanup(server.Close)
+	return server.URL, rec
+}

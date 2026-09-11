@@ -1,0 +1,300 @@
+{
+  "backend": "https://api-fnune-review.review-stacks.pulumi-dev.io",
+  "org": "pulumi_local",
+  "names": {
+    "base": "base-20260911152236",
+    "env": "env-20260911152236"
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local",
+      "requestContentType": "application/json",
+      "requestBody": "{\"name\":\"base-20260911152236\",\"project\":\"sdk-go-test\"}\n",
+      "status": 204,
+      "responseContentType": "application/json"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/base-20260911152236",
+      "requestContentType": "application/x-yaml",
+      "requestBody": "values:\n  base: base-20260911152236\n",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local",
+      "requestContentType": "application/json",
+      "requestBody": "{\"name\":\"env-20260911152236\",\"project\":\"sdk-go-test\"}\n",
+      "status": 204,
+      "responseContentType": "application/json"
+    },
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/clone",
+      "requestContentType": "application/json",
+      "requestBody": "{\"name\":\"env-20260911152236-clone\",\"preserveAccess\":false,\"preserveEnvironmentTags\":false,\"preserveHistory\":false,\"preserveRevisionTags\":false,\"project\":\"sdk-go-test-clone\"}\n",
+      "status": 204,
+      "responseContentType": "application/json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236",
+      "status": 200,
+      "responseContentType": "application/x-yaml"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test-clone/env-20260911152236-clone",
+      "status": 200,
+      "responseContentType": "application/x-yaml"
+    },
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/open",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"id\":\"956706b8-817e-49fc-a370-c41aa123869c\"}\n"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/open/956706b8-817e-49fc-a370-c41aa123869c",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{}\n"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236",
+      "requestContentType": "application/x-yaml",
+      "requestBody": "imports:\n  - sdk-go-test/base-20260911152236\n\nvalues:\n  foo: bar\n  my_secret:\n    fn::secret: \"shh! don't tell anyone\"\n  my_array: [1, 2, 3]\n  pulumiConfig:\n    foo: ${foo}\n  environmentVariables:\n    FOO: ${foo}\n",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236",
+      "status": 200,
+      "responseContentType": "application/x-yaml",
+      "responseBody": "imports:\n  - sdk-go-test/base-20260911152236\nvalues:\n  foo: bar\n  my_secret:\n    fn::secret:\n      ciphertext: ZXNjeAAAAAEAAAIAsbpxUZ5gnmAKN28TxHjM33If0iWrnfiSDKor8Cc3CdCAchVF4ZiNRhnRjncmJ5a2fUzcKwEIIC+rJUOrKptvg3L8z8pmsQ==\n  my_array: [1, 2, 3]\n  pulumiConfig:\n    foo: ${foo}\n  environmentVariables:\n    FOO: ${foo}\n"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/decrypt",
+      "status": 200,
+      "responseContentType": "application/x-yaml",
+      "responseBody": "imports:\n  - sdk-go-test/base-20260911152236\nvalues:\n  foo: bar\n  my_secret:\n    fn::secret: shh! don't tell anyone\n  my_array: [1, 2, 3]\n  pulumiConfig:\n    foo: ${foo}\n  environmentVariables:\n    FOO: ${foo}\n"
+    },
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/open",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"id\":\"5a7b6cff-26f8-471a-bdaa-cb3e056df9d6\"}\n"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/open/5a7b6cff-26f8-471a-bdaa-cb3e056df9d6",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"exprs\":{\"environmentVariables\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":12,\"column\":5,\"byte\":306},\"end\":{\"line\":12,\"column\":16,\"byte\":317}},\"schema\":{\"properties\":{\"FOO\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"FOO\"]},\"keyRanges\":{\"FOO\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":12,\"column\":5,\"byte\":306},\"end\":{\"line\":12,\"column\":8,\"byte\":309}}},\"object\":{\"FOO\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":12,\"column\":10,\"byte\":311},\"end\":{\"line\":12,\"column\":16,\"byte\":317}},\"schema\":{\"type\":\"string\",\"const\":\"bar\"},\"symbol\":[{\"key\":\"foo\",\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":12,\"column\":12,\"byte\":313},\"end\":{\"line\":12,\"column\":15,\"byte\":316}},\"value\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":4,\"column\":8,\"byte\":60},\"end\":{\"line\":4,\"column\":11,\"byte\":63}}}]}}},\"foo\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":4,\"column\":8,\"byte\":60},\"end\":{\"line\":4,\"column\":11,\"byte\":63}},\"schema\":{\"type\":\"string\",\"const\":\"bar\"},\"literal\":\"bar\"},\"my_array\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":8,\"column\":13,\"byte\":236},\"end\":{\"line\":8,\"column\":21,\"byte\":244}},\"schema\":{\"prefixItems\":[{\"type\":\"number\",\"const\":1},{\"type\":\"number\",\"const\":2},{\"type\":\"number\",\"const\":3}],\"items\":false,\"type\":\"array\"},\"list\":[{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":8,\"column\":14,\"byte\":237},\"end\":{\"line\":8,\"column\":15,\"byte\":238}},\"schema\":{\"type\":\"number\",\"const\":1},\"literal\":1},{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":8,\"column\":17,\"byte\":240},\"end\":{\"line\":8,\"column\":18,\"byte\":241}},\"schema\":{\"type\":\"number\",\"const\":2},\"literal\":2},{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":8,\"column\":20,\"byte\":243},\"end\":{\"line\":8,\"column\":21,\"byte\":244}},\"schema\":{\"type\":\"number\",\"const\":3},\"literal\":3}]},\"my_secret\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":6,\"column\":5,\"byte\":81},\"end\":{\"line\":7,\"column\":131,\"byte\":223}},\"schema\":{\"type\":\"string\"},\"builtin\":{\"name\":\"fn::secret\",\"nameRange\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":6,\"column\":5,\"byte\":81},\"end\":{\"line\":6,\"column\":15,\"byte\":91}},\"argSchema\":true,\"arg\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":7,\"column\":7,\"byte\":99},\"end\":{\"line\":7,\"column\":131,\"byte\":223}},\"object\":{\"ciphertext\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":7,\"column\":19,\"byte\":111},\"end\":{\"line\":7,\"column\":131,\"byte\":223}},\"schema\":{\"type\":\"string\",\"const\":\"ZXNjeAAAAAEAAAIAsbpxUZ5gnmAKN28TxHjM33If0iWrnfiSDKor8Cc3CdCAchVF4ZiNRhnRjncmJ5a2fUzcKwEIIC+rJUOrKptvg3L8z8pmsQ==\"},\"literal\":\"ZXNjeAAAAAEAAAIAsbpxUZ5gnmAKN28TxHjM33If0iWrnfiSDKor8Cc3CdCAchVF4ZiNRhnRjncmJ5a2fUzcKwEIIC+rJUOrKptvg3L8z8pmsQ==\"}}}}},\"pulumiConfig\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":10,\"column\":5,\"byte\":266},\"end\":{\"line\":10,\"column\":16,\"byte\":277}},\"schema\":{\"properties\":{\"foo\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"foo\"]},\"keyRanges\":{\"foo\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":10,\"column\":5,\"byte\":266},\"end\":{\"line\":10,\"column\":8,\"byte\":269}}},\"object\":{\"foo\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":10,\"column\":10,\"byte\":271},\"end\":{\"line\":10,\"column\":16,\"byte\":277}},\"schema\":{\"type\":\"string\",\"const\":\"bar\"},\"symbol\":[{\"key\":\"foo\",\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":10,\"column\":12,\"byte\":273},\"end\":{\"line\":10,\"column\":15,\"byte\":276}},\"value\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":4,\"column\":8,\"byte\":60},\"end\":{\"line\":4,\"column\":11,\"byte\":63}}}]}}}},\"properties\":{\"base\":{\"value\":\"base-20260911152236\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"environmentVariables\":{\"value\":{\"FOO\":{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"foo\":{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"my_array\":{\"value\":[{\"value\":1,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},{\"value\":2,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},{\"value\":3,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}],\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"my_secret\":{\"value\":\"shh! don't tell anyone\",\"secret\":true,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"pulumiConfig\":{\"value\":{\"foo\":{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"schema\":{\"properties\":{\"base\":{\"type\":\"string\",\"const\":\"base-20260911152236\"},\"environmentVariables\":{\"properties\":{\"FOO\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"FOO\"]},\"foo\":{\"type\":\"string\",\"const\":\"bar\"},\"my_array\":{\"prefixItems\":[{\"type\":\"number\",\"const\":1},{\"type\":\"number\",\"const\":2},{\"type\":\"number\",\"const\":3}],\"items\":false,\"type\":\"array\"},\"my_secret\":{\"type\":\"string\"},\"pulumiConfig\":{\"properties\":{\"foo\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"foo\"]}},\"type\":\"object\",\"required\":[\"base\",\"environmentVariables\",\"foo\",\"my_array\",\"my_secret\",\"pulumiConfig\"]},\"executionContext\":{\"properties\":{\"currentEnvironment\":{\"value\":{\"name\":{\"value\":\"sdk-go-test/env-20260911152236\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"pulumi\":{\"value\":{\"openDuration\":{\"value\":\"1h0m0s\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"organization\":{\"value\":{\"login\":{\"value\":\"pulumi_local\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"token\":{\"value\":{\"name\":{\"value\":\"\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"team\":{\"value\":\"\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"type\":{\"value\":\"web\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"user\":{\"value\":{\"login\":{\"value\":\"pulumipus\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"rootEnvironment\":{\"value\":{\"name\":{\"value\":\"sdk-go-test/env-20260911152236\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"schema\":{\"properties\":{\"currentEnvironment\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"sdk-go-test/env-20260911152236\"}},\"type\":\"object\",\"required\":[\"name\"]},\"pulumi\":{\"properties\":{\"openDuration\":{\"type\":\"string\",\"const\":\"1h0m0s\"},\"organization\":{\"properties\":{\"login\":{\"type\":\"string\",\"const\":\"pulumi_local\"}},\"type\":\"object\",\"required\":[\"login\"]},\"token\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"\"},\"team\":{\"type\":\"string\",\"const\":\"\"},\"type\":{\"type\":\"string\",\"const\":\"web\"}},\"type\":\"object\",\"required\":[\"name\",\"team\",\"type\"]},\"user\":{\"properties\":{\"login\":{\"type\":\"string\",\"const\":\"pulumipus\"}},\"type\":\"object\",\"required\":[\"login\"]}},\"type\":\"object\",\"required\":[\"openDuration\",\"organization\",\"token\",\"user\"]},\"rootEnvironment\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"sdk-go-test/env-20260911152236\"}},\"type\":\"object\",\"required\":[\"name\"]}},\"type\":\"object\",\"required\":[\"currentEnvironment\",\"pulumi\",\"rootEnvironment\"]}}}\n"
+    },
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/open",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"id\":\"4c595375-5d70-49f0-8c51-1920382939e4\"}\n"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/open//4c595375-5d70-49f0-8c51-1920382939e4",
+      "query": {
+        "property": [
+          "pulumiConfig.foo"
+        ]
+      },
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}\n"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/versions/2",
+      "status": 200,
+      "responseContentType": "application/x-yaml",
+      "responseBody": "imports:\n  - sdk-go-test/base-20260911152236\nvalues:\n  foo: bar\n  my_secret:\n    fn::secret:\n      ciphertext: ZXNjeAAAAAEAAAIAsbpxUZ5gnmAKN28TxHjM33If0iWrnfiSDKor8Cc3CdCAchVF4ZiNRhnRjncmJ5a2fUzcKwEIIC+rJUOrKptvg3L8z8pmsQ==\n  my_array: [1, 2, 3]\n  pulumiConfig:\n    foo: ${foo}\n  environmentVariables:\n    FOO: ${foo}\n"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236",
+      "requestContentType": "application/x-yaml",
+      "requestBody": "imports:\n- sdk-go-test/base-20260911152236\nvalues:\n  environmentVariables:\n    FOO: ${foo}\n  foo: bar\n  my_array:\n  - 1\n  - 2\n  - 3\n  my_secret:\n    fn::secret:\n      ciphertext: ZXNjeAAAAAEAAAIAsbpxUZ5gnmAKN28TxHjM33If0iWrnfiSDKor8Cc3CdCAchVF4ZiNRhnRjncmJ5a2fUzcKwEIIC+rJUOrKptvg3L8z8pmsQ==\n  pulumiConfig:\n    foo: ${foo}\n  versioned: \"true\"\n",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/versions",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "[{\"number\":3,\"created\":\"2026-09-11T13:22:40.394Z\",\"creatorLogin\":\"pulumipus\",\"tags\":[\"latest\"]},{\"number\":2,\"created\":\"2026-09-11T13:22:38.37Z\",\"creatorLogin\":\"pulumipus\"},{\"number\":1,\"created\":\"2026-09-11T13:22:36.799Z\",\"creatorLogin\":\"pulumipus\"}]\n"
+    },
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/versions/tags",
+      "requestContentType": "application/json",
+      "requestBody": "{\"name\":\"testTag\",\"revision\":2}\n",
+      "status": 204,
+      "responseContentType": "application/json"
+    },
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/versions/testTag/open",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"id\":\"c6f42bbb-763a-4a4c-92a2-38fe248364cb\"}\n"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/open/c6f42bbb-763a-4a4c-92a2-38fe248364cb",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"exprs\":{\"environmentVariables\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":12,\"column\":5,\"byte\":306},\"end\":{\"line\":12,\"column\":16,\"byte\":317}},\"schema\":{\"properties\":{\"FOO\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"FOO\"]},\"keyRanges\":{\"FOO\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":12,\"column\":5,\"byte\":306},\"end\":{\"line\":12,\"column\":8,\"byte\":309}}},\"object\":{\"FOO\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":12,\"column\":10,\"byte\":311},\"end\":{\"line\":12,\"column\":16,\"byte\":317}},\"schema\":{\"type\":\"string\",\"const\":\"bar\"},\"symbol\":[{\"key\":\"foo\",\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":12,\"column\":12,\"byte\":313},\"end\":{\"line\":12,\"column\":15,\"byte\":316}},\"value\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":4,\"column\":8,\"byte\":60},\"end\":{\"line\":4,\"column\":11,\"byte\":63}}}]}}},\"foo\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":4,\"column\":8,\"byte\":60},\"end\":{\"line\":4,\"column\":11,\"byte\":63}},\"schema\":{\"type\":\"string\",\"const\":\"bar\"},\"literal\":\"bar\"},\"my_array\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":8,\"column\":13,\"byte\":236},\"end\":{\"line\":8,\"column\":21,\"byte\":244}},\"schema\":{\"prefixItems\":[{\"type\":\"number\",\"const\":1},{\"type\":\"number\",\"const\":2},{\"type\":\"number\",\"const\":3}],\"items\":false,\"type\":\"array\"},\"list\":[{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":8,\"column\":14,\"byte\":237},\"end\":{\"line\":8,\"column\":15,\"byte\":238}},\"schema\":{\"type\":\"number\",\"const\":1},\"literal\":1},{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":8,\"column\":17,\"byte\":240},\"end\":{\"line\":8,\"column\":18,\"byte\":241}},\"schema\":{\"type\":\"number\",\"const\":2},\"literal\":2},{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":8,\"column\":20,\"byte\":243},\"end\":{\"line\":8,\"column\":21,\"byte\":244}},\"schema\":{\"type\":\"number\",\"const\":3},\"literal\":3}]},\"my_secret\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":6,\"column\":5,\"byte\":81},\"end\":{\"line\":7,\"column\":131,\"byte\":223}},\"schema\":{\"type\":\"string\"},\"builtin\":{\"name\":\"fn::secret\",\"nameRange\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":6,\"column\":5,\"byte\":81},\"end\":{\"line\":6,\"column\":15,\"byte\":91}},\"argSchema\":true,\"arg\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":7,\"column\":7,\"byte\":99},\"end\":{\"line\":7,\"column\":131,\"byte\":223}},\"object\":{\"ciphertext\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":7,\"column\":19,\"byte\":111},\"end\":{\"line\":7,\"column\":131,\"byte\":223}},\"schema\":{\"type\":\"string\",\"const\":\"ZXNjeAAAAAEAAAIAsbpxUZ5gnmAKN28TxHjM33If0iWrnfiSDKor8Cc3CdCAchVF4ZiNRhnRjncmJ5a2fUzcKwEIIC+rJUOrKptvg3L8z8pmsQ==\"},\"literal\":\"ZXNjeAAAAAEAAAIAsbpxUZ5gnmAKN28TxHjM33If0iWrnfiSDKor8Cc3CdCAchVF4ZiNRhnRjncmJ5a2fUzcKwEIIC+rJUOrKptvg3L8z8pmsQ==\"}}}}},\"pulumiConfig\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":10,\"column\":5,\"byte\":266},\"end\":{\"line\":10,\"column\":16,\"byte\":277}},\"schema\":{\"properties\":{\"foo\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"foo\"]},\"keyRanges\":{\"foo\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":10,\"column\":5,\"byte\":266},\"end\":{\"line\":10,\"column\":8,\"byte\":269}}},\"object\":{\"foo\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":10,\"column\":10,\"byte\":271},\"end\":{\"line\":10,\"column\":16,\"byte\":277}},\"schema\":{\"type\":\"string\",\"const\":\"bar\"},\"symbol\":[{\"key\":\"foo\",\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":10,\"column\":12,\"byte\":273},\"end\":{\"line\":10,\"column\":15,\"byte\":276}},\"value\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":4,\"column\":8,\"byte\":60},\"end\":{\"line\":4,\"column\":11,\"byte\":63}}}]}}}},\"properties\":{\"base\":{\"value\":\"base-20260911152236\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"environmentVariables\":{\"value\":{\"FOO\":{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"foo\":{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"my_array\":{\"value\":[{\"value\":1,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},{\"value\":2,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},{\"value\":3,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}],\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"my_secret\":{\"value\":\"shh! don't tell anyone\",\"secret\":true,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"pulumiConfig\":{\"value\":{\"foo\":{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"schema\":{\"properties\":{\"base\":{\"type\":\"string\",\"const\":\"base-20260911152236\"},\"environmentVariables\":{\"properties\":{\"FOO\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"FOO\"]},\"foo\":{\"type\":\"string\",\"const\":\"bar\"},\"my_array\":{\"prefixItems\":[{\"type\":\"number\",\"const\":1},{\"type\":\"number\",\"const\":2},{\"type\":\"number\",\"const\":3}],\"items\":false,\"type\":\"array\"},\"my_secret\":{\"type\":\"string\"},\"pulumiConfig\":{\"properties\":{\"foo\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"foo\"]}},\"type\":\"object\",\"required\":[\"base\",\"environmentVariables\",\"foo\",\"my_array\",\"my_secret\",\"pulumiConfig\"]},\"executionContext\":{\"properties\":{\"currentEnvironment\":{\"value\":{\"name\":{\"value\":\"sdk-go-test/env-20260911152236\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"pulumi\":{\"value\":{\"openDuration\":{\"value\":\"1h0m0s\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"organization\":{\"value\":{\"login\":{\"value\":\"pulumi_local\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"token\":{\"value\":{\"name\":{\"value\":\"\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"team\":{\"value\":\"\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"type\":{\"value\":\"web\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"user\":{\"value\":{\"login\":{\"value\":\"pulumipus\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"rootEnvironment\":{\"value\":{\"name\":{\"value\":\"sdk-go-test/env-20260911152236\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"schema\":{\"properties\":{\"currentEnvironment\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"sdk-go-test/env-20260911152236\"}},\"type\":\"object\",\"required\":[\"name\"]},\"pulumi\":{\"properties\":{\"openDuration\":{\"type\":\"string\",\"const\":\"1h0m0s\"},\"organization\":{\"properties\":{\"login\":{\"type\":\"string\",\"const\":\"pulumi_local\"}},\"type\":\"object\",\"required\":[\"login\"]},\"token\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"\"},\"team\":{\"type\":\"string\",\"const\":\"\"},\"type\":{\"type\":\"string\",\"const\":\"web\"}},\"type\":\"object\",\"required\":[\"name\",\"team\",\"type\"]},\"user\":{\"properties\":{\"login\":{\"type\":\"string\",\"const\":\"pulumipus\"}},\"type\":\"object\",\"required\":[\"login\"]}},\"type\":\"object\",\"required\":[\"openDuration\",\"organization\",\"token\",\"user\"]},\"rootEnvironment\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"sdk-go-test/env-20260911152236\"}},\"type\":\"object\",\"required\":[\"name\"]}},\"type\":\"object\",\"required\":[\"currentEnvironment\",\"pulumi\",\"rootEnvironment\"]}}}\n"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/versions/tags",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"tags\":[{\"name\":\"latest\",\"revision\":3,\"created\":\"2026-09-11T13:22:36.8Z\",\"modified\":\"2026-09-11T13:22:40.397Z\",\"editorLogin\":\"pulumipus\"},{\"name\":\"testTag\",\"revision\":2,\"created\":\"2026-09-11T13:22:40.843Z\",\"modified\":\"2026-09-11T13:22:40.843Z\",\"editorLogin\":\"pulumipus\"}],\"nextToken\":\"\"}\n"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/versions/tags/testTag",
+      "requestContentType": "application/json",
+      "requestBody": "{\"revision\":3}\n",
+      "status": 204,
+      "responseContentType": "application/json"
+    },
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/versions/testTag/open",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"id\":\"dd59b0c1-6996-4082-927c-82ef0c2d6624\"}\n"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/open/dd59b0c1-6996-4082-927c-82ef0c2d6624",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"exprs\":{\"environmentVariables\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":5,\"column\":5,\"byte\":81},\"end\":{\"line\":5,\"column\":16,\"byte\":92}},\"schema\":{\"properties\":{\"FOO\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"FOO\"]},\"keyRanges\":{\"FOO\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":5,\"column\":5,\"byte\":81},\"end\":{\"line\":5,\"column\":8,\"byte\":84}}},\"object\":{\"FOO\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":5,\"column\":10,\"byte\":86},\"end\":{\"line\":5,\"column\":16,\"byte\":92}},\"schema\":{\"type\":\"string\",\"const\":\"bar\"},\"symbol\":[{\"key\":\"foo\",\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":5,\"column\":12,\"byte\":88},\"end\":{\"line\":5,\"column\":15,\"byte\":91}},\"value\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":6,\"column\":8,\"byte\":100},\"end\":{\"line\":6,\"column\":11,\"byte\":103}}}]}}},\"foo\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":6,\"column\":8,\"byte\":100},\"end\":{\"line\":6,\"column\":11,\"byte\":103}},\"schema\":{\"type\":\"string\",\"const\":\"bar\"},\"literal\":\"bar\"},\"my_array\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":8,\"column\":5,\"byte\":120},\"end\":{\"line\":10,\"column\":8,\"byte\":139}},\"schema\":{\"prefixItems\":[{\"type\":\"number\",\"const\":1},{\"type\":\"number\",\"const\":2},{\"type\":\"number\",\"const\":3}],\"items\":false,\"type\":\"array\"},\"list\":[{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":8,\"column\":7,\"byte\":122},\"end\":{\"line\":8,\"column\":8,\"byte\":123}},\"schema\":{\"type\":\"number\",\"const\":1},\"literal\":1},{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":9,\"column\":7,\"byte\":130},\"end\":{\"line\":9,\"column\":8,\"byte\":131}},\"schema\":{\"type\":\"number\",\"const\":2},\"literal\":2},{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":10,\"column\":7,\"byte\":138},\"end\":{\"line\":10,\"column\":8,\"byte\":139}},\"schema\":{\"type\":\"number\",\"const\":3},\"literal\":3}]},\"my_secret\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":12,\"column\":5,\"byte\":157},\"end\":{\"line\":13,\"column\":131,\"byte\":299}},\"schema\":{\"type\":\"string\"},\"builtin\":{\"name\":\"fn::secret\",\"nameRange\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":12,\"column\":5,\"byte\":157},\"end\":{\"line\":12,\"column\":15,\"byte\":167}},\"argSchema\":true,\"arg\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":13,\"column\":7,\"byte\":175},\"end\":{\"line\":13,\"column\":131,\"byte\":299}},\"object\":{\"ciphertext\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":13,\"column\":19,\"byte\":187},\"end\":{\"line\":13,\"column\":131,\"byte\":299}},\"schema\":{\"type\":\"string\",\"const\":\"ZXNjeAAAAAEAAAIAsbpxUZ5gnmAKN28TxHjM33If0iWrnfiSDKor8Cc3CdCAchVF4ZiNRhnRjncmJ5a2fUzcKwEIIC+rJUOrKptvg3L8z8pmsQ==\"},\"literal\":\"ZXNjeAAAAAEAAAIAsbpxUZ5gnmAKN28TxHjM33If0iWrnfiSDKor8Cc3CdCAchVF4ZiNRhnRjncmJ5a2fUzcKwEIIC+rJUOrKptvg3L8z8pmsQ==\"}}}}},\"pulumiConfig\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":15,\"column\":5,\"byte\":320},\"end\":{\"line\":15,\"column\":16,\"byte\":331}},\"schema\":{\"properties\":{\"foo\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"foo\"]},\"keyRanges\":{\"foo\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":15,\"column\":5,\"byte\":320},\"end\":{\"line\":15,\"column\":8,\"byte\":323}}},\"object\":{\"foo\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":15,\"column\":10,\"byte\":325},\"end\":{\"line\":15,\"column\":16,\"byte\":331}},\"schema\":{\"type\":\"string\",\"const\":\"bar\"},\"symbol\":[{\"key\":\"foo\",\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":15,\"column\":12,\"byte\":327},\"end\":{\"line\":15,\"column\":15,\"byte\":330}},\"value\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":6,\"column\":8,\"byte\":100},\"end\":{\"line\":6,\"column\":11,\"byte\":103}}}]}}},\"versioned\":{\"range\":{\"environment\":\"sdk-go-test/env-20260911152236\",\"begin\":{\"line\":16,\"column\":14,\"byte\":345},\"end\":{\"line\":16,\"column\":18,\"byte\":349}},\"schema\":{\"type\":\"string\",\"const\":\"true\"},\"literal\":\"true\"}},\"properties\":{\"base\":{\"value\":\"base-20260911152236\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"environmentVariables\":{\"value\":{\"FOO\":{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"foo\":{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"my_array\":{\"value\":[{\"value\":1,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},{\"value\":2,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},{\"value\":3,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}],\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"my_secret\":{\"value\":\"shh! don't tell anyone\",\"secret\":true,\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"pulumiConfig\":{\"value\":{\"foo\":{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"versioned\":{\"value\":\"true\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"schema\":{\"properties\":{\"base\":{\"type\":\"string\",\"const\":\"base-20260911152236\"},\"environmentVariables\":{\"properties\":{\"FOO\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"FOO\"]},\"foo\":{\"type\":\"string\",\"const\":\"bar\"},\"my_array\":{\"prefixItems\":[{\"type\":\"number\",\"const\":1},{\"type\":\"number\",\"const\":2},{\"type\":\"number\",\"const\":3}],\"items\":false,\"type\":\"array\"},\"my_secret\":{\"type\":\"string\"},\"pulumiConfig\":{\"properties\":{\"foo\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"foo\"]},\"versioned\":{\"type\":\"string\",\"const\":\"true\"}},\"type\":\"object\",\"required\":[\"base\",\"environmentVariables\",\"foo\",\"my_array\",\"my_secret\",\"pulumiConfig\",\"versioned\"]},\"executionContext\":{\"properties\":{\"currentEnvironment\":{\"value\":{\"name\":{\"value\":\"sdk-go-test/env-20260911152236\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"pulumi\":{\"value\":{\"openDuration\":{\"value\":\"1h0m0s\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"organization\":{\"value\":{\"login\":{\"value\":\"pulumi_local\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"token\":{\"value\":{\"name\":{\"value\":\"\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"team\":{\"value\":\"\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"type\":{\"value\":\"web\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"user\":{\"value\":{\"login\":{\"value\":\"pulumipus\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"rootEnvironment\":{\"value\":{\"name\":{\"value\":\"sdk-go-test/env-20260911152236\",\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"schema\":{\"properties\":{\"currentEnvironment\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"sdk-go-test/env-20260911152236\"}},\"type\":\"object\",\"required\":[\"name\"]},\"pulumi\":{\"properties\":{\"openDuration\":{\"type\":\"string\",\"const\":\"1h0m0s\"},\"organization\":{\"properties\":{\"login\":{\"type\":\"string\",\"const\":\"pulumi_local\"}},\"type\":\"object\",\"required\":[\"login\"]},\"token\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"\"},\"team\":{\"type\":\"string\",\"const\":\"\"},\"type\":{\"type\":\"string\",\"const\":\"web\"}},\"type\":\"object\",\"required\":[\"name\",\"team\",\"type\"]},\"user\":{\"properties\":{\"login\":{\"type\":\"string\",\"const\":\"pulumipus\"}},\"type\":\"object\",\"required\":[\"login\"]}},\"type\":\"object\",\"required\":[\"openDuration\",\"organization\",\"token\",\"user\"]},\"rootEnvironment\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"sdk-go-test/env-20260911152236\"}},\"type\":\"object\",\"required\":[\"name\"]}},\"type\":\"object\",\"required\":[\"currentEnvironment\",\"pulumi\",\"rootEnvironment\"]}}}\n"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/versions/tags/testTag",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"name\":\"testTag\",\"revision\":3,\"created\":\"2026-09-11T13:22:40.843Z\",\"modified\":\"2026-09-11T13:22:41.818Z\",\"editorLogin\":\"pulumipus\"}\n"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/versions/tags/testTag",
+      "status": 204,
+      "responseContentType": "application/json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/versions/tags",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"tags\":[{\"name\":\"latest\",\"revision\":3,\"created\":\"2026-09-11T13:22:36.8Z\",\"modified\":\"2026-09-11T13:22:40.397Z\",\"editorLogin\":\"pulumipus\"}],\"nextToken\":\"\"}\n"
+    },
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/tags",
+      "requestContentType": "application/json",
+      "requestBody": "{\"name\":\"owner\",\"value\":\"esc-sdk-test\"}\n",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"name\":\"owner\",\"value\":\"esc-sdk-test\",\"created\":\"2026-09-11T13:22:43.237Z\",\"modified\":\"2026-09-11T13:22:43.237Z\",\"editorLogin\":\"pulumipus\",\"editorName\":\"\"}\n"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/tags",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"tags\":{\"owner\":{\"name\":\"owner\",\"value\":\"esc-sdk-test\",\"created\":\"2026-09-11T13:22:43.237Z\",\"modified\":\"2026-09-11T13:22:43.237Z\",\"editorLogin\":\"pulumipus\",\"editorName\":\"\"},\"pulumi:project\":{\"name\":\"pulumi:project\",\"value\":\"sdk-go-test\",\"created\":\"2026-09-11T13:22:36.794Z\",\"modified\":\"2026-09-11T13:22:36.794Z\",\"editorLogin\":\"\",\"editorName\":\"\"}},\"nextToken\":\"0\"}\n"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/tags/owner",
+      "requestContentType": "application/json",
+      "requestBody": "{\"currentTag\":{\"value\":\"esc-sdk-test\"},\"newTag\":{\"name\":\"new-owner\",\"value\":\"esc-sdk-test-updated\"}}\n",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"name\":\"new-owner\",\"value\":\"esc-sdk-test-updated\",\"created\":\"2026-09-11T13:22:43.237Z\",\"modified\":\"2026-09-11T13:22:43.668Z\",\"editorLogin\":\"pulumipus\",\"editorName\":\"\"}\n"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/tags/new-owner",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"name\":\"new-owner\",\"value\":\"esc-sdk-test-updated\",\"created\":\"2026-09-11T13:22:43.237Z\",\"modified\":\"2026-09-11T13:22:43.668Z\",\"editorLogin\":\"pulumipus\",\"editorName\":\"\"}\n"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/tags/new-owner",
+      "status": 204,
+      "responseContentType": "application/json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236/tags",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"tags\":{\"pulumi:project\":{\"name\":\"pulumi:project\",\"value\":\"sdk-go-test\",\"created\":\"2026-09-11T13:22:36.794Z\",\"modified\":\"2026-09-11T13:22:36.794Z\",\"editorLogin\":\"\",\"editorName\":\"\"}},\"nextToken\":\"0\"}\n"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/env-20260911152236",
+      "status": 204,
+      "responseContentType": "application/json"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test-clone/env-20260911152236-clone",
+      "status": 204,
+      "responseContentType": "application/json"
+    },
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local/yaml/check",
+      "requestContentType": "application/x-yaml",
+      "requestBody": "values:\n  foo: bar\n",
+      "status": 200,
+      "responseContentType": "application/json",
+      "responseBody": "{\"exprs\":{\"foo\":{\"range\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":2,\"column\":8,\"byte\":15},\"end\":{\"line\":2,\"column\":11,\"byte\":18}},\"schema\":{\"type\":\"string\",\"const\":\"bar\"},\"literal\":\"bar\"}},\"properties\":{\"foo\":{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":2,\"column\":8,\"byte\":15},\"end\":{\"line\":2,\"column\":11,\"byte\":18}}}}},\"schema\":{\"properties\":{\"foo\":{\"type\":\"string\",\"const\":\"bar\"}},\"type\":\"object\",\"required\":[\"foo\"]},\"executionContext\":{\"properties\":{\"currentEnvironment\":{\"value\":{\"name\":{\"value\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"pulumi\":{\"value\":{\"openDuration\":{\"value\":\"\",\"unknown\":true,\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"organization\":{\"value\":{\"login\":{\"value\":\"pulumi_local\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"token\":{\"value\":{\"name\":{\"value\":\"\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"team\":{\"value\":\"\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"type\":{\"value\":\"web\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"user\":{\"value\":{\"login\":{\"value\":\"pulumipus\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"rootEnvironment\":{\"value\":{\"name\":{\"value\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"schema\":{\"properties\":{\"currentEnvironment\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\"}},\"type\":\"object\",\"required\":[\"name\"]},\"pulumi\":{\"properties\":{\"openDuration\":{\"type\":\"string\",\"const\":\"\"},\"organization\":{\"properties\":{\"login\":{\"type\":\"string\",\"const\":\"pulumi_local\"}},\"type\":\"object\",\"required\":[\"login\"]},\"token\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"\"},\"team\":{\"type\":\"string\",\"const\":\"\"},\"type\":{\"type\":\"string\",\"const\":\"web\"}},\"type\":\"object\",\"required\":[\"name\",\"team\",\"type\"]},\"user\":{\"properties\":{\"login\":{\"type\":\"string\",\"const\":\"pulumipus\"}},\"type\":\"object\",\"required\":[\"login\"]}},\"type\":\"object\",\"required\":[\"openDuration\",\"organization\",\"token\",\"user\"]},\"rootEnvironment\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\"}},\"type\":\"object\",\"required\":[\"name\"]}},\"type\":\"object\",\"required\":[\"currentEnvironment\",\"pulumi\",\"rootEnvironment\"]}},\"environmentFunctionSummary\":{\"funcCounts\":{},\"rotationPaths\":[]}}\n"
+    },
+    {
+      "method": "POST",
+      "path": "/api/esc/environments/pulumi_local/yaml/check",
+      "requestContentType": "application/x-yaml",
+      "requestBody": "\nvalues:\n  foo: bar\n  pulumiConfig:\n    foo: ${bad_ref}\n",
+      "status": 400,
+      "responseContentType": "application/json",
+      "responseBody": "{\"exprs\":{\"foo\":{\"range\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":3,\"column\":8,\"byte\":16},\"end\":{\"line\":3,\"column\":11,\"byte\":19}},\"schema\":{\"type\":\"string\",\"const\":\"bar\"},\"literal\":\"bar\"},\"pulumiConfig\":{\"range\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":5,\"column\":5,\"byte\":40},\"end\":{\"line\":5,\"column\":20,\"byte\":55}},\"schema\":{\"properties\":{\"foo\":true},\"type\":\"object\",\"required\":[\"foo\"]},\"keyRanges\":{\"foo\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":5,\"column\":5,\"byte\":40},\"end\":{\"line\":5,\"column\":8,\"byte\":43}}},\"object\":{\"foo\":{\"range\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":5,\"column\":10,\"byte\":45},\"end\":{\"line\":5,\"column\":20,\"byte\":55}},\"schema\":true,\"symbol\":[{\"key\":\"bad_ref\",\"range\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":5,\"column\":12,\"byte\":47},\"end\":{\"line\":5,\"column\":19,\"byte\":54}},\"value\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":5,\"column\":10,\"byte\":45},\"end\":{\"line\":5,\"column\":20,\"byte\":55}}}]}}}},\"properties\":{\"foo\":{\"value\":\"bar\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":3,\"column\":8,\"byte\":16},\"end\":{\"line\":3,\"column\":11,\"byte\":19}}}},\"pulumiConfig\":{\"value\":{\"foo\":{\"value\":null,\"unknown\":true,\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":5,\"column\":10,\"byte\":45},\"end\":{\"line\":5,\"column\":20,\"byte\":55}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":5,\"column\":5,\"byte\":40},\"end\":{\"line\":5,\"column\":20,\"byte\":55}}}}},\"schema\":{\"properties\":{\"foo\":{\"type\":\"string\",\"const\":\"bar\"},\"pulumiConfig\":{\"properties\":{\"foo\":true},\"type\":\"object\",\"required\":[\"foo\"]}},\"type\":\"object\",\"required\":[\"foo\",\"pulumiConfig\"]},\"executionContext\":{\"properties\":{\"currentEnvironment\":{\"value\":{\"name\":{\"value\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"pulumi\":{\"value\":{\"openDuration\":{\"value\":\"\",\"unknown\":true,\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"organization\":{\"value\":{\"login\":{\"value\":\"pulumi_local\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"token\":{\"value\":{\"name\":{\"value\":\"\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"team\":{\"value\":\"\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"type\":{\"value\":\"web\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"user\":{\"value\":{\"login\":{\"value\":\"pulumipus\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}},\"rootEnvironment\":{\"value\":{\"name\":{\"value\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"trace\":{\"def\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":0,\"column\":0,\"byte\":0},\"end\":{\"line\":0,\"column\":0,\"byte\":0}}}}},\"schema\":{\"properties\":{\"currentEnvironment\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\"}},\"type\":\"object\",\"required\":[\"name\"]},\"pulumi\":{\"properties\":{\"openDuration\":{\"type\":\"string\",\"const\":\"\"},\"organization\":{\"properties\":{\"login\":{\"type\":\"string\",\"const\":\"pulumi_local\"}},\"type\":\"object\",\"required\":[\"login\"]},\"token\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"\"},\"team\":{\"type\":\"string\",\"const\":\"\"},\"type\":{\"type\":\"string\",\"const\":\"web\"}},\"type\":\"object\",\"required\":[\"name\",\"team\",\"type\"]},\"user\":{\"properties\":{\"login\":{\"type\":\"string\",\"const\":\"pulumipus\"}},\"type\":\"object\",\"required\":[\"login\"]}},\"type\":\"object\",\"required\":[\"openDuration\",\"organization\",\"token\",\"user\"]},\"rootEnvironment\":{\"properties\":{\"name\":{\"type\":\"string\",\"const\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\"}},\"type\":\"object\",\"required\":[\"name\"]}},\"type\":\"object\",\"required\":[\"currentEnvironment\",\"pulumi\",\"rootEnvironment\"]}},\"diagnostics\":[{\"range\":{\"environment\":\"\\u003cproject\\u003e/\\u003cyaml\\u003e\",\"begin\":{\"line\":5,\"column\":12,\"byte\":47},\"end\":{\"line\":5,\"column\":19,\"byte\":54}},\"summary\":\"unknown property \\\"bad_ref\\\"\",\"path\":\"values.pulumiConfig.foo\",\"severity\":\"error\"}],\"environmentFunctionSummary\":{\"funcCounts\":{},\"rotationPaths\":[]}}\n"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/esc/environments/pulumi_local/sdk-go-test/base-20260911152236",
+      "status": 204,
+      "responseContentType": "application/json"
+    }
+  ]
+}

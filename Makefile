@@ -53,6 +53,9 @@ build_typescript::
 test_go:: build_go
 	cd sdk && ${GO} test --timeout 30m -short -count 1 -parallel ${CONCURRENCY} ./...
 
+record_go:: build_go
+	cd sdk && ESC_SDK_RECORD=1 ${GO} test --timeout 30m -count 1 -run 'Test_EscClient$$' ./go
+
 test_go_cover:: build_go
 	cd sdk && ${GO} test --timeout 30m -count 1 -coverpkg=github.com/pulumi/esc-sdk/... -race -coverprofile=coverage.out -parallel ${CONCURRENCY} ./...
 

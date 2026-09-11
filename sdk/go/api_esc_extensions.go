@@ -1,240 +1,113 @@
-// Copyright 2024, Pulumi Corporation.  All rights reserved.
+// Copyright 2026, Pulumi Corporation.  All rights reserved.
 
 package esc_sdk
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"net/url"
-	"os"
+	"net/http"
 
+	"github.com/pulumi/pulumi-cloud-sdk/go/apiclient"
+	"github.com/pulumi/pulumi-cloud-sdk/go/apitype"
 	"gopkg.in/ghodss/yaml.v1"
 )
 
-// DefaultPulumiAPIURL is the default Pulumi Cloud backend URL used when
-// PULUMI_BACKEND_URL is not set.
-const DefaultPulumiAPIURL = "https://api.pulumi.com"
-
-// EscClient is a client for the ESC API.
-// It wraps the raw API client and provides a more convenient interface.
-type EscClient struct {
-	rawClient *RawAPIClient
-	EscAPI    *EscAPIService
-}
-
-// NewAuthContext creates a new context with the given access token.
-// This context can be used to authenticate requests to the ESC API.
-func NewAuthContext(accessToken string) context.Context {
-	return context.WithValue(
-		context.Background(),
-		ContextAPIKeys,
-		map[string]APIKey{
-			"Authorization": {Key: accessToken, Prefix: "token"},
-		},
-	)
-}
-
-// NewDefaultAuthContext creates a new context, retrieving the Pulumi Access Token
-// from the PULUMI_ACCESS_TOKEN environment variable.
-//
-// This context can be used to authenticate requests to the ESC API.
-func NewDefaultAuthContext() (context.Context, error) {
-	accessToken := os.Getenv("PULUMI_ACCESS_TOKEN")
-	if accessToken != "" {
-		return NewAuthContext(accessToken), nil
-	}
-
-	return nil, errors.New("no Pulumi Access Token found. Export the PULUMI_ACCESS_TOKEN " +
-		"environment variable")
-}
-
-// NewClient creates a new ESC client with the given configuration.
-func NewClient(cfg *Configuration) *EscClient {
-	client := &EscClient{rawClient: NewRawAPIClient(cfg)}
-	client.EscAPI = client.rawClient.EscAPI
-	return client
-}
-
-// NewCustomBackendConfiguration creates a new Configuration object,
-// but replaces default API endpoint with a given custom backend URL
-func NewCustomBackendConfiguration(customBackendURL url.URL) (*Configuration, error) {
-	appendedUrl, err := url.Parse(fmt.Sprintf("%s://%s/api/esc", customBackendURL.Scheme, customBackendURL.Hostname()))
-	if err != nil {
-		return nil, fmt.Errorf("failed to normalize backend url: ")
-	}
-	cfg := &Configuration{
-		DefaultHeader: make(map[string]string),
-		UserAgent:     "esc-sdk",
-		Debug:         false,
-		Servers: ServerConfigurations{
-			{
-				URL:         appendedUrl.String(),
-				Description: "Pulumi Cloud Custom Backend API",
-			},
-		},
-		OperationServers: map[string]ServerConfigurations{},
-	}
-	return cfg, nil
-}
-
-// NewDefaultClient creates a new ESC client with default configuration.
-// The backend URL is read from the PULUMI_BACKEND_URL environment variable,
-// defaulting to https://api.pulumi.com when it is not set.
-func NewDefaultClient() (*EscClient, error) {
-	backendURL := os.Getenv("PULUMI_BACKEND_URL")
-	if backendURL == "" {
-		backendURL = DefaultPulumiAPIURL
-	}
-	parsedUrl, err := url.Parse(backendURL)
-	if err != nil {
-		return nil, fmt.Errorf("Error parsing backend url: %w", err)
-	}
-	config, err := NewCustomBackendConfiguration(*parsedUrl)
-	if err != nil {
-		return nil, err
-	}
-	return NewClient(config), nil
-}
-
-// This is the easiest way to use ESC SDK. DefaultLogin grabs default client
-// and default authorization context, so you can start using SDK right away
-func DefaultLogin() (context.Context, *EscClient, error) {
-	client, err := NewDefaultClient()
-	if err != nil {
-		return nil, nil, err
-	}
-	context, err := NewDefaultAuthContext()
-	if err != nil {
-		return nil, nil, err
-	}
-	return context, client, nil
-}
-
-// ListEnvironments lists all environments in the given organization.
-// If a continuation token is provided, the list will start from that token.
 func (c *EscClient) ListEnvironments(ctx context.Context, org string, continuationToken *string) (*OrgEnvironments, error) {
-	request := c.EscAPI.ListEnvironments(ctx, org)
-	if continuationToken != nil {
-		request = request.ContinuationToken(*continuationToken)
-	}
-
-	envs, _, err := request.Execute()
-	return envs, err
+	return c.Cloud.ListOrgEnvironments_esc(ctx, org, continuationToken, nil, nil, nil)
 }
 
-// GetEnvironment retrieves the environment with the given name in the given organization.
-// The environment is returned along with the raw YAML definition.
+// GetEnvironment returns the parsed definition and the YAML it was parsed from.
 func (c *EscClient) GetEnvironment(ctx context.Context, org, projectName, envName string) (*EnvironmentDefinition, string, error) {
-	env, resp, err := c.EscAPI.GetEnvironment(ctx, org, projectName, envName).Execute()
-	if err != nil {
-		return nil, "", err
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, "", err
-	}
-
-	return env, string(body), nil
+	return parseDefinition(c.Cloud.ReadEnvironment_esc_environments(ctx, org, projectName, envName))
 }
 
-// GetEnvironmentAtVersion retrieves the environment with the given name in the given organization at the given version.
-// The environment is returned along with the raw YAML definition.
 func (c *EscClient) GetEnvironmentAtVersion(ctx context.Context, org, projectName, envName, version string) (*EnvironmentDefinition, string, error) {
-	env, resp, err := c.EscAPI.GetEnvironmentAtVersion(ctx, org, projectName, envName, version).Execute()
-	if err != nil {
-		return nil, "", err
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, "", err
-	}
-
-	return env, string(body), nil
+	return parseDefinition(c.Cloud.ReadEnvironment_esc_environments_versions(ctx, org, projectName, envName, version))
 }
 
-// OpenEnvironment opens the environment with the given name in the given organization.
-// The open environment is returned, which contains the ID of the opened environment session to use with ReadOpenEnvironment.
+// DecryptEnvironment returns the definition with secrets in plain text, parsed
+// and as YAML.
+func (c *EscClient) DecryptEnvironment(ctx context.Context, org, projectName, envName string) (*EnvironmentDefinition, string, error) {
+	return parseDefinition(c.Cloud.DecryptEnvironment_esc_environments(ctx, org, projectName, envName))
+}
+
+func parseDefinition(definitionYAML *string, err error) (*EnvironmentDefinition, string, error) {
+	if err != nil {
+		return nil, "", err
+	}
+	var definition EnvironmentDefinition
+	if err := yaml.Unmarshal([]byte(*definitionYAML), &definition); err != nil {
+		return nil, "", fmt.Errorf("parsing environment definition: %w", err)
+	}
+	return &definition, *definitionYAML, nil
+}
+
 func (c *EscClient) OpenEnvironment(ctx context.Context, org, projectName, envName string) (*OpenEnvironment, error) {
-	openInfo, _, err := c.EscAPI.OpenEnvironment(ctx, org, projectName, envName).Execute()
-	return openInfo, err
+	return c.Cloud.OpenEnvironment_esc_environments(ctx, org, projectName, envName, nil)
 }
 
-// OpenEnvironmentAtVersion opens the environment with the given name in the given organization at the given version.
-// The open environment is returned, which contains the ID of the opened environment session to use with ReadOpenEnvironment.
 func (c *EscClient) OpenEnvironmentAtVersion(ctx context.Context, org, projectName, envName, version string) (*OpenEnvironment, error) {
-	openInfo, _, err := c.EscAPI.OpenEnvironmentAtVersion(ctx, org, projectName, envName, version).Execute()
-	return openInfo, err
+	return c.Cloud.OpenEnvironment_esc_environments_versions(ctx, org, projectName, envName, version, nil)
 }
 
-// ReadOpenEnvironment reads the environment with the given open session ID and returns the config and resolved secret values.
+// ReadOpenEnvironment returns the opened environment and its values without
+// the trace envelopes.
 func (c *EscClient) ReadOpenEnvironment(ctx context.Context, org, projectName, envName, openEnvID string) (*Environment, map[string]any, error) {
-	env, _, err := c.EscAPI.ReadOpenEnvironment(ctx, org, projectName, envName, openEnvID).Execute()
-	if err != nil {
+	// The generated method decodes into *any, which loses number precision on
+	// the way to a typed value, so decode the captured body instead
+	// (https://github.com/pulumi/pulumi-cloud-sdk/issues/6).
+	ctx, capture := withResponseCapture(ctx)
+	if _, err := c.Cloud.ReadOpenEnvironment_esc_environments(ctx, org, projectName, envName, openEnvID, nil); err != nil {
 		return nil, nil, err
 	}
-
-	if env == nil || env.Properties == nil {
-		return nil, nil, nil
+	var env Environment
+	if err := json.Unmarshal(capture.body, &env); err != nil {
+		return nil, nil, fmt.Errorf("decoding opened environment: %w", err)
 	}
-
-	propertyMap := *env.Properties
-	for k, v := range propertyMap {
-		v.Value = mapValues(v.Value)
-		propertyMap[k] = v
+	if env.Properties == nil {
+		return &env, nil, nil
 	}
-
-	values := make(map[string]any, len(propertyMap))
-	for k := range propertyMap {
-		v := propertyMap[k]
-		values[k] = mapValuesPrimitive(&v)
+	values := make(map[string]any, len(env.Properties))
+	for key, property := range env.Properties {
+		values[key] = plainValue(property.Value)
 	}
-
-	return env, values, nil
+	return &env, values, nil
 }
 
-// OpenAndReadEnvironment opens and reads the environment with the given name in the given organization.
-// The config and resolved secret values are returned.
 func (c *EscClient) OpenAndReadEnvironment(ctx context.Context, org, projectName, envName string) (*Environment, map[string]any, error) {
-	openInfo, err := c.OpenEnvironment(ctx, org, projectName, envName)
+	open, err := c.OpenEnvironment(ctx, org, projectName, envName)
 	if err != nil {
 		return nil, nil, err
 	}
-
-	return c.ReadOpenEnvironment(ctx, org, projectName, envName, openInfo.Id)
+	return c.ReadOpenEnvironment(ctx, org, projectName, envName, open.ID)
 }
 
-// OpenAndReadEnvironmentAtVersion opens and reads the environment with the given name in the given organization at the given version.
-// The config and resolved secret values are returned.
 func (c *EscClient) OpenAndReadEnvironmentAtVersion(ctx context.Context, org, projectName, envName, version string) (*Environment, map[string]any, error) {
-	openInfo, err := c.OpenEnvironmentAtVersion(ctx, org, projectName, envName, version)
+	open, err := c.OpenEnvironmentAtVersion(ctx, org, projectName, envName, version)
 	if err != nil {
 		return nil, nil, err
 	}
-
-	return c.ReadOpenEnvironment(ctx, org, projectName, envName, openInfo.Id)
+	return c.ReadOpenEnvironment(ctx, org, projectName, envName, open.ID)
 }
 
-// ReadEnvironmentProperty reads the property at the given path in the environment with the given open session ID.
-// The property is returned along with the resolved value.
+// ReadEnvironmentProperty returns one property of an opened environment, both
+// with its trace and as the plain value.
 func (c *EscClient) ReadEnvironmentProperty(ctx context.Context, org, projectName, envName, openEnvID, propPath string) (*Value, any, error) {
-	prop, _, err := c.EscAPI.ReadOpenEnvironmentProperty(ctx, org, projectName, envName, openEnvID).Property(propPath).Execute()
-	if prop == nil {
+	ctx, capture := withResponseCapture(ctx)
+	if _, err := c.Cloud.ReadOpenEnvironment_esc_environments(ctx, org, projectName, envName, openEnvID, &propPath); err != nil {
 		return nil, nil, err
 	}
-
-	v := mapValuesPrimitive(prop.Value)
-	return prop, v, err
+	var property Value
+	if err := json.Unmarshal(capture.body, &property); err != nil {
+		return nil, nil, fmt.Errorf("decoding property %q: %w", propPath, err)
+	}
+	return &property, plainValue(property.Value), nil
 }
 
-// CreateEnvironment creates a new environment with the given name in the given organization.
 func (c *EscClient) CreateEnvironment(ctx context.Context, org, projectName, envName string) error {
-	createEnvironment := NewCreateEnvironment(projectName, envName)
-	_, err := c.EscAPI.CreateEnvironment(ctx, org).CreateEnvironment(*createEnvironment).Execute()
-	return err
+	return c.Cloud.CreateEnvironment_esc_environments(ctx, org, apitype.CreateEnvironmentRequest{Project: projectName, Name: envName})
 }
 
 type CloneEnvironmentOptions struct {
@@ -244,334 +117,178 @@ type CloneEnvironmentOptions struct {
 	PreserveRevisionTags    bool
 }
 
-// CloneEnvironment clones an existing environment into a new environment.
-func (c *EscClient) CloneEnvironment(ctx context.Context, org, srcProjectName, srcEnvName, destProjectName, destEnvName string, cloneEnvironmentOptions *CloneEnvironmentOptions) error {
-	cloneEnvironment := NewCloneEnvironment(destProjectName, destEnvName)
-	cloneEnvironment.PreserveHistory = &cloneEnvironmentOptions.PreserveHistory
-	cloneEnvironment.PreserveAccess = &cloneEnvironmentOptions.PreserveAccess
-	cloneEnvironment.PreserveEnvironmentTags = &cloneEnvironmentOptions.PreserveEnvironmentTags
-	cloneEnvironment.PreserveRevisionTags = &cloneEnvironmentOptions.PreserveRevisionTags
-
-	_, err := c.EscAPI.CloneEnvironment(ctx, org, srcProjectName, srcEnvName).CloneEnvironment(*cloneEnvironment).Execute()
-	return err
+func (c *EscClient) CloneEnvironment(ctx context.Context, org, srcProjectName, srcEnvName, destProjectName, destEnvName string, options *CloneEnvironmentOptions) error {
+	if options == nil {
+		options = &CloneEnvironmentOptions{}
+	}
+	return c.Cloud.CloneEnvironment(ctx, org, srcProjectName, srcEnvName, apitype.CloneEnvironmentRequest{
+		Project:                 destProjectName,
+		Name:                    destEnvName,
+		PreserveHistory:         options.PreserveHistory,
+		PreserveAccess:          options.PreserveAccess,
+		PreserveEnvironmentTags: options.PreserveEnvironmentTags,
+		PreserveRevisionTags:    options.PreserveRevisionTags,
+	})
 }
 
-// UpdateEnvironmentYaml updates the environment with the given name in the given organization with the given YAML definition.
-func (c *EscClient) UpdateEnvironmentYaml(ctx context.Context, org, projectName, envName, yaml string) (*EnvironmentDiagnostics, error) {
-	diags, _, err := c.EscAPI.UpdateEnvironmentYaml(ctx, org, projectName, envName).Body(yaml).Execute()
-	return diags, err
+// UpdateEnvironmentYaml replaces the definition. On a rejected definition the
+// diagnostics are returned together with the error.
+func (c *EscClient) UpdateEnvironmentYaml(ctx context.Context, org, projectName, envName, definitionYAML string) (*EnvironmentDiagnostics, error) {
+	response, err := c.Cloud.UpdateEnvironment_esc_environments(ctx, org, projectName, envName, definitionYAML)
+	if err != nil {
+		return diagnosticsFromError(err), err
+	}
+	return &response.EnvironmentDiagnosticsResponse, nil
 }
 
-// UpdateEnvironment updates the environment with the given name in the given organization with the given definition.
 func (c *EscClient) UpdateEnvironment(ctx context.Context, org, projectName, envName string, env *EnvironmentDefinition) (*EnvironmentDiagnostics, error) {
-	yaml, err := MarshalEnvironmentDefinition(env)
+	definitionYAML, err := MarshalEnvironmentDefinition(env)
 	if err != nil {
 		return nil, err
 	}
-
-	diags, _, err := c.EscAPI.UpdateEnvironmentYaml(ctx, org, projectName, envName).Body(yaml).Execute()
-	return diags, err
+	return c.UpdateEnvironmentYaml(ctx, org, projectName, envName, definitionYAML)
 }
 
-// DeleteEnvironment deletes the environment with the given name in the given organization.
 func (c *EscClient) DeleteEnvironment(ctx context.Context, org, projectName, envName string) error {
-	_, err := c.EscAPI.DeleteEnvironment(ctx, org, projectName, envName).Execute()
-	return err
+	return c.Cloud.DeleteEnvironment_esc_environments(ctx, org, projectName, envName)
 }
 
-// CheckEnvironment checks the given environment definition for errors.
 func (c *EscClient) CheckEnvironment(ctx context.Context, org string, env *EnvironmentDefinition) (*CheckEnvironment, error) {
-	yaml, err := MarshalEnvironmentDefinition(env)
+	definitionYAML, err := MarshalEnvironmentDefinition(env)
 	if err != nil {
 		return nil, err
 	}
-
-	return c.CheckEnvironmentYaml(ctx, org, yaml)
+	return c.CheckEnvironmentYaml(ctx, org, definitionYAML)
 }
 
-// CheckEnvironmentYaml checks the given environment YAML definition for errors.
-func (c *EscClient) CheckEnvironmentYaml(ctx context.Context, org, yaml string) (*CheckEnvironment, error) {
-	check, _, err := c.EscAPI.CheckEnvironmentYaml(ctx, org).Body(yaml).Execute()
-	var genericOpenApiError *GenericOpenAPIError
-	if err != nil && errors.As(err, &genericOpenApiError) {
-		model := genericOpenApiError.Model().(CheckEnvironment)
-		return &model, err
-	}
-
-	return check, err
-}
-
-// DecryptEnvironment decrypts the environment with the given name in the given organization.
-func (c *EscClient) DecryptEnvironment(ctx context.Context, org, projectName, envName string) (*EnvironmentDefinition, string, error) {
-	env, resp, err := c.EscAPI.DecryptEnvironment(ctx, org, projectName, envName).Execute()
-
-	body, bodyErr := io.ReadAll(resp.Body)
+// CheckEnvironmentYaml evaluates a definition without saving it. On a rejected
+// definition the check result with its diagnostics is returned together with
+// the error.
+func (c *EscClient) CheckEnvironmentYaml(ctx context.Context, org, definitionYAML string) (*CheckEnvironment, error) {
+	result, err := c.Cloud.CheckYAML_esc(ctx, org, nil, definitionYAML)
 	if err != nil {
-		return nil, "", bodyErr
+		return checkResultFromError(err), err
 	}
-
-	return env, string(body), err
+	// An empty body leaves the embedded environment nil
+	// (https://github.com/pulumi/pulumi-cloud-sdk/issues/6).
+	if result.EscEnvironment == nil {
+		result.EscEnvironment = &Environment{}
+	}
+	return result, nil
 }
 
-// ListEnvironmentRevisions lists all revisions of the environment with the given name in the given organization.
+func rejectedDefinitionBody(err error) ([]byte, bool) {
+	var apiErr *apiclient.APIError
+	if !errors.As(err, &apiErr) || apiErr.HTTPStatusCode() != http.StatusBadRequest {
+		return nil, false
+	}
+	return []byte(apiErr.ResponseMessage()), true
+}
+
+func diagnosticsFromError(err error) *EnvironmentDiagnostics {
+	body, ok := rejectedDefinitionBody(err)
+	if !ok {
+		return nil
+	}
+	var diagnostics EnvironmentDiagnostics
+	if json.Unmarshal(body, &diagnostics) != nil {
+		return nil
+	}
+	return &diagnostics
+}
+
+func checkResultFromError(err error) *CheckEnvironment {
+	body, ok := rejectedDefinitionBody(err)
+	if !ok {
+		return nil
+	}
+	var result CheckEnvironment
+	if json.Unmarshal(body, &result) == nil {
+		if result.EscEnvironment == nil {
+			result.EscEnvironment = &Environment{}
+		}
+		return &result
+	}
+	// The full response cannot decode while the SDK rejects boolean-form
+	// schemas (https://github.com/pulumi/pulumi-cloud-sdk/issues/6), and the
+	// diagnostics are what a caller needs from a rejected definition.
+	var diagnostics EnvironmentDiagnostics
+	if json.Unmarshal(body, &diagnostics) != nil {
+		return nil
+	}
+	return &CheckEnvironment{EscEnvironment: &Environment{}, Diagnostics: diagnostics.Diagnostics}
+}
+
 func (c *EscClient) ListEnvironmentRevisions(ctx context.Context, org, projectName, envName string) ([]EnvironmentRevision, error) {
-	request := c.EscAPI.ListEnvironmentRevisions(ctx, org, projectName, envName)
-
-	revs, _, err := request.Execute()
-	return revs, err
+	return derefSlice(c.Cloud.ListEnvironmentRevisions_esc_environments(ctx, org, projectName, envName, nil, nil))
 }
 
-// ListEnvironmentRevisionsPaginated lists all revisions of the environment with the given name in the given organization, with pagination support.
-func (c *EscClient) ListEnvironmentRevisionsPaginated(ctx context.Context, org, projectName, envName string, before, count int32) ([]EnvironmentRevision, error) {
-	request := c.EscAPI.ListEnvironmentRevisions(ctx, org, projectName, envName).Before(before).Count(count)
-
-	revs, _, err := request.Execute()
-	return revs, err
+func (c *EscClient) ListEnvironmentRevisionsPaginated(ctx context.Context, org, projectName, envName string, before, count int) ([]EnvironmentRevision, error) {
+	return derefSlice(c.Cloud.ListEnvironmentRevisions_esc_environments(ctx, org, projectName, envName, &before, &count))
 }
 
-// ListEnvironmentRevisionTags lists all tags of the environment with the given name in the given organization.
+func derefSlice[T any](items *[]T, err error) ([]T, error) {
+	if err != nil {
+		return nil, err
+	}
+	return *items, nil
+}
+
 func (c *EscClient) ListEnvironmentRevisionTags(ctx context.Context, org, projectName, envName string) (*EnvironmentRevisionTags, error) {
-	request := c.EscAPI.client.EscAPI.ListEnvironmentRevisionTags(ctx, org, projectName, envName)
-
-	revs, _, err := request.Execute()
-	return revs, err
+	return c.Cloud.ListRevisionTags_esc_environments_versions(ctx, org, projectName, envName, nil, nil)
 }
 
-// ListEnvironmentRevisionTagsPaginated lists all tags of the environment with the given name in the given organization, with pagination support.
-func (c *EscClient) ListEnvironmentRevisionTagsPaginated(ctx context.Context, org, projectName, envName string, after string, count int32) (*EnvironmentRevisionTags, error) {
-	request := c.EscAPI.ListEnvironmentRevisionTags(ctx, org, projectName, envName).After(after).Count(count)
-
-	tags, _, err := request.Execute()
-	return tags, err
+func (c *EscClient) ListEnvironmentRevisionTagsPaginated(ctx context.Context, org, projectName, envName string, after string, count int) (*EnvironmentRevisionTags, error) {
+	return c.Cloud.ListRevisionTags_esc_environments_versions(ctx, org, projectName, envName, &after, &count)
 }
 
-// GetEnvironmentRevisionTag retrieves the tag with the given name of the environment with the given name in the given organization.
 func (c *EscClient) GetEnvironmentRevisionTag(ctx context.Context, org, projectName, envName, tagName string) (*EnvironmentRevisionTag, error) {
-	request := c.EscAPI.client.EscAPI.GetEnvironmentRevisionTag(ctx, org, projectName, envName, tagName)
-
-	revision, _, err := request.Execute()
-	return revision, err
+	return c.Cloud.ReadRevisionTag_esc_environments(ctx, org, projectName, envName, tagName)
 }
 
-// CreateEnvironmentRevisionTag creates a new tag with the given name for the environment with the given name in the given organization.
-func (c *EscClient) CreateEnvironmentRevisionTag(ctx context.Context, org, projectName, envName, tagName string, revision int32) error {
-	createTag := NewCreateEnvironmentRevisionTag(tagName, revision)
-	request := c.EscAPI.client.EscAPI.CreateEnvironmentRevisionTag(ctx, org, projectName, envName).CreateEnvironmentRevisionTag(*createTag)
-
-	_, err := request.Execute()
-	return err
+func (c *EscClient) CreateEnvironmentRevisionTag(ctx context.Context, org, projectName, envName, tagName string, revision int) error {
+	return c.Cloud.CreateRevisionTag_esc_environments_versions_tags(ctx, org, projectName, envName, apitype.CreateEnvironmentRevisionTagRequest{Name: tagName, Revision: &revision})
 }
 
-// UpdateEnvironmentRevisionTag updates the tag's revision with the given name for the environment with the given name in the given organization.
-func (c *EscClient) UpdateEnvironmentRevisionTag(ctx context.Context, org, projectName, envName, tagName string, revision int32) error {
-	update := NewUpdateEnvironmentRevisionTag(revision)
-	request := c.EscAPI.client.EscAPI.UpdateEnvironmentRevisionTag(ctx, org, projectName, envName, tagName).UpdateEnvironmentRevisionTag(*update)
-
-	_, err := request.Execute()
-	return err
+func (c *EscClient) UpdateEnvironmentRevisionTag(ctx context.Context, org, projectName, envName, tagName string, revision int) error {
+	return c.Cloud.UpdateRevisionTag_esc_environments(ctx, org, projectName, envName, tagName, apitype.UpdateEnvironmentRevisionTagRequest{Revision: &revision})
 }
 
-// DeleteEnvironmentRevisionTag deletes the tag with the given name for the environment with the given name in the given organization.
 func (c *EscClient) DeleteEnvironmentRevisionTag(ctx context.Context, org, projectName, envName, tagName string) error {
-	request := c.EscAPI.client.EscAPI.DeleteEnvironmentRevisionTag(ctx, org, projectName, envName, tagName)
-
-	_, err := request.Execute()
-	return err
+	return c.Cloud.DeleteRevisionTag_esc_environments(ctx, org, projectName, envName, tagName)
 }
 
-// ListEnvironmentTags lists all tags of the environment with the given name in the given organization.
 func (c *EscClient) ListEnvironmentTags(ctx context.Context, org, projectName, envName string) (*ListEnvironmentTags, error) {
-	request := c.EscAPI.client.EscAPI.ListEnvironmentTags(ctx, org, projectName, envName)
-
-	tags, _, err := request.Execute()
-	return tags, err
+	return c.Cloud.ListEnvironmentTags_esc_environments(ctx, org, projectName, envName, nil, nil)
 }
 
-// ListEnvironmentTagsPaginated lists all tags of the environment with the given name in the given organization, with pagination support.
-func (c *EscClient) ListEnvironmentTagsPaginated(ctx context.Context, org, projectName, envName string, after string, count int32) (*ListEnvironmentTags, error) {
-	request := c.EscAPI.ListEnvironmentTags(ctx, org, projectName, envName).After(after).Count(count)
-
-	tags, _, err := request.Execute()
-	return tags, err
+func (c *EscClient) ListEnvironmentTagsPaginated(ctx context.Context, org, projectName, envName string, after, count int) (*ListEnvironmentTags, error) {
+	return c.Cloud.ListEnvironmentTags_esc_environments(ctx, org, projectName, envName, &after, &count)
 }
 
-// GetEnvironmentTag retrieves the tag with the given name of the environment with the given name in the given organization.
 func (c *EscClient) GetEnvironmentTag(ctx context.Context, org, projectName, envName, tagName string) (*EnvironmentTag, error) {
-	request := c.EscAPI.client.EscAPI.GetEnvironmentTag(ctx, org, projectName, envName, tagName)
-
-	tag, _, err := request.Execute()
-	return tag, err
+	return c.Cloud.GetEnvironmentTag_esc_environments(ctx, org, projectName, envName, tagName)
 }
 
-// CreateEnvironmentTag creates a new tag with the given name for the environment with the given name in the given organization.
 func (c *EscClient) CreateEnvironmentTag(ctx context.Context, org, projectName, envName, tagName, tagValue string) (*EnvironmentTag, error) {
-	createTag := NewCreateEnvironmentTag(tagName, tagValue)
-	request := c.EscAPI.client.EscAPI.CreateEnvironmentTag(ctx, org, projectName, envName).CreateEnvironmentTag(*createTag)
-
-	tag, _, err := request.Execute()
-	return tag, err
+	return c.Cloud.CreateEnvironmentTag_esc_environments(ctx, org, projectName, envName, apitype.CreateEnvironmentTagRequest{Name: tagName, Value: tagValue})
 }
 
-// UpdateEnvironmentTag updates the tag's value with the given name for the environment with the given name in the given organization.
 func (c *EscClient) UpdateEnvironmentTag(ctx context.Context, org, projectName, envName, tagName, currentTagValue, newTagName, newTagValue string) (*EnvironmentTag, error) {
-	update := NewUpdateEnvironmentTag(
-		UpdateEnvironmentTagCurrentTag{currentTagValue},
-		UpdateEnvironmentTagNewTag{
-			Name:  newTagName,
-			Value: newTagValue,
-		})
-	request := c.EscAPI.client.EscAPI.UpdateEnvironmentTag(ctx, org, projectName, envName, tagName).UpdateEnvironmentTag(*update)
-
-	tag, _, err := request.Execute()
-	return tag, err
+	return c.Cloud.UpdateEnvironmentTag_esc_environments(ctx, org, projectName, envName, tagName, apitype.UpdateEnvironmentTagRequest{
+		CurrentTag: apitype.UpdateEnvironmentTagRequestCurrentTag{Value: currentTagValue},
+		NewTag:     apitype.UpdateEnvironmentTagRequestNewTag{Name: newTagName, Value: newTagValue},
+	})
 }
 
-// DeleteEnvironmentTag deletes the tag with the given name for the environment with the given name in the given organization.
 func (c *EscClient) DeleteEnvironmentTag(ctx context.Context, org, projectName, envName, tagName string) error {
-	request := c.EscAPI.client.EscAPI.DeleteEnvironmentTag(ctx, org, projectName, envName, tagName)
-
-	_, err := request.Execute()
-	return err
+	return c.Cloud.DeleteEnvironmentTag_esc_environments(ctx, org, projectName, envName, tagName)
 }
 
 func MarshalEnvironmentDefinition(env *EnvironmentDefinition) (string, error) {
-	var bs []byte
-	bs, err := yaml.Marshal(env)
-	if err == nil {
-		return string(bs), nil
+	encoded, err := yaml.Marshal(env)
+	if err != nil {
+		return "", err
 	}
-
-	return "", err
-}
-
-func mapValuesPrimitive(value any) any {
-	switch val := value.(type) {
-	case *Value:
-		return mapValuesPrimitive(val.Value)
-	case map[string]Value:
-		output := make(map[string]any, len(val))
-		for k, v := range val {
-			output[k] = mapValuesPrimitive(v.Value)
-		}
-
-		return output
-	case []any:
-		for i, v := range val {
-			val[i] = mapValuesPrimitive(v)
-		}
-		return val
-	default:
-		return value
-	}
-}
-
-func mapValues(value any) any {
-	if val := getValue(getMapSafe(value)); val != nil {
-		val.Value = mapValues(val.Value)
-		return val
-	}
-	if mapData, isMap := value.(map[string]any); isMap {
-		output := map[string]Value{}
-		for key, v := range mapData {
-			value := mapValues(v)
-			if value == nil {
-				continue
-			}
-
-			if v, ok := value.(*Value); ok && v != nil {
-				output[key] = *v
-			} else {
-				output[key] = Value{
-					Value: value,
-				}
-			}
-		}
-		return output
-	} else if sliceData, isSlice := value.([]any); isSlice {
-		for i, v := range sliceData {
-			sliceData[i] = mapValues(v)
-		}
-		return sliceData
-	}
-
-	return value
-}
-
-func getValue(data map[string]any) *Value {
-	_, hasValue := data["value"]
-	_, hasTrace := data["trace"]
-	if hasValue && hasTrace {
-		return &Value{
-			Value:   mapValues(data["value"]),
-			Secret:  getBoolPtr(data, "secret"),
-			Unknown: getBoolPtr(data, "unknown"),
-			Trace:   getTrace(data["trace"].(map[string]any)),
-		}
-	}
-
-	return nil
-}
-
-func getTrace(data map[string]any) Trace {
-	def := getRange(getMapSafe(data["def"]))
-	base := getValue(getMapSafe(data["base"]))
-	if def != nil || base != nil {
-		return Trace{
-			Def:  def,
-			Base: base,
-		}
-	}
-
-	return Trace{}
-}
-
-func getMapSafe(data any) map[string]any {
-	if data == nil {
-		return nil
-	}
-
-	val, _ := data.(map[string]any)
-	return val
-}
-
-func getRange(data map[string]any) *Range {
-	begin := getPos(getMapSafe(data["begin"]))
-	end := getPos(getMapSafe(data["end"]))
-	environment := data["environment"].(string)
-	if begin != nil && end != nil {
-		return &Range{
-			Environment: environment,
-			Begin:       *begin,
-			End:         *end,
-		}
-	}
-
-	return nil
-}
-
-func getPos(data map[string]any) *Pos {
-	line, hasLine := data["line"].(float64)
-	column, hasColumn := data["column"].(float64)
-	byteData, hasByte := data["byte"].(float64)
-	if hasLine || hasColumn || hasByte {
-		return &Pos{
-			Line:   int32(line),
-			Column: int32(column),
-			Byte:   int32(byteData),
-		}
-	}
-
-	return nil
-}
-
-func getBoolPtr(data map[string]any, key string) *bool {
-	val, exists := data[key]
-	if exists {
-		v, ok := val.(bool)
-		if ok {
-			return &v
-		}
-	}
-
-	return nil
+	return string(encoded), nil
 }

@@ -128,7 +128,7 @@ values:
 		openInfo, err := apiClient.OpenEnvironment(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 
-		v, value, err := apiClient.ReadEnvironmentProperty(auth, orgName, PROJECT_NAME, envName, openInfo.Id, "pulumiConfig.foo")
+		v, value, err := apiClient.ReadEnvironmentProperty(auth, orgName, PROJECT_NAME, envName, openInfo.ID, "pulumiConfig.foo")
 		require.Nil(t, err)
 		require.Equal(t, "bar", v.Value)
 		require.Equal(t, "bar", value)
@@ -171,7 +171,7 @@ values:
 		testTag, err := apiClient.GetEnvironmentRevisionTag(auth, orgName, PROJECT_NAME, envName, "testTag")
 		require.Nil(t, err)
 		require.NotNil(t, testTag)
-		require.Equal(t, int32(3), testTag.Revision)
+		require.Equal(t, 3, testTag.Revision)
 
 		err = apiClient.DeleteEnvironmentRevisionTag(auth, orgName, PROJECT_NAME, envName, "testTag")
 		require.Nil(t, err)
@@ -189,7 +189,7 @@ values:
 		require.NotNil(t, envTags)
 		require.Len(t, envTags.Tags, 1)
 		require.Equal(t, "owner", envTags.Tags["owner"].Name)
-		require.Equal(t, "esc-sdk-test", *envTags.Tags["owner"].Value)
+		require.Equal(t, "esc-sdk-test", envTags.Tags["owner"].Value)
 
 		_, err = apiClient.UpdateEnvironmentTag(auth, orgName, PROJECT_NAME, envName, "owner", "esc-sdk-test", "new-owner", "esc-sdk-test-updated")
 		require.Nil(t, err)
@@ -198,7 +198,7 @@ values:
 		require.Nil(t, err)
 		require.NotNil(t, envTag)
 		require.Equal(t, "new-owner", envTag.Name)
-		require.Equal(t, "esc-sdk-test-updated", *envTag.Value)
+		require.Equal(t, "esc-sdk-test-updated", envTag.Value)
 
 		err = apiClient.DeleteEnvironmentTag(auth, orgName, PROJECT_NAME, envName, "new-owner")
 		require.Nil(t, err)
@@ -247,9 +247,7 @@ func assertEnvDef(t *testing.T, env *EnvironmentDefinition, baseEnvName string) 
 	require.Equal(t, []any{1.0, 2.0, 3.0}, env.Values.AdditionalProperties["my_array"])
 
 	require.Equal(t, "${foo}", env.Values.PulumiConfig["foo"])
-	require.NotNil(t, env.Values.EnvironmentVariables)
-	envVariables := *env.Values.EnvironmentVariables
-	require.Equal(t, "${foo}", envVariables["FOO"])
+	require.Equal(t, "${foo}", env.Values.EnvironmentVariables["FOO"])
 }
 
 func removeAllGoTestEnvs(t *testing.T, apiClient *EscClient, auth context.Context, orgName string) {

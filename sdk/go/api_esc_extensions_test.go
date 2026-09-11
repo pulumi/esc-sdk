@@ -1,53 +1,65 @@
 // Copyright 2025, Pulumi Corporation.  All rights reserved.
 
-/*
-ESC (Environments, Secrets, Config) API
-
-Testing EscAPIService
-
-*/
-
 package esc_sdk
 
 import (
-	"os"
+	"net/url"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
 func Test_EscClientLogin(t *testing.T) {
-	t.Run("verify default auth context picks up PULUMI_ACCESS_TOKEN variable", func(t *testing.T) {
-		beforeTest := os.Getenv("PULUMI_ACCESS_TOKEN")
-		err := os.Setenv("PULUMI_ACCESS_TOKEN", "FAKE_TOKEN")
-		require.NoError(t, err)
+	t.Run("default auth context picks up PULUMI_ACCESS_TOKEN", func(t *testing.T) {
+		t.Setenv("PULUMI_ACCESS_TOKEN", "FAKE_TOKEN")
 
 		authContext, err := NewDefaultAuthContext()
 		require.NoError(t, err)
 
-		auth, ok := authContext.Value(ContextAPIKeys).(map[string]APIKey)
+		token, ok := AccessTokenFromContext(authContext)
 		require.True(t, ok)
-		token, ok := auth["Authorization"]
-		require.True(t, ok)
-		require.Equal(t, "FAKE_TOKEN", token.Key)
-
-		err = os.Setenv("PULUMI_ACCESS_TOKEN", beforeTest)
-		require.NoError(t, err)
+		require.Equal(t, "FAKE_TOKEN", token)
 	})
 
-	t.Run("verify default client picks up PULUMI_BACKEND_URL by default", func(t *testing.T) {
-		beforeTest := os.Getenv("PULUMI_BACKEND_URL")
-		err := os.Setenv("PULUMI_BACKEND_URL", "https://api.moolumi.com")
-		require.NoError(t, err)
+	t.Run("default auth context fails without PULUMI_ACCESS_TOKEN", func(t *testing.T) {
+		t.Setenv("PULUMI_ACCESS_TOKEN", "")
+
+		_, err := NewDefaultAuthContext()
+		require.Error(t, err)
+	})
+
+	t.Run("default client picks up PULUMI_BACKEND_URL", func(t *testing.T) {
+		t.Setenv("PULUMI_BACKEND_URL", "https://api.moolumi.com")
 
 		client, err := NewDefaultClient()
 		require.NoError(t, err)
+		require.Equal(t, "https://api.moolumi.com", client.Cloud.BaseURL)
+	})
 
-		url, err := client.rawClient.cfg.ServerURL(0, make(map[string]string))
-		require.NoError(t, err)
-		require.Equal(t, "https://api.moolumi.com/api/esc", url)
+	t.Run("default client falls back to Pulumi Cloud", func(t *testing.T) {
+		t.Setenv("PULUMI_BACKEND_URL", "")
 
-		err = os.Setenv("PULUMI_BACKEND_URL", beforeTest)
+		client, err := NewDefaultClient()
 		require.NoError(t, err)
+		require.Equal(t, DefaultPulumiAPIURL, client.Cloud.BaseURL)
+	})
+}
+
+func Test_NewCustomBackendConfiguration(t *testing.T) {
+	t.Run("keeps the port and drops the path", func(t *testing.T) {
+		backend, err := url.Parse("http://localhost:8080/api/esc")
+		require.NoError(t, err)
+
+		cfg, err := NewCustomBackendConfiguration(*backend)
+		require.NoError(t, err)
+		require.Equal(t, "http://localhost:8080", cfg.BaseURL)
+	})
+
+	t.Run("rejects a URL without a host", func(t *testing.T) {
+		backend, err := url.Parse("localhost:8080")
+		require.NoError(t, err)
+
+		_, err = NewCustomBackendConfiguration(*backend)
+		require.Error(t, err)
 	})
 }

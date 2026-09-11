@@ -71,12 +71,6 @@ jobs:
       - id: version
         name: Set SDK Version
         uses: pulumi/provider-version-action@v2
-
-      - name: Generate SDKs
-        uses: ./.github/actions/generate_sdk
-        env:
-          VERSION: ${{ inputs.version }}
-          PULUMI_VERSION: ${{ inputs.version }}
       - name: Publish Go SDK
         uses: pulumi/publish-go-sdk-action@v1
         with:

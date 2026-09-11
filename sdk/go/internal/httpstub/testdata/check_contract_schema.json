@@ -1,0 +1,94 @@
+{
+  "exprs": {
+    "app": {
+      "range": {"environment": "<yaml>", "begin": {"line": 2, "column": 3, "byte": 10}, "end": {"line": 4, "column": 16, "byte": 62}},
+      "schema": {"type": "object", "properties": {"name": {"type": "string", "const": "demo"}, "replicas": {"type": "number", "const": 3}}},
+      "object": {
+        "name": {"range": {"environment": "<yaml>", "begin": {"line": 3, "column": 11, "byte": 26}, "end": {"line": 3, "column": 15, "byte": 30}}, "schema": {"type": "string", "const": "demo"}, "literal": "demo"},
+        "replicas": {"range": {"environment": "<yaml>", "begin": {"line": 4, "column": 15, "byte": 61}, "end": {"line": 4, "column": 16, "byte": 62}}, "schema": {"type": "number", "const": 3}, "literal": 3}
+      }
+    },
+    "password": {
+      "range": {"environment": "<yaml>", "begin": {"line": 5, "column": 3, "byte": 65}, "end": {"line": 6, "column": 24, "byte": 100}},
+      "schema": {"type": "string", "secret": true},
+      "builtin": {
+        "name": "fn::secret",
+        "nameRange": {"environment": "<yaml>", "begin": {"line": 6, "column": 5, "byte": 81}, "end": {"line": 6, "column": 15, "byte": 91}},
+        "argSchema": {"type": "string"},
+        "arg": {"range": {"environment": "<yaml>", "begin": {"line": 6, "column": 17, "byte": 93}, "end": {"line": 6, "column": 24, "byte": 100}}, "schema": {"type": "string", "const": "hunter2"}, "literal": "hunter2"}
+      }
+    },
+    "environmentVariables": {
+      "range": {"environment": "<yaml>", "begin": {"line": 7, "column": 3, "byte": 103}, "end": {"line": 8, "column": 26, "byte": 152}},
+      "schema": {"type": "object", "properties": {"APP_NAME": {"type": "string", "const": "demo"}}},
+      "object": {
+        "APP_NAME": {
+          "range": {"environment": "<yaml>", "begin": {"line": 8, "column": 15, "byte": 141}, "end": {"line": 8, "column": 26, "byte": 152}},
+          "schema": {"type": "string", "const": "demo"},
+          "interpolate": [{"value": [{"key": "app", "range": {"environment": "<yaml>", "begin": {"line": 8, "column": 17, "byte": 143}, "end": {"line": 8, "column": 20, "byte": 146}}, "value": {"environment": "<yaml>", "begin": {"line": 2, "column": 3, "byte": 10}, "end": {"line": 4, "column": 16, "byte": 62}}}, {"key": "name", "range": {"environment": "<yaml>", "begin": {"line": 8, "column": 21, "byte": 147}, "end": {"line": 8, "column": 25, "byte": 151}}, "value": {"environment": "<yaml>", "begin": {"line": 3, "column": 11, "byte": 26}, "end": {"line": 3, "column": 15, "byte": 30}}}]}]
+        }
+      }
+    }
+  },
+  "properties": {
+    "app": {
+      "value": {
+        "name": {"value": "demo", "trace": {"def": {"environment": "<yaml>", "begin": {"line": 3, "column": 11, "byte": 26}, "end": {"line": 3, "column": 15, "byte": 30}}}},
+        "replicas": {"value": 3, "trace": {"def": {"environment": "<yaml>", "begin": {"line": 4, "column": 15, "byte": 61}, "end": {"line": 4, "column": 16, "byte": 62}}}}
+      },
+      "trace": {"def": {"environment": "<yaml>", "begin": {"line": 2, "column": 3, "byte": 10}, "end": {"line": 4, "column": 16, "byte": 62}}}
+    },
+    "password": {
+      "value": "[secret]",
+      "secret": true,
+      "trace": {"def": {"environment": "<yaml>", "begin": {"line": 5, "column": 3, "byte": 65}, "end": {"line": 6, "column": 24, "byte": 100}}}
+    },
+    "environmentVariables": {
+      "value": {
+        "APP_NAME": {
+          "value": "demo",
+          "trace": {
+            "def": {"environment": "<yaml>", "begin": {"line": 8, "column": 15, "byte": 141}, "end": {"line": 8, "column": 26, "byte": 152}},
+            "base": {"value": "demo", "trace": {"def": {"environment": "<yaml>", "begin": {"line": 3, "column": 11, "byte": 26}, "end": {"line": 3, "column": 15, "byte": 30}}}}
+          }
+        }
+      },
+      "trace": {"def": {"environment": "<yaml>", "begin": {"line": 7, "column": 3, "byte": 103}, "end": {"line": 8, "column": 26, "byte": 152}}}
+    }
+  },
+  "schema": {
+    "type": "object",
+    "properties": {
+      "app": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string", "const": "demo", "minLength": 1},
+          "replicas": {"type": "number", "const": 3, "minimum": 1, "maximum": 10.5}
+        },
+        "required": ["name", "replicas"]
+      },
+      "password": {"type": "string", "secret": true},
+      "environmentVariables": {
+        "type": "object",
+        "properties": {"APP_NAME": {"type": "string", "const": "demo"}},
+        "additionalProperties": {"type": "string"}
+      }
+    },
+    "description": "payments/prod"
+  },
+  "executionContext": {
+    "properties": {
+      "pulumi": {
+        "value": {
+          "user": {
+            "value": {"login": {"value": "alice", "trace": {"def": {"environment": "<yaml>", "begin": {"line": 0, "column": 0, "byte": 0}, "end": {"line": 0, "column": 0, "byte": 0}}}}},
+            "trace": {"def": {"environment": "<yaml>", "begin": {"line": 0, "column": 0, "byte": 0}, "end": {"line": 0, "column": 0, "byte": 0}}}
+          }
+        },
+        "trace": {"def": {"environment": "<yaml>", "begin": {"line": 0, "column": 0, "byte": 0}, "end": {"line": 0, "column": 0, "byte": 0}}}
+      }
+    },
+    "schema": {"type": "object", "properties": {"pulumi": {"type": "object", "properties": {"user": {"type": "object", "properties": {"login": {"type": "string"}}}}}}}
+  },
+  "environmentFunctionSummary": {"funcCounts": {"fn::secret": 1}, "rotationPaths": []}
+}

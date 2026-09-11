@@ -1,0 +1,21 @@
+{
+  "exprs": {
+    "greeting": {
+      "range": {"environment": "<yaml>", "begin": {"line": 2, "column": 3, "byte": 10}, "end": {"line": 2, "column": 18, "byte": 25}},
+      "schema": {"type": "string", "const": "hello"},
+      "literal": "hello"
+    }
+  },
+  "properties": {
+    "greeting": {"value": "hello", "trace": {"def": {"environment": "<yaml>", "begin": {"line": 2, "column": 13, "byte": 20}, "end": {"line": 2, "column": 18, "byte": 25}}}},
+    "token": {"value": "[unknown]", "unknown": true, "trace": {"def": {"environment": "<yaml>", "begin": {"line": 3, "column": 3, "byte": 28}, "end": {"line": 5, "column": 20, "byte": 80}}}}
+  },
+  "schema": {"type": "object", "properties": {"greeting": {"type": "string", "const": "hello"}, "token": {"type": "string"}}},
+  "diagnostics": [
+    {
+      "range": {"environment": "<yaml>", "begin": {"line": 6, "column": 10, "byte": 90}, "end": {"line": 6, "column": 21, "byte": 101}},
+      "summary": "unknown property \"bad_ref\""
+    },
+    {"summary": "environment references itself"}
+  ]
+}

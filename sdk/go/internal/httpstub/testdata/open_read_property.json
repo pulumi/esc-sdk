@@ -1,0 +1,6 @@
+{
+  "value": {
+    "aws:region": {"value": "eu-west-1", "trace": {"def": {"environment": "payments/prod", "begin": {"line": 8, "column": 17, "byte": 130}, "end": {"line": 8, "column": 26, "byte": 139}}}}
+  },
+  "trace": {"def": {"environment": "payments/prod", "begin": {"line": 7, "column": 3, "byte": 110}, "end": {"line": 8, "column": 26, "byte": 139}}}
+}

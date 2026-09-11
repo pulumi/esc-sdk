@@ -1,0 +1,7 @@
+{
+  "tags": [
+    {"name": "latest", "revision": 3, "created": "2026-08-01T10:00:00Z", "modified": "2026-09-01T10:00:00Z", "editorLogin": "alice", "editorName": "Alice Example"},
+    {"name": "stable", "revision": 3, "created": "2026-08-01T10:00:00Z", "modified": "2026-09-01T10:00:00Z"}
+  ],
+  "nextToken": "stable"
+}

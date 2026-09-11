@@ -1,0 +1,47 @@
+{
+  "exprs": {
+    "app": {
+      "range": {"environment": "<yaml>", "begin": {"line": 2, "column": 3, "byte": 10}, "end": {"line": 4, "column": 16, "byte": 62}},
+      "schema": {"type": "object", "properties": {"name": {"type": "string", "const": "demo"}, "regions": {"type": "array", "prefixItems": [{"type": "string", "const": "eu-west-1"}, {"type": "string", "const": "us-east-1"}], "items": false}}},
+      "object": {
+        "name": {"range": {"environment": "<yaml>", "begin": {"line": 3, "column": 11, "byte": 26}, "end": {"line": 3, "column": 15, "byte": 30}}, "schema": {"type": "string", "const": "demo"}, "literal": "demo"},
+        "regions": {
+          "range": {"environment": "<yaml>", "begin": {"line": 4, "column": 14, "byte": 44}, "end": {"line": 4, "column": 36, "byte": 62}},
+          "schema": {"type": "array", "prefixItems": [{"type": "string", "const": "eu-west-1"}, {"type": "string", "const": "us-east-1"}], "items": false},
+          "list": [
+            {"range": {"environment": "<yaml>", "begin": {"line": 4, "column": 15, "byte": 45}, "end": {"line": 4, "column": 24, "byte": 54}}, "schema": {"type": "string", "const": "eu-west-1"}, "literal": "eu-west-1"},
+            {"range": {"environment": "<yaml>", "begin": {"line": 4, "column": 26, "byte": 56}, "end": {"line": 4, "column": 35, "byte": 65}}, "schema": {"type": "string", "const": "us-east-1"}, "literal": "us-east-1"}
+          ]
+        }
+      }
+    }
+  },
+  "properties": {
+    "app": {
+      "value": {
+        "name": {"value": "demo", "trace": {"def": {"environment": "<yaml>", "begin": {"line": 3, "column": 11, "byte": 26}, "end": {"line": 3, "column": 15, "byte": 30}}}},
+        "regions": {
+          "value": [
+            {"value": "eu-west-1", "trace": {"def": {"environment": "<yaml>", "begin": {"line": 4, "column": 15, "byte": 45}, "end": {"line": 4, "column": 24, "byte": 54}}}},
+            {"value": "us-east-1", "trace": {"def": {"environment": "<yaml>", "begin": {"line": 4, "column": 26, "byte": 56}, "end": {"line": 4, "column": 35, "byte": 65}}}}
+          ],
+          "trace": {"def": {"environment": "<yaml>", "begin": {"line": 4, "column": 14, "byte": 44}, "end": {"line": 4, "column": 36, "byte": 62}}}
+        }
+      },
+      "trace": {"def": {"environment": "<yaml>", "begin": {"line": 2, "column": 3, "byte": 10}, "end": {"line": 4, "column": 16, "byte": 62}}}
+    }
+  },
+  "schema": {
+    "type": "object",
+    "properties": {
+      "app": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string", "const": "demo"},
+          "regions": {"type": "array", "prefixItems": [{"type": "string", "const": "eu-west-1"}, {"type": "string", "const": "us-east-1"}], "items": false}
+        }
+      }
+    }
+  },
+  "environmentFunctionSummary": {"funcCounts": {}, "rotationPaths": []}
+}

@@ -1,0 +1,22 @@
+{
+  "exprs": {
+    "ref": {
+      "range": {"environment": "<yaml>", "begin": {"line": 3, "column": 3, "byte": 20}, "end": {"line": 3, "column": 21, "byte": 38}},
+      "schema": true,
+      "interpolate": [{"value": [{"key": "bad_ref", "range": {"environment": "<yaml>", "begin": {"line": 3, "column": 10, "byte": 27}, "end": {"line": 3, "column": 17, "byte": 34}}, "value": {"environment": "", "begin": {"line": 0, "column": 0, "byte": 0}, "end": {"line": 0, "column": 0, "byte": 0}}}]}]
+    }
+  },
+  "properties": {
+    "ref": {"value": null, "trace": {"def": {"environment": "<yaml>", "begin": {"line": 3, "column": 3, "byte": 20}, "end": {"line": 3, "column": 21, "byte": 38}}}}
+  },
+  "schema": true,
+  "diagnostics": [
+    {
+      "range": {"environment": "<yaml>", "begin": {"line": 3, "column": 10, "byte": 27}, "end": {"line": 3, "column": 17, "byte": 34}},
+      "summary": "unknown property \"bad_ref\"",
+      "path": "values.ref",
+      "severity": "error"
+    }
+  ],
+  "environmentFunctionSummary": {"funcCounts": {}, "rotationPaths": []}
+}

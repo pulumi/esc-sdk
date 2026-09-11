@@ -14,10 +14,10 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v6
-      - name: Set up Go 1.23
+      - name: Set up Go 1.26
         uses: actions/setup-go@v6
         with:
-          go-version: 1.23.x
+          go-version: 1.26.x
           cache-dependency-path: sdk/go.sum
       - run: cd sdk && go mod tidy
       - name: Fail if go mod not tidy
@@ -35,7 +35,7 @@ jobs:
       - name: Install golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.1
+          version: v2.12
           working-directory: sdk
   lint_python:
     runs-on: ubuntu-latest
@@ -64,10 +64,10 @@ jobs:
         uses: jaxxstorm/action-install-gh-release@v3.0.0
         with:
           repo: pulumi/pulumictl
-      - name: Set up Go 1.23
+      - name: Set up Go 1.26
         uses: actions/setup-go@v6
         with:
-          go-version: 1.23.x
+          go-version: 1.26.x
           cache-dependency-path: sdk/go.sum
       - name: Lint
         run: make lint-copyright

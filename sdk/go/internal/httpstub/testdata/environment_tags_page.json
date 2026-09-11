@@ -1,0 +1,7 @@
+{
+  "tags": {
+    "team": {"name": "team", "value": "platform", "created": "2026-08-01T10:00:00Z", "modified": "2026-08-15T10:00:00Z", "editorLogin": "alice", "editorName": "Alice Example"},
+    "owner": {"name": "owner", "value": "payments", "created": "2026-08-01T10:00:00Z", "modified": "2026-08-01T10:00:00Z", "editorLogin": "bob", "editorName": "Bob Example"}
+  },
+  "nextToken": "2"
+}

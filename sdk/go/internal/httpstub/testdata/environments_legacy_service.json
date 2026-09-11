@@ -1,0 +1,13 @@
+{
+  "environments": [
+    {
+      "id": "env-1",
+      "organization": "acme",
+      "name": "prod",
+      "created": "2024-08-01T10:00:00Z",
+      "modified": "2024-09-01T10:00:00Z",
+      "ownedBy": {"name": "Alice Example", "githubLogin": "alice", "avatarUrl": ""},
+      "tags": {}
+    }
+  ]
+}

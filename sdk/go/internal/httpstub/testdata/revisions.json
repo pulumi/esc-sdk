@@ -1,0 +1,18 @@
+[
+  {
+    "number": 3,
+    "created": "2026-09-01T10:00:00Z",
+    "creatorLogin": "alice",
+    "creatorName": "Alice Example",
+    "tags": ["latest", "stable"],
+    "sourceChangeRequest": {"id": "cr-42", "description": "rotate db password"}
+  },
+  {
+    "number": 2,
+    "created": "2026-08-31T10:00:00Z",
+    "creatorLogin": "bob",
+    "creatorName": "Bob Example",
+    "retracted": {"replacement": 3, "at": "2026-09-01T11:00:00Z", "byLogin": "alice", "byName": "Alice Example", "reason": "leaked secret"}
+  },
+  {"number": 1, "created": "2026-08-30T10:00:00Z"}
+]

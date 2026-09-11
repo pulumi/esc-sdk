@@ -1,0 +1,221 @@
+{
+  "properties": {
+    "app": {
+      "value": {
+        "name": {
+          "value": "demo",
+          "trace": {
+            "def": {
+              "environment": "payments/prod",
+              "begin": {
+                "line": 3,
+                "column": 11,
+                "byte": 26
+              },
+              "end": {
+                "line": 3,
+                "column": 15,
+                "byte": 30
+              }
+            }
+          }
+        },
+        "replicas": {
+          "value": 3,
+          "trace": {
+            "def": {
+              "environment": "payments/prod",
+              "begin": {
+                "line": 4,
+                "column": 15,
+                "byte": 61
+              },
+              "end": {
+                "line": 4,
+                "column": 16,
+                "byte": 62
+              }
+            }
+          }
+        }
+      },
+      "trace": {
+        "def": {
+          "environment": "payments/prod",
+          "begin": {
+            "line": 2,
+            "column": 3,
+            "byte": 10
+          },
+          "end": {
+            "line": 4,
+            "column": 16,
+            "byte": 62
+          }
+        }
+      }
+    },
+    "password": {
+      "value": "hunter2",
+      "secret": true,
+      "trace": {
+        "def": {
+          "environment": "payments/prod",
+          "begin": {
+            "line": 5,
+            "column": 3,
+            "byte": 65
+          },
+          "end": {
+            "line": 6,
+            "column": 24,
+            "byte": 100
+          }
+        }
+      }
+    },
+    "pulumiConfig": {
+      "value": {
+        "aws:region": {
+          "value": "eu-west-1",
+          "trace": {
+            "def": {
+              "environment": "payments/prod",
+              "begin": {
+                "line": 8,
+                "column": 17,
+                "byte": 130
+              },
+              "end": {
+                "line": 8,
+                "column": 26,
+                "byte": 139
+              }
+            }
+          }
+        }
+      },
+      "trace": {
+        "def": {
+          "environment": "payments/prod",
+          "begin": {
+            "line": 7,
+            "column": 3,
+            "byte": 110
+          },
+          "end": {
+            "line": 8,
+            "column": 26,
+            "byte": 139
+          }
+        }
+      }
+    },
+    "regions": {
+      "value": [
+        {
+          "value": "eu-west-1",
+          "trace": {
+            "def": {
+              "environment": "payments/prod",
+              "begin": {
+                "line": 9,
+                "column": 13,
+                "byte": 163
+              },
+              "end": {
+                "line": 9,
+                "column": 22,
+                "byte": 172
+              }
+            }
+          }
+        },
+        {
+          "value": "us-east-1",
+          "trace": {
+            "def": {
+              "environment": "payments/prod",
+              "begin": {
+                "line": 9,
+                "column": 24,
+                "byte": 174
+              },
+              "end": {
+                "line": 9,
+                "column": 33,
+                "byte": 183
+              }
+            }
+          }
+        }
+      ],
+      "trace": {
+        "def": {
+          "environment": "payments/prod",
+          "begin": {
+            "line": 9,
+            "column": 12,
+            "byte": 162
+          },
+          "end": {
+            "line": 9,
+            "column": 34,
+            "byte": 184
+          }
+        }
+      }
+    }
+  },
+  "schema": {
+    "type": "object",
+    "properties": {
+      "app": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "const": "demo"
+          },
+          "replicas": {
+            "type": "number",
+            "const": 3
+          }
+        }
+      },
+      "password": {
+        "type": "string",
+        "secret": true
+      },
+      "pulumiConfig": {
+        "type": "object",
+        "properties": {
+          "aws:region": {
+            "type": "string",
+            "const": "eu-west-1"
+          }
+        }
+      },
+      "regions": {
+        "type": "array",
+        "prefixItems": [
+          {
+            "type": "string",
+            "const": "eu-west-1"
+          },
+          {
+            "type": "string",
+            "const": "us-east-1"
+          }
+        ],
+        "items": false
+      }
+    },
+    "required": [
+      "app",
+      "password",
+      "pulumiConfig",
+      "regions"
+    ]
+  }
+}

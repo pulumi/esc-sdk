@@ -12,27 +12,82 @@ package esc_sdk
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/pulumi/esc-sdk/sdk/go/internal/replay"
 	"github.com/stretchr/testify/require"
 )
 
 const PROJECT_NAME = "sdk-go-test"
 const ENV_PREFIX = "env-"
 
+const recordingPath = "testdata/live/esc_client.json"
+
 func Test_EscClient(t *testing.T) {
+	accessToken := os.Getenv("PULUMI_ACCESS_TOKEN")
+	if accessToken == "" {
+		t.Skip("PULUMI_ACCESS_TOKEN is not set; Test_EscClientReplay covers the recorded run")
+	}
 	orgName := os.Getenv("PULUMI_ORG")
 	require.NotEmpty(t, orgName, "PULUMI_ORG must be set")
-	auth, apiClient, err := DefaultLogin()
+	auth := NewAuthContext(accessToken)
+
+	backend := os.Getenv("PULUMI_BACKEND_URL")
+	if backend == "" {
+		backend = DefaultPulumiAPIURL
+	}
+	removeAllGoTestEnvs(t, newClientForBackend(t, backend, http.DefaultTransport), auth, orgName)
+
+	names := scenarioNames(time.Now().Format("20060102150405"))
+	transport := http.RoundTripper(http.DefaultTransport)
+	if recordingRequested() {
+		recorder := replay.NewRecorder(transport)
+		transport = recorder
+		t.Cleanup(func() {
+			recording := replay.Recording{Backend: backend, Org: orgName, Names: names, Exchanges: recorder.Exchanges()}
+			require.NoError(t, recording.Save(recordingPath))
+		})
+	}
+	runEscClientScenario(t, auth, newClientForBackend(t, backend, transport), orgName, names)
+}
+
+func Test_EscClientReplay(t *testing.T) {
+	recording, err := replay.Load(recordingPath)
 	require.NoError(t, err)
+	player := replay.NewPlayer(recording)
+	t.Cleanup(func() {
+		require.Zero(t, player.Remaining(), "the scenario made fewer requests than the recording")
+	})
+	client := newClientForBackend(t, "https://replay.invalid", player)
+	runEscClientScenario(t, NewAuthContext("replay"), client, recording.Org, recording.Names)
+}
 
-	removeAllGoTestEnvs(t, apiClient, auth, orgName)
+func recordingRequested() bool {
+	return os.Getenv("ESC_SDK_RECORD") != ""
+}
 
-	baseEnvName := "base-" + time.Now().Format("20060102150405")
-	err = apiClient.CreateEnvironment(auth, orgName, PROJECT_NAME, baseEnvName)
+func newClientForBackend(t *testing.T, backend string, transport http.RoundTripper) *EscClient {
+	t.Helper()
+	backendURL, err := url.Parse(backend)
+	require.NoError(t, err)
+	cfg, err := NewCustomBackendConfiguration(*backendURL)
+	require.NoError(t, err)
+	cfg.HTTPClient = &http.Client{Transport: transport}
+	return NewClient(cfg)
+}
+
+func scenarioNames(stamp string) map[string]string {
+	return map[string]string{"base": "base-" + stamp, "env": ENV_PREFIX + stamp}
+}
+
+func runEscClientScenario(t *testing.T, auth context.Context, apiClient *EscClient, orgName string, names map[string]string) {
+	baseEnvName := names["base"]
+	err := apiClient.CreateEnvironment(auth, orgName, PROJECT_NAME, baseEnvName)
 	require.Nil(t, err)
 	t.Cleanup(func() {
 		err := apiClient.DeleteEnvironment(auth, orgName, PROJECT_NAME, baseEnvName)
@@ -51,7 +106,7 @@ func Test_EscClient(t *testing.T) {
 	require.Nil(t, err)
 
 	t.Run("should create, clone, list, update, get, decrypt, open and delete an environment", func(t *testing.T) {
-		envName := ENV_PREFIX + time.Now().Format("20060102150405")
+		envName := names["env"]
 		err := apiClient.CreateEnvironment(auth, orgName, PROJECT_NAME, envName)
 		require.Nil(t, err)
 

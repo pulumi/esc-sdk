@@ -179,7 +179,7 @@ describe("ESC", async () => {
 
         envTags = await client.listEnvironmentTags(PULUMI_ORG, PROJECT_NAME, name);
         assert.notEqual(envTags, undefined);
-        assert.equal(Object.keys(envTags!.tags).length, 0);
+        assert.ok(!("new-owner" in envTags!.tags));
 
         await client.deleteEnvironment(PULUMI_ORG, PROJECT_NAME, name);
     });

@@ -70,13 +70,18 @@ namespace Pulumi.Esc.Sdk.Tests
             Assert.Equal("https://api.pulumi.com", EscAuth.GetDefaultBackendUrl());
         }
 
-        [Fact]
-        public void GetEscApiUrl_ConvertsBackendUrl()
+        [Theory]
+        [InlineData("https://api.pulumi.com", "https://api.pulumi.com/api/esc")]
+        [InlineData("https://api.pulumi.com/", "https://api.pulumi.com/api/esc")]
+        [InlineData("https://api.pulumi.com/api/esc", "https://api.pulumi.com/api/esc")]
+        [InlineData("http://localhost:8080", "http://localhost:8080/api/esc")]
+        [InlineData("https://example.com/pulumi", "https://example.com/pulumi/api/esc")]
+        [InlineData("https://example.com/pulumi/", "https://example.com/pulumi/api/esc")]
+        [InlineData("https://example.com:8443/pulumi/api/esc", "https://example.com:8443/pulumi/api/esc")]
+        [InlineData("https://example.com/team%2Fname", "https://example.com/team%2Fname/api/esc")]
+        public void GetEscApiUrl_ConvertsBackendUrl(string backendUrl, string expected)
         {
-            Assert.Equal("https://api.pulumi.com/api/esc", EscAuth.GetEscApiUrl("https://api.pulumi.com"));
-            Assert.Equal("https://api.pulumi.com/api/esc", EscAuth.GetEscApiUrl("https://api.pulumi.com/"));
-            Assert.Equal("https://custom.example.com/api/esc", EscAuth.GetEscApiUrl("https://custom.example.com"));
-            Assert.Equal("http://localhost:8080/api/esc", EscAuth.GetEscApiUrl("http://localhost:8080"));
+            Assert.Equal(expected, EscAuth.GetEscApiUrl(backendUrl));
         }
     }
 }

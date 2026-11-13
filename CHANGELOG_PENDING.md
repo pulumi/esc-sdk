@@ -6,6 +6,9 @@
 - Replace pagination-dependent `listEnvironments` existence checks with direct `getEnvironment` calls in Go, TypeScript, Python, and C# integration tests to remove a flake when the shared test org grows past one page
   [#134](https://github.com/pulumi/esc-sdk/pull/134)
 
+- Keep the port and path of a custom backend URL in the Go, TypeScript, and Python SDKs, and the port in the C# SDK. `http://localhost:8080` no longer becomes `http://localhost/api/esc`. The TypeScript and Python clients also no longer modify the caller's configuration object
+  [#149](https://github.com/pulumi/esc-sdk/pull/149)
+
 ### Breaking changes
 
 - Default credentials are now sourced exclusively from the `PULUMI_ACCESS_TOKEN` and

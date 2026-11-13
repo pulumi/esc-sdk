@@ -8,6 +8,7 @@ import pulumi_esc_sdk.configuration as configuration
 import pulumi_esc_sdk.api_client as api_client
 from pydantic import StrictBytes, StrictInt
 from typing import Mapping, Any, List
+import copy
 import inspect
 import yaml
 import os
@@ -25,6 +26,7 @@ class EscClient:
     def __init__(self, configuration: configuration.Configuration) -> None:
         """Constructor
         """
+        configuration = copy.deepcopy(configuration)
         configuration.host = append_esc_to_url(configuration.host)
         self.esc_api = api.EscApi(api_client.ApiClient(configuration))
 
@@ -456,6 +458,13 @@ def isObject(obj):
     return inspect.isclass(obj) or isinstance(obj, dict)
 
 
+def _strip_esc_suffix(path):
+    path = path.rstrip("/")
+    if path.endswith("/api/esc"):
+        path = path[:-len("/api/esc")]
+    return path.rstrip("/")
+
+
 def append_esc_to_url(custom_backend_url_str):
     if custom_backend_url_str is None:
         return None
@@ -464,7 +473,7 @@ def append_esc_to_url(custom_backend_url_str):
         appended_url = urlunparse((
             str(custom_backend_url.scheme),
             str(custom_backend_url.netloc),
-            "/api/esc",
+            _strip_esc_suffix(custom_backend_url.path) + "/api/esc",
             None,  # path
             None,  # query
             None,  # fragment

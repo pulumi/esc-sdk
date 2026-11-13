@@ -59,5 +59,26 @@ class TestDefaultCredentials(unittest.TestCase):
         self.assertTrue('Authorization' not in self.config.api_key)
 
 
+class TestBackendUrl(unittest.TestCase):
+    cases = {
+        "https://api.pulumi.com": "https://api.pulumi.com/api/esc",
+        "https://api.pulumi.com/": "https://api.pulumi.com/api/esc",
+        "https://api.pulumi.com/api/esc": "https://api.pulumi.com/api/esc",
+        "http://localhost:8080": "http://localhost:8080/api/esc",
+        "https://example.com/pulumi": "https://example.com/pulumi/api/esc",
+        "https://example.com/pulumi/": "https://example.com/pulumi/api/esc",
+        "https://example.com:8443/pulumi/api/esc": "https://example.com:8443/pulumi/api/esc",
+        "https://example.com/team%2Fname": "https://example.com/team%2Fname/api/esc",
+    }
+
+    def test_append_esc_to_url(self):
+        for given, want in self.cases.items():
+            with self.subTest(given=given):
+                config = esc.Configuration(host=given)
+                client = esc.EscClient(config)
+                self.assertEqual(client.esc_api.api_client.configuration.host, want)
+                self.assertEqual(config.host, given)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/url"
 	"os"
+	"strings"
 
 	"gopkg.in/ghodss/yaml.v1"
 )
@@ -60,9 +61,12 @@ func NewClient(cfg *Configuration) *EscClient {
 // NewCustomBackendConfiguration creates a new Configuration object,
 // but replaces default API endpoint with a given custom backend URL
 func NewCustomBackendConfiguration(customBackendURL url.URL) (*Configuration, error) {
-	appendedUrl, err := url.Parse(fmt.Sprintf("%s://%s/api/esc", customBackendURL.Scheme, customBackendURL.Hostname()))
-	if err != nil {
-		return nil, fmt.Errorf("failed to normalize backend url: ")
+	basePath := strings.TrimSuffix(strings.TrimRight(customBackendURL.Path, "/"), "/api/esc")
+	appendedUrl := url.URL{
+		Scheme: customBackendURL.Scheme,
+		User:   customBackendURL.User,
+		Host:   customBackendURL.Host,
+		Path:   strings.TrimRight(basePath, "/") + "/api/esc",
 	}
 	cfg := &Configuration{
 		DefaultHeader: make(map[string]string),

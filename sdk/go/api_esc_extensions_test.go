@@ -10,6 +10,7 @@ Testing EscAPIService
 package esc_sdk
 
 import (
+	"net/url"
 	"os"
 	"testing"
 
@@ -50,4 +51,25 @@ func Test_EscClientLogin(t *testing.T) {
 		err = os.Setenv("PULUMI_BACKEND_URL", beforeTest)
 		require.NoError(t, err)
 	})
+}
+
+func TestNewCustomBackendConfiguration(t *testing.T) {
+	cases := map[string]string{
+		"https://api.pulumi.com":                  "https://api.pulumi.com/api/esc",
+		"https://api.pulumi.com/":                 "https://api.pulumi.com/api/esc",
+		"https://api.pulumi.com/api/esc":          "https://api.pulumi.com/api/esc",
+		"http://localhost:8080":                   "http://localhost:8080/api/esc",
+		"https://example.com/pulumi":              "https://example.com/pulumi/api/esc",
+		"https://example.com/pulumi/":             "https://example.com/pulumi/api/esc",
+		"https://example.com:8443/pulumi/api/esc": "https://example.com:8443/pulumi/api/esc",
+	}
+	for input, want := range cases {
+		t.Run(input, func(t *testing.T) {
+			u, err := url.Parse(input)
+			require.NoError(t, err)
+			cfg, err := NewCustomBackendConfiguration(*u)
+			require.NoError(t, err)
+			require.Equal(t, want, cfg.Servers[0].URL)
+		})
+	}
 }

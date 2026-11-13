@@ -79,11 +79,12 @@ export class EscApi {
     rawApi: EscRawApi;
     config: Configuration;
     constructor(config: Configuration) {
-        // Normalize backend url
         if (config.basePath) {
-            const url = new URL(config.basePath)
-            const appendedUrl = new URL(`/api/esc`, `${url.protocol}//${url.hostname}`);
-            config.basePath = appendedUrl.toString();
+            const url = new URL(config.basePath);
+            const path = url.pathname.replace(/\/+$/, "").replace(/\/api\/esc$/, "");
+            config = Object.assign(Object.create(Object.getPrototypeOf(config)), config, {
+                basePath: `${url.origin}${path}/api/esc`,
+            });
         }
 
         this.config = config;

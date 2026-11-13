@@ -13,6 +13,7 @@ describe("EscApi backend URL", () => {
         ["https://example.com/pulumi", "https://example.com/pulumi/api/esc"],
         ["https://example.com/pulumi/", "https://example.com/pulumi/api/esc"],
         ["https://example.com:8443/pulumi/api/esc", "https://example.com:8443/pulumi/api/esc"],
+        ["https://example.com/team%2Fname", "https://example.com/team%2Fname/api/esc"],
     ];
     for (const [input, want] of cases) {
         it(input, () => {

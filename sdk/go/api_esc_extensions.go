@@ -61,12 +61,18 @@ func NewClient(cfg *Configuration) *EscClient {
 // NewCustomBackendConfiguration creates a new Configuration object,
 // but replaces default API endpoint with a given custom backend URL
 func NewCustomBackendConfiguration(customBackendURL url.URL) (*Configuration, error) {
-	basePath := strings.TrimSuffix(strings.TrimRight(customBackendURL.Path, "/"), "/api/esc")
+	basePath := strings.TrimSuffix(strings.TrimRight(customBackendURL.EscapedPath(), "/"), "/api/esc")
+	rawPath := strings.TrimRight(basePath, "/") + "/api/esc"
+	path, err := url.PathUnescape(rawPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to normalize backend url: %w", err)
+	}
 	appendedUrl := url.URL{
-		Scheme: customBackendURL.Scheme,
-		User:   customBackendURL.User,
-		Host:   customBackendURL.Host,
-		Path:   strings.TrimRight(basePath, "/") + "/api/esc",
+		Scheme:  customBackendURL.Scheme,
+		User:    customBackendURL.User,
+		Host:    customBackendURL.Host,
+		Path:    path,
+		RawPath: rawPath,
 	}
 	cfg := &Configuration{
 		DefaultHeader: make(map[string]string),

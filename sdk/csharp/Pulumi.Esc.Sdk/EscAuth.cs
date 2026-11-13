@@ -53,8 +53,14 @@ namespace Pulumi.Esc.Sdk
         /// <returns>The ESC API base URL (e.g. "https://api.pulumi.com/api/esc").</returns>
         public static string GetEscApiUrl(string backendUrl)
         {
-            var uri = new Uri(backendUrl.TrimEnd('/'));
-            return $"{uri.Scheme}://{uri.Host}{(uri.IsDefaultPort ? "" : $":{uri.Port}")}/api/esc";
+            const string escPath = "/api/esc";
+            var uri = new Uri(backendUrl);
+            var path = uri.AbsolutePath.TrimEnd('/');
+            if (path.EndsWith(escPath, StringComparison.Ordinal))
+            {
+                path = path.Substring(0, path.Length - escPath.Length);
+            }
+            return $"{uri.GetLeftPart(UriPartial.Authority)}{path.TrimEnd('/')}{escPath}";
         }
     }
 }

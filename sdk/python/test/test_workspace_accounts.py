@@ -68,6 +68,7 @@ class TestBackendUrl(unittest.TestCase):
         "https://example.com/pulumi": "https://example.com/pulumi/api/esc",
         "https://example.com/pulumi/": "https://example.com/pulumi/api/esc",
         "https://example.com:8443/pulumi/api/esc": "https://example.com:8443/pulumi/api/esc",
+        "https://example.com/team%2Fname": "https://example.com/team%2Fname/api/esc",
     }
 
     def test_append_esc_to_url(self):

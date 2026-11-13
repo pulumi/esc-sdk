@@ -62,6 +62,7 @@ func TestNewCustomBackendConfiguration(t *testing.T) {
 		"https://example.com/pulumi":              "https://example.com/pulumi/api/esc",
 		"https://example.com/pulumi/":             "https://example.com/pulumi/api/esc",
 		"https://example.com:8443/pulumi/api/esc": "https://example.com:8443/pulumi/api/esc",
+		"https://example.com/team%2Fname":         "https://example.com/team%2Fname/api/esc",
 	}
 	for input, want := range cases {
 		t.Run(input, func(t *testing.T) {
